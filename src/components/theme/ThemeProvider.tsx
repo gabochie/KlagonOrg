@@ -6,19 +6,18 @@ type Theme = "light" | "dark";
 
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void } | null>(null);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  const stored = localStorage.getItem("klagon-theme");
+  return stored === "dark" || stored === "light"
+    ? stored
+    : matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem("klagon-theme");
-    const initial: Theme =
-      stored === "dark" || stored === "light"
-        ? stored
-        : matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-    setTheme(initial);
-  }, []);
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
