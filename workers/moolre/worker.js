@@ -1,7 +1,8 @@
 // KlagonOrg payments relay — Moolre webhook receiver + donation charge endpoint.
 //
 // Secrets (wrangler secret put): SUPABASE_ANON_KEY, CALLBACK_KEY,
-//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY, MOOLRE_WALLET, TURNSTILE_SECRET.
+//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY, MOOLRE_WALLET, TURNSTILE_SECRET,
+//   BREVO_API_KEY.
 
 const MOOLRE_WALLET_CALLBACK_IP = "192.241.135.134";
 const MOOLRE_API = "https://api.moolre.com/open/transact/payment";
@@ -48,6 +49,58 @@ const failRow = (env, ref) =>
     },
     body: JSON.stringify({ p_ref: ref, p_status: "failed" }),
   }).catch(() => null);
+
+const BREVO_API = "https://api.brevo.com/v3/smtp/email";
+const BREVO_FROM = { name: "KlagonOrg Team", email: "hello@klagon.org" };
+
+async function brevoSend(env, to, subject, html) {
+  if (!env.BREVO_API_KEY || !to?.length) return null;
+  const res = await fetch(BREVO_API, {
+    method: "POST",
+    headers: {
+      "api-key": env.BREVO_API_KEY,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ sender: BREVO_FROM, to, subject, htmlContent: html }),
+  });
+  return res.json();
+}
+
+async function sendDonationEmails(env, ref) {
+  const res = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/donations?provider_ref=eq.${encodeURIComponent(ref)}&select=email,full_name,amount_ghs`,
+    {
+      headers: {
+        apikey: env.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+      },
+    }
+  );
+  const rows = res.ok ? await res.json() : [];
+  const row = rows[0];
+  if (!row) return;
+
+  const amount = Number(row.amount_ghs ?? 0).toFixed(2);
+  const rowName = String(row.full_name || "").trim();
+  const name = rowName ? rowName.split(" ")[0] : "Friend";
+
+  if (row.email) {
+    await brevoSend(
+      env,
+      [{ email: String(row.email).trim(), name }],
+      `Your KlagonOrg donation of GH₵${amount}`,
+      `<p>Hi ${name},</p><p>Thank you for your donation of <strong>GH\u00a5${amount}</strong> to KlagonOrg (ref <code>${ref}</code>).</p><p>Your support helps advance our mission. Follow progress at <a href="https://klagon.org">klagon.org</a>.</p>`
+    ).catch(() => null);
+  }
+
+  await brevoSend(
+    env,
+    [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
+    `New donation received — GH₵${amount}`,
+    `<p>Reference: <code>${ref}</code></p><p>Name: ${rowName || "Anonymous"}</p><p>Amount: GH\u00a5${amount}</p><p>Email: ${row.email || "—"}</p>`
+  ).catch(() => null);
+}
 
 async function moolreCollect(env, { channel, payer, amount, ref, network, otp }) {
   const res = await fetch(MOOLRE_API, {
@@ -296,6 +349,9 @@ async function handleCallback(request, env) {
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 200);
       return json({ error: "supabase-update-failed", detail }, 502);
+    }
+    if (finalStatus === "paid") {
+      await sendDonationEmails(env, ref).catch(() => null);
     }
   } catch {
     return json({ error: "upstream-error" }, 502);
