@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { INTERESTS } from "@/lib/constants";
+import { Turnstile } from "@/components/Turnstile";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
 
 const OCCUPATIONS = [
@@ -52,6 +54,7 @@ export default function RegisterPage() {
   });
   const [interests, setInterests] = useState<string[]>([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const toggleInterest = (i: string) =>
     setInterests((prev) => (prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i]));
@@ -62,7 +65,13 @@ export default function RegisterPage() {
     const { full_name, phone, email, password, age, gender, occupation, career_goal } = form;
     if (!full_name || !phone || !email || !password) return;
     if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (!token) return setError("Please complete the human check before creating your account.");
     setBusy(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setBusy(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const { error: err } = await signUp({
       email,
       password,
@@ -234,6 +243,7 @@ export default function RegisterPage() {
               Account creation will activate once the database is connected.
             </p>
           )}
+          <Turnstile onToken={setToken} />
           <button
             type="submit"
             disabled={busy}

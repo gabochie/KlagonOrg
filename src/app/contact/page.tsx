@@ -6,6 +6,8 @@ import { Footer } from "@/components/landing/Footer";
 import { Button, Input } from "@/components/ui";
 import { Mail, MapPin, Phone, MessageCircle, ExternalLink } from "lucide-react";
 import { submitContact } from "@/lib/forms";
+import { Turnstile } from "@/components/Turnstile";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 const SUBJECTS = [
   "General Inquiry",
@@ -20,6 +22,7 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -31,7 +34,13 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!token) return setError("Please complete the human check before sending.");
     setSending(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setSending(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const { error: err } = await submitContact({
       ...form,
       full_name: form.full_name || null,
@@ -173,6 +182,7 @@ export default function ContactPage() {
                       />
                     </div>
                     {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                    <Turnstile onToken={setToken} />
                     <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                       {sending ? "Sending…" : "Send Message"}
                     </Button>

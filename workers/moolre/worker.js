@@ -1,10 +1,11 @@
 // KlagonOrg payments relay — Moolre webhook receiver + donation charge endpoint.
 //
 // Secrets (wrangler secret put): SUPABASE_ANON_KEY, CALLBACK_KEY,
-//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY, MOOLRE_WALLET.
+//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY, MOOLRE_WALLET, TURNSTILE_SECRET.
 
 const MOOLRE_WALLET_CALLBACK_IP = "192.241.135.134";
 const MOOLRE_API = "https://api.moolre.com/open/transact/payment";
+const TURNSTILE_VERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 const PAID_SIGNALS = new Set(["success", "successful", "completed", "paid", "1"]);
 const FAILED_SIGNALS = new Set(["failed", "failure", "cancelled", "canceled", "rejected", "0"]);
@@ -210,6 +211,44 @@ async function handleConfirm(request, env) {
   );
 }
 
+async function handleTurnstileVerify(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send a token." }, 400, origin);
+  }
+
+  if (!env.TURNSTILE_SECRET) {
+    return json({ success: false, error: "turnstile-not-configured" }, 503, origin);
+  }
+
+  const token = String(input?.token ?? "").trim();
+  if (!token) {
+    return json({ error: "Send a token." }, 400, origin);
+  }
+
+  const remoteip = String(input?.remoteip ?? "").trim() || (request.headers.get("CF-Connecting-IP") ?? "");
+
+  try {
+    const res = await fetch(TURNSTILE_VERIFY, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: env.TURNSTILE_SECRET,
+        response: token,
+        ...(remoteip ? { remoteip } : {}),
+      }),
+    });
+    const data = await res.json();
+    return json({ success: data?.success === true, codes: data?.["error-codes"] ?? [] }, 200, origin);
+  } catch {
+    return json({ success: false, error: "verify-unreachable" }, 502, origin);
+  }
+}
+
 async function handleCallback(request, env) {
   const url = new URL(request.url);
 
@@ -296,6 +335,15 @@ export default {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
       }
       if (request.method === "POST") return handleConfirm(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/turnstile/verify") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleTurnstileVerify(request, env);
       return json({ error: "method-not-allowed" }, 405, origin);
     }
 
