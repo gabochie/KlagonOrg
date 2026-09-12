@@ -139,7 +139,10 @@ async function handleCharge(request, env) {
 
   await failRow();
   return json(
-    { error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again." },
+    {
+      error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again.",
+      code: moolre?.code ? String(moolre.code) : undefined,
+    },
     502,
     origin
   );

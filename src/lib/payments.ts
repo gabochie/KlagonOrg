@@ -19,6 +19,7 @@ export interface ChargeResult {
   ref?: string;
   payer?: string;
   error?: string;
+  code?: string;
 }
 
 export async function chargeDonation(input: ChargeInput): Promise<ChargeResult> {
@@ -41,7 +42,11 @@ export async function chargeDonation(input: ChargeInput): Promise<ChargeResult> 
   }
 
   if (!res.ok || !body.ok) {
-    return { ok: false, error: body.error ?? "Payment request failed. Please try again." };
+    return {
+      ok: false,
+      error: body.error ?? "Payment request failed. Please try again.",
+      code: body.code,
+    };
   }
   return body;
 }

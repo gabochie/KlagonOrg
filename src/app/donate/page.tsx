@@ -43,7 +43,10 @@ export default function DonatePage() {
       network,
     });
     setSending(false);
-    if (!result.ok) return setError(result.error ?? "Payment request failed. Please try again.");
+    if (!result.ok) {
+      const detail = result.code ? `${result.error ?? "Payment request failed."} (${result.code})` : (result.error ?? "Payment request failed. Please try again.");
+      return setError(detail);
+    }
     setPromptPhone(result.payer ?? form.phone.trim());
     setSubmitted(true);
   };
