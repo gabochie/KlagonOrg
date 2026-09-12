@@ -352,6 +352,36 @@ export async function fetchActivityFeed(): Promise<Activity[]> {
   });
 }
 
+export interface InterestSlice {
+  label: string;
+  value: number;
+  color: string;
+}
+
+const INTEREST_COLORS = ["#0F1B5C", "#F59E0B", "#10B981", "#FF6B47", "#8B5CF6", "#0EA5E9"];
+
+export async function fetchInterestDistribution(): Promise<InterestSlice[]> {
+  const c = client();
+  if (!c) return [];
+  const { data, error } = await c.from("profiles").select("interests");
+  if (error || !data || data.length === 0) return [];
+
+  const counts = new Map<string, number>();
+  for (const p of data) {
+    for (const i of p.interests ?? []) {
+      counts.set(i, (counts.get(i) ?? 0) + 1);
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([label, value], idx) => ({
+      label,
+      value,
+      color: INTEREST_COLORS[idx % INTEREST_COLORS.length],
+    }));
+}
+
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60000);

@@ -50,12 +50,12 @@ from public.courses c
 where c.title in ('Introduction to AI', 'Financial Literacy Basics', 'Leadership Foundations', 'Start Your First Business', 'Communication That Wins', 'Build Your Career Roadmap')
   and not exists (select 1 from public.lessons l where l.course_id = c.id);
 
--- ---------- events ----------
+-- ---------- events (relative future dates so "upcoming" always works) ----------
 insert into public.events (title, type, description, date, time, location, spots) values
-  ('Introduction to AI Tools', 'workshop', 'Hands-on intro to AI tools you can use today.', '2025-07-12', '10:00 AM', 'Community Hall, Klagon', 30),
-  ('Klagon Problem-Solving Hack', 'hackathon', 'Tackle real community challenges with tech.', '2025-07-19', '9:00 AM', 'KlagonStudios Hub', 25),
-  ('Public Speaking & Influence', 'leadership', 'Build confidence and public-speaking skills.', '2025-07-23', '5:00 PM', 'Community Hall', 0),
-  ('Klagon Clean-Up Drive', 'service', 'Community clean-up across Klagon Central.', '2025-07-26', '7:00 AM', 'Klagon Central', 0);
+  ('Introduction to AI Tools', 'workshop', 'Hands-on intro to AI tools you can use today.', (now() + interval '7 days')::date, '10:00 AM', 'Community Hall, Klagon', 30),
+  ('Klagon Problem-Solving Hack', 'hackathon', 'Tackle real community challenges with tech.', (now() + interval '14 days')::date, '9:00 AM', 'KlagonStudios Hub', 25),
+  ('Public Speaking & Influence', 'leadership', 'Build confidence and public-speaking skills.', (now() + interval '21 days')::date, '5:00 PM', 'Community Hall', 0),
+  ('Klagon Clean-Up Drive', 'service', 'Community clean-up across Klagon Central.', (now() + interval '28 days')::date, '7:00 AM', 'Klagon Central', 0);
 
 -- ---------- projects ----------
 insert into public.projects (title, description, icon, status, volunteers_target, progress) values

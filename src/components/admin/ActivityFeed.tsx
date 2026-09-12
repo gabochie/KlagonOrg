@@ -1,13 +1,27 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { ACTIVITIES } from "@/lib/constants";
+import { fetchActivityFeed } from "@/lib/queries";
+import type { Activity } from "@/types";
 
 export function ActivityFeed() {
+  const [activities, setActivities] = useState<Activity[]>(ACTIVITIES);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchActivityFeed();
+      if (live.length > 0) setActivities(live);
+    })();
+  }, []);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm font-bold text-navy">Recent Activity</div>
         <span className="text-[10px] text-gray">Live</span>
       </div>
-      {ACTIVITIES.map((a) => (
+      {activities.map((a) => (
         <div
           key={a.id}
           className="flex items-start gap-2.5 py-2 border-b border-border last:border-b-0"

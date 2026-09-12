@@ -1,22 +1,37 @@
-const DATA = [
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchInterestDistribution, type InterestSlice } from "@/lib/queries";
+
+const FALLBACK: InterestSlice[] = [
   { label: "Technology", value: 37, color: "#0F1B5C" },
   { label: "Entrepreneurship", value: 22, color: "#F59E0B" },
   { label: "Leadership", value: 15, color: "#10B981" },
   { label: "Jobs & Career", value: 11, color: "#FF6B47" },
 ];
 
-const TOTAL = DATA.reduce((s, d) => s + d.value, 0);
 const RADIUS = 28;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-function getDashArray(value: number, offset: number) {
-  const length = (value / TOTAL) * CIRCUMFERENCE;
-  const gap = CIRCUMFERENCE - length;
-  return { dash: `${length} ${gap}`, offset: -offset };
-}
-
 export function DonutChart() {
-  const slices = DATA.reduce<{ label: string; value: number; color: string; start: number }[]>(
+  const [data, setData] = useState<InterestSlice[]>(FALLBACK);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchInterestDistribution();
+      if (live.length > 0) setData(live);
+    })();
+  }, []);
+
+  const TOTAL = data.reduce((s, d) => s + d.value, 0);
+
+  function getDashArray(value: number, offset: number) {
+    const length = (value / TOTAL) * CIRCUMFERENCE;
+    const gap = CIRCUMFERENCE - length;
+    return { dash: `${length} ${gap}`, offset: -offset };
+  }
+
+  const slices = data.reduce<InterestSlice & { start: number }[]>(
     (acc, d) => {
       const start = acc.length ? acc[acc.length - 1].start + acc[acc.length - 1].value : 0;
       acc.push({ ...d, start });

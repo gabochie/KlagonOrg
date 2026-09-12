@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { MetricCards } from "@/components/admin/MetricCards";
 import { BarChart } from "@/components/admin/BarChart";
@@ -6,15 +9,31 @@ import { QuickActions } from "@/components/admin/QuickActions";
 import { MembersTable } from "@/components/admin/MembersTable";
 import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
+import { fetchAdminMetrics } from "@/lib/queries";
 
 export default function AdminDashboard() {
+  const [pendingCount, setPendingCount] = useState(0);
+  const today = new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchAdminMetrics();
+      setPendingCount(live.pendingCount);
+    })();
+  }, []);
+
   return (
     <RequireAdmin>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <div className="text-lg font-extrabold text-navy tracking-tight">Dashboard Overview</div>
           <div className="text-xs text-gray mt-0.5">
-            Saturday, 12 July 2025 · Klagon, Greater Accra
+            {today} · Klagon, Greater Accra
           </div>
         </div>
         <div className="flex gap-2">
@@ -38,7 +57,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <QuickActions />
+      <QuickActions pendingCount={pendingCount} />
 
       <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-2.5">
         <MembersTable />
@@ -52,5 +71,5 @@ export default function AdminDashboard() {
         </div>
       </div>
       </RequireAdmin>
-  );
+    );
 }

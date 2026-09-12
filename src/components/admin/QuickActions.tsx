@@ -1,11 +1,14 @@
 import { QUICK_ACTIONS } from "@/lib/constants";
 
-export function QuickActions() {
+export function QuickActions({ pendingCount = 0 }: { pendingCount?: number }) {
+  const actions = QUICK_ACTIONS.map((a) =>
+    a.label === "Approve Member" ? { ...a, sub: `${pendingCount} pending` } : a
+  );
   return (
     <div>
       <div className="text-xs font-bold text-navy mb-2">Quick Actions</div>
       <div className="grid grid-cols-4 gap-2">
-        {QUICK_ACTIONS.map((a) => (
+        {actions.map((a) => (
           <button
             key={a.label}
             className="bg-white border border-border rounded-lg py-3 px-2.5 text-center cursor-pointer hover:border-amber transition-colors font-sans"
