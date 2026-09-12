@@ -1,5 +1,5 @@
 -- ============================================================
--- KlagonStudios — seed data
+-- KlagonOrg — seed data
 -- Run only on empty/development databases.
 -- ============================================================
 
@@ -53,7 +53,7 @@ where c.title in ('Introduction to AI', 'Financial Literacy Basics', 'Leadership
 -- ---------- events (relative future dates so "upcoming" always works) ----------
 insert into public.events (title, type, description, date, time, location, spots) values
   ('Introduction to AI Tools', 'workshop', 'Hands-on intro to AI tools you can use today.', (now() + interval '7 days')::date, '10:00 AM', 'Community Hall, Klagon', 30),
-  ('Klagon Problem-Solving Hack', 'hackathon', 'Tackle real community challenges with tech.', (now() + interval '14 days')::date, '9:00 AM', 'KlagonStudios Hub', 25),
+  ('Klagon Problem-Solving Hack', 'hackathon', 'Tackle real community challenges with tech.', (now() + interval '14 days')::date, '9:00 AM', 'KlagonOrg Hub', 25),
   ('Public Speaking & Influence', 'leadership', 'Build confidence and public-speaking skills.', (now() + interval '21 days')::date, '5:00 PM', 'Community Hall', 0),
   ('Klagon Clean-Up Drive', 'service', 'Community clean-up across Klagon Central.', (now() + interval '28 days')::date, '7:00 AM', 'Klagon Central', 0);
 
@@ -65,12 +65,12 @@ insert into public.projects (title, description, icon, status, volunteers_target
 
 -- ---------- news ----------
 insert into public.news_articles (title, excerpt, category, author_name, read_time_min, published_at) values
-  ('KlagonStudios Launches New Career Planning Course', 'A brand new 5-lesson career roadmap course has launched for Klagon youth.', 'Programs', 'Emmanuel Kumi', 3, now() - interval '2 days'),
+  ('KlagonOrg Launches New Career Planning Course', 'A brand new 5-lesson career roadmap course has launched for Klagon youth.', 'Programs', 'Emmanuel Kumi', 3, now() - interval '2 days'),
   ('Klagon Problem-Solving Hackathon: Teams Now Forming', 'Register for the July 19 hackathon and tackle real community challenges.', 'Events', 'Ama Kofi', 2, now() - interval '4 days'),
-  ('Mentor Spotlight: Kweku Asante Opens 1-on-1 Sessions', 'Software engineer Kweku Asante opens 3 slots for mentoring this month.', 'Community', 'KlagonStudios Team', 4, now() - interval '6 days'),
+  ('Mentor Spotlight: Kweku Asante Opens 1-on-1 Sessions', 'Software engineer Kweku Asante opens 3 slots for mentoring this month.', 'Community', 'KlagonOrg Team', 4, now() - interval '6 days'),
   ('Tree-Planting Drive Reaches 60% of Goal', '14 dedicated volunteers push the drive past halfway.', 'Environment', 'Serwaa Boateng', 2, now() - interval '8 days'),
   ('Digital Literacy Program Expands to Seniors', 'Dedicated sessions for senior residents of Klagon.', 'Programs', 'Mary Acheampong', 3, now() - interval '10 days'),
-  ('KlagonStudios Partners with Action Aid Ghana', 'A new partnership for entrepreneurship and life-skills workshops.', 'Partnerships', 'Emmanuel Kumi', 5, now() - interval '12 days');
+  ('KlagonOrg Partners with Action Aid Ghana', 'A new partnership for entrepreneurship and life-skills workshops.', 'Partnerships', 'Emmanuel Kumi', 5, now() - interval '12 days');
 
 -- ---------- announcements ----------
 insert into public.announcements (title, body, pin_until) values
