@@ -34,7 +34,7 @@ export function Footer() {
               <img
                 src="/brand/klagon-logo.png"
                 alt="KlagonOrg"
-                className="h-9 w-auto"
+                className="h-11 w-auto rounded-lg"
               />
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">

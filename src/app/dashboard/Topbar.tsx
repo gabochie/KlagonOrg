@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Topbar() {
   const pathname = usePathname();
@@ -49,6 +50,7 @@ export function Topbar() {
             🔍 Search members, events&hellip;
           </div>
         )}
+        <ThemeToggle dark />
         <div className="relative">
           <button
             className="w-[30px] h-[30px] rounded-lg bg-white/8 flex items-center justify-center cursor-pointer"
