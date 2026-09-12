@@ -39,7 +39,6 @@
 .dark .bg-light { background-color: var(--color-ink); }
 .dark .bg-white { background-color: var(--color-ink-2); }
 .dark .bg-pale  { background-color: #111B3D; }
-.dark .bg-light\/{background: transparent;}
 .dark .border-border { border-color: rgba(255, 255, 255, 0.1); }
 .dark .text-navy { color: #FFFFFF; }
 .dark .text-gray { color: rgba(255, 255, 255, 0.62); }
