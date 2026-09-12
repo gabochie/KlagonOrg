@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { COURSES } from "@/lib/constants";
 import { ProgressBar } from "@/components/ui";
+import { COURSES } from "@/lib/constants";
+import { fetchPublicCourses } from "@/lib/queries";
+import type { Course } from "@/types";
 
 const categoryColors: Record<string, string> = {
   "Future Skills": "#EEF2FF",
@@ -13,6 +18,15 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function LearningPage() {
+  const [courses, setCourses] = useState<Course[]>(COURSES);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicCourses();
+      if (live.length > 0) setCourses(live);
+    })();
+  }, []);
+
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
@@ -33,7 +47,7 @@ export default function LearningPage() {
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {COURSES.map((c) => {
+            {courses.map((c) => {
               const pct = Math.round((c.lessonsDone / c.lessons) * 100);
               return (
                 <div

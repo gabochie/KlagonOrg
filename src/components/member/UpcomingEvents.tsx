@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_EVENTS } from "@/lib/constants";
+import { fetchPublicEvents, fetchMyRsvpIds, toggleRsvp } from "@/lib/queries";
 import type { Event } from "@/types";
 
 const typeStyles: Record<string, string> = {
@@ -13,16 +15,31 @@ const typeStyles: Record<string, string> = {
 };
 
 export function UpcomingEvents() {
-  const [events, setEvents] = useState(MEMBER_EVENTS);
+  const { profile } = useAuth();
+  const [events, setEvents] = useState<Event[]>(MEMBER_EVENTS);
   const [rsvps, setRsvps] = useState<Set<string>>(new Set(["1"]));
 
-  const toggleRsvp = (id: string) => {
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicEvents();
+      if (live.length > 0) setEvents(live.slice(0, 3));
+      if (profile?.id) {
+        const ids = await fetchMyRsvpIds(profile.id);
+        setRsvps(new Set(ids));
+      }
+    })();
+  }, [profile?.id]);
+
+  const toggle = async (id: string) => {
+    if (!profile) return;
+    const going = !rsvps.has(id);
     setRsvps((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (going) next.add(id);
+      else next.delete(id);
       return next;
     });
+    await toggleRsvp(profile.id, id, going);
   };
 
   return (
@@ -30,7 +47,9 @@ export function UpcomingEvents() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="text-sm font-bold text-navy">Upcoming Events</div>
-          <div className="text-[11px] text-gray mt-0.5">1 RSVP confirmed</div>
+          <div className="text-[11px] text-gray mt-0.5">
+            {rsvps.size} RSVP{rsvps.size === 1 ? "" : "s"} confirmed
+          </div>
         </div>
           <Link href="/events" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
             All Events →
@@ -64,7 +83,7 @@ export function UpcomingEvents() {
               </span>
             </div>
             <button
-              onClick={() => toggleRsvp(e.id)}
+              onClick={() => void toggle(e.id)}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer font-sans whitespace-nowrap mt-1 transition-colors ${
                 isRsvpd
                   ? "bg-green/10 text-green-800"

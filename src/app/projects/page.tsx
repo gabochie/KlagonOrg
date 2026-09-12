@@ -1,8 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { PROJECTS } from "@/lib/constants";
+import { fetchPublicProjects } from "@/lib/queries";
+import type { Project } from "@/types";
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicProjects();
+      if (live.length > 0) setProjects(live);
+    })();
+  }, []);
+
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
@@ -23,7 +37,7 @@ export default function ProjectsPage() {
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PROJECTS.map((p) => (
+            {projects.map((p) => (
               <div
                 key={p.id}
                 className="bg-white rounded-xl border border-border p-5 sm:p-6 hover:shadow-md transition-shadow"

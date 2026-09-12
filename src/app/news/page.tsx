@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { NEWS_ARTICLES } from "@/lib/constants";
-
-const categories = Array.from(new Set(NEWS_ARTICLES.map((a) => a.category)));
+import { fetchPublicNews } from "@/lib/queries";
+import type { NewsArticle } from "@/types";
 
 export default function NewsPage() {
+  const [articles, setArticles] = useState<NewsArticle[]>(NEWS_ARTICLES);
   const [filter, setFilter] = useState("All");
 
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicNews();
+      if (live.length > 0) setArticles(live);
+    })();
+  }, []);
+
+  const categories = Array.from(new Set(articles.map((a) => a.category)));
+
   const filtered =
-    filter === "All" ? NEWS_ARTICLES : NEWS_ARTICLES.filter((a) => a.category === filter);
+    filter === "All" ? articles : articles.filter((a) => a.category === filter);
 
   return (
     <div className="w-full overflow-hidden">

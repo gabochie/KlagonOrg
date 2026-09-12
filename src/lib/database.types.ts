@@ -408,7 +408,53 @@ export interface Database {
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      events_public: {
+        Row: {
+          id: string;
+          title: string;
+          type: EventType;
+          description: string | null;
+          date: string;
+          time: string;
+          location: string | null;
+          spots: number;
+          created_by: string | null;
+          created_at: string;
+          rsvp_count: number;
+          spots_left: number;
+        };
+        Relationships: [];
+      };
+      projects_public: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          icon: string;
+          status: ProjectStatus;
+          volunteers_target: number;
+          progress: number;
+          created_by: string | null;
+          created_at: string;
+          volunteer_count: number;
+          spots_open: number;
+        };
+        Relationships: [];
+      };
+      courses_public: {
+        Row: {
+          id: string;
+          title: string;
+          category: string;
+          icon: string;
+          description: string | null;
+          created_at: string;
+          lesson_count: number;
+        };
+        Relationships: [];
+      };
+    };
     Functions: {
       current_role: {
         Args: Record<PropertyKey, never>;

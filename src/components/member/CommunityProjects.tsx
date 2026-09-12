@@ -1,20 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_PROJECTS } from "@/lib/constants";
+import { fetchPublicProjects, fetchMyVolunteerProjectIds, toggleVolunteer } from "@/lib/queries";
 import type { Project } from "@/types";
 
 export function CommunityProjects() {
+  const { profile } = useAuth();
+  const [projects, setProjects] = useState<Project[]>(MEMBER_PROJECTS);
   const [joined, setJoined] = useState<Set<string>>(new Set(["1"]));
 
-  const toggleJoin = (id: string) => {
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicProjects();
+      if (live.length > 0) setProjects(live.slice(0, 2));
+      if (profile?.id) {
+        const ids = await fetchMyVolunteerProjectIds(profile.id);
+        setJoined(new Set(ids));
+      }
+    })();
+  }, [profile?.id]);
+
+  const toggle = async (id: string) => {
+    if (!profile) return;
+    const isJoining = !joined.has(id);
     setJoined((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (isJoining) next.add(id);
+      else next.delete(id);
       return next;
     });
+    await toggleVolunteer(profile.id, id, isJoining);
   };
 
   return (
@@ -25,7 +43,7 @@ export function CommunityProjects() {
             All Projects →
           </Link>
       </div>
-      {MEMBER_PROJECTS.map((p: Project) => {
+      {projects.map((p: Project) => {
         const isJoined = joined.has(p.id);
         return (
           <div key={p.id} className="py-2.5 border-b border-border last:border-b-0">
@@ -62,7 +80,7 @@ export function CommunityProjects() {
             </div>
             {!isJoined && (
               <button
-                onClick={() => toggleJoin(p.id)}
+                onClick={() => void toggle(p.id)}
                 className="px-2.5 py-1 rounded-lg bg-light text-navy border border-border text-[10px] font-semibold cursor-pointer font-sans hover:bg-border transition-colors"
               >
                 + Join as Volunteer

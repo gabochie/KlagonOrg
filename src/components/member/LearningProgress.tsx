@@ -1,19 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_COURSES } from "@/lib/constants";
+import { fetchPublicCourses, fetchMyLessonProgress } from "@/lib/queries";
 import { CheckCircle } from "lucide-react";
 
+const categoryColors: Record<string, string> = {
+  "Future Skills": "#EEF2FF",
+  Finance: "#FFF7E6",
+  Leadership: "#ECFDF5",
+  Entrepreneurship: "#FFF3F0",
+  Communication: "#F0F9FF",
+  Career: "#F0FDF4",
+};
+
 export function LearningProgress() {
-  const [courses] = useState(MEMBER_COURSES);
+  const { profile } = useAuth();
+  const [courses, setCourses] = useState(MEMBER_COURSES);
+  const [subtitle, setSubtitle] = useState("2 active courses · 1 completed");
+
+  useEffect(() => {
+    void (async () => {
+      const [liveCourses, lessonIds, getClient] = await Promise.all([
+        fetchPublicCourses(),
+        profile?.id ? fetchMyLessonProgress(profile.id) : Promise.resolve([]),
+        import("@/lib/supabase-browser").then((m) => m.getBrowserClient),
+      ]);
+      if (liveCourses.length === 0) return;
+
+      const c = getClient();
+      if (!c) return;
+      const { data: lessons } = await c.from("lessons").select("id, course_id");
+      const doneByCourse = new Map<string, number>();
+      if (lessons) {
+        const lessonToCourse = new Map<string, string>(
+          lessons.map((l) => [l.id, l.course_id])
+        );
+        for (const lid of lessonIds) {
+          const cid = lessonToCourse.get(lid);
+          if (cid) doneByCourse.set(cid, (doneByCourse.get(cid) ?? 0) + 1);
+        }
+      }
+
+      const merged = liveCourses
+        .map((cc) => ({
+          ...cc,
+          lessonsDone: Math.min(doneByCourse.get(cc.id) ?? 0, cc.lessons),
+          color: categoryColors[cc.category] ?? cc.color,
+        }))
+        .slice(0, 3);
+
+      const active = merged.filter((c) => c.lessonsDone > 0 && c.lessonsDone < c.lessons).length;
+      const completed = merged.filter((c) => c.lessonsDone > 0 && c.lessonsDone >= c.lessons).length;
+      setSubtitle(
+        `${active} active course${active === 1 ? "" : "s"} · ${completed} completed`
+      );
+      setCourses(merged);
+    })();
+  }, [profile?.id]);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="text-sm font-bold text-navy">Learning Progress</div>
-          <div className="text-[11px] text-gray mt-0.5">2 active courses · 1 completed</div>
+          <div className="text-[11px] text-gray mt-0.5">{subtitle}</div>
         </div>
           <Link href="/learning" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
             All Courses →

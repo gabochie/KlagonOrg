@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { EVENTS } from "@/lib/constants";
 import { Badge } from "@/components/ui";
+import { EVENTS } from "@/lib/constants";
+import { fetchPublicEvents } from "@/lib/queries";
+import type { Event } from "@/types";
 import { Calendar, MapPin, Clock } from "lucide-react";
 
 const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "service"> = {
@@ -12,6 +17,15 @@ const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "servi
 };
 
 export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>(EVENTS);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchPublicEvents();
+      if (live.length > 0) setEvents(live);
+    })();
+  }, []);
+
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
@@ -30,7 +44,7 @@ export default function EventsPage() {
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {EVENTS.map((e) => {
+            {events.map((e) => {
               const d = new Date(e.date);
               return (
                 <div

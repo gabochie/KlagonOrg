@@ -1,7 +1,24 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_BADGES } from "@/lib/constants";
+import { fetchMyBadges } from "@/lib/queries";
+import type { Badge } from "@/types";
 
 export function Achievements() {
+  const { profile } = useAuth();
+  const [badges, setBadges] = useState<Badge[]>(MEMBER_BADGES);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    void (async () => {
+      const live = await fetchMyBadges(profile.id);
+      if (live.length > 0) setBadges(live);
+    })();
+  }, [profile?.id]);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
@@ -11,7 +28,7 @@ export function Achievements() {
           </Link>
       </div>
       <div className="flex gap-2 flex-wrap">
-        {MEMBER_BADGES.map((b) => (
+        {badges.map((b) => (
           <div
             key={b.id}
             className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-lg border bg-white min-w-[60px] ${
