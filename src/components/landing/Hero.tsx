@@ -15,7 +15,7 @@ export function Hero() {
           Preparing Klagon&apos;s Youth for <span className="text-amber">The Future</span>.
         </h1>
         <p className="text-base text-white/65 leading-relaxed max-w-[480px] mb-8">
-          Your community. Your skills. Your opportunity. KlagonStars is where Klagon&apos;s next generation
+          Your community. Your skills. Your opportunity. Klagon Studios is where Klagon&apos;s next generation
           discovers tech, entrepreneurship, leadership — and builds real things that matter.
         </p>
         <div className="flex flex-wrap items-center gap-3 mb-10">

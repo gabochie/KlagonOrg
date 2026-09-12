@@ -71,11 +71,11 @@ export default function ContactPage() {
                 <h3 className="text-xs font-bold text-navy mb-3">Connect online</h3>
                 <div className="flex flex-col gap-2.5">
                   {[
-                    { icon: <MessageCircle size="16" />, label: "WhatsApp Community", href: "https://chat.whatsapp.com/KlagonStars" },
-                    { icon: <ExternalLink size="16" />, label: "YouTube", href: "https://youtube.com/@KlagonStars" },
-                    { icon: <ExternalLink size="16" />, label: "TikTok", href: "https://tiktok.com/@KlagonStars" },
-                    { icon: <ExternalLink size="16" />, label: "Instagram", href: "https://instagram.com/KlagonStars" },
-                    { icon: <ExternalLink size="16" />, label: "Facebook", href: "https://facebook.com/KlagonStars" },
+                    { icon: <MessageCircle size="16" />, label: "WhatsApp Community", href: "https://chat.whatsapp.com/KlagonStudios" },
+                    { icon: <ExternalLink size="16" />, label: "YouTube", href: "https://youtube.com/@KlagonStudios" },
+                    { icon: <ExternalLink size="16" />, label: "TikTok", href: "https://tiktok.com/@KlagonStudios" },
+                    { icon: <ExternalLink size="16" />, label: "Instagram", href: "https://instagram.com/KlagonStudios" },
+                    { icon: <ExternalLink size="16" />, label: "Facebook", href: "https://facebook.com/KlagonStudios" },
                   ].map((s) => (
                     <a
                       key={s.label}

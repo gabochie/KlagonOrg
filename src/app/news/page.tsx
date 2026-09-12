@@ -20,10 +20,10 @@ export default function NewsPage() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">News</div>
           <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
-            Latest from KlagonStars
+            Latest from Klagon Studios
           </h1>
           <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Updates, stories, and announcements from the KlagonStars community.
+            Updates, stories, and announcements from the Klagon Studios community.
           </p>
         </div>
       </section>

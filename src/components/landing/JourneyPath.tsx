@@ -13,7 +13,7 @@ export function JourneyPath() {
               From curious<br />to leading your community.
             </h2>
             <p className="text-sm text-gray leading-relaxed max-w-[500px]">
-              KlagonStars gives every young person in Klagon a clear, supported roadmap — from the moment
+              Klagon Studios gives every young person in Klagon a clear, supported roadmap — from the moment
               they show up, to the day they&apos;re mentoring the next person behind them.
             </p>
           </div>

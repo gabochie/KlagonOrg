@@ -46,7 +46,7 @@ export function RegistrationForm() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8 relative z-10">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
-            Join KlagonStars — Free
+            Join Klagon Studios — Free
           </div>
           <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-white tracking-tight leading-tight mb-2">
             Your future starts here,<br />right in Klagon.
@@ -57,7 +57,7 @@ export function RegistrationForm() {
         </div>
         <div className="max-w-md mx-auto bg-white rounded-2xl p-6 sm:p-10 relative z-10">
           <div className="text-xl font-extrabold text-navy tracking-tight mb-1">
-            Create your KlagonStars account
+            Create your Klagon Studios account
           </div>
           <div className="text-sm text-gray mb-6">Free membership — approved within 24 hours</div>
           <div className="grid grid-cols-2 gap-3 mb-3">

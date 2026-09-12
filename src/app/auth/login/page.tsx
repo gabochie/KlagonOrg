@@ -10,10 +10,10 @@ export default function LoginPage() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
             KS
           </div>
-          <span className="text-base font-bold text-navy">KlagonStars</span>
+          <span className="text-base font-bold text-navy">Klagon Studios</span>
         </Link>
         <h1 className="text-lg font-extrabold text-navy text-center mb-1">Welcome back</h1>
-        <p className="text-sm text-gray text-center mb-6">Sign in to your KlagonStars account</p>
+        <p className="text-sm text-gray text-center mb-6">Sign in to your Klagon Studios account</p>
         <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-navy">Email</label>
