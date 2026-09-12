@@ -31,7 +31,7 @@ export function DonutChart() {
     return { dash: `${length} ${gap}`, offset: -offset };
   }
 
-  const slices = data.reduce<InterestSlice & { start: number }[]>(
+  const slices = data.reduce<(InterestSlice & { start: number })[]>(
     (acc, d) => {
       const start = acc.length ? acc[acc.length - 1].start + acc[acc.length - 1].value : 0;
       acc.push({ ...d, start });
