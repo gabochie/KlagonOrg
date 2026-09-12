@@ -5,6 +5,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { INTERESTS } from "@/lib/constants";
+import { Eye, EyeOff, Sparkles } from "lucide-react";
+
+const generatePassword = (length = 16) => {
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const lower = "abcdefghijkmnopqrstuvwxyz";
+  const digits = "23456789";
+  const symbols = "!@#$%^&*()-_=+";
+  const all = upper + lower + digits + symbols;
+  const random = new Uint32Array(length);
+  crypto.getRandomValues(random);
+  const chars = [upper, lower, digits, symbols].map(
+    (set) => set[random[Math.floor(Math.random() * (random.length - 4))] % set.length]
+  );
+  for (let i = chars.length; i < length; i++) {
+    chars.push(all[random[i] % all.length]);
+  }
+  return chars.sort(() => Math.random() - 0.5).join("");
+};
 
 export default function RegisterPage() {
   const { signUp, configured } = useAuth();
@@ -22,6 +40,7 @@ export default function RegisterPage() {
     career_goal: "",
   });
   const [interests, setInterests] = useState<string[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const toggleInterest = (i: string) =>
     setInterests((prev) => (prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i]));
@@ -95,15 +114,38 @@ export default function RegisterPage() {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-navy">Password</label>
-            <input
-              type="password"
-              className="px-3 py-2 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent"
-              placeholder="At least 8 characters"
-              required
-              value={form.password}
-              onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            />
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-navy">Password</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const pw = generatePassword();
+                  setForm((f) => ({ ...f, password: pw }));
+                  setShowPassword(true);
+                }}
+                className="flex items-center gap-1 text-[10px] font-bold text-blue hover:underline cursor-pointer"
+              >
+                <Sparkles size="11" /> Generate
+              </button>
+            </div>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full px-3 py-2 pr-10 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent"
+                placeholder="At least 8 characters"
+                required
+                value={form.password}
+                onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray pointer-events-auto cursor-pointer"
+              >
+                {showPassword ? <EyeOff size="16" /> : <Eye size="16" />}
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="flex flex-col gap-1.5">
