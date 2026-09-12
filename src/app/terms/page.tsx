@@ -3,7 +3,7 @@ import { Footer } from "@/components/landing/Footer";
 
 export const metadata = {
   title: "Terms of Use",
-  description: "The terms governing membership and use of KlagonStudios programs and website.",
+  description: "The terms governing membership and use of KlagonOrg programs and website.",
 };
 
 export default function TermsPage() {
@@ -28,7 +28,7 @@ export default function TermsPage() {
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Membership</h2>
             <p>
-              Registration is free. Membership is approved by a KlagonStudios admin; we may
+              Registration is free. Membership is approved by a KlagonOrg admin; we may
               decline or suspend accounts for misuse, false information, or behaviour that
               harms the community.
             </p>
@@ -43,7 +43,7 @@ export default function TermsPage() {
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Donations & sponsorships</h2>
             <p>
-              Donations support KlagonStudios programs and are non-refundable except where
+              Donations support KlagonOrg programs and are non-refundable except where
               required by law or in the case of a duplicate or erroneous charge — contact us
               within 14 days at <span className="font-semibold text-navy">hello@klagon.org</span>.
             </p>
@@ -59,7 +59,7 @@ export default function TermsPage() {
             <h2 className="text-base font-bold text-navy mb-1.5">Liability</h2>
             <p>
               Programs and events are provided in good faith. To the extent permitted by law,
-              KlagonStudios is not liable for indirect losses arising from use of the site or
+              KlagonOrg is not liable for indirect losses arising from use of the site or
               participation in activities. Questions? Email{" "}
               <span className="font-semibold text-navy">hello@klagon.org</span>.
             </p>

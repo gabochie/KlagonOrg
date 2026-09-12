@@ -13,9 +13,9 @@ export function Navbar() {
       <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold tracking-tight">
-            KS
+            KO
           </div>
-          <span className="text-[15px] font-bold text-navy tracking-tight">KlagonStudios</span>
+          <span className="text-[15px] font-bold text-navy tracking-tight">KlagonOrg</span>
         </Link>
 
         <div className="hidden sm:flex items-center gap-6">
@@ -39,7 +39,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <Link href="/auth/register">
             <Button size="sm" className="hidden sm:inline-flex">
-              Join KlagonStudios
+              Join KlagonOrg
             </Button>
           </Link>
           <button
@@ -67,7 +67,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link href="/auth/register" className="w-full">
-              <Button size="sm" className="w-full mt-2">Join KlagonStudios</Button>
+              <Button size="sm" className="w-full mt-2">Join KlagonOrg</Button>
             </Link>
           </div>
         </div>

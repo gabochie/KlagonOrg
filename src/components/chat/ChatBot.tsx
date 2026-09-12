@@ -9,11 +9,11 @@ interface Message {
 }
 
 const FAQ: { q: string; a: string }[] = [
-  { q: "What is KlagonStudios?", a: "KlagonStudios is a community-based organization in Klagon, Greater Accra, that prepares youth for the future through skills training, mentorship, entrepreneurship, and community projects — all free of charge." },
-  { q: "How do I join?", a: "Click the 'Join KlagonStudios' button in the top navigation or visit /auth/register to create your free account. Your membership is reviewed within 24 hours." },
-  { q: "Is it really free?", a: "Yes! KlagonStudios is 100% free for all youth in Klagon and surrounding communities. There are no fees, no hidden costs, ever." },
+  { q: "What is KlagonOrg?", a: "KlagonOrg is a community-based organization in Klagon, Greater Accra, that prepares youth for the future through skills training, mentorship, entrepreneurship, and community projects — all free of charge." },
+  { q: "How do I join?", a: "Click the 'Join KlagonOrg' button in the top navigation or visit /auth/register to create your free account. Your membership is reviewed within 24 hours." },
+  { q: "Is it really free?", a: "Yes! KlagonOrg is 100% free for all youth in Klagon and surrounding communities. There are no fees, no hidden costs, ever." },
   { q: "When is the next event?", a: "Check our Events page at /events for the full calendar. We run workshops, hackathons, leadership sessions, and community service projects every week." },
-  { q: "Where is KlagonStudios located?", a: "We operate at the Community Center in Klagon, Greater Accra Region, Ghana. Most events and workshops are held there." },
+  { q: "Where is KlagonOrg located?", a: "We operate at the Community Center in Klagon, Greater Accra Region, Ghana. Most events and workshops are held there." },
   { q: "How do I become a mentor?", a: "Visit /mentor to see the mentoring areas we need help with and submit your application. We're always looking for professionals and skilled graduates." },
   { q: "How do I donate or sponsor?", a: "Visit /donate to make a contribution or /sponsor to explore sponsorship tiers. Every cedi creates opportunity for Klagon's youth." },
   { q: "Can I volunteer?", a: "Absolutely! Visit /volunteer to see open roles like Youth Mentor, Event Coordinator, Digital Literacy Tutor, and more." },
@@ -29,13 +29,13 @@ function getBotReply(userMessage: string): string {
     if (matchCount >= 2) return faq.a;
   }
   if (lower.includes("hello") || lower.includes("hi ") || lower === "hi" || lower === "hey") {
-    return "Hey there! 👋 Welcome to KlagonStudios. I'm your virtual assistant. Ask me about joining, events, volunteering, mentoring, or anything else about the hub!";
+    return "Hey there! 👋 Welcome to KlagonOrg. I'm your virtual assistant. Ask me about joining, events, volunteering, mentoring, or anything else about the hub!";
   }
   if (lower.includes("thank")) {
     return "You're welcome! 😊 Anything else I can help you with?";
   }
   if (lower.includes("bye") || lower.includes("goodbye")) {
-    return "Goodbye! 👋 Feel free to come back anytime you need help. See you at KlagonStudios!";
+    return "Goodbye! 👋 Feel free to come back anytime you need help. See you at KlagonOrg!";
   }
   return "I'm not sure about that one. Try asking about joining, events, volunteering, mentoring, donating, or learning tracks. Or visit /contact to speak with our team directly.";
 }
@@ -51,7 +51,7 @@ const QUICK_REPLIES = [
 export function ChatBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "bot", text: "👋 Hi! I'm the KlagonStudios assistant. Ask me anything about KlagonStudios — joining, events, volunteering, mentoring, and more!" },
+    { role: "bot", text: "👋 Hi! I'm the KlagonOrg assistant. Ask me anything about KlagonOrg — joining, events, volunteering, mentoring, and more!" },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -93,7 +93,7 @@ export function ChatBot() {
                 KY
               </div>
               <div>
-                <div className="text-sm font-bold text-white">KlagonStudios Assistant</div>
+                <div className="text-sm font-bold text-white">KlagonOrg Assistant</div>
                 <div className="text-[10px] text-white/50">Online · Typically replies instantly</div>
               </div>
             </div>

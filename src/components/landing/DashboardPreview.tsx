@@ -9,12 +9,12 @@ export function DashboardPreview() {
           Everything you need, in one place.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-8">
-          Track your progress, RSVP to events, join projects, and manage your KlagonStudios journey from your
+          Track your progress, RSVP to events, join projects, and manage your KlagonOrg journey from your
           personal dashboard.
         </p>
         <div className="bg-white rounded-xl border border-border overflow-hidden shadow-sm">
           <div className="bg-navy px-4 sm:px-6 py-3 flex items-center justify-between">
-            <span className="text-white text-sm font-bold">KlagonStudios Member Dashboard</span>
+            <span className="text-white text-sm font-bold">KlagonOrg Member Dashboard</span>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-amber flex items-center justify-center text-xs font-bold text-navy">
                 AK

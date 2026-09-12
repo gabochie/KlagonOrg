@@ -60,7 +60,7 @@ export default function DonatePage() {
             Choose an amount to give
           </h2>
           <p className="text-sm text-gray text-center mb-10 max-w-md mx-auto">
-            100% of donations fund KlagonStudios programs. Every contribution is acknowledged.
+            100% of donations fund KlagonOrg programs. Every contribution is acknowledged.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8 max-w-2xl mx-auto">
             {DONATION_TIERS.map((t) => (

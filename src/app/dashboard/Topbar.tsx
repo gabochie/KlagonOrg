@@ -26,10 +26,10 @@ export function Topbar() {
       <div className="flex items-center gap-2.5">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-[30px] h-[30px] rounded-lg bg-amber flex items-center justify-center text-[11px] font-extrabold text-navy">
-            KS
+            KO
           </div>
           <span className="text-xs font-bold text-white">
-            {isAdmin ? "KlagonStudios Admin" : "KlagonStudios"}
+            {isAdmin ? "KlagonOrg Admin" : "KlagonOrg"}
           </span>
         </Link>
         {isAdmin && (

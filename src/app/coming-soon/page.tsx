@@ -5,11 +5,11 @@ import Link from "next/link";
 import { Mail, Send, CheckCircle, Youtube, Music2, Instagram, Facebook, MessageCircle, Star, ArrowRight } from "lucide-react";
 
 const SOCIALS = [
-  { icon: Youtube, href: "https://youtube.com/@KlagonStudios", label: "YouTube" },
-  { icon: Music2, href: "https://tiktok.com/@KlagonStudios", label: "TikTok" },
-  { icon: Instagram, href: "https://instagram.com/KlagonStudios", label: "Instagram" },
-  { icon: Facebook, href: "https://facebook.com/KlagonStudios", label: "Facebook" },
-  { icon: MessageCircle, href: "https://chat.whatsapp.com/KlagonStudios", label: "WhatsApp" },
+  { icon: Youtube, href: "https://www.youtube.com/@KlagonOrg", label: "YouTube" },
+  { icon: Music2, href: "https://www.tiktok.com/@klagonorg", label: "TikTok" },
+  { icon: Instagram, href: "https://instagram.com/klagonorg", label: "Instagram" },
+  { icon: Facebook, href: "https://facebook.com/klagonorg", label: "Facebook" },
+  { icon: MessageCircle, href: "https://wa.me/233559624456", label: "WhatsApp" },
 ];
 
 export default function ComingSoonPage() {
@@ -35,9 +35,9 @@ export default function ComingSoonPage() {
       <nav className="relative z-10 flex items-center justify-between px-5 sm:px-8 py-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-sm font-extrabold text-navy">
-            KS
+            KO
           </div>
-          <span className="text-sm font-bold text-white">KlagonStudios</span>
+          <span className="text-sm font-bold text-white">KlagonOrg</span>
         </Link>
         <div className="flex items-center gap-2">
           {SOCIALS.map((s) => (
@@ -70,7 +70,7 @@ export default function ComingSoonPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-white/55 leading-relaxed max-w-lg mx-auto mb-10">
-            KlagonStudios is building a free hub for skills, mentorship, and opportunity.
+            KlagonOrg is building a free hub for skills, mentorship, and opportunity.
             Be the first to know when we launch.
           </p>
 
@@ -81,7 +81,7 @@ export default function ComingSoonPage() {
               </div>
               <h2 className="text-xl font-extrabold text-white mb-1">You&apos;re on the list!</h2>
               <p className="text-sm text-white/50 leading-relaxed mb-6">
-                We&apos;ll notify you at <span className="text-amber font-semibold">{email}</span> as soon as KlagonStudios launches.
+                We&apos;ll notify you at <span className="text-amber font-semibold">{email}</span> as soon as KlagonOrg launches.
               </p>
               <div className="flex flex-wrap justify-center gap-3 text-xs text-white/35">
                 <span className="flex items-center gap-1.5">🏆 Launch updates</span>
@@ -145,7 +145,7 @@ export default function ComingSoonPage() {
       <footer className="relative z-10 border-t border-white/8 py-5 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/25">
-            © 2025 KlagonStudios. Klagon, Greater Accra, Ghana.
+            © 2026 KlagonOrg. Klagon, Greater Accra, Ghana.
           </div>
           <Link
             href="/contact"

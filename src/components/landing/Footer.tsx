@@ -11,16 +11,16 @@ const platformLinks = [
 const joinLinks = [
   { label: "Register Now", href: "/auth/register" },
   { label: "Become a Mentor", href: "/mentor" },
-  { label: "Sponsor KlagonStudios", href: "/sponsor" },
+  { label: "Sponsor KlagonOrg", href: "/sponsor" },
   { label: "Donate", href: "/donate" },
 ];
 
 const connectLinks = [
-  { label: "WhatsApp Community", href: "https://chat.whatsapp.com/KlagonStudios", external: true },
-  { label: "YouTube", href: "https://youtube.com/@KlagonStudios", external: true },
-  { label: "TikTok", href: "https://tiktok.com/@KlagonStudios", external: true },
-  { label: "Instagram", href: "https://instagram.com/KlagonStudios", external: true },
-  { label: "Facebook", href: "https://facebook.com/KlagonStudios", external: true },
+  { label: "WhatsApp", href: "https://wa.me/233559624456", external: true },
+  { label: "YouTube", href: "https://www.youtube.com/@KlagonOrg", external: true },
+  { label: "TikTok", href: "https://www.tiktok.com/@klagonorg", external: true },
+  { label: "Instagram", href: "https://instagram.com/klagonorg", external: true },
+  { label: "Facebook", href: "https://facebook.com/klagonorg", external: true },
   { label: "Contact Us", href: "/contact", external: false },
 ];
 
@@ -32,9 +32,9 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-2.5">
               <div className="w-8 h-8 rounded-lg bg-amber flex items-center justify-center text-xs font-extrabold text-navy">
-                KS
+                KO
               </div>
-              <span className="text-sm font-bold text-white">KlagonStudios</span>
+              <span className="text-sm font-bold text-white">KlagonOrg</span>
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">
               Preparing Klagon&apos;s youth for the future — through skills, community, and
@@ -98,7 +98,7 @@ export function Footer() {
         </div>
         <div className="border-t border-white/10 pt-5 flex items-center justify-between flex-wrap gap-4">
           <div className="text-xs text-white/35">
-            © 2025 KlagonStudios. All rights reserved.
+            © 2026 KlagonOrg. All rights reserved.
           </div>
           <div className="text-[11px] font-semibold bg-amber/15 text-amber px-2.5 py-1 rounded-full">
             Built for Klagon, Ghana 🇬🇭

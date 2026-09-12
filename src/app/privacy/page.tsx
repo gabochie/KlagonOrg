@@ -3,7 +3,7 @@ import { Footer } from "@/components/landing/Footer";
 
 export const metadata = {
   title: "Privacy Policy",
-  description: "How KlagonStudios collects, uses, and protects your personal information.",
+  description: "How KlagonOrg collects, uses, and protects your personal information.",
 };
 
 export default function PrivacyPage() {
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Who can see it</h2>
             <p>
-              Your profile is visible to KlagonStudios admins for program management.
+              Your profile is visible to KlagonOrg admins for program management.
               Aggregated, anonymous statistics may be shared with partners. Payment details
               are processed by our payment provider; we never store card or mobile-money PINs.
             </p>

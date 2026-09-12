@@ -43,7 +43,7 @@ export default function SponsorPage() {
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
-            Sponsor KlagonStudios
+            Sponsor KlagonOrg
           </div>
           <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
             Partner with Klagon&apos;s future.

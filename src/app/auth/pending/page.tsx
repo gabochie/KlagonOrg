@@ -18,9 +18,9 @@ export default function PendingPage() {
       <div className="bg-white rounded-2xl border border-border p-8 max-w-md w-full shadow-sm text-center">
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
-            KS
+            KO
           </div>
-          <span className="text-base font-bold text-navy">KlagonStudios</span>
+          <span className="text-base font-bold text-navy">KlagonOrg</span>
         </div>
 
         {isApproved ? (

@@ -30,12 +30,12 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl border border-border p-8 max-w-sm w-full shadow-sm">
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
-            KS
+            KO
           </div>
-          <span className="text-base font-bold text-navy">KlagonStudios</span>
+          <span className="text-base font-bold text-navy">KlagonOrg</span>
         </Link>
         <h1 className="text-lg font-extrabold text-navy text-center mb-1">Welcome back</h1>
-        <p className="text-sm text-gray text-center mb-6">Sign in to your KlagonStudios account</p>
+        <p className="text-sm text-gray text-center mb-6">Sign in to your KlagonOrg account</p>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-navy">Email</label>

@@ -4,7 +4,7 @@ export function ValueProps() {
   return (
     <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Why KlagonStudios</div>
+        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Why KlagonOrg</div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
           Not just another youth group.
         </h2>
