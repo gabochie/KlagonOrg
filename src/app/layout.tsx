@@ -21,8 +21,11 @@ export const metadata: Metadata = {
     "KlagonOrg empowers Klagon's youth with skills, mentorship, and community. Join free today.",
   alternates: { canonical: "/" },
   icons: {
-    icon: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: [
+      { url: "/brand/klagon-logo.png", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/brand/klagon-logo.png",
   },
   openGraph: {
     type: "website",
@@ -31,12 +34,14 @@ export const metadata: Metadata = {
     title: "KlagonOrg — Preparing Klagon's Youth for the Future",
     description:
       "KlagonOrg empowers Klagon's youth with skills, mentorship, and community.",
+    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KlagonOrg" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "KlagonOrg — Preparing Klagon's Youth for the Future",
     description:
       "KlagonOrg empowers Klagon's youth with skills, mentorship, and community.",
+    images: ["/brand/og-banner.png"],
   },
 };
 

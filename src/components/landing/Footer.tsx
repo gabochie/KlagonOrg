@@ -31,10 +31,11 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-2.5">
-              <div className="w-8 h-8 rounded-lg bg-amber flex items-center justify-center text-xs font-extrabold text-navy">
-                KO
-              </div>
-              <span className="text-sm font-bold text-white">KlagonOrg</span>
+              <img
+                src="/brand/klagon-logo.png"
+                alt="KlagonOrg"
+                className="h-9 w-auto"
+              />
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">
               Preparing Klagon&apos;s youth for the future — through skills, community, and
