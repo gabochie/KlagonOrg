@@ -1,0 +1,55 @@
+import { MetricCards } from "@/components/admin/MetricCards";
+import { BarChart } from "@/components/admin/BarChart";
+import { DonutChart } from "@/components/admin/DonutChart";
+import { QuickActions } from "@/components/admin/QuickActions";
+import { MembersTable } from "@/components/admin/MembersTable";
+import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
+import { ActivityFeed } from "@/components/admin/ActivityFeed";
+
+export default function AdminDashboard() {
+  return (
+    <>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div className="text-lg font-extrabold text-navy tracking-tight">Dashboard Overview</div>
+          <div className="text-xs text-gray mt-0.5">
+            Saturday, 12 July 2025 · Klagon, Greater Accra
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <button className="px-3 py-1.5 rounded-lg bg-white text-navy border border-border text-xs font-semibold cursor-pointer font-sans hover:bg-light transition-colors">
+            Export Report
+          </button>
+          <button className="px-3 py-1.5 rounded-lg bg-amber text-navy text-xs font-bold cursor-pointer font-sans hover:bg-amber/90 transition-colors">
+            + New Event
+          </button>
+        </div>
+      </div>
+
+      <MetricCards />
+
+      <div className="grid grid-cols-1 sm:grid-cols-[1.6fr_1fr] gap-2.5">
+        <div className="bg-white rounded-xl border border-border p-4">
+          <BarChart />
+        </div>
+        <div className="bg-white rounded-xl border border-border p-4">
+          <DonutChart />
+        </div>
+      </div>
+
+      <QuickActions />
+
+      <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-2.5">
+        <MembersTable />
+        <div className="flex flex-col gap-2.5">
+          <div className="bg-white rounded-xl border border-border p-4">
+            <UpcomingEvents />
+          </div>
+          <div className="bg-white rounded-xl border border-border p-4 flex-1">
+            <ActivityFeed />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

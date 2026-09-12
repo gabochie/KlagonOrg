@@ -1,0 +1,605 @@
+Product Requirements Document (PRD)
+Product Name
+
+Klagon Youth Innovation Hub (KYIH)
+
+Tagline
+
+"Preparing Klagon's Youth for the Future."
+
+Vision
+
+To build the premier digital-first youth development ecosystem in Ghana, starting with Klagon, connecting youth to skills, opportunities, mentors, entrepreneurship, AI, and community projects.
+
+Long-term Mission
+
+Every young person should have a roadmap from
+
+Discover → Learn → Build → Earn → Lead → Mentor
+
+The website is where this journey happens.
+
+MVP Objective
+
+Validate that KYIH can attract, engage, and organize youth before investing heavily.
+
+Success means:
+
+100 registered members
+30 weekly active users
+10 completed learning sessions
+5 volunteers
+3 community projects
+Target Users
+Primary
+
+Youth 15–35
+
+Interested in
+
+Technology
+Entrepreneurship
+Jobs
+AI
+Leadership
+Personal growth
+Secondary
+
+Parents
+
+Community leaders
+
+Mentors
+
+Sponsors
+
+NGOs
+
+Companies
+
+Government
+
+Diaspora
+
+Core Value Proposition
+
+Instead of simply being another youth association,
+
+KYIH becomes
+
+The platform where Klagon youth prepare for the future.
+
+MVP Features
+1. Landing Page
+
+Purpose
+
+Inspire.
+
+Sections
+
+Hero
+
+Mission
+
+Vision
+
+Future Skills
+
+Testimonials
+
+Upcoming Events
+
+Join KYIH
+
+Sponsor KYIH
+
+Footer
+
+2. Member Registration
+
+Fields
+
+Name
+
+Phone
+
+Email
+
+Age
+
+Gender
+
+Occupation
+
+Education
+
+Interests
+
+Skills
+
+Career Goal
+
+Why Join?
+
+Admin Approval
+
+3. Member Dashboard
+
+Shows
+
+Welcome message
+
+Next Meeting
+
+Learning Progress
+
+Upcoming Events
+
+Community Announcements
+
+Volunteer Opportunities
+
+4. Events
+
+List
+
+Workshops
+
+Meetups
+
+Hackathons
+
+Community Service
+
+Leadership Sessions
+
+Users can RSVP.
+
+5. Learning Hub
+
+Simple MVP
+
+Cards
+
+Introduction to AI
+
+Financial Literacy
+
+Leadership
+
+Entrepreneurship
+
+Communication
+
+Career Planning
+
+Future Skills
+
+Each contains
+
+Description
+
+PDF
+
+Video
+
+Resources
+
+Completion Button
+
+6. Community Projects
+
+Display
+
+Current projects
+
+Needed volunteers
+
+Status
+
+Impact
+
+Examples
+
+Clean-up
+
+Tree planting
+
+Digital literacy
+
+Mentorship
+
+Coding Club
+
+7. News
+
+Articles
+
+Community stories
+
+Member achievements
+
+Upcoming opportunities
+
+8. Gallery
+
+Photos
+
+Videos
+
+Events
+
+Projects
+
+9. Become a Volunteer
+
+Application Form
+
+Skills
+
+Availability
+
+Area of interest
+
+10. Donate
+
+Simple page
+
+Vision
+
+Impact
+
+Current Goal
+
+Donation Instructions
+
+(Integrate payments later.)
+
+11. Contact
+
+Email
+
+Phone
+
+WhatsApp
+
+Google Map
+
+Admin Dashboard
+
+Login
+
+Dashboard
+
+Members
+
+Attendance
+
+Events
+
+Articles
+
+Projects
+
+Volunteers
+
+Gallery
+
+Messages
+
+Analytics
+
+Settings
+
+Database
+
+Members
+
+Events
+
+Projects
+
+Courses
+
+Attendance
+
+Volunteers
+
+Donations
+
+Articles
+
+Gallery
+
+Sponsors
+
+Mentors
+
+User Journey
+
+Visitor
+
+↓
+
+Reads Mission
+
+↓
+
+Registers
+
+↓
+
+Receives Welcome
+
+↓
+
+Attends First Event
+
+↓
+
+Completes First Lesson
+
+↓
+
+Volunteers
+
+↓
+
+Joins Project
+
+↓
+
+Becomes Team Leader
+
+↓
+
+Becomes Mentor
+
+MVP Tech Stack
+
+Frontend
+
+Next.js
+Tailwind CSS
+
+Backend
+
+Supabase
+
+Authentication
+
+Supabase Auth
+
+Storage
+
+Supabase Storage
+
+CMS
+
+Supabase Tables
+
+Deployment
+
+Vercel
+
+Analytics
+
+Google Analytics
+
+Email
+
+Resend
+
+Forms
+
+React Hook Form
+Design Language
+
+Modern
+
+Minimal
+
+Youthful
+
+African
+
+Bright
+
+Optimistic
+
+Inspired by
+
+Apple
+
+Notion
+
+Linear
+
+Coursera
+
+Stripe
+
+Brand Colors
+
+Primary
+
+Deep Blue
+
+Hope
+
+Secondary
+
+Orange
+
+Energy
+
+Accent
+
+Green
+
+Growth
+
+Background
+
+White
+
+MVP Timeline
+Phase 1
+
+Weeks 1–2
+
+Landing Page
+
+Mission
+
+Vision
+
+Join Form
+
+Contact
+
+Gallery
+
+Phase 2
+
+Weeks 3–4
+
+Authentication
+
+Member Profiles
+
+Dashboard
+
+Events
+
+News
+
+Phase 3
+
+Month 2
+
+Learning Hub
+
+Progress Tracking
+
+Resources
+
+Certificates (basic)
+
+Phase 4
+
+Month 3
+
+Projects
+
+Volunteer Management
+
+Attendance
+
+Leader Dashboard
+
+Phase 5
+
+Month 4
+
+Mentor Portal
+
+Sponsor Page
+
+Donations
+
+Newsletter
+
+Version 2
+
+Introduce:
+
+AI Career Coach
+
+AI Study Planner
+
+CV Builder
+
+Job Board
+
+Business Incubator
+
+Scholarships
+
+Internships
+
+Freelance Marketplace
+
+Opportunity Feed
+
+Version 3
+
+Mobile App
+
+Push Notifications
+
+Gamification
+
+Points
+
+Leaderboards
+
+Badges
+
+Challenges
+
+Community Chat
+
+QR Attendance
+
+Digital ID Cards
+
+Version 4
+
+KYIH Academy
+
+Paid Courses
+
+Community Marketplace
+
+Startup Accelerator
+
+Investor Network
+
+Business Directory
+
+Local Jobs
+
+Micro-grants
+
+AI Tutor
+
+Version 5 (The Vision)
+
+Expand beyond Klagon into a national platform:
+
+Community OS for youth organizations
+Multi-community management
+Local chapters across Ghana
+National mentor network
+AI-powered personalized learning paths
+Entrepreneurship incubator
+Civic engagement and volunteering platform
+Data dashboard showing youth impact by community
+
+At this stage, KYIH evolves from a community website into "YouthOS Ghana"—a scalable digital infrastructure that any community can adopt while maintaining its own identity. Klagon becomes the proof-of-concept chapter, and the platform powers a network of youth innovation hubs across the country.
+
+North Star Metrics
+Stage	Metric	Target
+MVP (3 months)	Registered members	100
+MVP	Weekly active members	30
+Phase 2 (6 months)	Monthly active members	250
+Phase 3 (12 months)	Community projects completed	12
+Phase 4 (18 months)	Youth trained	500
+Phase 5 (3 years)	Communities using the platform	10+
+One recommendation that will significantly increase your chances of success
+
+Don't build the website as a static brochure. Build it as a Youth CRM (Community Relationship Management System) from day one. Every interaction—registration, attendance, learning progress, volunteering, project participation, mentoring, and eventually employment—should be captured in the platform. Over time, this data becomes your most valuable asset for measuring impact, improving programs, attracting sponsors, and applying for grants.
+
+This approach aligns with your broader ambition of creating a repeatable, technology-enabled model for youth development that can eventually scale well beyond Klagon.

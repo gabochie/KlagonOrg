@@ -1,0 +1,658 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0F1B5C;--blue:#1A2E8C;--amber:#F59E0B;--green:#10B981;
+  --coral:#FF6B47;--light:#F4F6FB;--white:#FFFFFF;--gray:#64748B;
+  --border:#E8ECF0;--red:#EF4444;--purple:#8B5CF6;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+}
+body{background:var(--light);color:var(--navy)}
+.shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:52px 1fr;min-height:700px;height:700px;background:var(--light)}
+
+/* TOPBAR */
+.topbar{
+  grid-column:1/-1;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--amber);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:var(--navy);
+}
+.topbar-brand{font-size:13px;font-weight:700;color:#fff}
+.topbar-badge{
+  background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);
+  color:var(--amber);font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:100px;letter-spacing:0.4px;
+}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-search{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  border-radius:7px;padding:5px 10px;display:flex;align-items:center;gap:6px;
+  color:rgba(255,255,255,0.45);font-size:12px;cursor:text;width:180px;
+}
+.topbar-notif{
+  width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  position:relative;
+}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:6px;height:6px;
+  border-radius:50%;background:var(--amber);border:1.5px solid var(--navy);
+}
+.admin-avatar{
+  width:30px;height:30px;border-radius:50%;background:var(--amber);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--navy);cursor:pointer;
+}
+.admin-name{font-size:12px;color:rgba(255,255,255,0.7);font-weight:500}
+
+/* SIDEBAR */
+.sidebar{
+  background:var(--white);
+  border-right:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.sidebar-section{padding:16px 12px 4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#A0AEC0}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;
+  cursor:pointer;color:var(--gray);font-size:13px;font-weight:500;margin:1px 4px;
+  position:relative;transition:background 0.1s;
+}
+.nav-item:hover{background:var(--light);color:var(--navy)}
+.nav-item.active{background:#EEF2FF;color:var(--navy);font-weight:700}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:6px;bottom:6px;
+  width:3px;border-radius:100px;background:var(--amber);
+}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.nav-badge{
+  margin-left:auto;background:var(--amber);color:var(--navy);
+  font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;
+}
+.nav-badge.green{background:#ECFDF5;color:#065F46}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+.sidebar-admin{display:flex;align-items:center;gap:8px}
+.sidebar-admin-av{
+  width:30px;height:30px;border-radius:50%;background:#EEF2FF;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue);
+}
+.sidebar-admin-name{font-size:12px;font-weight:700;color:var(--navy)}
+.sidebar-admin-role{font-size:10px;color:var(--gray)}
+
+/* MAIN CONTENT */
+.main{overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1rem}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.5px}
+.page-sub{font-size:12px;color:var(--gray);margin-top:1px}
+.header-actions{display:flex;gap:8px}
+.btn-sm{
+  padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;border:none;font-family:inherit;
+}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-secondary{background:var(--white);color:var(--navy);border:1px solid var(--border)}
+.btn-amber{background:var(--amber);color:var(--navy)}
+
+/* METRIC CARDS */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric-card{
+  background:var(--white);border-radius:12px;border:1px solid var(--border);
+  padding:14px;position:relative;overflow:hidden;
+}
+.metric-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+.metric-label{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:6px}
+.metric-val{font-size:24px;font-weight:800;color:var(--navy);letter-spacing:-1px;margin-bottom:4px}
+.metric-delta{
+  font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:3px;
+  padding:2px 7px;border-radius:100px;
+}
+.delta-up{background:#ECFDF5;color:#065F46}
+.delta-down{background:#FEF2F2;color:#991B1B}
+.metric-foot{font-size:11px;color:var(--gray);margin-top:4px}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:1.6fr 1fr;gap:10px}
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:14px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700;color:var(--navy)}
+.card-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.select-sm{
+  padding:4px 10px;border-radius:6px;border:1px solid var(--border);
+  font-size:11px;font-weight:600;color:var(--navy);background:var(--white);
+  font-family:inherit;cursor:pointer;
+}
+
+/* MINI BAR CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:80px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{border-radius:4px 4px 0 0;width:100%;transition:opacity 0.15s;cursor:pointer;min-height:4px}
+.bar:hover{opacity:0.8}
+.bar-label{font-size:9px;color:var(--gray);text-align:center}
+.bar-val{font-size:9px;font-weight:700;color:var(--navy);text-align:center}
+
+/* DONUT MOCK */
+.donut-wrap{display:flex;align-items:center;gap:16px;margin-top:4px}
+.donut-svg{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-label{font-size:11px;color:var(--gray)}
+.legend-val{font-size:12px;font-weight:700;color:var(--navy);margin-left:auto}
+
+/* MEMBERS TABLE */
+.table-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+.table-toolbar{
+  padding:12px 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.table-filters{display:flex;align-items:center;gap:8px}
+.filter-chip{
+  padding:4px 10px;border-radius:100px;border:1px solid var(--border);
+  font-size:11px;font-weight:600;color:var(--gray);cursor:pointer;background:var(--white);
+}
+.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--light)}
+th{
+  padding:8px 12px;font-size:10px;font-weight:700;color:var(--gray);
+  text-transform:uppercase;letter-spacing:0.5px;text-align:left;
+}
+td{padding:9px 12px;font-size:12px;border-top:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:#FAFBFD}
+.member-cell{display:flex;align-items:center;gap:8px}
+.member-av{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+.member-name{font-size:12px;font-weight:700;color:var(--navy)}
+.member-email{font-size:11px;color:var(--gray)}
+.status-pill{
+  display:inline-block;padding:3px 9px;border-radius:100px;
+  font-size:10px;font-weight:700;letter-spacing:0.3px;
+}
+.s-active{background:#ECFDF5;color:#065F46}
+.s-pending{background:#FFF7E6;color:#B45309}
+.s-inactive{background:#F1F5F9;color:#475569}
+.interest-tag{
+  display:inline-block;padding:2px 7px;border-radius:4px;
+  font-size:10px;font-weight:600;background:#EEF2FF;color:#3730A3;margin-right:3px;
+}
+.action-btn{
+  padding:4px 10px;border-radius:6px;border:1px solid var(--border);
+  font-size:11px;font-weight:600;color:var(--navy);background:var(--white);cursor:pointer;
+}
+
+/* ACTIVITY FEED */
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{
+  display:flex;align-items:flex-start;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--border);
+}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px;
+}
+.activity-body{flex:1}
+.activity-title{font-size:12px;font-weight:600;color:var(--navy);line-height:1.4}
+.activity-time{font-size:10px;color:var(--gray);margin-top:2px}
+
+/* EVENTS MINI */
+.event-list{display:flex;flex-direction:column;gap:0}
+.event-row{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--border);
+}
+.event-row:last-child{border-bottom:none}
+.event-date-block{
+  width:36px;height:36px;border-radius:8px;background:var(--light);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;
+}
+.event-month{font-size:8px;font-weight:700;color:var(--gray);text-transform:uppercase}
+.event-day{font-size:14px;font-weight:800;color:var(--navy);line-height:1}
+.event-info{flex:1}
+.event-name{font-size:12px;font-weight:700;color:var(--navy)}
+.event-meta{font-size:11px;color:var(--gray)}
+.event-rsvp{font-size:11px;font-weight:700;color:var(--amber)}
+
+/* QUICK ACTIONS */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.quick-btn{
+  background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:12px 10px;text-align:center;cursor:pointer;transition:border-color 0.15s;
+}
+.quick-btn:hover{border-color:var(--amber)}
+.quick-icon{font-size:20px;margin-bottom:6px}
+.quick-label{font-size:11px;font-weight:700;color:var(--navy)}
+.quick-sub{font-size:10px;color:var(--gray);margin-top:2px}
+
+/* BOTTOM ROW */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+</style>
+
+<div class="shell">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-mark">KY</div>
+    <span class="topbar-brand">KYIH Admin</span>
+    <span class="topbar-badge">ADMIN</span>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-search">
+      <span>🔍</span> Search members, events…
+    </div>
+    <div class="topbar-notif">
+      <span style="font-size:14px;color:rgba(255,255,255,0.6)">🔔</span>
+      <div class="notif-dot"></div>
+    </div>
+    <div class="admin-avatar">EK</div>
+    <span class="admin-name">Emmanuel K.</span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-section">Main</div>
+  <div class="nav-item active"><span class="nav-icon">📊</span>Dashboard</div>
+  <div class="nav-item"><span class="nav-icon">👥</span>Members <span class="nav-badge">7</span></div>
+  <div class="nav-item"><span class="nav-icon">📅</span>Events <span class="nav-badge green">4</span></div>
+  <div class="nav-item"><span class="nav-icon">📚</span>Learning Hub</div>
+  <div class="nav-item"><span class="nav-icon">🏗️</span>Projects</div>
+  <div class="nav-item"><span class="nav-icon">🙋</span>Volunteers</div>
+
+  <div class="sidebar-section">Engagement</div>
+  <div class="nav-item"><span class="nav-icon">✅</span>Attendance</div>
+  <div class="nav-item"><span class="nav-icon">📰</span>Articles</div>
+  <div class="nav-item"><span class="nav-icon">🖼️</span>Gallery</div>
+  <div class="nav-item"><span class="nav-icon">💬</span>Messages <span class="nav-badge">3</span></div>
+
+  <div class="sidebar-section">Operations</div>
+  <div class="nav-item"><span class="nav-icon">💰</span>Donations</div>
+  <div class="nav-item"><span class="nav-icon">🤝</span>Sponsors</div>
+  <div class="nav-item"><span class="nav-icon">🧑‍🏫</span>Mentors</div>
+  <div class="nav-item"><span class="nav-icon">📈</span>Analytics</div>
+  <div class="nav-item"><span class="nav-icon">⚙️</span>Settings</div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-admin">
+      <div class="sidebar-admin-av">EK</div>
+      <div>
+        <div class="sidebar-admin-name">Emmanuel Kumi</div>
+        <div class="sidebar-admin-role">Super Admin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard Overview</div>
+      <div class="page-sub">Saturday, 12 July 2025 · Klagon, Greater Accra</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-sm btn-secondary">Export Report</button>
+      <button class="btn-sm btn-amber">+ New Event</button>
+    </div>
+  </div>
+
+  <!-- METRIC CARDS -->
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-accent" style="background:var(--navy)"></div>
+      <div class="metric-label">Total Members</div>
+      <div class="metric-val">73</div>
+      <span class="metric-delta delta-up">↑ 12 this week</span>
+      <div class="metric-foot">Target: 100 members</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-accent" style="background:var(--amber)"></div>
+      <div class="metric-label">Weekly Active</div>
+      <div class="metric-val">28</div>
+      <span class="metric-delta delta-up">↑ 4 vs last week</span>
+      <div class="metric-foot">Target: 30 active</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-accent" style="background:var(--green)"></div>
+      <div class="metric-label">Sessions Done</div>
+      <div class="metric-val">7</div>
+      <span class="metric-delta delta-up">↑ 2 this week</span>
+      <div class="metric-foot">Target: 10 sessions</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-accent" style="background:var(--coral)"></div>
+      <div class="metric-label">Active Projects</div>
+      <div class="metric-val">3</div>
+      <span class="metric-delta delta-up">On track</span>
+      <div class="metric-foot">Target: 3 projects</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Member Registrations</div>
+          <div class="card-sub">Weekly growth toward 100-member goal</div>
+        </div>
+        <select class="select-sm">
+          <option>Last 8 weeks</option>
+          <option>Last 4 weeks</option>
+        </select>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-wrap">
+          <div class="bar-val">4</div>
+          <div class="bar" style="height:20%;background:#CBD5E1"></div>
+          <div class="bar-label">Wk1</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">9</div>
+          <div class="bar" style="height:35%;background:#CBD5E1"></div>
+          <div class="bar-label">Wk2</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">14</div>
+          <div class="bar" style="height:48%;background:#CBD5E1"></div>
+          <div class="bar-label">Wk3</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">21</div>
+          <div class="bar" style="height:58%;background:#CBD5E1"></div>
+          <div class="bar-label">Wk4</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">36</div>
+          <div class="bar" style="height:70%;background:#94A3B8"></div>
+          <div class="bar-label">Wk5</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">49</div>
+          <div class="bar" style="height:80%;background:#94A3B8"></div>
+          <div class="bar-label">Wk6</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">61</div>
+          <div class="bar" style="height:88%;background:#475569"></div>
+          <div class="bar-label">Wk7</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">73</div>
+          <div class="bar" style="height:100%;background:var(--navy)"></div>
+          <div class="bar-label">Wk8</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:5px;background:#E2E8F0;border-radius:100px;overflow:hidden">
+          <div style="width:73%;height:100%;background:var(--amber);border-radius:100px"></div>
+        </div>
+        <span style="font-size:11px;font-weight:700;color:var(--navy)">73 / 100</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Member Interests</div>
+          <div class="card-sub">Top categories on signup</div>
+        </div>
+      </div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#E2E8F0" stroke-width="12"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="var(--navy)" stroke-width="12"
+            stroke-dasharray="65 111" stroke-dashoffset="28" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="var(--amber)" stroke-width="12"
+            stroke-dasharray="38 111" stroke-dashoffset="-37" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="var(--green)" stroke-width="12"
+            stroke-dasharray="25 111" stroke-dashoffset="-75" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="var(--coral)" stroke-width="12"
+            stroke-dasharray="18 111" stroke-dashoffset="-100" transform="rotate(-90 40 40)"/>
+          <text x="40" y="44" text-anchor="middle" font-size="13" font-weight="800" fill="var(--navy)" font-family="Plus Jakarta Sans">73</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--navy)"></div>
+            <span class="legend-label">Technology</span>
+            <span class="legend-val" style="margin-left:8px">37</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--amber)"></div>
+            <span class="legend-label">Entrepreneurship</span>
+            <span class="legend-val" style="margin-left:8px">22</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--green)"></div>
+            <span class="legend-label">Leadership</span>
+            <span class="legend-val" style="margin-left:8px">15</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--coral)"></div>
+            <span class="legend-label">Jobs &amp; Career</span>
+            <span class="legend-val" style="margin-left:8px">11</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div>
+    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">Quick Actions</div>
+    <div class="quick-grid">
+      <div class="quick-btn">
+        <div class="quick-icon">👤</div>
+        <div class="quick-label">Approve Member</div>
+        <div class="quick-sub">7 pending</div>
+      </div>
+      <div class="quick-btn">
+        <div class="quick-icon">📅</div>
+        <div class="quick-label">Create Event</div>
+        <div class="quick-sub">Publish now</div>
+      </div>
+      <div class="quick-btn">
+        <div class="quick-icon">✅</div>
+        <div class="quick-label">Mark Attendance</div>
+        <div class="quick-sub">Today's session</div>
+      </div>
+      <div class="quick-btn">
+        <div class="quick-icon">📰</div>
+        <div class="quick-label">Post Article</div>
+        <div class="quick-sub">Community news</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW: Members + Events + Activity -->
+  <div class="bottom-row">
+
+    <!-- MEMBERS TABLE -->
+    <div class="table-card" style="grid-column:1/3">
+      <div class="table-toolbar">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy)">Recent Members</div>
+          <div style="font-size:11px;color:var(--gray)">73 total · 7 awaiting approval</div>
+        </div>
+        <div class="table-filters">
+          <button class="filter-chip active" onclick="setFilter(this,'All')">All</button>
+          <button class="filter-chip" onclick="setFilter(this,'Active')">Active</button>
+          <button class="filter-chip" onclick="setFilter(this,'Pending')">Pending</button>
+          <button class="btn-sm btn-secondary" style="font-size:11px;padding:4px 10px">View All</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Age</th>
+            <th>Interests</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="member-cell"><div class="member-av" style="background:#EEF2FF;color:#3730A3">AK</div><div><div class="member-name">Ama Kofi</div><div class="member-email">ama.kofi@gmail.com</div></div></div></td>
+            <td style="color:var(--gray)">22</td>
+            <td><span class="interest-tag">Tech</span><span class="interest-tag">AI</span></td>
+            <td style="color:var(--gray)">8 Jul</td>
+            <td><span class="status-pill s-active">Active</span></td>
+            <td><button class="action-btn">View</button></td>
+          </tr>
+          <tr>
+            <td><div class="member-cell"><div class="member-av" style="background:#FFF7E6;color:#B45309">EO</div><div><div class="member-name">Ebenezer Ofori</div><div class="member-email">e.ofori@yahoo.com</div></div></div></td>
+            <td style="color:var(--gray)">24</td>
+            <td><span class="interest-tag">Bizness</span><span class="interest-tag">Jobs</span></td>
+            <td style="color:var(--gray)">7 Jul</td>
+            <td><span class="status-pill s-active">Active</span></td>
+            <td><button class="action-btn">View</button></td>
+          </tr>
+          <tr>
+            <td><div class="member-cell"><div class="member-av" style="background:#ECFDF5;color:#065F46">SB</div><div><div class="member-name">Serwaa Boateng</div><div class="member-email">serwaa.b@outlook.com</div></div></div></td>
+            <td style="color:var(--gray)">19</td>
+            <td><span class="interest-tag">Leadership</span></td>
+            <td style="color:var(--gray)">9 Jul</td>
+            <td><span class="status-pill s-pending">Pending</span></td>
+            <td><button class="action-btn" style="background:var(--amber);border-color:var(--amber);color:var(--navy)">Approve</button></td>
+          </tr>
+          <tr>
+            <td><div class="member-cell"><div class="member-av" style="background:#FFF3F0;color:#9A3412">KA</div><div><div class="member-name">Kofi Asante</div><div class="member-email">k.asante@gmail.com</div></div></div></td>
+            <td style="color:var(--gray)">27</td>
+            <td><span class="interest-tag">Tech</span><span class="interest-tag">Finance</span></td>
+            <td style="color:var(--gray)">10 Jul</td>
+            <td><span class="status-pill s-pending">Pending</span></td>
+            <td><button class="action-btn" style="background:var(--amber);border-color:var(--amber);color:var(--navy)">Approve</button></td>
+          </tr>
+          <tr>
+            <td><div class="member-cell"><div class="member-av" style="background:#F0F9FF;color:#185FA5">MA</div><div><div class="member-name">Mary Acheampong</div><div class="member-email">m.acheampong@gmail.com</div></div></div></td>
+            <td style="color:var(--gray)">21</td>
+            <td><span class="interest-tag">AI</span><span class="interest-tag">Career</span></td>
+            <td style="color:var(--gray)">11 Jul</td>
+            <td><span class="status-pill s-active">Active</span></td>
+            <td><button class="action-btn">View</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RIGHT COLUMN: Events + Activity -->
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <!-- UPCOMING EVENTS -->
+      <div class="card" style="padding:12px 14px">
+        <div class="card-header">
+          <div class="card-title">Upcoming Events</div>
+          <button class="btn-sm btn-secondary" style="font-size:10px;padding:3px 8px">Manage</button>
+        </div>
+        <div class="event-list">
+          <div class="event-row">
+            <div class="event-date-block">
+              <div class="event-month">Jul</div>
+              <div class="event-day">12</div>
+            </div>
+            <div class="event-info">
+              <div class="event-name">Intro to AI Workshop</div>
+              <div class="event-meta">10 AM · 18 RSVPs</div>
+            </div>
+            <div class="event-rsvp">18 ↗</div>
+          </div>
+          <div class="event-row">
+            <div class="event-date-block">
+              <div class="event-month">Jul</div>
+              <div class="event-day">19</div>
+            </div>
+            <div class="event-info">
+              <div class="event-name">Klagon Hackathon</div>
+              <div class="event-meta">9 AM · 12 RSVPs</div>
+            </div>
+            <div class="event-rsvp">12 ↗</div>
+          </div>
+          <div class="event-row">
+            <div class="event-date-block">
+              <div class="event-month">Jul</div>
+              <div class="event-day">23</div>
+            </div>
+            <div class="event-info">
+              <div class="event-name">Public Speaking</div>
+              <div class="event-meta">5 PM · Open</div>
+            </div>
+            <div class="event-rsvp">Open</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY FEED -->
+      <div class="card" style="padding:12px 14px;flex:1">
+        <div class="card-header">
+          <div class="card-title">Recent Activity</div>
+          <span style="font-size:10px;color:var(--gray)">Live</span>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#EEF2FF">👤</div>
+            <div class="activity-body">
+              <div class="activity-title">Serwaa Boateng registered — awaiting approval</div>
+              <div class="activity-time">2 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FFF7E6">📅</div>
+            <div class="activity-body">
+              <div class="activity-title">Ama Kofi RSVP'd to Intro to AI Workshop</div>
+              <div class="activity-time">14 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#ECFDF5">✅</div>
+            <div class="activity-body">
+              <div class="activity-title">Financial Literacy session marked complete by 11 members</div>
+              <div class="activity-time">1 hour ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FFF3F0">🌳</div>
+            <div class="activity-body">
+              <div class="activity-title">Kofi Asante joined Tree-Planting Project as volunteer</div>
+              <div class="activity-time">3 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#F0F9FF">💬</div>
+            <div class="activity-body">
+              <div class="activity-title">New message from NGO partner: Action Aid Ghana</div>
+              <div class="activity-time">Yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function setFilter(el,filter){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>

@@ -1,0 +1,950 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --kyih-navy:#0F1B5C;
+  --kyih-blue:#1A2E8C;
+  --kyih-amber:#F59E0B;
+  --kyih-green:#10B981;
+  --kyih-coral:#FF6B47;
+  --kyih-light:#FAFAF8;
+  --kyih-white:#FFFFFF;
+  --kyih-gray:#64748B;
+  --kyih-pale:#EEF2FF;
+  font-family:'Plus Jakarta Sans',var(--font-sans),sans-serif;
+}
+body{background:var(--kyih-light);color:var(--kyih-navy)}
+.page{width:100%;overflow:hidden}
+
+/* NAV */
+.nav{
+  background:var(--kyih-white);
+  border-bottom:1px solid #E8ECF0;
+  padding:0 2rem;
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-mark{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--kyih-navy) 0%,var(--kyih-blue) 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--kyih-white);font-size:14px;font-weight:800;letter-spacing:-0.5px;
+}
+.nav-brand{font-size:15px;font-weight:700;color:var(--kyih-navy);letter-spacing:-0.3px}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-link{font-size:13px;font-weight:500;color:var(--kyih-gray);text-decoration:none;cursor:pointer}
+.nav-link:hover{color:var(--kyih-navy)}
+.nav-cta{
+  background:var(--kyih-navy);color:var(--kyih-white);
+  padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;
+}
+.nav-cta:hover{background:var(--kyih-blue)}
+
+/* HERO */
+.hero{
+  background:var(--kyih-navy);
+  padding:72px 2rem 0;
+  position:relative;overflow:hidden;
+  min-height:520px;
+}
+.hero-bg-circle{
+  position:absolute;top:-80px;right:-80px;
+  width:400px;height:400px;border-radius:50%;
+  background:rgba(245,158,11,0.08);pointer-events:none;
+}
+.hero-bg-circle2{
+  position:absolute;bottom:-120px;left:40%;
+  width:300px;height:300px;border-radius:50%;
+  background:rgba(16,185,129,0.06);pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);
+  color:var(--kyih-amber);font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:100px;margin-bottom:1.25rem;
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.hero-eyebrow-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--kyih-amber);
+}
+.hero-headline{
+  font-size:clamp(2rem,5vw,3.2rem);font-weight:800;color:var(--kyih-white);
+  line-height:1.15;letter-spacing:-1.5px;max-width:580px;margin-bottom:1.25rem;
+}
+.hero-headline span{color:var(--kyih-amber)}
+.hero-sub{
+  font-size:16px;font-weight:400;color:rgba(255,255,255,0.65);
+  line-height:1.7;max-width:480px;margin-bottom:2rem;
+}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-primary{
+  background:var(--kyih-amber);color:var(--kyih-navy);
+  padding:13px 24px;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,0.35)}
+.btn-ghost{
+  background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);
+  padding:13px 24px;border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;border:1px solid rgba(255,255,255,0.15);
+}
+.hero-stats{
+  display:flex;gap:2.5rem;padding:1.5rem 0;
+  border-top:1px solid rgba(255,255,255,0.1);
+}
+.hero-stat{}
+.hero-stat-num{font-size:24px;font-weight:800;color:var(--kyih-white)}
+.hero-stat-num span{color:var(--kyih-amber)}
+.hero-stat-label{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;font-weight:500}
+
+/* JOURNEY PATH — the signature element */
+.journey-section{
+  background:var(--kyih-white);
+  padding:64px 2rem;
+}
+.section-label{
+  font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--kyih-amber);margin-bottom:12px;
+}
+.section-title{
+  font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:var(--kyih-navy);
+  letter-spacing:-1px;margin-bottom:8px;line-height:1.2;
+}
+.section-sub{font-size:15px;color:var(--kyih-gray);line-height:1.6;max-width:500px;margin-bottom:2.5rem}
+
+.journey-path{
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;padding-bottom:1rem;
+}
+.journey-step{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:110px;position:relative;
+}
+.journey-connector{
+  flex:1;height:3px;background:linear-gradient(90deg,var(--kyih-amber),var(--kyih-green));
+  min-width:20px;margin-top:-32px;opacity:0.4;
+}
+.journey-node{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:10px;position:relative;
+}
+.journey-node-num{
+  position:absolute;top:-4px;right:-4px;
+  width:20px;height:20px;border-radius:50%;background:var(--kyih-white);
+  border:2px solid var(--kyih-amber);
+  font-size:10px;font-weight:700;color:var(--kyih-navy);
+  display:flex;align-items:center;justify-content:center;
+}
+.journey-step-title{font-size:13px;font-weight:700;color:var(--kyih-navy);text-align:center}
+.journey-step-sub{font-size:11px;color:var(--kyih-gray);text-align:center;margin-top:2px;max-width:90px}
+.j1 .journey-node{background:#EEF2FF}
+.j2 .journey-node{background:#FFF7E6}
+.j3 .journey-node{background:#ECFDF5}
+.j4 .journey-node{background:#FFF3F0}
+.j5 .journey-node{background:#F0F9FF}
+.j6 .journey-node{background:#F0FDF4}
+
+/* VALUE PROPS */
+.value-section{
+  background:var(--kyih-pale);
+  padding:64px 2rem;
+}
+.value-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;
+}
+.value-card{
+  background:var(--kyih-white);border-radius:14px;
+  padding:1.5rem;border:1px solid #E8ECF0;
+}
+.value-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:1rem;
+}
+.value-card h3{font-size:15px;font-weight:700;color:var(--kyih-navy);margin-bottom:6px}
+.value-card p{font-size:13px;color:var(--kyih-gray);line-height:1.6}
+
+/* EVENTS */
+.events-section{background:var(--kyih-white);padding:64px 2rem}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.event-card{
+  border:1px solid #E8ECF0;border-radius:14px;overflow:hidden;
+}
+.event-header{padding:1rem 1.25rem;border-bottom:1px solid #F1F5F9}
+.event-type{
+  font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
+  padding:4px 10px;border-radius:100px;display:inline-block;margin-bottom:8px;
+}
+.type-workshop{background:#FFF7E6;color:#B45309}
+.type-hackathon{background:#ECFDF5;color:#065F46}
+.type-leadership{background:#EEF2FF;color:#3730A3}
+.type-service{background:#FFF3F0;color:#9A3412}
+.event-title{font-size:15px;font-weight:700;color:var(--kyih-navy);margin-bottom:4px}
+.event-date{font-size:12px;color:var(--kyih-gray)}
+.event-footer{padding:0.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.event-seats{font-size:12px;color:var(--kyih-gray)}
+.rsvp-btn{
+  background:var(--kyih-navy);color:var(--kyih-white);
+  padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;border:none;
+}
+
+/* LEARNING HUB */
+.learning-section{background:var(--kyih-pale);padding:64px 2rem}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.course-card{
+  background:var(--kyih-white);border-radius:14px;border:1px solid #E8ECF0;
+  overflow:hidden;transition:transform 0.15s;cursor:pointer;
+}
+.course-card:hover{transform:translateY(-2px)}
+.course-thumb{height:80px;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.course-body{padding:1rem}
+.course-tag{
+  font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
+  color:var(--kyih-amber);margin-bottom:6px;
+}
+.course-title{font-size:14px;font-weight:700;color:var(--kyih-navy);margin-bottom:4px;line-height:1.3}
+.course-meta{font-size:12px;color:var(--kyih-gray)}
+.course-progress{
+  margin-top:10px;height:4px;background:#F1F5F9;border-radius:100px;
+}
+.course-progress-bar{height:100%;border-radius:100px;background:var(--kyih-amber)}
+
+/* PROJECTS */
+.projects-section{background:var(--kyih-white);padding:64px 2rem}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.project-card{
+  border:1px solid #E8ECF0;border-radius:14px;padding:1.25rem;
+}
+.project-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.project-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.project-title{font-size:15px;font-weight:700;color:var(--kyih-navy)}
+.project-status{
+  display:inline-block;font-size:11px;font-weight:600;
+  padding:3px 10px;border-radius:100px;margin-bottom:8px;
+}
+.status-active{background:#ECFDF5;color:#065F46}
+.status-recruiting{background:#FFF7E6;color:#B45309}
+.project-desc{font-size:13px;color:var(--kyih-gray);line-height:1.6;margin-bottom:12px}
+.project-volunteers{font-size:12px;color:var(--kyih-gray);display:flex;align-items:center;gap:6px}
+.volunteer-dot{width:8px;height:8px;border-radius:50%;background:var(--kyih-green)}
+
+/* MEMBER REGISTRATION */
+.register-section{
+  background:var(--kyih-navy);
+  padding:72px 2rem;position:relative;overflow:hidden;
+}
+.register-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 50%,rgba(245,158,11,0.08) 0%,transparent 60%);
+  pointer-events:none;
+}
+.register-inner{
+  max-width:520px;margin:0 auto;
+  background:var(--kyih-white);border-radius:20px;padding:2.5rem;
+  position:relative;z-index:2;
+}
+.register-title{font-size:22px;font-weight:800;color:var(--kyih-navy);margin-bottom:4px;letter-spacing:-0.5px}
+.register-sub{font-size:14px;color:var(--kyih-gray);margin-bottom:1.5rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:12px;font-weight:600;color:var(--kyih-navy)}
+.form-input{
+  padding:9px 12px;border-radius:8px;border:1px solid #E2E8F0;
+  font-size:13px;color:var(--kyih-navy);font-family:inherit;
+  background:var(--kyih-white);
+}
+.form-input:focus{outline:2px solid var(--kyih-amber);border-color:transparent}
+.form-select{
+  padding:9px 12px;border-radius:8px;border:1px solid #E2E8F0;
+  font-size:13px;color:var(--kyih-navy);font-family:inherit;background:var(--kyih-white);
+}
+.interests-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}
+.interest-chip{
+  padding:5px 12px;border-radius:100px;border:1.5px solid #E2E8F0;
+  font-size:12px;font-weight:500;color:var(--kyih-gray);cursor:pointer;
+}
+.interest-chip.selected{
+  background:var(--kyih-navy);color:var(--kyih-white);border-color:var(--kyih-navy);
+}
+.form-submit{
+  width:100%;background:var(--kyih-navy);color:var(--kyih-white);
+  padding:13px;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;border:none;font-family:inherit;
+}
+.form-submit:hover{background:var(--kyih-blue)}
+.form-footer{text-align:center;font-size:12px;color:var(--kyih-gray);margin-top:12px}
+
+/* DASHBOARD PREVIEW */
+.dashboard-section{background:var(--kyih-pale);padding:64px 2rem}
+.dashboard-mock{
+  background:var(--kyih-white);border-radius:16px;border:1px solid #E8ECF0;overflow:hidden;
+}
+.dash-header{
+  background:var(--kyih-navy);padding:1rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dash-title{color:var(--kyih-white);font-size:14px;font-weight:700}
+.dash-user{display:flex;align-items:center;gap:8px}
+.dash-avatar{
+  width:32px;height:32px;border-radius:50%;background:var(--kyih-amber);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--kyih-navy);
+}
+.dash-body{display:grid;grid-template-columns:200px 1fr;gap:0}
+.dash-sidebar{border-right:1px solid #F1F5F9;padding:1rem 0}
+.dash-nav-item{
+  padding:8px 1.25rem;font-size:13px;font-weight:500;color:var(--kyih-gray);
+  cursor:pointer;display:flex;align-items:center;gap:8px;
+}
+.dash-nav-item.active{
+  background:var(--kyih-pale);color:var(--kyih-navy);font-weight:700;
+  border-right:3px solid var(--kyih-amber);
+}
+.dash-nav-dot{width:6px;height:6px;border-radius:50%;background:var(--kyih-gray)}
+.dash-nav-item.active .dash-nav-dot{background:var(--kyih-amber)}
+.dash-content{padding:1.25rem}
+.dash-welcome{font-size:16px;font-weight:700;color:var(--kyih-navy);margin-bottom:4px}
+.dash-date{font-size:12px;color:var(--kyih-gray);margin-bottom:1rem}
+.dash-metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.dash-metric{
+  background:var(--kyih-pale);border-radius:10px;padding:12px;
+}
+.dash-metric-val{font-size:20px;font-weight:800;color:var(--kyih-navy)}
+.dash-metric-lbl{font-size:11px;color:var(--kyih-gray);margin-top:2px}
+.dash-next{
+  background:#FFF7E6;border-radius:10px;padding:12px 14px;
+  display:flex;align-items:center;gap:12px;
+}
+.dash-next-icon{width:36px;height:36px;border-radius:10px;background:var(--kyih-amber);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.dash-next-title{font-size:13px;font-weight:700;color:var(--kyih-navy)}
+.dash-next-sub{font-size:11px;color:var(--kyih-gray)}
+
+/* TESTIMONIALS */
+.testimonials-section{background:var(--kyih-white);padding:64px 2rem}
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.testimonial-card{
+  background:var(--kyih-pale);border-radius:14px;padding:1.5rem;
+  border:1px solid #E8ECF0;
+}
+.testimonial-quote{
+  font-size:14px;color:var(--kyih-navy);line-height:1.65;margin-bottom:1rem;
+  font-style:italic;
+}
+.testimonial-person{display:flex;align-items:center;gap:10px}
+.testimonial-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--kyih-white);flex-shrink:0;
+}
+.testimonial-name{font-size:13px;font-weight:700;color:var(--kyih-navy)}
+.testimonial-role{font-size:12px;color:var(--kyih-gray)}
+
+/* SPONSOR + DONATE */
+.sponsor-section{background:var(--kyih-amber);padding:56px 2rem;text-align:center}
+.sponsor-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--kyih-navy);margin-bottom:8px;letter-spacing:-0.5px}
+.sponsor-sub{font-size:15px;color:rgba(15,27,92,0.7);margin-bottom:1.5rem;line-height:1.6}
+.sponsor-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-dark{
+  background:var(--kyih-navy);color:var(--kyih-white);
+  padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;
+}
+.btn-outline{
+  background:transparent;color:var(--kyih-navy);
+  padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;
+  border:2px solid var(--kyih-navy);
+}
+
+/* FOOTER */
+.footer{background:var(--kyih-navy);padding:3rem 2rem 1.5rem}
+.footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.footer-logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--kyih-amber);display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--kyih-navy);
+}
+.footer-brand-name{font-size:14px;font-weight:700;color:var(--kyih-white)}
+.footer-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;max-width:200px}
+.footer-col-title{font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px}
+.footer-link{display:block;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:8px;cursor:pointer}
+.footer-link:hover{color:var(--kyih-amber)}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.1);padding-top:1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.35)}
+.footer-tag{
+  background:rgba(245,158,11,0.15);color:var(--kyih-amber);
+  font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;
+}
+.wrapper{max-width:1100px;margin:0 auto}
+.two-col{display:grid;grid-template-columns:1fr 1.5fr;gap:3rem;align-items:start}
+@media(max-width:680px){
+  .nav-links{display:none}
+  .two-col{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .dash-body{grid-template-columns:1fr}
+  .dash-sidebar{display:none}
+  .form-grid{grid-template-columns:1fr}
+}
+</style>
+
+<div class="page">
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">KY</div>
+    <span class="nav-brand">KYIH</span>
+  </div>
+  <div class="nav-links">
+    <span class="nav-link">About</span>
+    <span class="nav-link">Events</span>
+    <span class="nav-link">Learn</span>
+    <span class="nav-link">Projects</span>
+    <span class="nav-link">Community</span>
+  </div>
+  <button class="nav-cta">Join KYIH</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle2"></div>
+  <div class="wrapper">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Klagon, Greater Accra — Open to All Youth
+    </div>
+    <h1 class="hero-headline">
+      Preparing Klagon's Youth<br>for <span>The Future</span>.
+    </h1>
+    <p class="hero-sub">
+      Your community. Your skills. Your opportunity. KYIH is where Klagon's next generation discovers tech, entrepreneurship, leadership — and builds real things that matter.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">Join Free Today →</button>
+      <button class="btn-ghost">Explore Events</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">100<span>+</span></div>
+        <div class="hero-stat-label">Target Members</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">6</div>
+        <div class="hero-stat-label">Learning Tracks</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">5<span>+</span></div>
+        <div class="hero-stat-label">Community Projects</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Free</div>
+        <div class="hero-stat-label">To Join</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY PATH -->
+<section class="journey-section">
+  <div class="wrapper">
+    <div class="section-label">Your Path</div>
+    <div class="two-col">
+      <div>
+        <h2 class="section-title">From curious<br>to leading your community.</h2>
+        <p class="section-sub">KYIH gives every young person in Klagon a clear, supported roadmap — from the moment they show up, to the day they're mentoring the next person behind them.</p>
+      </div>
+      <div class="journey-path">
+        <div class="journey-step j1">
+          <div class="journey-node">
+            🔍
+            <div class="journey-node-num">1</div>
+          </div>
+          <div class="journey-step-title">Discover</div>
+          <div class="journey-step-sub">Find your interest & potential</div>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-step j2">
+          <div class="journey-node">
+            📚
+            <div class="journey-node-num">2</div>
+          </div>
+          <div class="journey-step-title">Learn</div>
+          <div class="journey-step-sub">Skills, workshops & courses</div>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-step j3">
+          <div class="journey-node">
+            🔨
+            <div class="journey-node-num">3</div>
+          </div>
+          <div class="journey-step-title">Build</div>
+          <div class="journey-step-sub">Real projects, real impact</div>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-step j4">
+          <div class="journey-node">
+            💰
+            <div class="journey-node-num">4</div>
+          </div>
+          <div class="journey-step-title">Earn</div>
+          <div class="journey-step-sub">Jobs, freelance & income</div>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-step j5">
+          <div class="journey-node">
+            🏆
+            <div class="journey-node-num">5</div>
+          </div>
+          <div class="journey-step-title">Lead</div>
+          <div class="journey-step-sub">Run teams & projects</div>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-step j6">
+          <div class="journey-node">
+            🌱
+            <div class="journey-node-num">6</div>
+          </div>
+          <div class="journey-step-title">Mentor</div>
+          <div class="journey-step-sub">Give back, grow others</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE PROPS -->
+<section class="value-section">
+  <div class="wrapper">
+    <div class="section-label">Why KYIH</div>
+    <h2 class="section-title">Not just another youth group.</h2>
+    <p class="section-sub">A structured system designed to take you from where you are to where you deserve to be — with a community backing every step.</p>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-icon" style="background:#EEF2FF">🤖</div>
+        <h3>AI & Tech Skills</h3>
+        <p>Learn AI tools, coding basics, and digital skills that employers and clients actually pay for in today's Ghana.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:#FFF7E6">💼</div>
+        <h3>Entrepreneurship</h3>
+        <p>Turn your ideas into income. Get the mindset, tools, and network to start something meaningful in Klagon.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:#ECFDF5">🤝</div>
+        <h3>Mentorship Access</h3>
+        <p>Connect with experienced professionals from the community who've walked the path and want to shorten yours.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:#FFF3F0">🏗️</div>
+        <h3>Community Projects</h3>
+        <p>Work on real projects — tree planting, digital literacy drives, mentorship programs — that build your portfolio and Klagon.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:#F0F9FF">📋</div>
+        <h3>Career Planning</h3>
+        <p>Structured sessions on CVs, interviews, financial literacy, and career roadmaps tailored for young Ghanaians.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:#F0FDF4">🎖️</div>
+        <h3>Recognition & Records</h3>
+        <p>Every session, project, and contribution is tracked. Build a verifiable record of growth that speaks for you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="events-section">
+  <div class="wrapper">
+    <div class="section-label">Upcoming Events</div>
+    <div class="two-col" style="margin-bottom:2rem">
+      <div>
+        <h2 class="section-title">Show up. Level up. Every week.</h2>
+        <p class="section-sub">Workshops, hackathons, leadership sessions, and community service — all happening right here in Klagon.</p>
+      </div>
+      <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+        <button class="btn-primary">See All Events →</button>
+      </div>
+    </div>
+    <div class="events-grid">
+      <div class="event-card">
+        <div class="event-header">
+          <span class="event-type type-workshop">Workshop</span>
+          <div class="event-title">Introduction to AI Tools</div>
+          <div class="event-date">Sat, 12 July 2025 · 10:00 AM</div>
+        </div>
+        <div class="event-footer">
+          <span class="event-seats">18 / 30 spots left</span>
+          <button class="rsvp-btn">RSVP</button>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-header">
+          <span class="event-type type-hackathon">Hackathon</span>
+          <div class="event-title">Klagon Problem-Solving Hack</div>
+          <div class="event-date">Sat, 19 July 2025 · 9:00 AM</div>
+        </div>
+        <div class="event-footer">
+          <span class="event-seats">12 / 25 spots left</span>
+          <button class="rsvp-btn">RSVP</button>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-header">
+          <span class="event-type type-leadership">Leadership</span>
+          <div class="event-title">Public Speaking & Influence</div>
+          <div class="event-date">Wed, 23 July 2025 · 5:00 PM</div>
+        </div>
+        <div class="event-footer">
+          <span class="event-seats">Open registration</span>
+          <button class="rsvp-btn">RSVP</button>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-header">
+          <span class="event-type type-service">Community</span>
+          <div class="event-title">Klagon Clean-Up Drive</div>
+          <div class="event-date">Sat, 26 July 2025 · 7:00 AM</div>
+        </div>
+        <div class="event-footer">
+          <span class="event-seats">All welcome</span>
+          <button class="rsvp-btn">RSVP</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING HUB -->
+<section class="learning-section">
+  <div class="wrapper">
+    <div class="section-label">Learning Hub</div>
+    <h2 class="section-title">Skills that open doors.</h2>
+    <p class="section-sub">Structured short courses built for Klagon youth — no laptop required to start. Each module takes you from zero to confident.</p>
+    <div class="course-grid">
+      <div class="course-card">
+        <div class="course-thumb" style="background:#EEF2FF">🤖</div>
+        <div class="course-body">
+          <div class="course-tag">Future Skills</div>
+          <div class="course-title">Introduction to AI</div>
+          <div class="course-meta">5 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-thumb" style="background:#FFF7E6">💰</div>
+        <div class="course-body">
+          <div class="course-tag">Finance</div>
+          <div class="course-title">Financial Literacy Basics</div>
+          <div class="course-meta">4 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:60%;background:var(--kyih-amber)"></div></div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-thumb" style="background:#ECFDF5">🏆</div>
+        <div class="course-body">
+          <div class="course-tag">Leadership</div>
+          <div class="course-title">Leadership Foundations</div>
+          <div class="course-meta">6 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-thumb" style="background:#FFF3F0">🚀</div>
+        <div class="course-body">
+          <div class="course-tag">Entrepreneurship</div>
+          <div class="course-title">Start Your First Business</div>
+          <div class="course-meta">7 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:30%"></div></div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-thumb" style="background:#F0F9FF">💬</div>
+        <div class="course-body">
+          <div class="course-tag">Communication</div>
+          <div class="course-title">Communication That Wins</div>
+          <div class="course-meta">4 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-thumb" style="background:#F0FDF4">🗺️</div>
+        <div class="course-body">
+          <div class="course-tag">Career</div>
+          <div class="course-title">Build Your Career Roadmap</div>
+          <div class="course-meta">5 lessons · PDF + Video</div>
+          <div class="course-progress"><div class="course-progress-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY PROJECTS -->
+<section class="projects-section">
+  <div class="wrapper">
+    <div class="section-label">Community Projects</div>
+    <h2 class="section-title">Build things that actually help Klagon.</h2>
+    <p class="section-sub">Join active projects, volunteer your skills, and see the direct impact on your community — all tracked on your profile.</p>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:#ECFDF5">🌳</div>
+          <div class="project-title">Klagon Tree-Planting Drive</div>
+        </div>
+        <div class="project-status status-active">Active</div>
+        <div class="project-desc">Planting 200 trees across Klagon's key areas to improve air quality and community pride.</div>
+        <div class="project-volunteers"><div class="volunteer-dot"></div> 14 volunteers · 6 spots open</div>
+      </div>
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:#EEF2FF">💻</div>
+          <div class="project-title">Digital Literacy for Seniors</div>
+        </div>
+        <div class="project-status status-recruiting">Recruiting</div>
+        <div class="project-desc">Weekly sessions teaching phones, mobile money, and internet basics to Klagon's older residents.</div>
+        <div class="project-volunteers"><div class="volunteer-dot"></div> 4 volunteers · 10 spots open</div>
+      </div>
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:#FFF7E6">🎓</div>
+          <div class="project-title">Youth Coding Club</div>
+        </div>
+        <div class="project-status status-active">Active</div>
+        <div class="project-desc">Introducing secondary school students in Klagon to basic programming and computational thinking.</div>
+        <div class="project-volunteers"><div class="volunteer-dot"></div> 8 volunteers · 4 spots open</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section class="dashboard-section">
+  <div class="wrapper">
+    <div class="section-label">Member Dashboard</div>
+    <h2 class="section-title">Everything you need, in one place.</h2>
+    <p class="section-sub" style="margin-bottom:2rem">Track your progress, RSVP to events, join projects, and manage your KYIH journey from your personal dashboard.</p>
+    <div class="dashboard-mock">
+      <div class="dash-header">
+        <div class="dash-title">KYIH Member Dashboard</div>
+        <div class="dash-user">
+          <div class="dash-avatar">AK</div>
+          <span style="color:rgba(255,255,255,0.7);font-size:13px">Ama Kofi</span>
+        </div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-sidebar">
+          <div class="dash-nav-item active"><div class="dash-nav-dot"></div>Overview</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Events</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Learning</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Projects</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Volunteer</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Messages</div>
+          <div class="dash-nav-item"><div class="dash-nav-dot"></div>Profile</div>
+        </div>
+        <div class="dash-content">
+          <div class="dash-welcome">Welcome back, Ama! 👋</div>
+          <div class="dash-date">Saturday, 12 July 2025</div>
+          <div class="dash-metric-row">
+            <div class="dash-metric">
+              <div class="dash-metric-val">3</div>
+              <div class="dash-metric-lbl">Events attended</div>
+            </div>
+            <div class="dash-metric">
+              <div class="dash-metric-val">60%</div>
+              <div class="dash-metric-lbl">Fin. Literacy done</div>
+            </div>
+            <div class="dash-metric">
+              <div class="dash-metric-val">1</div>
+              <div class="dash-metric-lbl">Project joined</div>
+            </div>
+          </div>
+          <div class="dash-next">
+            <div class="dash-next-icon">📅</div>
+            <div>
+              <div class="dash-next-title">Next: Introduction to AI — Sat, 12 July · 10:00 AM</div>
+              <div class="dash-next-sub">Community Hall, Klagon · 12 seats remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="wrapper">
+    <div class="section-label">Voices from Klagon</div>
+    <h2 class="section-title">What our members say.</h2>
+    <p class="section-sub" style="margin-bottom:2rem">Real youth, real growth, real community change.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"Before KYIH, I didn't know where to start. After three sessions, I landed my first freelance design job. It's the best thing to happen to Klagon youth."</div>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar" style="background:#0F1B5C">EO</div>
+          <div>
+            <div class="testimonial-name">Ebenezer Ofori</div>
+            <div class="testimonial-role">Graphic Designer, Age 22</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"The coding club changed my son's direction completely. He's now talking about building apps for Ghana instead of just playing games. I'm proud."</div>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar" style="background:#B45309">MA</div>
+          <div>
+            <div class="testimonial-name">Mary Acheampong</div>
+            <div class="testimonial-role">Parent, Klagon resident</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"I volunteered as a mentor thinking I'd give back. But honestly, these young people are teaching me as much as I'm teaching them. This community is special."</div>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar" style="background:#065F46">KA</div>
+          <div>
+            <div class="testimonial-name">Kweku Asante</div>
+            <div class="testimonial-role">Mentor, Software Engineer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section class="register-section">
+  <div class="register-bg"></div>
+  <div class="wrapper">
+    <div style="text-align:center;margin-bottom:2rem;position:relative;z-index:2">
+      <div class="section-label" style="color:var(--kyih-amber)">Join KYIH — Free</div>
+      <h2 class="section-title" style="color:var(--kyih-white);margin-bottom:8px">Your future starts here,<br>right in Klagon.</h2>
+      <p style="color:rgba(255,255,255,0.6);font-size:15px">It takes 2 minutes. No fees. No forms. Just your information and your ambition.</p>
+    </div>
+    <div class="register-inner">
+      <div class="register-title">Create your KYIH account</div>
+      <div class="register-sub">Free membership — approved within 24 hours</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Full name</label>
+          <input class="form-input" type="text" placeholder="Ama Mensah">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="text" placeholder="0244 000 000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" placeholder="ama@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input class="form-input" type="number" placeholder="22">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Occupation</label>
+          <input class="form-input" type="text" placeholder="Student / Employed / Other">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-select">
+            <option>Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Your career goal</label>
+          <input class="form-input" type="text" placeholder="What do you want to achieve in the next 2 years?">
+        </div>
+      </div>
+      <div class="form-label" style="margin-bottom:4px">Your interests (pick all that apply)</div>
+      <div class="interests-row" id="interests">
+        <span class="interest-chip selected" onclick="toggleChip(this)">Technology</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Entrepreneurship</span>
+        <span class="interest-chip" onclick="toggleChip(this)">AI</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Leadership</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Jobs &amp; Career</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Community</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Finance</span>
+        <span class="interest-chip" onclick="toggleChip(this)">Communication</span>
+      </div>
+      <button class="form-submit">Request Membership →</button>
+      <div class="form-footer">Your application is reviewed within 24 hours. 100% free, always.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SPONSOR / DONATE -->
+<section class="sponsor-section">
+  <div class="wrapper">
+    <h2 class="sponsor-title">Help Klagon's youth get the future they deserve.</h2>
+    <p class="sponsor-sub">Whether you're a company, diaspora member, NGO, or individual — your support funds workshops, equipment, mentors, and the next generation of Ghanaian innovators.</p>
+    <div class="sponsor-actions">
+      <button class="btn-dark">Become a Sponsor</button>
+      <button class="btn-outline">Make a Donation</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrapper">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">KY</div>
+          <div class="footer-brand-name">Klagon Youth Innovation Hub</div>
+        </div>
+        <div class="footer-desc">Preparing Klagon's youth for the future — through skills, community, and opportunity.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <span class="footer-link">Events</span>
+        <span class="footer-link">Learning Hub</span>
+        <span class="footer-link">Community Projects</span>
+        <span class="footer-link">Volunteer</span>
+        <span class="footer-link">News</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Join</div>
+        <span class="footer-link">Register Now</span>
+        <span class="footer-link">Become a Mentor</span>
+        <span class="footer-link">Sponsor KYIH</span>
+        <span class="footer-link">Donate</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Connect</div>
+        <span class="footer-link">WhatsApp Community</span>
+        <span class="footer-link">Instagram</span>
+        <span class="footer-link">Facebook</span>
+        <span class="footer-link">Contact Us</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Klagon Youth Innovation Hub. All rights reserved.</div>
+      <div class="footer-tag">Built for Klagon 🇬🇭</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+function toggleChip(el){
+  el.classList.toggle('selected');
+}
+</script>
