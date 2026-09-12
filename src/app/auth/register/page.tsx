@@ -186,32 +186,18 @@ export default function RegisterPage() {
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-navy">Occupation</label>
-              <select
-                className="px-3 py-2 rounded-lg border border-border text-sm text-navy font-sans bg-white focus:outline-2 focus:outline-amber focus:border-transparent"
-                value={OCCUPATIONS.includes(form.occupation) ? form.occupation : form.occupation ? "__other__" : ""}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    occupation: e.target.value === "__other__" ? "" : e.target.value,
-                  }))
-                }
-              >
-                <option value="">Select</option>
+              <input
+                list="occupations"
+                className="px-3 py-2 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent"
+                placeholder="Tap a suggestion or type yours"
+                value={form.occupation}
+                onChange={(e) => setForm((f) => ({ ...f, occupation: e.target.value }))}
+              />
+              <datalist id="occupations">
                 {OCCUPATIONS.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
+                  <option key={o} value={o} />
                 ))}
-                <option value="__other__">Other</option>
-              </select>
-              {form.occupation && !OCCUPATIONS.includes(form.occupation) && (
-                <input
-                  className="px-3 py-2 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent"
-                  placeholder="Type your occupation"
-                  value={form.occupation}
-                  onChange={(e) => setForm((f) => ({ ...f, occupation: e.target.value }))}
-                />
-              )}
+              </datalist>
             </div>
           </div>
           <div className="flex flex-col gap-1.5">
