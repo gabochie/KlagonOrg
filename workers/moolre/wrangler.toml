@@ -1,0 +1,9 @@
+# KlagonOrg payments relay (Cloudflare Worker).
+# Holds Moolre private keys + Supabase anon key as encrypted secrets
+# (set via `wrangler secret put ...` — NEVER commit them here).
+name = "klagon-payments"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+SUPABASE_URL = "https://rvavixcgtninzccskfpy.supabase.co"
