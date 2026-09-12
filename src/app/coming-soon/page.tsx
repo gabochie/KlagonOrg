@@ -37,7 +37,7 @@ export default function ComingSoonPage() {
           <div className="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-sm font-extrabold text-navy">
             KS
           </div>
-          <span className="text-sm font-bold text-white">Klagon Studios</span>
+          <span className="text-sm font-bold text-white">KlagonStudios</span>
         </Link>
         <div className="flex items-center gap-2">
           {SOCIALS.map((s) => (
@@ -70,7 +70,7 @@ export default function ComingSoonPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-white/55 leading-relaxed max-w-lg mx-auto mb-10">
-            Klagon Studios is building a free hub for skills, mentorship, and opportunity.
+            KlagonStudios is building a free hub for skills, mentorship, and opportunity.
             Be the first to know when we launch.
           </p>
 
@@ -81,7 +81,7 @@ export default function ComingSoonPage() {
               </div>
               <h2 className="text-xl font-extrabold text-white mb-1">You&apos;re on the list!</h2>
               <p className="text-sm text-white/50 leading-relaxed mb-6">
-                We&apos;ll notify you at <span className="text-amber font-semibold">{email}</span> as soon as Klagon Studios launches.
+                We&apos;ll notify you at <span className="text-amber font-semibold">{email}</span> as soon as KlagonStudios launches.
               </p>
               <div className="flex flex-wrap justify-center gap-3 text-xs text-white/35">
                 <span className="flex items-center gap-1.5">🏆 Launch updates</span>
@@ -145,7 +145,7 @@ export default function ComingSoonPage() {
       <footer className="relative z-10 border-t border-white/8 py-5 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/25">
-            © 2025 Klagon Studios. Klagon, Greater Accra, Ghana.
+            © 2025 KlagonStudios. Klagon, Greater Accra, Ghana.
           </div>
           <Link
             href="/contact"

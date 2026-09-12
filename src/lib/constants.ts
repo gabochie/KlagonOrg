@@ -53,7 +53,7 @@ export const VALUE_PROPS = [
 
 export const EVENTS: Event[] = [
   { id: "1", title: "Introduction to AI Tools", type: "workshop", date: "2025-07-12", time: "10:00 AM", location: "Community Hall, Klagon", spots: 30, spotsLeft: 12, rsvpCount: 18 },
-  { id: "2", title: "Klagon Problem-Solving Hack", type: "hackathon", date: "2025-07-19", time: "9:00 AM", location: "Klagon Studios Hub", spots: 25, spotsLeft: 13, rsvpCount: 12 },
+  { id: "2", title: "Klagon Problem-Solving Hack", type: "hackathon", date: "2025-07-19", time: "9:00 AM", location: "KlagonStudios Hub", spots: 25, spotsLeft: 13, rsvpCount: 12 },
   { id: "3", title: "Public Speaking & Influence", type: "leadership", date: "2025-07-23", time: "5:00 PM", location: "Community Hall", spots: 0, spotsLeft: 0, rsvpCount: 0 },
   { id: "4", title: "Klagon Clean-Up Drive", type: "service", date: "2025-07-26", time: "7:00 AM", location: "Klagon Central", spots: 0, spotsLeft: 0, rsvpCount: 0 },
 ];
@@ -74,7 +74,7 @@ export const PROJECTS: Project[] = [
 ];
 
 export const TESTIMONIALS = [
-  { quote: "\"Before Klagon Studios, I didn't know where to start. After three sessions, I landed my first freelance design job. It's the best thing to happen to Klagon youth.\"", name: "Ebenezer Ofori", role: "Graphic Designer, Age 22", initials: "EO", color: "#0F1B5C" },
+  { quote: "\"Before KlagonStudios, I didn't know where to start. After three sessions, I landed my first freelance design job. It's the best thing to happen to Klagon youth.\"", name: "Ebenezer Ofori", role: "Graphic Designer, Age 22", initials: "EO", color: "#0F1B5C" },
   { quote: "\"The coding club changed my son's direction completely. He's now talking about building apps for Ghana instead of just playing games. I'm proud.\"", name: "Mary Acheampong", role: "Parent, Klagon resident", initials: "MA", color: "#B45309" },
   { quote: "\"I volunteered as a mentor thinking I'd give back. But honestly, these young people are teaching me as much as I'm teaching them.\"", name: "Kweku Asante", role: "Mentor, Software Engineer", initials: "KA", color: "#065F46" },
 ];
@@ -103,7 +103,7 @@ export const MEMBER_BADGES: Badge[] = [
 
 export const MEMBER_EVENTS: Event[] = [
   { id: "1", title: "Intro to AI Workshop", type: "workshop", date: "2025-07-12", time: "10:00 AM", location: "Community Hall", spots: 30, spotsLeft: 12, rsvpCount: 18 },
-  { id: "2", title: "Klagon Hackathon", type: "hackathon", date: "2025-07-19", time: "9:00 AM", location: "Klagon Studios Hub", spots: 25, spotsLeft: 13, rsvpCount: 12 },
+  { id: "2", title: "Klagon Hackathon", type: "hackathon", date: "2025-07-19", time: "9:00 AM", location: "KlagonStudios Hub", spots: 25, spotsLeft: 13, rsvpCount: 12 },
   { id: "3", title: "Public Speaking & Influence", type: "leadership", date: "2025-07-23", time: "5:00 PM", location: "Community Hall", spots: 0, spotsLeft: 0, rsvpCount: 0 },
 ];
 
@@ -115,7 +115,7 @@ export const MEMBER_PROJECTS: Project[] = [
 export const ANNOUNCEMENTS: Announcement[] = [
   { id: "1", title: "New Learning Track: Career Planning", body: "A brand new 5-lesson career roadmap course has just launched. Be among the first to complete it.", time: "2 hours ago", dotColor: "#F59E0B" },
   { id: "2", title: "Hackathon Teams Now Open", body: "Form your team of 2–4 before July 17 to participate in the Klagon Problem-Solving Hack.", time: "Yesterday", dotColor: "#10B981" },
-  { id: "3", title: "Mentor Kweku Asante is available", body: "Software engineer and Klagon Studios mentor Kweku just opened 3 slots for 1-on-1 sessions this month.", time: "2 days ago", dotColor: "#1A2E8C" },
+  { id: "3", title: "Mentor Kweku Asante is available", body: "Software engineer and KlagonStudios mentor Kweku just opened 3 slots for 1-on-1 sessions this month.", time: "2 days ago", dotColor: "#1A2E8C" },
 ];
 
 export const ADMIN_METRICS: Metric[] = [
@@ -149,26 +149,26 @@ export const ACTIVITIES: Activity[] = [
 
 export const VOLUNTEER_OPPS: VolunteerOpportunity[] = [
   { id: "1", title: "Youth Mentor", description: "Guide and support young members in their learning journey. Share your expertise in tech, business, or leadership.", icon: "🧑‍🏫", category: "Mentorship", commitment: "2-4 hrs/week", spots: 10, spotsLeft: 7, color: "#EEF2FF" },
-  { id: "2", title: "Event Coordinator", description: "Help plan, organize, and run Klagon Studios workshops, hackathons, and community events throughout the month.", icon: "📅", category: "Events", commitment: "3-5 hrs/week", spots: 5, spotsLeft: 3, color: "#FFF7E6" },
+  { id: "2", title: "Event Coordinator", description: "Help plan, organize, and run KlagonStudios workshops, hackathons, and community events throughout the month.", icon: "📅", category: "Events", commitment: "3-5 hrs/week", spots: 5, spotsLeft: 3, color: "#FFF7E6" },
   { id: "3", title: "Digital Literacy Tutor", description: "Teach seniors and beginners how to use phones, mobile money, and the internet in weekly sessions.", icon: "💻", category: "Education", commitment: "2 hrs/week", spots: 15, spotsLeft: 11, color: "#ECFDF5" },
-  { id: "4", title: "Social Media Lead", description: "Manage Klagon Studios' social media presence — create content, share updates, and grow our online community.", icon: "📱", category: "Communications", commitment: "3 hrs/week", spots: 3, spotsLeft: 2, color: "#FFF3F0" },
+  { id: "4", title: "Social Media Lead", description: "Manage KlagonStudios' social media presence — create content, share updates, and grow our online community.", icon: "📱", category: "Communications", commitment: "3 hrs/week", spots: 3, spotsLeft: 2, color: "#FFF3F0" },
   { id: "5", title: "Tree-Planting Volunteer", description: "Join the environmental team in planting and maintaining trees across Klagon's key areas.", icon: "🌳", category: "Environment", commitment: "Weekends", spots: 20, spotsLeft: 6, color: "#F0F9FF" },
-  { id: "6", title: "Fundraising Assistant", description: "Help with grant research, donor outreach, and fundraising campaigns to support Klagon Studios programs.", icon: "💰", category: "Operations", commitment: "3 hrs/week", spots: 4, spotsLeft: 4, color: "#F0FDF4" },
+  { id: "6", title: "Fundraising Assistant", description: "Help with grant research, donor outreach, and fundraising campaigns to support KlagonStudios programs.", icon: "💰", category: "Operations", commitment: "3 hrs/week", spots: 4, spotsLeft: 4, color: "#F0FDF4" },
 ];
 
 export const NEWS_ARTICLES: NewsArticle[] = [
-  { id: "1", title: "Klagon Studios Launches New Career Planning Course for Klagon Youth", excerpt: "A brand new 5-lesson career roadmap course has just launched, designed to help young people in Klagon plan their professional futures with confidence.", category: "Programs", author: "Emmanuel Kumi", date: "10 Jul 2025", image: "📋", readTime: "3 min" },
+  { id: "1", title: "KlagonStudios Launches New Career Planning Course for Klagon Youth", excerpt: "A brand new 5-lesson career roadmap course has just launched, designed to help young people in Klagon plan their professional futures with confidence.", category: "Programs", author: "Emmanuel Kumi", date: "10 Jul 2025", image: "📋", readTime: "3 min" },
   { id: "2", title: "Klagon Problem-Solving Hackathon: Teams Now Forming", excerpt: "Registration is open for the July 19 hackathon. Form your team of 2–4 and tackle real community challenges using tech and innovation.", category: "Events", author: "Ama Kofi", date: "8 Jul 2025", image: "💡", readTime: "2 min" },
-  { id: "3", title: "Mentor Spotlight: Kweku Asante Opens 1-on-1 Sessions", excerpt: "Software engineer and Klagon Studios mentor Kweku Asante has opened 3 new slots for personalized mentoring sessions this month.", category: "Community", author: "Klagon Studios Team", date: "6 Jul 2025", image: "🌟", readTime: "4 min" },
+  { id: "3", title: "Mentor Spotlight: Kweku Asante Opens 1-on-1 Sessions", excerpt: "Software engineer and KlagonStudios mentor Kweku Asante has opened 3 new slots for personalized mentoring sessions this month.", category: "Community", author: "KlagonStudios Team", date: "6 Jul 2025", image: "🌟", readTime: "4 min" },
   { id: "4", title: "Tree-Planting Drive Reaches 60% of 200-Tree Goal", excerpt: "Thanks to 14 dedicated volunteers, the Klagon Tree-Planting Drive is more than halfway to its target. Join the next session this weekend.", category: "Environment", author: "Serwaa Boateng", date: "4 Jul 2025", image: "🌳", readTime: "2 min" },
-  { id: "5", title: "Digital Literacy Program Expands to Senior Citizens", excerpt: "Following high demand, Klagon Studios is expanding its Digital Literacy program with dedicated sessions for senior residents of Klagon.", category: "Programs", author: "Mary Acheampong", date: "1 Jul 2025", image: "💻", readTime: "3 min" },
-  { id: "6", title: "Klagon Studios Partners with Action Aid Ghana for Youth Workshop Series", excerpt: "A new partnership brings resources, mentorship, and funding for a series of workshops focused on entrepreneurship and life skills.", category: "Partnerships", author: "Emmanuel Kumi", date: "28 Jun 2025", image: "🤝", readTime: "5 min" },
+  { id: "5", title: "Digital Literacy Program Expands to Senior Citizens", excerpt: "Following high demand, KlagonStudios is expanding its Digital Literacy program with dedicated sessions for senior residents of Klagon.", category: "Programs", author: "Mary Acheampong", date: "1 Jul 2025", image: "💻", readTime: "3 min" },
+  { id: "6", title: "KlagonStudios Partners with Action Aid Ghana for Youth Workshop Series", excerpt: "A new partnership brings resources, mentorship, and funding for a series of workshops focused on entrepreneurship and life skills.", category: "Partnerships", author: "Emmanuel Kumi", date: "28 Jun 2025", image: "🤝", readTime: "5 min" },
 ];
 
 export const SPONSOR_PLANS: SponsorPlan[] = [
-  { id: "1", name: "Community Friend", amount: "GH₵ 500/mo", description: "Support a single workshop or learning session each month.", benefits: ["Name listed on Klagon Studios website", "Quarterly impact report", "Social media shoutout"], highlighted: false },
-  { id: "2", name: "Youth Champion", amount: "GH₵ 2,000/mo", description: "Fund a full learning track for 10 youth members each quarter.", benefits: ["Logo on Klagon Studios materials", "Monthly impact report", "Recognition at events", "2 seats at annual gala"], highlighted: true },
-  { id: "3", name: "Future Builder", amount: "GH₵ 5,000/mo", description: "Underwrite equipment, venue, and mentor stipends for an entire cohort.", benefits: ["Featured sponsor at all events", "Dedicated Klagon Studios partnership page", "Quarterly video updates", "Volunteer engagement days", "Naming rights on funded program"], highlighted: false },
+  { id: "1", name: "Community Friend", amount: "GH₵ 500/mo", description: "Support a single workshop or learning session each month.", benefits: ["Name listed on KlagonStudios website", "Quarterly impact report", "Social media shoutout"], highlighted: false },
+  { id: "2", name: "Youth Champion", amount: "GH₵ 2,000/mo", description: "Fund a full learning track for 10 youth members each quarter.", benefits: ["Logo on KlagonStudios materials", "Monthly impact report", "Recognition at events", "2 seats at annual gala"], highlighted: true },
+  { id: "3", name: "Future Builder", amount: "GH₵ 5,000/mo", description: "Underwrite equipment, venue, and mentor stipends for an entire cohort.", benefits: ["Featured sponsor at all events", "Dedicated KlagonStudios partnership page", "Quarterly video updates", "Volunteer engagement days", "Naming rights on funded program"], highlighted: false },
 ];
 
 export const DONATION_TIERS: DonationTier[] = [

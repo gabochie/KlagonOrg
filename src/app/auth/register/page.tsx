@@ -10,10 +10,10 @@ export default function RegisterPage() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
             KS
           </div>
-          <span className="text-base font-bold text-navy">Klagon Studios</span>
+          <span className="text-base font-bold text-navy">KlagonStudios</span>
         </Link>
         <h1 className="text-lg font-extrabold text-navy text-center mb-1">Create your account</h1>
-        <p className="text-sm text-gray text-center mb-6">Join Klagon Studios — free, always</p>
+        <p className="text-sm text-gray text-center mb-6">Join KlagonStudios — free, always</p>
         <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">

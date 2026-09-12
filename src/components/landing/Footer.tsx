@@ -11,7 +11,7 @@ const platformLinks = [
 const joinLinks = [
   { label: "Register Now", href: "/auth/register" },
   { label: "Become a Mentor", href: "/mentor" },
-  { label: "Sponsor Klagon Studios", href: "/sponsor" },
+  { label: "Sponsor KlagonStudios", href: "/sponsor" },
   { label: "Donate", href: "/donate" },
 ];
 
@@ -34,7 +34,7 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-amber flex items-center justify-center text-xs font-extrabold text-navy">
                 KS
               </div>
-              <span className="text-sm font-bold text-white">Klagon Studios</span>
+              <span className="text-sm font-bold text-white">KlagonStudios</span>
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">
               Preparing Klagon&apos;s youth for the future — through skills, community, and
@@ -98,7 +98,7 @@ export function Footer() {
         </div>
         <div className="border-t border-white/10 pt-5 flex items-center justify-between flex-wrap gap-4">
           <div className="text-xs text-white/35">
-            © 2025 Klagon Studios. All rights reserved.
+            © 2025 KlagonStudios. All rights reserved.
           </div>
           <div className="text-[11px] font-semibold bg-amber/15 text-amber px-2.5 py-1 rounded-full">
             Built for Klagon, Ghana 🇬🇭

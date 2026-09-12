@@ -6,7 +6,7 @@ export function JourneyTracker() {
     <div className="bg-white rounded-xl border border-border p-4 sm:p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm font-bold text-navy">Your Klagon Studios Journey</div>
+          <div className="text-sm font-bold text-navy">Your KlagonStudios Journey</div>
           <div className="text-[11px] text-gray mt-0.5">
             You&apos;re at Stage 2 — keep learning to unlock Build
           </div>

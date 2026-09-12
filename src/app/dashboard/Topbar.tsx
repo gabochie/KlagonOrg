@@ -15,7 +15,7 @@ export function Topbar() {
             KS
           </div>
           <span className="text-xs font-bold text-white">
-            {isAdmin ? "Klagon Studios Admin" : "Klagon Studios"}
+            {isAdmin ? "KlagonStudios Admin" : "KlagonStudios"}
           </span>
         </Link>
         {isAdmin && (

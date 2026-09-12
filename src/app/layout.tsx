@@ -4,17 +4,17 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://stars.klagon.org"),
-  title: "Klagon Studios — Preparing Klagon's Youth for the Future",
+  title: "KlagonStudios — Preparing Klagon's Youth for the Future",
   description:
-    "Klagon Studios empowers Klagon's youth with skills, mentorship, and community. Join free today.",
+    "KlagonStudios empowers Klagon's youth with skills, mentorship, and community. Join free today.",
   icons: {
     icon: "/favicon.svg",
     apple: "/favicon.svg",
   },
   openGraph: {
-    title: "Klagon Studios — Preparing Klagon's Youth for the Future",
+    title: "KlagonStudios — Preparing Klagon's Youth for the Future",
     description:
-      "Klagon Studios empowers Klagon's youth with skills, mentorship, and community.",
+      "KlagonStudios empowers Klagon's youth with skills, mentorship, and community.",
   },
 };
 
