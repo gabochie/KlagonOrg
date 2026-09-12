@@ -68,17 +68,16 @@ async function brevoSend(env, to, subject, html) {
 }
 
 async function sendDonationEmails(env, ref) {
-  const res = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/donations?provider_ref=eq.${encodeURIComponent(ref)}&select=email,full_name,amount_ghs`,
-    {
-      headers: {
-        apikey: env.SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-      },
-    }
-  );
-  const rows = res.ok ? await res.json() : [];
-  const row = rows[0];
+  const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/get_donation_sendable`, {
+    method: "POST",
+    headers: {
+      apikey: env.SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_ref: ref }),
+  });
+  const row = res.ok ? (await res.json())[0] : null;
   if (!row) return;
 
   const amount = Number(row.amount_ghs ?? 0).toFixed(2);
