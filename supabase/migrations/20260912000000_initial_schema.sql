@@ -252,16 +252,17 @@ create trigger profiles_touch_updated_at
   for each row execute procedure public.touch_updated_at();
 
 -- ---------- helper auth functions ----------
+-- SECURITY DEFINER = inner profiles queries bypass RLS, preventing recursion
 create or replace function public.current_role()
 returns public.user_role
-language sql stable
+language sql stable security definer set search_path = public
 as $$
   select coalesce((select role from public.profiles where id = auth.uid()), 'member'::public.user_role);
 $$;
 
 create or replace function public.is_approved_member()
 returns boolean
-language sql stable
+language sql stable security definer set search_path = public
 as $$
   select exists (
     select 1 from public.profiles
@@ -271,7 +272,7 @@ $$;
 
 create or replace function public.is_admin()
 returns boolean
-language sql stable
+language sql stable security definer set search_path = public
 as $$
   select exists (
     select 1 from public.profiles
@@ -281,7 +282,7 @@ $$;
 
 create or replace function public.is_super_admin()
 returns boolean
-language sql stable
+language sql stable security definer set search_path = public
 as $$
   select exists (
     select 1 from public.profiles
