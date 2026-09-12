@@ -7,6 +7,27 @@ import { MENTOR_TOPICS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { submitMentorApplication } from "@/lib/forms";
 
+const PROFESSIONS = [
+  "Software Engineer",
+  "Designer",
+  "Graphic Designer",
+  "Teacher",
+  "Tutor",
+  "Nurse",
+  "Doctor",
+  "Accountant",
+  "Lawyer",
+  "Entrepreneur",
+  "Trader / Business Owner",
+  "Marketer",
+  "Photographer",
+  "Mechanic",
+  "Journalist",
+  "Public Servant",
+  "Student",
+  "Self-employed",
+];
+
 export default function MentorPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -98,7 +119,12 @@ export default function MentorPage() {
                   <Input label="Phone" placeholder="0244 000 000" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                 </div>
                 <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
-                <Input label="Profession / Field" placeholder="e.g. Software Engineer" required value={form.profession} onChange={(e) => setForm((f) => ({ ...f, profession: e.target.value }))} />
+                <Input label="Profession / Field" placeholder="e.g. Software Engineer" list="professions" required value={form.profession} onChange={(e) => setForm((f) => ({ ...f, profession: e.target.value }))} />
+                <datalist id="professions">
+                  {PROFESSIONS.map((p) => (
+                    <option key={p} value={p} />
+                  ))}
+                </datalist>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-navy">Why do you want to mentor?</label>
                   <textarea
