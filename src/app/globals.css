@@ -13,7 +13,7 @@
   --color-purple: #8B5CF6;
   --color-red: #EF4444;
 
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {

@@ -16,12 +16,14 @@ function getDashArray(value: number, offset: number) {
 }
 
 export function DonutChart() {
-  let cumulative = 0;
-  const slices = DATA.map((d) => {
-    const start = cumulative;
-    cumulative += d.value;
-    return { ...d, start };
-  });
+  const slices = DATA.reduce<{ label: string; value: number; color: string; start: number }[]>(
+    (acc, d) => {
+      const start = acc.length ? acc[acc.length - 1].start + acc[acc.length - 1].value : 0;
+      acc.push({ ...d, start });
+      return acc;
+    },
+    []
+  );
 
   return (
     <div>

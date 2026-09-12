@@ -80,7 +80,7 @@ export function ChatBot() {
       const reply = getBotReply(userText);
       setMessages((prev) => [...prev, { role: "bot", text: reply }]);
       setTyping(false);
-    }, 800 + Math.random() * 600);
+    }, 900);
   };
 
   return (
