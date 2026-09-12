@@ -5,8 +5,8 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { DONATION_TIERS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
-import { Heart, Smartphone } from "lucide-react";
-import { chargeDonation, type MoMoNetwork } from "@/lib/payments";
+import { Heart, Smartphone, ShieldCheck } from "lucide-react";
+import { chargeDonation, confirmDonation, type MoMoNetwork } from "@/lib/payments";
 
 const NETWORKS: { id: MoMoNetwork; label: string }[] = [
   { id: "mtn", label: "MTN MoMo" },
@@ -24,13 +24,18 @@ export default function DonatePage() {
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
 
+  // OTP step
+  const [chargeRef, setChargeRef] = useState<string | null>(null);
+  const [otp, setOtp] = useState("");
+  const [verifying, setVerifying] = useState(false);
+
   const tier = DONATION_TIERS.find((t) => t.id === selected);
   const displayAmount = customAmount || tier?.amount || "";
+  const amount = parseFloat((customAmount || tier?.amount || "").replace(/[^\d.]/g, ""));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const amount = parseFloat((customAmount || tier?.amount || "").replace(/[^\d.]/g, ""));
     if (!amount || amount <= 0) return setError("Enter a valid amount.");
     if (!form.phone.trim()) return setError("Enter the MoMo phone number to charge.");
     setSending(true);
@@ -44,10 +49,39 @@ export default function DonatePage() {
     });
     setSending(false);
     if (!result.ok) {
-      const detail = result.code ? `${result.error ?? "Payment request failed."} (${result.code})` : (result.error ?? "Payment request failed. Please try again.");
+      const detail = result.code
+        ? `${result.error ?? "Payment request failed."} (${result.code})`
+        : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
     setPromptPhone(result.payer ?? form.phone.trim());
+    if (result.otp_required && result.ref) {
+      setChargeRef(result.ref);
+      setOtp("");
+      return;
+    }
+    setSubmitted(true);
+  };
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chargeRef) return;
+    setError(null);
+    setVerifying(true);
+    const result = await confirmDonation({
+      ref: chargeRef,
+      otp,
+      amount_ghs: amount,
+      phone: form.phone.trim(),
+      network,
+    });
+    setVerifying(false);
+    if (!result.ok) {
+      const detail = result.code
+        ? `${result.error ?? "Verification failed."} (${result.code})`
+        : (result.error ?? "Verification failed. Check the code and try again.");
+      return setError(detail);
+    }
     setSubmitted(true);
   };
 
@@ -107,17 +141,51 @@ export default function DonatePage() {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber/15 mb-3">
                   <Smartphone size="24" className="text-amber" />
                 </div>
-                <h3 className="text-base font-bold text-navy mb-1">Check your phone!</h3>
+                <h3 className="text-base font-bold text-navy mb-1">Almost done — check your phone!</h3>
                 <p className="text-sm text-gray mb-4">
-                  An approval prompt for {displayAmount} was sent to{" "}
-                  <span className="font-bold text-navy">{promptPhone}</span>. Enter your MoMo
-                  PIN to complete the donation.
+                  A payment prompt for {displayAmount} was sent to{" "}
+                  <span className="font-bold text-navy">{promptPhone}</span>. Approve it with
+                  your MoMo PIN to complete the donation.
                 </p>
                 <p className="text-xs text-gray">
                   A receipt will be sent to your email once payment confirms. You&apos;ll also
                   receive impact updates.
                 </p>
               </div>
+            ) : chargeRef ? (
+              <form
+                className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
+                onSubmit={handleVerify}
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber/15 mb-1">
+                  <ShieldCheck size="24" className="text-amber" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-navy mb-1">Verify your donation</h3>
+                  <p className="text-sm text-gray">
+                    We sent an SMS code to <span className="font-bold text-navy">{promptPhone}</span>.
+                    Enter it below to continue.
+                  </p>
+                </div>
+                <Input
+                  label="OTP from SMS"
+                  inputMode="numeric"
+                  placeholder="e.g. 483920"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/[^\d]/g, ""))}
+                />
+                {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Button variant="dark" size="lg" className="w-full" disabled={verifying || otp.length < 4}>
+                  {verifying ? "Verifying…" : "Confirm donation"}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => { setChargeRef(null); setError(null); }}
+                  className="text-xs text-gray underline cursor-pointer font-sans"
+                >
+                  Change details
+                </button>
+              </form>
             ) : (
               <form
                 className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
@@ -155,10 +223,10 @@ export default function DonatePage() {
                 <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
-                  {sending ? "Sending prompt…" : `Donate ${displayAmount}`}
+                  {sending ? "Sending request…" : `Donate ${displayAmount}`}
                 </Button>
                 <p className="text-[10px] text-gray text-center flex items-center justify-center gap-1">
-                  <Heart size="10" /> Secure donation via Moolre. You&apos;ll get a MoMo approval prompt on your phone.
+                  <Heart size="10" /> Secure donation via Moolre. A confirmation prompt will be sent to your phone.
                 </p>
               </form>
             )}

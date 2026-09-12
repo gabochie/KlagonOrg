@@ -37,6 +37,40 @@ function normalizeGhPhone(raw) {
   return null;
 }
 
+const failRow = (env, ref) =>
+  fetch(`${env.SUPABASE_URL}/rest/v1/rpc/confirm_donation_by_ref`, {
+    method: "POST",
+    headers: {
+      apikey: env.SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_ref: ref, p_status: "failed" }),
+  }).catch(() => null);
+
+async function moolreCollect(env, { channel, payer, amount, ref, network, otp }) {
+  const res = await fetch(MOOLRE_API, {
+    method: "POST",
+    headers: {
+      "X-API-USER": env.MOOLRE_USER,
+      "X-API-PUBKEY": env.MOOLRE_PUBKEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: 1,
+      channel,
+      currency: "GHS",
+      payer,
+      amount: String(amount),
+      externalref: ref,
+      ...(otp ? { otpcode: String(otp) } : {}),
+      reference: `KlagonOrg donation ${ref}`,
+      accountnumber: env.MOOLRE_WALLET,
+    }),
+  });
+  return res.json();
+}
+
 async function handleCharge(request, env) {
   const origin = request.headers.get("Origin") ?? "";
 
@@ -95,55 +129,83 @@ async function handleCharge(request, env) {
     return json({ error: "Could not start your donation. Please try again." }, 502, origin);
   }
 
-  const failRow = () =>
-    fetch(`${env.SUPABASE_URL}/rest/v1/rpc/confirm_donation_by_ref`, {
-      method: "POST",
-      headers: {
-        apikey: env.SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ p_ref: ref, p_status: "failed" }),
-    }).catch(() => null);
-
-  // 2) Fire the MoMo USSD prompt.
+  // 2) Fire the payment request.
   let moolre;
   try {
-    const res = await fetch(MOOLRE_API, {
-      method: "POST",
-      headers: {
-        "X-API-USER": env.MOOLRE_USER,
-        "X-API-PUBKEY": env.MOOLRE_PUBKEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: 1,
-        channel,
-        currency: "GHS",
-        payer,
-        amount: String(amount),
-        externalref: ref,
-        reference: `KlagonOrg donation ${ref}`,
-        accountnumber: env.MOOLRE_WALLET,
-      }),
-    });
-    moolre = await res.json();
+    moolre = await moolreCollect(env, { channel, payer, amount, ref, network: input.network });
   } catch {
-    await failRow();
+    await failRow(env, ref);
     return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
   }
 
-  if (moolre?.status == 1 && moolre?.code === "TR099") {
-    return json({ ok: true, ref, payer, message: "prompt-sent" }, 200, origin);
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    if (code === "TR099") {
+      return json({ ok: true, ref, payer, message: "prompt-sent" }, 200, origin);
+    }
+    if (code === "TP14") {
+      // OTP required: keep the row pending; the donor enters the SMS code next.
+      return json({ ok: true, ref, payer, otp_required: true, message: "otp-required" }, 200, origin);
+    }
+    // Any other success-family code (e.g. TP17) = initiated; callback settles it.
+    return json({ ok: true, ref, payer, message: "initiated" }, 200, origin);
   }
 
-  await failRow();
+  await failRow(env, ref);
   return json(
     {
       error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again.",
-      code: moolre?.code ? String(moolre.code) : undefined,
+      code,
     },
     502,
+    origin
+  );
+}
+
+async function handleConfirm(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send ref and otp." }, 400, origin);
+  }
+
+  const ref = String(input?.ref ?? "").trim();
+  const otp = String(input?.otp ?? "").replace(/\s/g, "");
+  if (!ref || otp.length < 4) {
+    return json({ error: "Enter the full OTP from the SMS." }, 400, origin);
+  }
+  const amount = Number(input?.amount_ghs);
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()];
+  const payer = normalizeGhPhone(input?.phone);
+
+  let moolre;
+  try {
+    moolre = await moolreCollect(env, {
+      channel: channel ?? "13",
+      payer: payer ?? input?.phone,
+      amount: Number.isFinite(amount) && amount > 0 ? amount : input?.amount_ghs,
+      ref,
+      network: input?.network,
+      otp,
+    });
+  } catch {
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    return json({ ok: true, ref, message: code === "TR099" ? "prompt-sent" : "initiated" }, 200, origin);
+  }
+
+  return json(
+    {
+      error: moolre?.message ? String(moolre.message) : "Verification failed. Check the code and try again.",
+      code,
+    },
+    400,
     origin
   );
 }
@@ -225,6 +287,15 @@ export default {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
       }
       if (request.method === "POST") return handleCharge(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/donations/confirm") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleConfirm(request, env);
       return json({ error: "method-not-allowed" }, 405, origin);
     }
 
