@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-navy: #0F1B5C;
   --color-blue: #1A2E8C;
@@ -13,6 +15,10 @@
   --color-purple: #8B5CF6;
   --color-red: #EF4444;
 
+  --color-ink: #0A1128;
+  --color-ink-2: #0E1732;
+  --color-ink-3: #16224A;
+
   --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -20,6 +26,28 @@
   body {
     @apply bg-light text-navy font-sans antialiased;
   }
+  .dark {
+    color-scheme: dark;
+  }
+  .dark body {
+    background-color: var(--color-ink);
+    color: #ffffff;
+  }
+}
+
+/* Site-wide dark surfaces: higher specificity flips Tailwind surface utilities */
+.dark .bg-light { background-color: var(--color-ink); }
+.dark .bg-white { background-color: var(--color-ink-2); }
+.dark .bg-pale  { background-color: #111B3D; }
+.dark .bg-light\/{background: transparent;}
+.dark .border-border { border-color: rgba(255, 255, 255, 0.1); }
+.dark .text-navy { color: #FFFFFF; }
+.dark .text-gray { color: rgba(255, 255, 255, 0.62); }
+.dark ::placeholder { color: rgba(255, 255, 255, 0.35); }
+.dark ::selection { background-color: rgba(245, 158, 11, 0.35); }
+
+@media (prefers-color-scheme: dark) {
+  .dark { color-scheme: dark; }
 }
 
 @keyframes fadeIn {
