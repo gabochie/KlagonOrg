@@ -1,3 +1,4 @@
+import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { MetricCards } from "@/components/admin/MetricCards";
 import { BarChart } from "@/components/admin/BarChart";
 import { DonutChart } from "@/components/admin/DonutChart";
@@ -8,7 +9,7 @@ import { ActivityFeed } from "@/components/admin/ActivityFeed";
 
 export default function AdminDashboard() {
   return (
-    <>
+    <RequireAdmin>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <div className="text-lg font-extrabold text-navy tracking-tight">Dashboard Overview</div>
@@ -50,6 +51,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-    </>
+      </RequireAdmin>
   );
 }

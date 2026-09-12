@@ -6,12 +6,36 @@ import { Footer } from "@/components/landing/Footer";
 import { SPONSOR_PLANS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { CheckCircle } from "lucide-react";
+import { submitSponsorApplication } from "@/lib/forms";
 
 export default function SponsorPage() {
   const [selected, setSelected] = useState("2");
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    full_name: "",
+    phone: "",
+    email: "",
+    org_name: "",
+  });
 
   const plan = SPONSOR_PLANS.find((p) => p.id === selected);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSending(true);
+    const { error: err } = await submitSponsorApplication({
+      ...form,
+      org_name: form.org_name || null,
+      plan_id: selected || null,
+      message: null,
+    });
+    setSending(false);
+    if (err) return setError(err);
+    setSubmitted(true);
+  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -81,7 +105,7 @@ export default function SponsorPage() {
             ) : (
               <form
                 className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
-                onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+                onSubmit={handleSubmit}
               >
                 {plan && (
                   <div className="bg-pale rounded-lg p-3 text-center mb-2">
@@ -90,13 +114,14 @@ export default function SponsorPage() {
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-3">
-                  <Input label="Full name / Org name" placeholder="Your name" required />
-                  <Input label="Phone" placeholder="0244 000 000" required />
+                  <Input label="Full name / Org name" placeholder="Your name" required value={form.full_name} onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))} />
+                  <Input label="Phone" placeholder="0244 000 000" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                 </div>
-                <Input label="Email" type="email" placeholder="you@email.com" required />
-                <Input label="Company / Organization (if applicable)" placeholder="Optional" />
-                <Button variant="dark" size="lg" className="w-full">
-                  Submit Interest
+                <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                <Input label="Company / Organization (if applicable)" placeholder="Optional" value={form.org_name} onChange={(e) => setForm((f) => ({ ...f, org_name: e.target.value }))} />
+                {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Button variant="dark" size="lg" className="w-full" disabled={sending}>
+                  {sending ? "Submitting…" : "Submit Interest"}
                 </Button>
               </form>
             )}

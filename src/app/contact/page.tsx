@@ -5,9 +5,43 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Button, Input } from "@/components/ui";
 import { Mail, MapPin, Phone, MessageCircle, ExternalLink } from "lucide-react";
+import { submitContact } from "@/lib/forms";
+
+const SUBJECTS = [
+  "General Inquiry",
+  "Partnership",
+  "Volunteer",
+  "Sponsorship",
+  "Media & Press",
+  "Other",
+];
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    full_name: "",
+    phone: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSending(true);
+    const { error: err } = await submitContact({
+      ...form,
+      full_name: form.full_name || null,
+      phone: form.phone || null,
+      subject: form.subject || null,
+    });
+    setSending(false);
+    if (err) return setError(err);
+    setSubmitted(true);
+  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -39,8 +73,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-navy">Email</div>
-                    <a href="mailto:hello@stars.klagon.org" className="text-xs text-gray hover:text-amber transition-colors">
-                      hello@stars.klagon.org
+                    <a href="mailto:hello@klagon.org" className="text-xs text-gray hover:text-amber transition-colors">
+                      hello@klagon.org
                     </a>
                   </div>
                 </div>
@@ -107,26 +141,25 @@ export default function ContactPage() {
                   <h2 className="text-base font-extrabold text-navy mb-6">Send us a message</h2>
                   <form
                     className="flex flex-col gap-4"
-                    onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+                    onSubmit={handleSubmit}
                   >
                     <div className="grid grid-cols-2 gap-3">
-                      <Input label="Full name" placeholder="Your name" required />
-                      <Input label="Phone" placeholder="0244 000 000" />
+                      <Input label="Full name" placeholder="Your name" value={form.full_name} onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))} />
+                      <Input label="Phone" placeholder="0244 000 000" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                     </div>
-                    <Input label="Email" type="email" placeholder="you@email.com" required />
+                    <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-semibold text-navy">Subject</label>
                       <select
                         className="px-3 py-2 rounded-lg border border-border text-sm text-navy font-sans bg-white focus:outline-2 focus:outline-amber focus:border-transparent"
                         required
+                        value={form.subject}
+                        onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
                       >
                         <option value="">Select a topic</option>
-                        <option>General Inquiry</option>
-                        <option>Partnership</option>
-                        <option>Volunteer</option>
-                        <option>Sponsorship</option>
-                        <option>Media & Press</option>
-                        <option>Other</option>
+                        {SUBJECTS.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
                       </select>
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -135,10 +168,13 @@ export default function ContactPage() {
                         className="px-3 py-2 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent resize-none h-28"
                         placeholder="Tell us how we can help..."
                         required
+                        value={form.message}
+                        onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                       />
                     </div>
-                    <Button variant="dark" size="lg" className="w-full">
-                      Send Message
+                    {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                    <Button variant="dark" size="lg" className="w-full" disabled={sending}>
+                      {sending ? "Sending…" : "Send Message"}
                     </Button>
                   </form>
                 </>

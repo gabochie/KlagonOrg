@@ -5,6 +5,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { VOLUNTEER_OPPS } from "@/lib/constants";
 import { Button } from "@/components/ui";
+import { getBrowserClient } from "@/lib/supabase-browser";
 
 const categories = Array.from(new Set(VOLUNTEER_OPPS.map((v) => v.category)));
 
@@ -15,14 +16,34 @@ export default function VolunteerPage() {
     filter === "All" ? VOLUNTEER_OPPS : VOLUNTEER_OPPS.filter((v) => v.category === filter);
 
   const [joined, setJoined] = useState<Set<string>>(new Set());
+  const [notice, setNotice] = useState<string | null>(null);
 
-  const toggleJoin = (id: string) => {
-    setJoined((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  const toggleJoin = async (id: string) => {
+    const client = getBrowserClient();
+    if (!client || !client.auth.getUser) {
+      setNotice("Sign in to volunteer. Registration for new roles requires an account.");
+      return;
+    }
+    const { data: sessionData } = await client.auth.getSession();
+    const memberId = sessionData.session?.user.id;
+    if (!memberId) {
+      setNotice("Sign in to volunteer. Registration for new roles requires an account.");
+      return;
+    }
+    const projectId = String(id);
+    const { error: signupErr } = await client
+      .from("volunteer_signups")
+      .insert({ project_id: projectId, member_id: memberId });
+    if (signupErr) {
+      setNotice("Could not sign up. Is your profile approved?");
+      return;
+    }
+    await client.from("project_volunteers").upsert(
+      { project_id: projectId, member_id: memberId },
+      { onConflict: "project_id,member_id", ignoreDuplicates: true }
+    );
+    setJoined((prev) => new Set(prev).add(id));
+    setNotice(null);
   };
 
   return (
@@ -69,6 +90,11 @@ export default function VolunteerPage() {
               </button>
             ))}
           </div>
+          {notice && (
+            <div className="mb-6 text-xs font-semibold bg-amber/10 text-navy rounded-lg px-4 py-3">
+              {notice}
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((v) => {
               const isJoined = joined.has(v.id);

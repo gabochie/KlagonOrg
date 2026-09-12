@@ -5,10 +5,35 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { MENTOR_TOPICS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
+import { submitMentorApplication } from "@/lib/forms";
 
 export default function MentorPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    full_name: "",
+    phone: "",
+    email: "",
+    profession: "",
+    motivation: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSending(true);
+    const { error: err } = await submitMentorApplication({
+      ...form,
+      profession: form.profession || null,
+      topics: selected ? [selected] : [],
+      motivation: form.motivation || null,
+    });
+    setSending(false);
+    if (err) return setError(err);
+    setSubmitted(true);
+  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -66,24 +91,27 @@ export default function MentorPage() {
             ) : (
               <form
                 className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
-                onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+                onSubmit={handleSubmit}
               >
                 <div className="grid grid-cols-2 gap-3">
-                  <Input label="Full name" placeholder="Your name" required />
-                  <Input label="Phone" placeholder="0244 000 000" required />
+                  <Input label="Full name" placeholder="Your name" required value={form.full_name} onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))} />
+                  <Input label="Phone" placeholder="0244 000 000" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                 </div>
-                <Input label="Email" type="email" placeholder="you@email.com" required />
-                <Input label="Profession / Field" placeholder="e.g. Software Engineer" required />
+                <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                <Input label="Profession / Field" placeholder="e.g. Software Engineer" required value={form.profession} onChange={(e) => setForm((f) => ({ ...f, profession: e.target.value }))} />
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-navy">Why do you want to mentor?</label>
                   <textarea
                     className="px-3 py-2 rounded-lg border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent resize-none h-24"
                     placeholder="Share your motivation and what you hope to give back..."
                     required
+                    value={form.motivation}
+                    onChange={(e) => setForm((f) => ({ ...f, motivation: e.target.value }))}
                   />
                 </div>
-                <Button variant="dark" size="lg" className="w-full">
-                  Submit Application
+                {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Button variant="dark" size="lg" className="w-full" disabled={sending}>
+                  {sending ? "Submitting…" : "Submit Application"}
                 </Button>
               </form>
             )}
