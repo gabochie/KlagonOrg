@@ -19,10 +19,14 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setBusy(true);
-    const { error: err } = await signIn(email, password);
+    const { error: err, profile } = await signIn(email, password);
     setBusy(false);
     if (err) return setError(err);
-    router.push("/dashboard");
+    const role = profile?.role;
+    const status = profile?.status;
+    if (role === "admin" || role === "super_admin") return router.push("/dashboard/admin");
+    if (status === "approved") return router.push("/dashboard/member");
+    return router.push("/auth/pending");
   };
 
   return (

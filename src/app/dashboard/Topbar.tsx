@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
 
 export function Topbar() {
   const pathname = usePathname();
@@ -51,15 +52,7 @@ export function Topbar() {
           </div>
         )}
         <ThemeToggle dark />
-        <div className="relative">
-          <button
-            className="w-[30px] h-[30px] rounded-lg bg-white/8 flex items-center justify-center cursor-pointer"
-            aria-label="Notifications"
-          >
-            <span className="text-sm text-white/60">🔔</span>
-          </button>
-          <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-amber border-1.5 border-navy" />
-        </div>
+        <NotificationsBell />
         <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/8 border border-white/12">
           <div className="w-6 h-6 rounded-full bg-amber flex items-center justify-center text-[9px] font-bold text-navy">
             {initials}

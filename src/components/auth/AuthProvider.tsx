@@ -37,7 +37,10 @@ interface AuthContextValue {
   status: MemberStatus | "none";
   isAdmin: boolean;
   isApproved: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ error: string | null; profile: ProfileRow | null }>;
   signUp: (data: SignUpData) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -115,9 +118,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = useCallback(
     async (email: string, password: string) => {
       const client = getBrowserClient();
-      if (!client) return { error: "Auth is not configured yet. Add Supabase keys to continue." };
-      const { error } = await client.auth.signInWithPassword({ email, password });
-      return { error: error?.message ?? null };
+      if (!client) {
+        return { error: "Auth is not configured yet. Add Supabase keys to continue.", profile: null };
+      }
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) return { error: error.message, profile: null };
+
+      const userId = data.user?.id;
+      let signedInProfile: ProfileRow | null = null;
+      if (userId) {
+        const { data: p } = await client
+          .from("profiles")
+          .select("*, badges:member_badges(*)")
+          .eq("id", userId)
+          .single();
+        signedInProfile = (p as ProfileRow | null) ?? null;
+        if (signedInProfile) setProfile(signedInProfile);
+      }
+      return { error: null, profile: signedInProfile };
     },
     []
   );

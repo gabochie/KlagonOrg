@@ -1,4 +1,5 @@
 import { WelcomeBanner } from "@/components/member/WelcomeBanner";
+import { WelcomeOnboarding } from "@/components/member/WelcomeOnboarding";
 import { MetricsRow } from "@/components/member/MetricsRow";
 import { JourneyTracker } from "@/components/member/JourneyTracker";
 import { LearningProgress } from "@/components/member/LearningProgress";
@@ -11,6 +12,7 @@ export default function MemberDashboard() {
   return (
     <>
       <WelcomeBanner />
+      <WelcomeOnboarding />
       <MetricsRow />
       <JourneyTracker />
       <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr] gap-2.5">

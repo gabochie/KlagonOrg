@@ -36,6 +36,7 @@ export interface Database {
           status: MemberStatus;
           xp: number;
           avatar_url: string | null;
+          onboarded_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -53,11 +54,43 @@ export interface Database {
           status?: MemberStatus;
           xp?: number;
           avatar_url?: string | null;
+          onboarded_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]> & {
           id?: string;
         };
         Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          member_id: string;
+          type: string;
+          title: string;
+          body: string | null;
+          link: string | null;
+          read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          member_id: string;
+          type?: string;
+          title: string;
+          body?: string | null;
+          link?: string | null;
+          read?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["notifications"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_member_id_fkey";
+            columns: ["member_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       events: {
         Row: {
