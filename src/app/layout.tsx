@@ -48,10 +48,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={plusJakartaSans.variable}>
+    <html lang="en" className={plusJakartaSans.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("klagon-theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(t==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
-        <ChatBot />
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+          <ChatBot />
+        </ThemeProvider>
       </body>
     </html>
   );
