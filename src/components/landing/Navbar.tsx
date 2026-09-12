@@ -13,11 +13,13 @@ export function Navbar() {
     <nav className="bg-white border-b border-border h-14 sticky top-0 z-50 flex items-center px-4 sm:px-6">
       <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber to-amber/70 flex items-center justify-center text-[10px] font-extrabold text-navy">
-            KO
-          </div>
+          <img
+            src="/brand/klagon-logo.png"
+            alt="KlagonOrg"
+            className="h-9 w-auto"
+          />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
-            KlagonOrg
+            KLAGON<span className="text-amber">org</span>
           </span>
         </Link>
 
