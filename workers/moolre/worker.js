@@ -403,6 +403,20 @@ export default {
       return json({ error: "method-not-allowed" }, 405, origin);
     }
 
+    if (url.pathname === "/api/email/test") {
+      if (request.method !== "POST") return json({ error: "method-not-allowed" }, 405);
+      if (request.headers.get("x-test-key") !== env.EMAIL_TEST_KEY) {
+        return json({ error: "forbidden" }, 403);
+      }
+      const result = await brevoSend(
+        env,
+        [{ email: "klagonorg@gmail.com", name: "Gideon" }],
+        "KlagonOrg worker Brevo test",
+        "<p>If you see this, the Cloudflare Worker can send via Brevo.</p>"
+      ).catch(() => null);
+      return json({ ok: true, result });
+    }
+
     if (url.pathname === "/health") return json({ ok: true });
 
     return json({ error: "not-found" }, 404);
