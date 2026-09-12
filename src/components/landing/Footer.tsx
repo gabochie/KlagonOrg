@@ -17,7 +17,7 @@ const joinLinks = [
 
 const contactLinks = [
   { label: "Contact Us", href: "/contact", external: false },
-  { label: "klagonorg@gmail.com", href: "mailto:klagonorg@gmail.com", external: false },
+  { label: "hello@klagon.org", href: "mailto:hello@klagon.org", external: false },
   { label: "+233 59 562 4456", href: "https://wa.me/233559624456", external: true },
 ];
 
