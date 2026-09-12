@@ -1,18 +1,148 @@
-// KlagonOrg payments relay — Moolre webhook receiver (+ charge endpoint later).
+// KlagonOrg payments relay — Moolre webhook receiver + donation charge endpoint.
 //
 // Secrets (wrangler secret put): SUPABASE_ANON_KEY, CALLBACK_KEY,
-//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY (added when keys arrive).
+//   MOOLRE_USER, MOOLRE_PUBKEY, MOOLRE_PRIVKEY, MOOLRE_WALLET.
 
 const MOOLRE_WALLET_CALLBACK_IP = "192.241.135.134";
+const MOOLRE_API = "https://api.moolre.com/open/transact/payment";
 
 const PAID_SIGNALS = new Set(["success", "successful", "completed", "paid", "1"]);
 const FAILED_SIGNALS = new Set(["failed", "failure", "cancelled", "canceled", "rejected", "0"]);
 
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
+// Browsers allowed to call the charge endpoint (the site + its previews).
+function corsHeaders(origin) {
+  const allowed =
+    origin === "https://klagon.org" ||
+    origin === "https://www.klagon.org" ||
+    (typeof origin === "string" && origin.endsWith(".klagon-org.pages.dev"));
+  return {
+    "Content-Type": "application/json",
+    ...(allowed ? { "Access-Control-Allow-Origin": origin } : {}),
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
+
+function json(obj, status = 200, origin = "") {
+  return new Response(JSON.stringify(obj), { status, headers: corsHeaders(origin) });
+}
+
+const CHANNELS = { mtn: "13", telecel: "6", at: "7" };
+
+function normalizeGhPhone(raw) {
+  const digits = String(raw ?? "").replace(/[\s-]/g, "");
+  if (/^0\d{9}$/.test(digits)) return digits;
+  const m = digits.match(/^\+233(\d{9})$/);
+  if (m) return `0${m[1]}`;
+  return null;
+}
+
+async function handleCharge(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send amount, phone and network." }, 400, origin);
+  }
+
+  const amount = Number(input?.amount_ghs);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return json({ error: "Enter a valid amount." }, 400, origin);
+  }
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()];
+  if (!channel) {
+    return json({ error: "Choose MTN, Telecel or AT." }, 400, origin);
+  }
+  const payer = normalizeGhPhone(input?.phone);
+  if (!payer) {
+    return json({ error: "Enter a valid 10-digit Ghana phone number." }, 400, origin);
+  }
+
+  if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
+    return json({ error: "Online payments are not switched on yet. Please try again later." }, 503, origin);
+  }
+
+  const ref = `KLG-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`.toUpperCase();
+
+  // 1) Pending row first (anon insert allowed for status='pending' by RLS).
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/donations`, {
+      method: "POST",
+      headers: {
+        apikey: env.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        amount_ghs: amount,
+        tier_id: input?.tier_id ?? null,
+        full_name: input?.full_name || null,
+        phone: payer,
+        email: input?.email || null,
+        status: "pending",
+        provider: "moolre",
+        provider_ref: ref,
+        metadata: { network: String(input.network).toLowerCase() },
+      }),
+    });
+    if (!res.ok) {
+      return json({ error: "Could not start your donation. Please try again." }, 502, origin);
+    }
+  } catch {
+    return json({ error: "Could not start your donation. Please try again." }, 502, origin);
+  }
+
+  const failRow = () =>
+    fetch(`${env.SUPABASE_URL}/rest/v1/rpc/confirm_donation_by_ref`, {
+      method: "POST",
+      headers: {
+        apikey: env.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ p_ref: ref, p_status: "failed" }),
+    }).catch(() => null);
+
+  // 2) Fire the MoMo USSD prompt.
+  let moolre;
+  try {
+    const res = await fetch(MOOLRE_API, {
+      method: "POST",
+      headers: {
+        "X-API-USER": env.MOOLRE_USER,
+        "X-API-PUBKEY": env.MOOLRE_PUBKEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: 1,
+        channel,
+        currency: "GHS",
+        payer,
+        amount: String(amount),
+        externalref: ref,
+        reference: `KlagonOrg donation ${ref}`,
+        accountnumber: env.MOOLRE_WALLET,
+      }),
+    });
+    moolre = await res.json();
+  } catch {
+    await failRow();
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  if (moolre?.status == 1 && moolre?.code === "TR099") {
+    return json({ ok: true, ref, payer, message: "prompt-sent" }, 200, origin);
+  }
+
+  await failRow();
+  return json(
+    { error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again." },
+    502,
+    origin
+  );
 }
 
 async function handleCallback(request, env) {
@@ -84,6 +214,15 @@ export default {
       if (request.method === "GET") return json({ ok: true, service: "klagon-payments" });
       if (request.method === "POST") return handleCallback(request, env);
       return json({ error: "method-not-allowed" }, 405);
+    }
+
+    if (url.pathname === "/api/donations/charge") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleCharge(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
     }
 
     if (url.pathname === "/health") return json({ ok: true });

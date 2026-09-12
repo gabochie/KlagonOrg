@@ -5,15 +5,23 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { DONATION_TIERS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
-import { Heart } from "lucide-react";
-import { recordDonationIntent } from "@/lib/forms";
+import { Heart, Smartphone } from "lucide-react";
+import { chargeDonation, type MoMoNetwork } from "@/lib/payments";
+
+const NETWORKS: { id: MoMoNetwork; label: string }[] = [
+  { id: "mtn", label: "MTN MoMo" },
+  { id: "telecel", label: "Telecel Cash" },
+  { id: "at", label: "AT Money" },
+];
 
 export default function DonatePage() {
   const [selected, setSelected] = useState("3");
   const [customAmount, setCustomAmount] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [promptPhone, setPromptPhone] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
 
   const tier = DONATION_TIERS.find((t) => t.id === selected);
@@ -24,16 +32,19 @@ export default function DonatePage() {
     setError(null);
     const amount = parseFloat((customAmount || tier?.amount || "").replace(/[^\d.]/g, ""));
     if (!amount || amount <= 0) return setError("Enter a valid amount.");
+    if (!form.phone.trim()) return setError("Enter the MoMo phone number to charge.");
     setSending(true);
-    const { error: err } = await recordDonationIntent({
+    const result = await chargeDonation({
       amount_ghs: amount,
       tier_id: tier?.id ?? null,
       full_name: form.full_name || null,
-      phone: form.phone || null,
+      phone: form.phone.trim(),
       email: form.email || null,
+      network,
     });
     setSending(false);
-    if (err) return setError(err);
+    if (!result.ok) return setError(result.error ?? "Payment request failed. Please try again.");
+    setPromptPhone(result.payer ?? form.phone.trim());
     setSubmitted(true);
   };
 
@@ -90,15 +101,18 @@ export default function DonatePage() {
           <div className="max-w-lg mx-auto">
             {submitted ? (
               <div className="bg-white rounded-xl border border-border p-8 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green/10 mb-3">
-                  <Heart size="24" className="text-green" />
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber/15 mb-3">
+                  <Smartphone size="24" className="text-amber" />
                 </div>
-                <h3 className="text-base font-bold text-navy mb-1">Thank you for your generosity!</h3>
+                <h3 className="text-base font-bold text-navy mb-1">Check your phone!</h3>
                 <p className="text-sm text-gray mb-4">
-                  Your donation of {displayAmount} will make a real difference in Klagon.
+                  An approval prompt for {displayAmount} was sent to{" "}
+                  <span className="font-bold text-navy">{promptPhone}</span>. Enter your MoMo
+                  PIN to complete the donation.
                 </p>
                 <p className="text-xs text-gray">
-                  A receipt will be sent to your email. You&apos;ll also receive impact updates.
+                  A receipt will be sent to your email once payment confirms. You&apos;ll also
+                  receive impact updates.
                 </p>
               </div>
             ) : (
@@ -112,17 +126,36 @@ export default function DonatePage() {
                     <span className="text-sm font-bold text-navy">{displayAmount}</span>
                   </div>
                 )}
+                <div>
+                  <div className="text-xs font-semibold text-navy mb-1.5">Mobile money network</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {NETWORKS.map((n) => (
+                      <button
+                        key={n.id}
+                        type="button"
+                        onClick={() => setNetwork(n.id)}
+                        className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                          network === n.id
+                            ? "border-amber bg-amber/10 text-navy"
+                            : "border-border text-gray hover:border-amber"
+                        }`}
+                      >
+                        {n.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <Input label="Full name" placeholder="Your name" required value={form.full_name} onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))} />
-                  <Input label="Phone" placeholder="0244 000 000" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
+                  <Input label="MoMo phone" placeholder="0244 000 000" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                 </div>
                 <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
-                  {sending ? "Processing…" : `Donate ${displayAmount}`}
+                  {sending ? "Sending prompt…" : `Donate ${displayAmount}`}
                 </Button>
-                <p className="text-[10px] text-gray text-center">
-                  Secure donation via Moolre. You&apos;ll be redirected to complete payment after submitting.
+                <p className="text-[10px] text-gray text-center flex items-center justify-center gap-1">
+                  <Heart size="10" /> Secure donation via Moolre. You&apos;ll get a MoMo approval prompt on your phone.
                 </p>
               </form>
             )}
