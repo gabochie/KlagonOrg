@@ -1,14 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { ADMIN_EVENTS } from "@/lib/constants";
+import { fetchAdminEvents } from "@/lib/queries";
 import { Button } from "@/components/ui";
+import type { Event } from "@/types";
 
 export function UpcomingEvents() {
+  const [events, setEvents] = useState<Event[]>(ADMIN_EVENTS);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchAdminEvents();
+      if (live.length > 0) setEvents(live);
+    })();
+  }, []);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm font-bold text-navy">Upcoming Events</div>
         <Button size="sm" variant="secondary">Manage</Button>
       </div>
-      {ADMIN_EVENTS.map((e) => {
+      {events.map((e) => {
         const d = new Date(e.date);
         return (
           <div

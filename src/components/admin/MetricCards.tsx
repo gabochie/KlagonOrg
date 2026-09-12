@@ -1,9 +1,23 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { ADMIN_METRICS } from "@/lib/constants";
+import { fetchAdminMetrics } from "@/lib/queries";
+import type { Metric } from "@/types";
 
 export function MetricCards() {
+  const [metrics, setMetrics] = useState<Metric[]>(ADMIN_METRICS);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchAdminMetrics();
+      if (live.cards.length > 0) setMetrics(live.cards);
+    })();
+  }, []);
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-      {ADMIN_METRICS.map((m) => (
+      {metrics.map((m) => (
         <div
           key={m.label}
           className="bg-white rounded-xl border border-border p-3.5 relative overflow-hidden"

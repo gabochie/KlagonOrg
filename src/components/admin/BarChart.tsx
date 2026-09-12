@@ -1,4 +1,16 @@
-const DATA = [
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchAdminMetrics } from "@/lib/queries";
+
+interface Bar {
+  label: string;
+  value: number;
+  pct: number;
+  isLatest?: boolean;
+}
+
+const FALLBACK: Bar[] = [
   { label: "Wk1", value: 4, pct: 20 },
   { label: "Wk2", value: 9, pct: 35 },
   { label: "Wk3", value: 14, pct: 48 },
@@ -9,13 +21,24 @@ const DATA = [
   { label: "Wk8", value: 73, pct: 100 },
 ];
 
-const barColor = (i: number) => {
-  if (i === DATA.length - 1) return "#0F1B5C";
-  if (i >= DATA.length - 3) return "#475569";
-  return "#CBD5E1";
-};
-
 export function BarChart() {
+  const [data, setData] = useState<Bar[]>(FALLBACK);
+
+  useEffect(() => {
+    void (async () => {
+      const live = await fetchAdminMetrics();
+      if (live.registrationTrend.length > 0) setData(live.registrationTrend);
+    })();
+  }, []);
+
+  const latest = data[data.length - 1];
+  const total = latest?.value ?? 0;
+  const barColor = (b: Bar, i: number) => {
+    if (b.isLatest ?? i === data.length - 1) return "#0F1B5C";
+    if (i >= data.length - 3) return "#475569";
+    return "#CBD5E1";
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
@@ -29,14 +52,14 @@ export function BarChart() {
         </select>
       </div>
       <div className="flex items-end gap-1.5 h-20">
-        {DATA.map((d, i) => (
+        {data.map((d, i) => (
           <div key={d.label} className="flex-1 flex flex-col items-center gap-1">
             <span className="text-[9px] font-bold text-navy">{d.value}</span>
             <div
               className="w-full rounded-t-md cursor-pointer hover:opacity-80 transition-opacity"
               style={{
                 height: `${d.pct}%`,
-                background: barColor(i),
+                background: barColor(d, i),
                 minHeight: 4,
               }}
             />
@@ -46,9 +69,12 @@ export function BarChart() {
       </div>
       <div className="mt-2.5 flex items-center gap-2">
         <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
-          <div className="h-full rounded-full bg-amber" style={{ width: "73%" }} />
+          <div
+            className="h-full rounded-full bg-amber"
+            style={{ width: `${Math.min(latest?.pct ?? 100, 100)}%` }}
+          />
         </div>
-        <span className="text-[11px] font-bold text-navy">73 / 100</span>
+        <span className="text-[11px] font-bold text-navy">{total} / 100</span>
       </div>
     </div>
   );
