@@ -79,7 +79,7 @@ export default function ProjectsPage() {
             </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.map((p) => {
+            {projects.map((p) => (
               <div
                 key={p.id}
                 className="bg-white rounded-xl border border-border p-5 sm:p-6 hover:shadow-md transition-shadow"
@@ -133,7 +133,7 @@ export default function ProjectsPage() {
                   </div>
                 )}
               </div>
-            })}
+            ))}
           </div>
         </div>
       </section>
