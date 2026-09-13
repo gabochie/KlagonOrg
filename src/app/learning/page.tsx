@@ -1,13 +1,18 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { ProgressBar } from "@/components/ui";
 import { COURSES } from "@/lib/constants";
-import { fetchPublicCourses } from "@/lib/queries";
+import { getSupabase } from "@/lib/supabase";
 import type { Course } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Learning Hub — KlagonOrg",
+  description:
+    "Free learning tracks in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning.",
+  alternates: { canonical: "/learning" },
+};
 
 const categoryColors: Record<string, string> = {
   "Future Skills": "#EEF2FF",
@@ -18,15 +23,30 @@ const categoryColors: Record<string, string> = {
   Career: "#F0FDF4",
 };
 
-export default function LearningPage() {
-  const [courses, setCourses] = useState<Course[]>(COURSES);
+async function getCourses(): Promise<Course[]> {
+  try {
+    const sb = getSupabase();
+    const { data, error } = await sb
+      .from("courses_public")
+      .select("id,title,category,icon,lesson_count")
+      .order("created_at", { ascending: true });
+    if (error || !data || data.length === 0) return COURSES;
+    return data.map((r) => ({
+      id: r.id,
+      title: r.title,
+      category: r.category,
+      icon: r.icon,
+      lessons: r.lesson_count,
+      lessonsDone: 0,
+      color: "#EEF2FF",
+    }));
+  } catch {
+    return COURSES;
+  }
+}
 
-  useEffect(() => {
-    void (async () => {
-      const live = await fetchPublicCourses();
-      if (live.length > 0) setCourses(live);
-    })();
-  }, []);
+export default async function LearningPage() {
+  const courses = await getCourses();
 
   return (
     <div className="w-full overflow-hidden">
