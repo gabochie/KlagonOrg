@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts, getCategories } from "@/lib/blog";
+import { getAllAuthors } from "@/lib/blogAuthors";
 
 export const dynamic = "force-static";
 
@@ -46,5 +47,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...base, ...posts, ...categories];
+  const authors = [
+    { url: `${BASE}/blog/authors`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.5 },
+    ...getAllAuthors().map((a) => ({
+      url: `${BASE}/blog/author/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
+  ];
+
+  return [...base, ...posts, ...categories, ...authors];
 }

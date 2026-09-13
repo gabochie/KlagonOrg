@@ -6,7 +6,7 @@
     <atom:link href="https://klagon.org/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Mastery of change in the digital age — practical guides for Ghana's youth on lifelong learning, digital transformation, thinking skills, building visions, and making things happen.</description>
     <language>en-gb</language>
-    <lastBuildDate>Sun, 13 Sep 2026 08:13:40 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2026 08:37:35 GMT</lastBuildDate>
     <item>
       <title>The Young Professional's Money Playbook for the Digital Age</title>
       <link>https://klagon.org/blog/young-professionals-money-playbook-digital-age/</link>
@@ -22,6 +22,30 @@
       <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
       <description>AI handles the fast thinking. That makes slow, critical thinking your most valuable skill. Learn the practical questions that separate deep thinking from surface reactions.</description>
       <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>Systems Thinking for Beginners: See the Whole, Not Just the Pieces</title>
+      <link>https://klagon.org/blog/systems-thinking-for-beginners/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/systems-thinking-for-beginners/</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Why smart people miss obvious problems — and how a simple 'systems lens' improves every decision. A beginner-friendly guide with real Ghanaian examples.</description>
+      <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>How to Turn Reading Into Real Skills: The 1-4-7 Book Method</title>
+      <link>https://klagon.org/blog/reading-into-skills-147-method/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/reading-into-skills-147-method/</guid>
+      <pubDate>Mon, 05 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Reading is not learning. This practical 1-4-7 retention method turns any article or book into a skill you actually keep — using active recall and spacing.</description>
+      <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>The Personal Development Plan: Turn Your Vision Into a Year You Control</title>
+      <link>https://klagon.org/blog/personal-development-plan-template/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/personal-development-plan-template/</guid>
+      <pubDate>Thu, 01 Oct 2026 00:00:00 GMT</pubDate>
+      <description>A free, fill-in-the-blanks personal development plan that turns a vague vision into a monthly, weekly, daily plan — with a template you can copy today.</description>
+      <category>Building Visions</category>
     </item>
     <item>
       <title>Making Things Happen: The Execution Skills That Turn Ideas Into Reality</title>
@@ -48,11 +72,27 @@
       <category>Lifelong Learning</category>
     </item>
     <item>
+      <title>The 15-Minute Rule: Beat Procrastination and Start Anything Today</title>
+      <link>https://klagon.org/blog/fifteen-minute-rule-beat-procrastination/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/fifteen-minute-rule-beat-procrastination/</guid>
+      <pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Procrastination is not laziness — it's fear and fog. The 15-minute rule is the simplest proven way to start anything, build momentum, and keep going.</description>
+      <category>Making Things Happen</category>
+    </item>
+    <item>
       <title>Digital Transformation Mastery: What It Means and How Young Africans Can Lead It</title>
       <link>https://klagon.org/blog/digital-transformation-mastery-african-youth-lead/</link>
       <guid isPermaLink="true">https://klagon.org/blog/digital-transformation-mastery-african-youth-lead/</guid>
       <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
       <description>Digital transformation is more than apps and AI. Here's the real definition, why young Africans are positioned to lead it, and the 4 skills mastery actually requires.</description>
+      <category>Digital Transformation Mastery</category>
+    </item>
+    <item>
+      <title>Digital Skills vs Digital Tools: The Difference That Decides Your Future</title>
+      <link>https://klagon.org/blog/digital-skills-vs-digital-tools/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/digital-skills-vs-digital-tools/</guid>
+      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Having the app is not having the skill. Discover the real difference between owning tools and owning abilities — and which one employers actually pay for.</description>
       <category>Digital Transformation Mastery</category>
     </item>
     <item>

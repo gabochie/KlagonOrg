@@ -4,6 +4,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { getAllPosts, getPostBySlug, getRelatedPosts, categorySlug } from "@/lib/blog";
 import { formatBlogDate, isoToDateTime } from "@/lib/blogFormat";
+import { getAuthorByName } from "@/lib/blogAuthors";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -181,11 +182,22 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="w-11 h-11 rounded-full bg-pale dark:bg-ink-3 flex items-center justify-center text-xl shrink-0">
               {post.icon}
             </div>
-            <div>
-              <div className="text-sm font-extrabold text-navy dark:text-white">{post.author}</div>
+            <div className="flex-1">
+              <Link
+                href={`/blog/author/${getAuthorByName(post.author)?.slug ?? "unknown"}`}
+                className="text-sm font-extrabold text-navy dark:text-white hover:text-blue transition-colors"
+              >
+                {post.author}
+              </Link>
               <div className="text-[11px] text-gray mb-1">{post.authorRole}</div>
               <p className="text-xs text-gray leading-relaxed">
-                Written for KlagonOrg — where Ghana&apos;s youth learn real-world skills, free.
+                Written for KlagonOrg — where Ghana&apos;s youth learn real-world skills, free.{" "}
+                <Link
+                  href="/blog/authors"
+                  className="text-blue hover:underline"
+                >
+                  More from our authors
+                </Link>
               </p>
             </div>
           </div>

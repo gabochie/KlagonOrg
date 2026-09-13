@@ -4,6 +4,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { getAllPosts, getCategories, categorySlug } from "@/lib/blog";
 import { formatBlogDate } from "@/lib/blogFormat";
+import { getAuthorByName } from "@/lib/blogAuthors";
 
 export const metadata: Metadata = {
   title: "Blog — Skills, Technology & Personal Growth for Ghana's Youth",
@@ -59,6 +60,12 @@ export default function BlogIndexPage() {
               {cat.name} · {cat.count}
             </Link>
           ))}
+          <Link
+            href="/blog/authors"
+            className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-ink-2 border border-border text-gray hover:border-navy transition-colors"
+          >
+            Authors ✍️
+          </Link>
         </div>
       </section>
 
@@ -83,7 +90,12 @@ export default function BlogIndexPage() {
                   </h2>
                   <p className="text-xs text-gray leading-relaxed mb-4">{featured.description}</p>
                   <div className="flex items-center gap-3 text-[11px] text-gray">
-                    <span className="font-semibold text-navy dark:text-white">{featured.author}</span>
+                    <Link
+                      href={`/blog/author/${getAuthorByName(featured.author)?.slug ?? "unknown"}`}
+                      className="font-semibold text-navy dark:text-white hover:text-blue transition-colors"
+                    >
+                      {featured.author}
+                    </Link>
                     <span>·</span>
                     <span>{formatBlogDate(featured.date)}</span>
                     <span>·</span>
@@ -116,7 +128,12 @@ export default function BlogIndexPage() {
                     {post.description}
                   </p>
                   <div className="flex items-center justify-between text-[10px] text-gray pt-2 border-t border-border">
-                    <span className="truncate max-w-[45%]">{post.author}</span>
+                    <Link
+                      href={`/blog/author/${getAuthorByName(post.author)?.slug ?? "unknown"}`}
+                      className="truncate max-w-[45%] hover:text-blue transition-colors"
+                    >
+                      {post.author}
+                    </Link>
                     <span>
                       {formatBlogDate(post.date)} · {post.readTime} min
                     </span>
