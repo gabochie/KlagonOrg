@@ -53,7 +53,7 @@ marked.setOptions({
 
 function renderHtml(markdown: string): string {
   const raw = marked.parse(markdown, { async: false }) as string;
-  const body = raw.replace(/^\s*<h1[^>]*>.*?<\/h1>\s*/s, "");
+  const body = raw.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>\s*/, "");
   return body
     .replace(/<h2 /g, '<h2 class="blog-h2" ')
     .replace(/<h3 /g, '<h3 class="blog-h3" ')
