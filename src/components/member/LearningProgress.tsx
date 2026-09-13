@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_COURSES } from "@/lib/constants";
-import { fetchPublicCourses, fetchMyLessonProgress } from "@/lib/queries";
+import { fetchPublicCourses, fetchMyLessonProgress, isUuid } from "@/lib/queries";
 import { CheckCircle } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
@@ -18,6 +19,7 @@ const categoryColors: Record<string, string> = {
 
 export function LearningProgress() {
   const { profile } = useAuth();
+  const router = useRouter();
   const [courses, setCourses] = useState(MEMBER_COURSES);
   const [subtitle, setSubtitle] = useState("2 active courses · 1 completed");
 
@@ -104,7 +106,12 @@ export function LearningProgress() {
                     style={{ width: `${pct}%`, background: pct > 50 ? "#10B981" : "#F59E0B" }}
                   />
                 </div>
-                <button className="px-2.5 py-1 rounded-lg bg-navy text-white text-[10px] font-bold cursor-pointer whitespace-nowrap font-sans hover:bg-blue transition-colors">
+                <button
+                  onClick={() => {
+                    if (isUuid(c.id)) router.push(`/learning/${c.id}`);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-navy text-white text-[10px] font-bold cursor-pointer whitespace-nowrap font-sans hover:bg-blue transition-colors"
+                >
                   Continue
                 </button>
               </div>

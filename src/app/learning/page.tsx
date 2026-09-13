@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { ProgressBar } from "@/components/ui";
 import { COURSES } from "@/lib/constants";
-import { fetchPublicCourses } from "@/lib/queries";
+import { fetchPublicCourses, isUuid } from "@/lib/queries";
 import type { Course } from "@/types";
 
 const categoryColors: Record<string, string> = {
@@ -18,6 +19,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function LearningPage() {
+  const router = useRouter();
   const [courses, setCourses] = useState<Course[]>(COURSES);
 
   useEffect(() => {
@@ -26,6 +28,10 @@ export default function LearningPage() {
       if (live.length > 0) setCourses(live);
     })();
   }, []);
+
+  const openCourse = (id: string) => {
+    if (isUuid(id)) router.push(`/learning/${id}`);
+  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -52,6 +58,7 @@ export default function LearningPage() {
               return (
                 <div
                   key={c.id}
+                  onClick={() => openCourse(c.id)}
                   className="bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <div
@@ -69,7 +76,13 @@ export default function LearningPage() {
                       {c.lessons} lessons · PDF + Video
                     </p>
                     <ProgressBar value={pct} color={pct > 0 ? "#F59E0B" : "#E2E8F0"} showLabel />
-                    <button className="mt-3 w-full py-2 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openCourse(c.id);
+                      }}
+                      className="mt-3 w-full py-2 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors"
+                    >
                       {pct > 0 ? "Continue Learning →" : "Start Course →"}
                     </button>
                   </div>

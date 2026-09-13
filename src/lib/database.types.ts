@@ -352,6 +352,7 @@ export interface Database {
           id: string;
           project_id: string | null;
           member_id: string | null;
+          role: string | null;
           full_name: string | null;
           phone: string | null;
           email: string | null;
@@ -360,6 +361,7 @@ export interface Database {
         Insert: {
           project_id?: string | null;
           member_id?: string | null;
+          role?: string | null;
           full_name?: string | null;
           phone?: string | null;
           email?: string | null;
