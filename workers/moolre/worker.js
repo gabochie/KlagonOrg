@@ -354,7 +354,7 @@ async function handleCallback(request, env) {
   const txstatus = String(data.txstatus ?? data.status ?? body?.status ?? "").toLowerCase();
   const code = String(body?.code ?? data.code ?? "");
   const paid = PAID_SIGNALS.has(txstatus) || code === "P01";
-  const failed = FAILED_SIGNALS.has(txstatus) || (!paid && txstatus !== "" && !PAID_SIGNALS.has(txstatus));
+  const failed = FAILED_SIGNALS.has(txstatus);
 
   // Ambiguous statuses (e.g. still pending) -> acknowledge but change nothing.
   if (!paid && !failed) {
