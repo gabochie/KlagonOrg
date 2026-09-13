@@ -1,14 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { PROJECTS } from "@/lib/constants";
-import { fetchPublicProjects } from "@/lib/queries";
+import {
+  fetchPublicProjects,
+  fetchMyVolunteerProjectIds,
+  toggleVolunteer,
+  isUuid,
+} from "@/lib/queries";
 import type { Project } from "@/types";
 
 export default function ProjectsPage() {
+  const { profile } = useAuth();
   const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [joined, setJoined] = useState<Set<string>>(new Set());
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -16,6 +26,30 @@ export default function ProjectsPage() {
       if (live.length > 0) setProjects(live);
     })();
   }, []);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    void fetchMyVolunteerProjectIds(profile.id).then((ids) => setJoined(new Set(ids)));
+  }, [profile?.id]);
+
+  const toggle = async (id: string) => {
+    if (!profile) {
+      setNotice("Sign in to join a project.");
+      return;
+    }
+    if (!isUuid(id)) return;
+    const isJoining = !joined.has(id);
+    setJoined((prev) => {
+      const next = new Set(prev);
+      if (isJoining) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+    await toggleVolunteer(profile.id, id, isJoining);
+    const ids = await fetchMyVolunteerProjectIds(profile.id);
+    setJoined(new Set(ids));
+    setNotice(null);
+  };
 
   return (
     <div className="w-full overflow-hidden">
