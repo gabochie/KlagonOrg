@@ -3,6 +3,7 @@ import Link from "next/link";
 const platformLinks = [
   { label: "Events", href: "/events" },
   { label: "Learning Hub", href: "/learning" },
+  { label: "Blog", href: "/blog" },
   { label: "Community Projects", href: "/projects" },
   { label: "Volunteer", href: "/volunteer" },
   { label: "News", href: "/news" },

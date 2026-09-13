@@ -27,6 +27,7 @@ export function Navbar() {
           {[
             { label: "Events", href: "/events" },
             { label: "Learn", href: "/learning" },
+            { label: "Blog", href: "/blog" },
             { label: "Projects", href: "/projects" },
             { label: "Community", href: "/news" },
             { label: "About", href: "/contact" },
@@ -64,6 +65,7 @@ export function Navbar() {
             {[
               { label: "Events", href: "/events" },
               { label: "Learn", href: "/learning" },
+              { label: "Blog", href: "/blog" },
               { label: "Projects", href: "/projects" },
               { label: "Community", href: "/news" },
               { label: "About", href: "/contact" },

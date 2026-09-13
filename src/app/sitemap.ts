@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getAllPosts, getCategories } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
@@ -6,6 +7,7 @@ const BASE = "https://klagon.org";
 
 const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/blog", changeFrequency: "daily", priority: 0.9 },
   { path: "/events", changeFrequency: "weekly", priority: 0.9 },
   { path: "/learning", changeFrequency: "weekly", priority: 0.9 },
   { path: "/projects", changeFrequency: "weekly", priority: 0.9 },
@@ -23,10 +25,26 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return ROUTES.map((r) => ({
+  const base = ROUTES.map((r) => ({
     url: `${BASE}${r.path}`,
     lastModified: now,
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));
+
+  const posts = getAllPosts().map((p) => ({
+    url: `${BASE}/blog/${p.slug}`,
+    lastModified: p.updated ? new Date(p.updated) : new Date(p.date),
+    changeFrequency: "yearly" as const,
+    priority: 0.8,
+  }));
+
+  const categories = getCategories().map((c) => ({
+    url: `${BASE}/blog/category/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...base, ...posts, ...categories];
 }

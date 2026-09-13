@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>KlagonOrg Blog</title>
+    <link>https://klagon.org/blog</link>
+    <atom:link href="https://klagon.org/rss.xml" rel="self" type="application/rss+xml"/>
+    <description>Mastery of change in the digital age — practical guides for Ghana's youth on lifelong learning, digital transformation, thinking skills, building visions, and making things happen.</description>
+    <language>en-gb</language>
+    <lastBuildDate>Sun, 13 Sep 2026 08:13:40 GMT</lastBuildDate>
+    <item>
+      <title>The Young Professional's Money Playbook for the Digital Age</title>
+      <link>https://klagon.org/blog/young-professionals-money-playbook-digital-age/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/young-professionals-money-playbook-digital-age/</guid>
+      <pubDate>Sat, 26 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Budgeting, saving, mobile money, and first investments — a practical, beginner-friendly money playbook for young Ghanaians building their future.</description>
+      <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>Thinking Skills for the AI Age: Critical Thinking Is Your Career Superpower</title>
+      <link>https://klagon.org/blog/thinking-skills-critical-thinking-ai-age/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/thinking-skills-critical-thinking-ai-age/</guid>
+      <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+      <description>AI handles the fast thinking. That makes slow, critical thinking your most valuable skill. Learn the practical questions that separate deep thinking from surface reactions.</description>
+      <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>Making Things Happen: The Execution Skills That Turn Ideas Into Reality</title>
+      <link>https://klagon.org/blog/making-things-happen-execution-skills/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/making-things-happen-execution-skills/</guid>
+      <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Ideas are cheap; execution is everything. Learn the practical momentum system that turns plans into finished things — projects, businesses, and personal goals.</description>
+      <category>Making Things Happen</category>
+    </item>
+    <item>
+      <title>Lifelong Learning in the Digital Age: A Practical Field Guide for Young Ghanaians</title>
+      <link>https://klagon.org/blog/lifelong-learning-digital-age-field-guide/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/lifelong-learning-digital-age-field-guide/</guid>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <description>What lifelong learning really means in 2026, why your school certificate isn't a finish line, and a simple weekly system young Ghanaians can start today.</description>
+      <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>How to Learn to Learn: The Meta-Skill Behind Every Future-Proof Career</title>
+      <link>https://klagon.org/blog/how-to-learn-to-learn-meta-skill/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/how-to-learn-to-learn-meta-skill/</guid>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Learning how to learn is the most important skill in the digital age. Here's the practical, science-backed method to pick up any skill faster — and keep it.</description>
+      <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>Digital Transformation Mastery: What It Means and How Young Africans Can Lead It</title>
+      <link>https://klagon.org/blog/digital-transformation-mastery-african-youth-lead/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/digital-transformation-mastery-african-youth-lead/</guid>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Digital transformation is more than apps and AI. Here's the real definition, why young Africans are positioned to lead it, and the 4 skills mastery actually requires.</description>
+      <category>Digital Transformation Mastery</category>
+    </item>
+    <item>
+      <title>Building Visions That Last: How Young People Create Goals They Actually Keep</title>
+      <link>https://klagon.org/blog/building-visions-that-last-goals-you-keep/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/building-visions-that-last-goals-you-keep/</guid>
+      <pubDate>Sun, 20 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Vision is not wishful thinking. Learn the concrete method for turning a vague dream into a written, repeatable personal vision that survives hard days.</description>
+      <category>Building Visions</category>
+    </item>
+    <item>
+      <title>AI for Beginners in Ghana: A Free 15-Minute Starting Guide</title>
+      <link>https://klagon.org/blog/ai-for-beginners-ghana-starting-guide/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/ai-for-beginners-ghana-starting-guide/</guid>
+      <pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
+      <description>New to AI? No jargon, no hype. A practical 15-minute starting guide for young Ghanaians — what AI is, free tools to try, and prompt basics that work.</description>
+      <category>Digital Transformation Mastery</category>
+    </item>
+  </channel>
+</rss>
