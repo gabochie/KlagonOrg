@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   icons: {
     icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
       { url: "/brand/klagon-logo.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
