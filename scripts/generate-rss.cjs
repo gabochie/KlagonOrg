@@ -23,12 +23,7 @@ function safeDate(iso) {
 
 function buildRss() {
   if (!fs.existsSync(BLOG_DIR)) return;
-  const files = fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith(".md"))
-    .sort()
-    .reverse()
-    .slice(0, 20);
+  const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".md"));
 
   const items = files
     .map((f) => {
@@ -58,7 +53,14 @@ function buildRss() {
       }
     })
     .filter(Boolean)
-    .filter((p) => p && p.title && p.slug);
+    .filter((p) => p && p.title && p.slug)
+    .sort((a, b) => {
+      const da = new Date(a.iso).getTime() || 0;
+      const db = new Date(b.iso).getTime() || 0;
+      if (db !== da) return db - da;
+      return String(a.slug).localeCompare(String(b.slug));
+    })
+    .slice(0, 20);
 
   const itemsXml = items
     .map(
