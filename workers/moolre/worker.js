@@ -311,10 +311,37 @@ async function handleCallback(request, env) {
   }
 
   let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: "bad-json" }, 400);
+  if (request.method === "GET") {
+    const q = url.searchParams;
+    body = {
+      externalref: q.get("externalref") ?? q.get("external_ref") ?? q.get("ref"),
+      status: q.get("txstatus") ?? q.get("status"),
+      code: q.get("code"),
+    };
+  } else if (request.method === "POST") {
+    const ct = request.headers.get("Content-Type") ?? "";
+    try {
+      if (ct.includes("form-")) {
+        const form = await request.formData();
+        const pick = (k) => {
+          const v = form.get(k);
+          return typeof v === "string" ? v : null;
+        };
+        body = {
+          data: {
+            externalref: pick("externalref") ?? pick("external_ref") ?? pick("ref"),
+            txstatus: pick("txstatus") ?? pick("status"),
+            code: pick("code"),
+          },
+        };
+      } else {
+        body = await request.json();
+      }
+    } catch {
+      return json({ error: "bad-json" }, 400);
+    }
+  } else {
+    return json({ error: "method-not-allowed" }, 405);
   }
 
   const data = body?.data && typeof body.data === "object" ? body.data : {};
@@ -369,9 +396,9 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/moolre/callback") {
-      // GET so URL-verification pings (if any) get a 200, not a 404.
-      if (request.method === "GET") return json({ ok: true, service: "klagon-payments" });
-      if (request.method === "POST") return handleCallback(request, env);
+      if (request.method === "GET" || request.method === "POST") {
+        return handleCallback(request, env);
+      }
       return json({ error: "method-not-allowed" }, 405);
     }
 
