@@ -7,12 +7,15 @@ import { SPONSOR_PLANS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { CheckCircle } from "lucide-react";
 import { submitSponsorApplication } from "@/lib/forms";
+import { Turnstile } from "@/components/Turnstile";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export default function SponsorPage() {
   const [selected, setSelected] = useState("2");
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -25,7 +28,13 @@ export default function SponsorPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!token) return setError("Please complete the human check before submitting.");
     setSending(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setSending(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const { error: err } = await submitSponsorApplication({
       ...form,
       org_name: form.org_name || null,
@@ -120,6 +129,7 @@ export default function SponsorPage() {
                 <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 <Input label="Company / Organization (if applicable)" placeholder="Optional" value={form.org_name} onChange={(e) => setForm((f) => ({ ...f, org_name: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Submitting…" : "Submit Interest"}
                 </Button>

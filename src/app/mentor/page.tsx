@@ -6,6 +6,8 @@ import { Footer } from "@/components/landing/Footer";
 import { MENTOR_TOPICS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { submitMentorApplication } from "@/lib/forms";
+import { Turnstile } from "@/components/Turnstile";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 const PROFESSIONS = [
   "Software Engineer",
@@ -33,6 +35,7 @@ export default function MentorPage() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -44,7 +47,13 @@ export default function MentorPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!token) return setError("Please complete the human check before submitting.");
     setSending(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setSending(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const { error: err } = await submitMentorApplication({
       ...form,
       profession: form.profession || null,
@@ -136,6 +145,7 @@ export default function MentorPage() {
                   />
                 </div>
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Submitting…" : "Submit Application"}
                 </Button>
