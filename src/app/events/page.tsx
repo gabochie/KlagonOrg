@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Badge } from "@/components/ui";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { EVENTS } from "@/lib/constants";
-import { fetchPublicEvents } from "@/lib/queries";
+import { fetchPublicEvents, fetchMyRsvpIds, toggleRsvp, isUuid } from "@/lib/queries";
 import type { Event } from "@/types";
 import { Calendar, MapPin, Clock } from "lucide-react";
 
@@ -17,7 +19,10 @@ const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "servi
 };
 
 export default function EventsPage() {
+  const { profile } = useAuth();
   const [events, setEvents] = useState<Event[]>(EVENTS);
+  const [rsvps, setRsvps] = useState<Set<string>>(new Set());
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -25,6 +30,30 @@ export default function EventsPage() {
       if (live.length > 0) setEvents(live);
     })();
   }, []);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    void fetchMyRsvpIds(profile.id).then((ids) => setRsvps(new Set(ids)));
+  }, [profile?.id]);
+
+  const toggle = async (id: string) => {
+    if (!profile) {
+      setNotice("Sign in to RSVP for events.");
+      return;
+    }
+    if (!isUuid(id)) return;
+    const going = !rsvps.has(id);
+    setRsvps((prev) => {
+      const next = new Set(prev);
+      if (going) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+    await toggleRsvp(profile.id, id, going);
+    const ids = await fetchMyRsvpIds(profile.id);
+    setRsvps(new Set(ids));
+    setNotice(null);
+  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -43,9 +72,18 @@ export default function EventsPage() {
       </section>
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
+          {notice && (
+            <div className="mb-6 text-xs font-semibold bg-amber/10 text-navy rounded-lg px-4 py-3">
+              {notice}{" "}
+              <Link href="/auth/login" className="font-bold text-blue hover:underline">
+                Sign in →
+              </Link>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map((e) => {
               const d = new Date(e.date);
+              const isRsvpd = rsvps.has(e.id);
               return (
                 <div
                   key={e.id}
@@ -73,8 +111,15 @@ export default function EventsPage() {
                           ? `${e.spotsLeft} / ${e.spots} spots left`
                           : "Open registration"}
                       </span>
-                      <button className="px-3.5 py-1.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors">
-                        RSVP
+                      <button
+                        onClick={() => void toggle(e.id)}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer font-sans transition-colors ${
+                          isRsvpd
+                            ? "bg-green/10 text-green-800"
+                            : "bg-navy text-white hover:bg-blue"
+                        }`}
+                      >
+                        {isRsvpd ? "✓ Going" : "RSVP"}
                       </button>
                     </div>
                   </div>
