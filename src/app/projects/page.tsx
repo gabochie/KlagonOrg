@@ -70,8 +70,16 @@ export default function ProjectsPage() {
       </section>
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
+          {notice && (
+            <div className="mb-6 text-xs font-semibold bg-amber/10 text-navy rounded-lg px-4 py-3">
+              {notice}{" "}
+              <Link href="/auth/login" className="font-bold text-blue hover:underline">
+                Sign in →
+              </Link>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.map((p) => (
+            {projects.map((p) => {
               <div
                 key={p.id}
                 className="bg-white rounded-xl border border-border p-5 sm:p-6 hover:shadow-md transition-shadow"
@@ -102,8 +110,15 @@ export default function ProjectsPage() {
                     <span className="w-2 h-2 rounded-full bg-green" />
                     {p.volunteers} volunteers · {p.spotsOpen} spots open
                   </div>
-                  <button className="px-3 py-1.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors">
-                    Join
+                  <button
+                    onClick={() => void toggle(p.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer font-sans transition-colors ${
+                      joined.has(p.id)
+                        ? "bg-green/10 text-green-800"
+                        : "bg-navy text-white hover:bg-blue"
+                    }`}
+                  >
+                    {joined.has(p.id) ? "✓ Joined" : "Join"}
                   </button>
                 </div>
                 {p.progress > 0 && (
