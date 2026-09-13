@@ -5,6 +5,8 @@ import { Footer } from "@/components/landing/Footer";
 import { getAllPosts, getPostBySlug, getRelatedPosts, categorySlug } from "@/lib/blog";
 import { formatBlogDate, isoToDateTime } from "@/lib/blogFormat";
 import { getAuthorByName } from "@/lib/blogAuthors";
+import { ReadAloud } from "@/components/read/ReadAloud";
+import { ArticleReaderTracker } from "@/components/gamify/ArticleReaderTracker";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -115,6 +117,19 @@ export default async function BlogPostPage({ params }: Props) {
           },
         ],
       },
+      ...(post.faq && post.faq.length > 0
+        ? [
+            {
+              "@type": "FAQPage",
+              "@id": `https://klagon.org/blog/${post.slug}#faq`,
+              mainEntity: post.faq.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            },
+          ]
+        : []),
     ],
   };
 
@@ -158,10 +173,13 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
+      <ArticleReaderTracker slug={post.slug} readTime={post.readTime} />
       {/* Body */}
       <article className="bg-light dark:bg-ink py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
+          <ReadAloud targetId="article-body" />
           <div
+            id="article-body"
             className="blog-content"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
