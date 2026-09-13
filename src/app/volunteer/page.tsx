@@ -9,6 +9,11 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 
 const categories = Array.from(new Set(VOLUNTEER_OPPS.map((v) => v.category)));
 
+const OPP_PROJECT: Record<string, string> = {
+  "Tree-Planting Volunteer": "d57a554e-cd8d-4c6b-bf4f-0ba1941dd6ff",
+  "Digital Literacy Tutor": "aedddf00-63b1-469d-9ce6-79dc5d60811d",
+};
+
 export default function VolunteerPage() {
   const [filter, setFilter] = useState("All");
 
@@ -18,7 +23,8 @@ export default function VolunteerPage() {
   const [joined, setJoined] = useState<Set<string>>(new Set());
   const [notice, setNotice] = useState<string | null>(null);
 
-  const toggleJoin = async (id: string) => {
+  const toggleJoin = async (opp: { id: string; title: string }) => {
+    if (joined.has(opp.id)) return;
     const client = getBrowserClient();
     if (!client || !client.auth.getUser) {
       setNotice("Sign in to volunteer. Registration for new roles requires an account.");
@@ -30,19 +36,31 @@ export default function VolunteerPage() {
       setNotice("Sign in to volunteer. Registration for new roles requires an account.");
       return;
     }
-    const projectId = String(id);
-    const { error: signupErr } = await client
-      .from("volunteer_signups")
-      .insert({ project_id: projectId, member_id: memberId });
+    const projectId = OPP_PROJECT[opp.title] ?? null;
+    const { data: prof } = await client
+      .from("profiles")
+      .select("full_name,phone,email")
+      .eq("id", memberId)
+      .single();
+    const { error: signupErr } = await client.from("volunteer_signups").insert({
+      project_id: projectId,
+      member_id: memberId,
+      role: opp.title,
+      full_name: prof?.full_name ?? null,
+      phone: prof?.phone ?? null,
+      email: prof?.email ?? null,
+    });
     if (signupErr) {
-      setNotice("Could not sign up. Is your profile approved?");
+      setNotice("Could not sign up. Please try again.");
       return;
     }
-    await client.from("project_volunteers").upsert(
-      { project_id: projectId, member_id: memberId },
-      { onConflict: "project_id,member_id", ignoreDuplicates: true }
-    );
-    setJoined((prev) => new Set(prev).add(id));
+    if (projectId) {
+      await client.from("project_volunteers").upsert(
+        { project_id: projectId, member_id: memberId },
+        { onConflict: "project_id,member_id", ignoreDuplicates: true }
+      );
+    }
+    setJoined((prev) => new Set(prev).add(opp.id));
     setNotice(null);
   };
 
@@ -128,7 +146,7 @@ export default function VolunteerPage() {
                     />
                   </div>
                   <button
-                    onClick={() => toggleJoin(v.id)}
+                    onClick={() => toggleJoin(v)}
                     className={`w-full py-2 rounded-lg text-xs font-bold cursor-pointer font-sans transition-colors ${
                       isJoined
                         ? "bg-green/10 text-green-800"
