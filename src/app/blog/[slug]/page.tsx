@@ -32,9 +32,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "KlagonOrg",
       type: "article",
       locale: "en_GH",
-      authors: [post.author],
-      publishedTime: isoToDateTime(post.date),
-      modifiedTime: post.updated ? isoToDateTime(post.updated) : undefined,
+      article: {
+        publishedTime: isoToDateTime(post.date),
+        modifiedTime: post.updated ? isoToDateTime(post.updated) : undefined,
+        authors: [post.author],
+        section: post.category,
+        tags: post.tags,
+      },
       images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
