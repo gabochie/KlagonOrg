@@ -6,6 +6,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { fetchMyLessonProgress } from "@/lib/queries";
 import { ArrowLeft, CheckCircle, Circle, Clock, ExternalLink, Lock } from "lucide-react";
+import { ReadAloud } from "@/components/read/ReadAloud";
 
 export interface ViewerLesson {
   id: string;
@@ -42,6 +43,8 @@ export function CourseViewer({
   const [selectedId, setSelectedId] = useState<string | null>(lessons[0]?.id ?? null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [celebrate, setCelebrate] = useState(false);
+  const [xpToast, setXpToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!profile?.id) return;
@@ -80,6 +83,13 @@ export function CourseViewer({
     }
     setDone((prev) => new Set(prev).add(lessonId));
     await refreshProfile();
+    setXpToast("+10 XP earned 🎉");
+    window.setTimeout(() => setXpToast(null), 3000);
+    const nextDone = new Set(done).add(lessonId);
+    if (nextDone.size === lessons.length && lessons.length > 0) {
+      setCelebrate(true);
+      window.setTimeout(() => setCelebrate(false), 4200);
+    }
   };
 
   return (
@@ -108,7 +118,14 @@ export function CourseViewer({
             </div>
           </div>
           {course.description && (
-            <p className="text-white/60 text-sm mt-3 max-w-2xl">{course.description}</p>
+            <div id="course-desc" className="text-white/60 text-sm mt-3 max-w-2xl">
+              {course.description}
+            </div>
+          )}
+          {course.description && (
+            <div className="mt-3">
+              <ReadAloud targetId="course-desc" />
+            </div>
           )}
           <div className="mt-4 flex items-center gap-3">
             <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
@@ -126,6 +143,35 @@ export function CourseViewer({
 
       <section className="bg-light py-10 sm:py-12 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
+          {celebrate && (
+            <>
+              <div className="pointer-events-none fixed inset-0 z-[80] overflow-hidden" aria-hidden="true">
+                {Array.from({ length: 36 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="confetti-piece"
+                    style={{
+                      left: `${(i * 83) % 100}%`,
+                      backgroundColor: ["#F59E0B", "#B45309", "#111827", "#3B82F6", "#22C55E"][i % 5],
+                      animationDelay: `${(i % 9) * 0.28}s`,
+                      animationDuration: `${2.4 + (i % 5) * 0.35}s`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="xp-toast-center fixed bottom-8 left-1/2 z-[85] rounded-2xl bg-navy px-6 py-3 text-sm font-extrabold text-white shadow-2xl text-center">
+                🎉 Course complete — amazing work!
+                <div className="text-[10px] font-semibold text-amber mt-0.5">
+                  {course.title} · badges & XP updated
+                </div>
+              </div>
+            </>
+          )}
+          {xpToast && (
+            <div className="xp-toast fixed bottom-20 right-4 z-[80] rounded-full bg-amber px-4 py-2 text-xs font-extrabold text-navy shadow-xl">
+              {xpToast}
+            </div>
+          )}
           {pct === 100 && lessons.length > 0 && (
             <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-800">
               Course complete — nice work! Your XP and badges are updated on your dashboard.

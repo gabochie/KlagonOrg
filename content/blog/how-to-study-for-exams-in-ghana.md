@@ -10,6 +10,15 @@ author: "Kweku Asante"
 authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "📘"
+faq:
+  - q: "How long should I study for WASSCE or BECE?"
+    a: "Start 6 weeks before the paper. The plan in this guide covers week-by-week revision so you arrive confident instead of cramming."
+  - q: "What is the fastest way to improve exam scores in Ghana?"
+    a: "Past questions. Drilling past questions teaches you how marks are awarded and what examiners repeat, which beats re-reading textbooks."
+  - q: "Should I study alone or form a study group?"
+    a: "Both. Use groups to test yourself out loud and explain topics; use solo time for past questions and the focused recall cycles in the plan."
+  - q: "How do I stop procrastinating when studying?"
+    a: "Use the twenty-five-minute focus rule: a short timer, one goal, no phone. Small daily blocks beat marathon sessions that never start."
 ---
 
 # How to Study for Exams in Ghana: A System That Actually Works

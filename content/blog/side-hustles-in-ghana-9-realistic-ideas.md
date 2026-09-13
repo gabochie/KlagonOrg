@@ -11,6 +11,15 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 7
 icon: "💼"
 course: "Start Your First Business"
+faq:
+  - q: "Which side hustle in Ghana makes money fastest?"
+    a: "Digital services you can deliver from your phone, like design, writing or reselling, because they need almost no capital and your first client can come this week."
+  - q: "How much money do I need to start a side hustle?"
+    a: "As little as a phone and data. Most hustles in this guide start under GH₵200, and the more capital-light the idea, the faster you can test it."
+  - q: "How many hours a day should I give my side hustle?"
+    a: "Two to three focused hours daily is enough when you are consistent. Ninety minutes of deep work beats a whole weekend of distracted effort."
+  - q: "When should I quit my job for the side hustle?"
+    a: "Only when the hustle covers your living costs for at least six consecutive months. Until then, treat it as a portfolio you build alongside work."
 ---
 
 # Side Hustles in Ghana: 9 Realistic Ideas You Can Start This Month

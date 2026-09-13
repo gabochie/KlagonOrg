@@ -11,6 +11,15 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 4
 icon: "🤖"
 course: "Introduction to AI"
+faq:
+  - q: "Is AI free to use?"
+    a: "Yes. Tools like ChatGPT, Gemini and Bing chat have free tiers, and this guide shows free options for writing, learning, design, and everyday tasks."
+  - q: "Do I need computer science knowledge to use AI?"
+    a: "No. You need to ask clear questions. The prompt basics in this guide, role, context and example, make the difference between vague and useful answers."
+  - q: "Can AI help me learn faster in Ghana?"
+    a: "Yes: summarize long notes, generate practice questions, explain topics in simple language, and give feedback on your writing. Use it as a tutor, not a shortcut."
+  - q: "Will AI replace my job?"
+    a: "AI replaces tasks, not people who can do them well. Learn to delegate routine work to AI while strengthening judgement, communication and problem-solving."
 ---
 
 # AI for Beginners in Ghana: A Free 15-Minute Starting Guide

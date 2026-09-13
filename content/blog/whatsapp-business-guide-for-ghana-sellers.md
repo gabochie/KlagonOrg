@@ -11,6 +11,15 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 7
 icon: "💼"
 course: "Start Your First Business"
+faq:
+  - q: "Do I need a separate number for WhatsApp Business?"
+    a: "Recommended, yes. A dedicated business number keeps your catalog, status and labels separate from personal chats and looks more professional."
+  - q: "Does WhatsApp Business cost money?"
+    a: "The app itself is free. The paid part only matters if you later automate with the WhatsApp Business API, which you do not need when starting out."
+  - q: "How do I get people to actually buy from my status updates?"
+    a: "Post offers with clear prices, images and your catalog link, then reply fast. Consistency in posting beats occasional big promotions."
+  - q: "Can my WhatsApp Business account sync with my phone contacts?"
+    a: "Yes, it uses the same number and will pull contacts, but you control who sees your updates with labels and audience settings."
 ---
 
 # WhatsApp Business for Ghana Sellers: A Complete Starter Guide

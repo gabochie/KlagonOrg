@@ -230,6 +230,19 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["badges"]["Insert"]>;
         Relationships: [];
       };
+      reader_completions: {
+        Row: { id: string; member_id: string; slug: string; completed_at: string };
+        Insert: { member_id: string; slug: string };
+        Update: Partial<Database["public"]["Tables"]["reader_completions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "reader_completions_member_id_fkey";
+            columns: ["member_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       member_badges: {
         Row: { id: string; member_id: string; badge_id: string; unlocked_at: string };
         Insert: { member_id: string; badge_id: string };

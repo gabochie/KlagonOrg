@@ -19,36 +19,69 @@ function computeProgress(targetId: string): number {
   return total > 0 ? Math.round((scrolled / total) * 100) : 100;
 }
 
-export function ArticleReaderTracker({
-  slug,
-  readTime,
-}: {
-  slug: string;
-  readTime: number;
-}) {
+export function ArticleReaderTracker({ slug }: { slug: string }) {
   const { profile, refreshProfile } = useAuth();
+  const [finished, setFinished] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return Boolean(localStorage.getItem(DONE_KEY(slug)));
+    } catch {
+      return false;
+    }
+  });
   const [progress, setProgress] = useState(0);
-  const [completed, setCompleted] = useState(false);
   const [promoted, setPromoted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const claimedRef = useRef(false);
   const completeRef = useRef(false);
 
   useEffect(() => {
-    const already = typeof window !== "undefined" && localStorage.getItem(DONE_KEY(slug));
-    if (already) {
+    if (finished) {
       claimedRef.current = true;
       completeRef.current = true;
-      setCompleted(true);
     }
-  }, [slug]);
+  }, [finished]);
+
+  const claim = async () => {
+    if (claimedRef.current || finished) return;
+    const client = getBrowserClient();
+    if (!client || !profile) {
+      if (profile === null) {
+        setPromoted(true);
+        claimedRef.current = true;
+      }
+      return;
+    }
+    claimedRef.current = true;
+    const { error } = await client
+      .from("reader_completions")
+      .insert({ member_id: profile.id, slug });
+    if (error) {
+      if (typeof error === "object" && "code" in error && error.code === "23505") {
+        setFinished(true);
+        setProgress(100);
+        try {
+          localStorage.setItem(DONE_KEY(slug), "1");
+        } catch {
+          /* ignore */
+        }
+      }
+      return;
+    }
+    setFinished(true);
+    setProgress(100);
+    try {
+      localStorage.setItem(DONE_KEY(slug), "1");
+    } catch {
+      /* ignore */
+    }
+    setToast("+10 XP earned 🎉");
+    void refreshProfile();
+    window.setTimeout(() => setToast(null), 4000);
+  };
 
   useEffect(() => {
-    if (completed) setProgress(100);
-  }, [completed]);
-
-  useEffect(() => {
-    if (completed || claimedRef.current || completeRef.current) return;
+    if (finished || claimedRef.current || completeRef.current) return;
     const onScroll = () => {
       const p = computeProgress("article-body");
       setProgress(p);
@@ -66,58 +99,20 @@ export function ArticleReaderTracker({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const claim = async () => {
-    if (claimedRef.current) return;
-    const client = getBrowserClient();
-    if (!client || !profile) {
-      if (profile === null) {
-        setPromoted(true);
-        claimedRef.current = true;
-      }
-      return;
-    }
-    claimedRef.current = true;
-    const { error } = await client
-      .from("reader_completions")
-      .insert({ member_id: profile.id, slug });
-    if (error) {
-      if (typeof error === "object" && "code" in error && error.code === "23505") {
-        setCompleted(true);
-        try {
-          localStorage.setItem(DONE_KEY(slug), "1");
-        } catch {
-          /* ignore */
-        }
-      } else {
-        setToast(null);
-      }
-      return;
-    }
-    setCompleted(true);
-    try {
-      localStorage.setItem(DONE_KEY(slug), "1");
-    } catch {
-      /* ignore */
-    }
-    setToast("+10 XP earned 🎉");
-    await refreshProfile();
-    window.setTimeout(() => setToast(null), 4000);
-  };
-
   return (
     <>
       <div className="fixed top-0 left-0 right-0 h-1 z-[70] pointer-events-none">
         <div
           className="h-full rounded-r-full transition-[width] duration-200 ease-out"
           style={{
-            width: `${completed ? 100 : Math.min(progress, 100)}%`,
+            width: `${finished ? 100 : Math.min(progress, 100)}%`,
             background: "linear-gradient(to right, #F59E0B, #B45309)",
             boxShadow: "0 0 8px rgba(245,158,11,0.6)",
           }}
         />
       </div>
 
-      {promoted && !completed && (
+      {promoted && !finished && (
         <div className="fixed bottom-20 right-4 z-[70] rounded-xl border border-amber-300/60 bg-amber px-4 py-3 shadow-lg text-[11px] font-bold text-navy">
           Finished reading?{" "}
           <Link href="/auth/login" className="text-blue underline">
@@ -128,7 +123,7 @@ export function ArticleReaderTracker({
       )}
 
       {toast && (
-        <div className="xp-toast fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] rounded-full bg-navy px-5 py-2.5 text-sm font-bold text-white shadow-xl">
+        <div className="xp-toast-center fixed bottom-6 left-1/2 z-[70] rounded-full bg-navy px-5 py-2.5 text-sm font-bold text-white shadow-xl">
           {toast}
         </div>
       )}

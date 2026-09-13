@@ -11,6 +11,15 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "🛡️"
 course: "Financial Literacy Basics"
+faq:
+  - q: "What is the most common online scam in Ghana right now?"
+    a: "'MTN rewards' and fake loan apps that ask for upfront fees. If someone who contacted you asks for money first or for your codes, it is a scam."
+  - q: "How can I check if a mobile-money message is real?"
+    a: "Never share your PIN, one-time password or card details. Verify claims by dialing official short codes like *170# or calling customer care directly."
+  - q: "A buyer wants to pay before I deliver on a marketplace. Should I accept?"
+    a: "Sellers get fake payment notifications. Confirm the money is truly in your account, check the sender name, and only ship after you verify."
+  - q: "What should I do if I have already been scammed?"
+    a: "Report to the Cybercrime Unit and your mobile money provider immediately, change your passwords, and dispute or freeze the transaction."
 ---
 
 # Protect Yourself Online in Ghana: The Scam Guide You Need

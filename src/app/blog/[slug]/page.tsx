@@ -34,13 +34,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "KlagonOrg",
       type: "article",
       locale: "en_GH",
-      article: {
-        publishedTime: isoToDateTime(post.date),
-        modifiedTime: post.updated ? isoToDateTime(post.updated) : undefined,
-        authors: [post.author],
-        section: post.category,
-        tags: post.tags,
-      },
+      authors: [post.author],
+      publishedTime: isoToDateTime(post.date),
+      modifiedTime: post.updated ? isoToDateTime(post.updated) : undefined,
+      section: post.category,
+      tags: post.tags,
       images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
@@ -173,7 +171,7 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
-      <ArticleReaderTracker slug={post.slug} readTime={post.readTime} />
+      <ArticleReaderTracker slug={post.slug} />
       {/* Body */}
       <article className="bg-light dark:bg-ink py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">

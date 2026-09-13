@@ -11,6 +11,15 @@ authorRole: "Youth Coach & Communication Specialist, KlagonOrg"
 readTime: 6
 icon: "📄"
 course: "Build Your Career Roadmap"
+faq:
+  - q: "How long should a first CV be?"
+    a: "One page. Your sections are contact info, profile, skills, education, and projects or volunteering, and one page only once you have real work history."
+  - q: "Can I list volunteering and school projects as experience?"
+    a: "Yes. Employers hire people who can show responsibility. Frame each entry with what you did, how you did it, and a result or number."
+  - q: "Should I include a photo and date of birth?"
+    a: "In Ghana it is common, but keep it professional: a neat, recent photo. Date of birth is optional and never required for a strong CV."
+  - q: "What is the one mistake that gets CVs ignored?"
+    a: "Typos and inconsistent formatting. A clean one-page layout with zero errors beats a long list of skills, because employers read a CV in seconds."
 ---
 
 # How to Write a CV With No Work Experience

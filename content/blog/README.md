@@ -46,6 +46,21 @@ course: "Introduction to AI"
 | `readTime` | ✅ | Estimate in whole minutes |
 | `icon` | ✅ | One emoji |
 | `course` | optional | Add to show a "Start Learning Free" CTA box linking to the Learning Hub |
+| `faq` | optional | 3–4 Q&A pairs; renders a FAQPage JSON-LD block (AI/LLMO rich-result eligible) |
+
+### Optional FAQ block (add to high-intent articles)
+
+Add `faq` to a top-intent article with strong search-snippet potential (e.g. exams, scams, CV, WhatsApp, AI). It renders as an FAQPage schema block for Google + AI engines.
+
+```markdown
+faq:
+  - q: "How long should I study for WASSCE or BECE?"
+    a: "Start 6 weeks before the paper. The plan in this guide covers week-by-week revision."
+  - q: "What is the fastest way to improve exam scores?"
+    a: "Past questions. Drilling past questions teaches you how marks are awarded."
+```
+
+Rules: 3–4 pairs, one plain sentence each, answers must match the article body, no keyword-stuffed questions.
 
 ### Approved authors (edit `src/lib/blogAuthors.ts` to add more)
 

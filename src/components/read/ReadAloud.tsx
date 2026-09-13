@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Pause, Play, Square, Volume2 } from "lucide-react";
+import { Pause, Play, Square, Volume2 } from "lucide-react";
 
 const HIGHLIGHT_CLASS = "read-aloud-highlight";
 const RATES = [0.75, 1, 1.25];
@@ -50,7 +50,6 @@ export function ReadAloud({ targetId }: { targetId: string }) {
         blocksRef.current.forEach((b) => b.el.classList.remove(HIGHLIGHT_CLASS));
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supported]);
 
   const collectBlocks = (): Block[] => {
@@ -148,10 +147,8 @@ export function ReadAloud({ targetId }: { targetId: string }) {
           <Volume2 size={13} />
         ) : state === "playing" ? (
           <Pause size={13} />
-        ) : state === "paused" ? (
-          <Play size={13} />
         ) : (
-          <Loader2 size={13} />
+          <Play size={13} />
         )}
         {state === "playing" ? "Pause" : state === "paused" ? "Resume" : "Listen"}
       </button>
