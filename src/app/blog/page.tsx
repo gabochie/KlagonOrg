@@ -28,8 +28,46 @@ export default function BlogIndexPage() {
   const featured = posts[0];
   const rest = posts.slice(1);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "https://klagon.org/blog#collection",
+        name: "KlagonOrg Blog",
+        description:
+          "Practical guides on lifelong learning, digital transformation mastery, thinking skills, building visions, and making things happen — written for young people in Ghana.",
+        url: "https://klagon.org/blog",
+        isPartOf: { "@id": "https://klagon.org/#site" },
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://klagon.org/blog#list",
+        name: "Latest articles",
+        itemListElement: posts.slice(0, 10).map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: p.title,
+          url: `https://klagon.org/blog/${p.slug}`,
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://klagon.org/blog#breadcrumb",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://klagon.org/" },
+          { "@type": "ListItem", position: 2, name: "Blog", item: "https://klagon.org/blog" },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="w-full overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
 
       {/* Hero */}

@@ -50,6 +50,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${meta.title} | KlagonOrg Blog`,
     description: meta.description,
     alternates: { canonical: `/blog/category/${category}` },
+    openGraph: {
+      title: `${meta.title} | KlagonOrg Blog`,
+      description: meta.description,
+      url: `https://klagon.org/blog/category/${category}`,
+      siteName: "KlagonOrg",
+      type: "website",
+      locale: "en_GH",
+      images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: meta.title }],
+    },
   };
 }
 
@@ -59,8 +68,51 @@ export default async function BlogCategoryPage({ params }: Props) {
   const posts = cat ? getPostsByCategory(cat.name) : [];
   const meta = CATEGORY_META[category];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `https://klagon.org/blog/category/${category}#collection`,
+        name: meta?.title.split(" — ")[0],
+        description: meta?.description,
+        url: `https://klagon.org/blog/category/${category}`,
+        isPartOf: { "@id": "https://klagon.org/blog#collection" },
+      },
+      {
+        "@type": "ItemList",
+        "@id": `https://klagon.org/blog/category/${category}#list`,
+        name: "Articles in this topic",
+        itemListElement: posts.map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: p.title,
+          url: `https://klagon.org/blog/${p.slug}`,
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `https://klagon.org/blog/category/${category}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://klagon.org/" },
+          { "@type": "ListItem", position: 2, name: "Blog", item: "https://klagon.org/blog" },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: meta?.title.split(" — ")[0] ?? category,
+            item: `https://klagon.org/blog/category/${category}`,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="w-full overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
 
       <section className="bg-navy py-14 sm:py-18 px-4 sm:px-6">
