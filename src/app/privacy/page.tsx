@@ -54,7 +54,7 @@ export default function PrivacyPage() {
             <p>
               Under Ghana&apos;s Data Protection Act, 2012 (Act 843), you may request access,
               correction, or deletion of your data at any time by emailing{" "}
-              <span className="font-semibold text-navy">hello@klagon.org</span>.
+              <span suppressHydrationWarning className="font-semibold text-navy">hello@klagon.org</span>.
             </p>
           </div>
           <div>

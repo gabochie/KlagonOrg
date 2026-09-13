@@ -42,7 +42,7 @@ export default function PendingPage() {
             <div className="text-3xl mb-3">💬</div>
             <h1 className="text-lg font-extrabold text-navy mb-1">Application not approved</h1>
             <p className="text-sm text-gray mb-6">
-              Please write to hello@klagon.org and we&apos;ll help resolve it quickly.
+              Please write to <span suppressHydrationWarning>hello@klagon.org</span> and we&apos;ll help resolve it quickly.
             </p>
             <Link
               href="/"

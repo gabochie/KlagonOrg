@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { ProgressBar } from "@/components/ui";
 import { COURSES } from "@/lib/constants";
-import { fetchPublicCourses, isUuid } from "@/lib/queries";
+import { fetchPublicCourses } from "@/lib/queries";
 import type { Course } from "@/types";
 
 const categoryColors: Record<string, string> = {
@@ -19,7 +19,6 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function LearningPage() {
-  const router = useRouter();
   const [courses, setCourses] = useState<Course[]>(COURSES);
 
   useEffect(() => {
@@ -28,10 +27,6 @@ export default function LearningPage() {
       if (live.length > 0) setCourses(live);
     })();
   }, []);
-
-  const openCourse = (id: string) => {
-    if (isUuid(id)) router.push(`/learning/${id}`);
-  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -56,10 +51,10 @@ export default function LearningPage() {
             {courses.map((c) => {
               const pct = Math.round((c.lessonsDone / c.lessons) * 100);
               return (
-                <div
+                <Link
                   key={c.id}
-                  onClick={() => openCourse(c.id)}
-                  className="bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                  href={`/learning/${c.id}`}
+                  className="group bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer block"
                 >
                   <div
                     className="h-20 flex items-center justify-center text-2xl"
@@ -76,17 +71,11 @@ export default function LearningPage() {
                       {c.lessons} lessons · PDF + Video
                     </p>
                     <ProgressBar value={pct} color={pct > 0 ? "#F59E0B" : "#E2E8F0"} showLabel />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openCourse(c.id);
-                      }}
-                      className="mt-3 w-full py-2 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors"
-                    >
+                    <span className="mt-3 w-full block py-2 rounded-lg bg-navy text-white text-xs font-bold font-sans group-hover:bg-blue transition-colors text-center">
                       {pct > 0 ? "Continue Learning →" : "Start Course →"}
-                    </button>
+                    </span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

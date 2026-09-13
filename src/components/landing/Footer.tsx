@@ -114,6 +114,7 @@ export function Footer() {
                   href={l.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  suppressHydrationWarning={l.href.startsWith("mailto:")}
                   className="block text-xs text-white/60 hover:text-amber mb-2 transition-colors"
                 >
                   {l.label}
@@ -122,6 +123,7 @@ export function Footer() {
                 <Link
                   key={l.label}
                   href={l.href}
+                  suppressHydrationWarning={l.href.startsWith("mailto:")}
                   className="block text-xs text-white/60 hover:text-amber mb-2 transition-colors"
                 >
                   {l.label}

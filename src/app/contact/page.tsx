@@ -82,7 +82,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-navy">Email</div>
-                    <a href="mailto:hello@klagon.org" className="text-xs text-gray hover:text-amber transition-colors">
+                    <a href="mailto:hello@klagon.org" suppressHydrationWarning className="text-xs text-gray hover:text-amber transition-colors">
                       hello@klagon.org
                     </a>
                   </div>

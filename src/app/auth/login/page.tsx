@@ -17,6 +17,11 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const emailValue = email.trim();
+    if (!emailValue) return setError("Email is required.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue))
+      return setError("Enter a valid email address.");
+    if (!password) return setError("Password is required.");
     setError(null);
     setBusy(true);
     const { error: err, profile } = await signIn(email, password);
@@ -40,7 +45,7 @@ export default function LoginPage() {
         </Link>
         <h1 className="text-lg font-extrabold text-navy text-center mb-1">Welcome back</h1>
         <p className="text-sm text-gray text-center mb-6">Sign in to your KlagonOrg account</p>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4" noValidate onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-navy">Email</label>
             <input

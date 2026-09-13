@@ -45,7 +45,7 @@ export default function TermsPage() {
             <p>
               Donations support KlagonOrg programs and are non-refundable except where
               required by law or in the case of a duplicate or erroneous charge — contact us
-              within 14 days at <span className="font-semibold text-navy">hello@klagon.org</span>.
+              within 14 days at <span suppressHydrationWarning className="font-semibold text-navy">hello@klagon.org</span>.
             </p>
           </div>
           <div>
@@ -61,7 +61,7 @@ export default function TermsPage() {
               Programs and events are provided in good faith. To the extent permitted by law,
               KlagonOrg is not liable for indirect losses arising from use of the site or
               participation in activities. Questions? Email{" "}
-              <span className="font-semibold text-navy">hello@klagon.org</span>.
+              <span suppressHydrationWarning className="font-semibold text-navy">hello@klagon.org</span>.
             </p>
           </div>
         </div>
