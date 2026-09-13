@@ -6,7 +6,7 @@
     <atom:link href="https://klagon.org/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Mastery of change in the digital age — practical guides for Ghana's youth on lifelong learning, digital transformation, thinking skills, building visions, and making things happen.</description>
     <language>en-gb</language>
-    <lastBuildDate>Sun, 13 Sep 2026 08:37:35 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2026 08:54:24 GMT</lastBuildDate>
     <item>
       <title>The Young Professional's Money Playbook for the Digital Age</title>
       <link>https://klagon.org/blog/young-professionals-money-playbook-digital-age/</link>
@@ -14,6 +14,22 @@
       <pubDate>Sat, 26 Sep 2026 00:00:00 GMT</pubDate>
       <description>Budgeting, saving, mobile money, and first investments — a practical, beginner-friendly money playbook for young Ghanaians building their future.</description>
       <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>What Does It Mean to 'Find Your Purpose'? A Realistic Guide</title>
+      <link>https://klagon.org/blog/what-does-finding-your-purpose-mean/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/what-does-finding-your-purpose-mean/</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+      <description>The pressure to find your purpose is heavy. A realistic take on purpose — what it actually is, why the search can hurt, and a calmer way to discover it.</description>
+      <category>Building Visions</category>
+    </item>
+    <item>
+      <title>Vision Board or Vision Plan? The Honest Answer About Visualisation</title>
+      <link>https://klagon.org/blog/vision-board-or-vision-plan/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/vision-board-or-vision-plan/</guid>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Vision boards are popular — but do they work? Here's the honest truth about visualisation, and the proven way to combine imagination with action.</description>
+      <category>Building Visions</category>
     </item>
     <item>
       <title>Thinking Skills for the AI Age: Critical Thinking Is Your Career Superpower</title>
@@ -30,6 +46,14 @@
       <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
       <description>Why smart people miss obvious problems — and how a simple 'systems lens' improves every decision. A beginner-friendly guide with real Ghanaian examples.</description>
       <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>Side Hustles in Ghana: 9 Realistic Ideas You Can Start This Month</title>
+      <link>https://klagon.org/blog/side-hustles-in-ghana-9-realistic-ideas/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/side-hustles-in-ghana-9-realistic-ideas/</guid>
+      <pubDate>Thu, 08 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Nine practical, low-capital side hustle ideas for young Ghanaians — from digital services to mobile-money trading — plus how to choose and start the right one.</description>
+      <category>Making Things Happen</category>
     </item>
     <item>
       <title>How to Turn Reading Into Real Skills: The 1-4-7 Book Method</title>
@@ -64,12 +88,68 @@
       <category>Lifelong Learning</category>
     </item>
     <item>
+      <title>How Learning Skills Compounds: The Math of Becoming Remarkable</title>
+      <link>https://klagon.org/blog/learning-skills-compound-math/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/learning-skills-compound-math/</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Skills multiply, not just add. See the actual math of stacking complementary skills — and why unremarkable consistency beats raw talent over time.</description>
+      <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>Jua Kali Thinking: How Small-Scale Skills Build Big Success</title>
+      <link>https://klagon.org/blog/jua-kali-thinking-skills-build-success/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/jua-kali-thinking-skills-build-success/</guid>
+      <pubDate>Mon, 12 Oct 2026 00:00:00 GMT</pubDate>
+      <description>The garages, kitchens, and roadside workshops are secret universities. Why practical, hands-on skills — not certificates — are the fastest route to income for young Africans.</description>
+      <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>From Idea to First Sale: A Practical 30-Day Launch Plan</title>
+      <link>https://klagon.org/blog/idea-to-first-sale-30-day-launch/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/idea-to-first-sale-30-day-launch/</guid>
+      <pubDate>Thu, 15 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Your idea doesn't need perfecting — it needs a first sale. This 30-day launch plan takes you from rough concept to paying customer, step by step.</description>
+      <category>Making Things Happen</category>
+    </item>
+    <item>
+      <title>How to Write a Personal Mission Statement (With a Ghanaian Example)</title>
+      <link>https://klagon.org/blog/how-to-write-personal-mission-statement/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/how-to-write-personal-mission-statement/</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>A personal mission statement turns vague ambitions into a one-line compass. Here's the fill-in-the-blanks method — and a real example from a young Ghanaian.</description>
+      <category>Building Visions</category>
+    </item>
+    <item>
       <title>How to Learn to Learn: The Meta-Skill Behind Every Future-Proof Career</title>
       <link>https://klagon.org/blog/how-to-learn-to-learn-meta-skill/</link>
       <guid isPermaLink="true">https://klagon.org/blog/how-to-learn-to-learn-meta-skill/</guid>
       <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
       <description>Learning how to learn is the most important skill in the digital age. Here's the practical, science-backed method to pick up any skill faster — and keep it.</description>
       <category>Lifelong Learning</category>
+    </item>
+    <item>
+      <title>How to Build a Daily Routine That Actually Works for You</title>
+      <link>https://klagon.org/blog/how-to-build-daily-routine-that-works/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/how-to-build-daily-routine-that-works/</guid>
+      <pubDate>Fri, 09 Oct 2026 00:00:00 GMT</pubDate>
+      <description>A daily routine built from your goals beats a copied celebrity schedule. Here's the practical process to design — and keep — the routine that moves your life.</description>
+      <category>Making Things Happen</category>
+    </item>
+    <item>
+      <title>How to Build Confidence and Overcome Self-Doubt (Practical Guide)</title>
+      <link>https://klagon.org/blog/how-to-build-confidence-overcome-self-doubt/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/how-to-build-confidence-overcome-self-doubt/</guid>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Confidence is not a personality trait — it's a skill built on evidence. Here's the practical system to silence self-doubt and show up with quiet power.</description>
+      <category>Thinking Skills</category>
+    </item>
+    <item>
+      <title>How to Ask Better Questions: The Thinking Skill Nobody Teaches</title>
+      <link>https://klagon.org/blog/how-to-ask-better-questions/</link>
+      <guid isPermaLink="true">https://klagon.org/blog/how-to-ask-better-questions/</guid>
+      <pubDate>Sun, 11 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Behind every breakthrough is a better question. Learn the practical types of questions that unlock learning, problem-solving, and real conversations.</description>
+      <category>Thinking Skills</category>
     </item>
     <item>
       <title>The 15-Minute Rule: Beat Procrastination and Start Anything Today</title>
@@ -85,30 +165,6 @@
       <guid isPermaLink="true">https://klagon.org/blog/digital-transformation-mastery-african-youth-lead/</guid>
       <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
       <description>Digital transformation is more than apps and AI. Here's the real definition, why young Africans are positioned to lead it, and the 4 skills mastery actually requires.</description>
-      <category>Digital Transformation Mastery</category>
-    </item>
-    <item>
-      <title>Digital Skills vs Digital Tools: The Difference That Decides Your Future</title>
-      <link>https://klagon.org/blog/digital-skills-vs-digital-tools/</link>
-      <guid isPermaLink="true">https://klagon.org/blog/digital-skills-vs-digital-tools/</guid>
-      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
-      <description>Having the app is not having the skill. Discover the real difference between owning tools and owning abilities — and which one employers actually pay for.</description>
-      <category>Digital Transformation Mastery</category>
-    </item>
-    <item>
-      <title>Building Visions That Last: How Young People Create Goals They Actually Keep</title>
-      <link>https://klagon.org/blog/building-visions-that-last-goals-you-keep/</link>
-      <guid isPermaLink="true">https://klagon.org/blog/building-visions-that-last-goals-you-keep/</guid>
-      <pubDate>Sun, 20 Sep 2026 00:00:00 GMT</pubDate>
-      <description>Vision is not wishful thinking. Learn the concrete method for turning a vague dream into a written, repeatable personal vision that survives hard days.</description>
-      <category>Building Visions</category>
-    </item>
-    <item>
-      <title>AI for Beginners in Ghana: A Free 15-Minute Starting Guide</title>
-      <link>https://klagon.org/blog/ai-for-beginners-ghana-starting-guide/</link>
-      <guid isPermaLink="true">https://klagon.org/blog/ai-for-beginners-ghana-starting-guide/</guid>
-      <pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
-      <description>New to AI? No jargon, no hype. A practical 15-minute starting guide for young Ghanaians — what AI is, free tools to try, and prompt basics that work.</description>
       <category>Digital Transformation Mastery</category>
     </item>
   </channel>
