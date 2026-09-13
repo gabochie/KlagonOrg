@@ -3,6 +3,11 @@ import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 
+export interface BlogFaqItem {
+  q: string;
+  a: string;
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -16,6 +21,7 @@ export interface BlogPost {
   readTime: number;
   icon: string;
   course?: string;
+  faq?: BlogFaqItem[];
   content: string;
   contentHtml: string;
 }
@@ -77,6 +83,11 @@ function readMarkdownFile(filePath: string): BlogPost {
     readTime: Number(data.readTime || 3),
     icon: data.icon || "📄",
     course: data.course,
+    faq: Array.isArray(data.faq)
+      ? data.faq
+          .map((f) => ({ q: String(f?.q ?? ""), a: String(f?.a ?? "") }))
+          .filter((f) => f.q && f.a)
+      : undefined,
     content,
     contentHtml: renderHtml(content),
   };
