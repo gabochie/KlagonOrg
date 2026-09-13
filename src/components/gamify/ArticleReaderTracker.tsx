@@ -21,14 +21,7 @@ function computeProgress(targetId: string): number {
 
 export function ArticleReaderTracker({ slug }: { slug: string }) {
   const { profile, refreshProfile } = useAuth();
-  const [finished, setFinished] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return Boolean(localStorage.getItem(DONE_KEY(slug)));
-    } catch {
-      return false;
-    }
-  });
+  const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
   const [promoted, setPromoted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -36,11 +29,21 @@ export function ArticleReaderTracker({ slug }: { slug: string }) {
   const completeRef = useRef(false);
 
   useEffect(() => {
-    if (finished) {
+    let stored = false;
+    try {
+      stored = Boolean(localStorage.getItem(DONE_KEY(slug)));
+    } catch {
+      /* ignore */
+    }
+    if (stored) {
       claimedRef.current = true;
       completeRef.current = true;
+      void Promise.resolve().then(() => {
+        setFinished(true);
+        setProgress(100);
+      });
     }
-  }, [finished]);
+  }, [slug]);
 
   const claim = async () => {
     if (claimedRef.current || finished) return;

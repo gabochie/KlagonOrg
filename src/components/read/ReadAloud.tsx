@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play, Square, Volume2 } from "lucide-react";
+import { Pause, Play, Square } from "lucide-react";
 
 const HIGHLIGHT_CLASS = "read-aloud-highlight";
 const RATES = [0.75, 1, 1.25];
@@ -20,7 +20,6 @@ function pickVoice(): SpeechSynthesisVoice | null {
 }
 
 export function ReadAloud({ targetId }: { targetId: string }) {
-  const supported = typeof window !== "undefined" && "speechSynthesis" in window;
   const [state, setState] = useState<"idle" | "playing" | "paused">("idle");
   const [rate, setRate] = useState(1);
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
@@ -38,19 +37,19 @@ export function ReadAloud({ targetId }: { targetId: string }) {
   }, [voice]);
 
   useEffect(() => {
-    if (!supported) return;
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
     const refresh = () => setVoice(pickVoice());
     refresh();
-    window.speechSynthesis?.addEventListener?.("voiceschanged", refresh);
+    window.speechSynthesis.addEventListener("voiceschanged", refresh);
     return () => {
-      window.speechSynthesis?.removeEventListener?.("voiceschanged", refresh);
+      window.speechSynthesis.removeEventListener("voiceschanged", refresh);
       const synth = window.speechSynthesis;
       if (synth) {
         synth.cancel();
         blocksRef.current.forEach((b) => b.el.classList.remove(HIGHLIGHT_CLASS));
       }
     };
-  }, [supported]);
+  }, []);
 
   const collectBlocks = (): Block[] => {
     const el = document.getElementById(targetId);
@@ -143,9 +142,7 @@ export function ReadAloud({ targetId }: { targetId: string }) {
           active ? "bg-amber text-navy" : "bg-white dark:bg-ink-2 border border-border text-navy dark:text-white hover:border-amber"
         }`}
       >
-        {!supported ? (
-          <Volume2 size={13} />
-        ) : state === "playing" ? (
+        {state === "playing" ? (
           <Pause size={13} />
         ) : (
           <Play size={13} />
