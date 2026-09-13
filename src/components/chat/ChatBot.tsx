@@ -10,7 +10,7 @@ interface Message {
 
 const FAQ: { q: string; a: string }[] = [
   { q: "What is KlagonOrg?", a: "KlagonOrg is a community-based organization in Klagon, Greater Accra, that prepares youth for the future through skills training, mentorship, entrepreneurship, and community projects — all free of charge." },
-  { q: "How do I join?", a: "Click the 'Join KlagonOrg' button in the top navigation or visit /auth/register to create your free account. Your membership is reviewed within 24 hours." },
+  { q: "How do I join?", a: "Click the 'Join KlagonOrg' button in the top navigation or visit /auth/register to create your free account. Your account is ready instantly — sign in and start with a course, event, or project." },
   { q: "Is it really free?", a: "Yes! KlagonOrg is 100% free for all youth in Klagon and surrounding communities. There are no fees, no hidden costs, ever." },
   { q: "When is the next event?", a: "Check our Events page at /events for the full calendar. We run workshops, hackathons, leadership sessions, and community service projects every week." },
   { q: "Where is KlagonOrg located?", a: "We operate at the Community Center in Klagon, Greater Accra Region, Ghana. Most events and workshops are held there." },

@@ -85,7 +85,7 @@ export default function RegisterPage() {
     });
     setBusy(false);
     if (err) return setError(err);
-    router.push("/auth/pending");
+    router.push("/dashboard/member");
   };
 
   return (
