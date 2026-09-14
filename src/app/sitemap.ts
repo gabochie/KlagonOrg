@@ -1,10 +1,23 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts, getCategories } from "@/lib/blog";
 import { getAllAuthors } from "@/lib/blogAuthors";
+import { COURSES } from "@/lib/constants";
+import { getSupabase } from "@/lib/supabase";
 
 export const dynamic = "force-static";
 
 const BASE = "https://klagon.org";
+
+async function getCourseIds(): Promise<string[]> {
+  try {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("courses_public").select("id");
+    if (error || !data || data.length === 0) return COURSES.map((c) => c.id);
+    return data.map((r) => r.id as string);
+  } catch {
+    return COURSES.map((c) => c.id);
+  }
+}
 
 const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
@@ -13,6 +26,7 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/learning", changeFrequency: "weekly", priority: 0.9 },
   { path: "/projects", changeFrequency: "weekly", priority: 0.9 },
   { path: "/news", changeFrequency: "daily", priority: 0.8 },
+  { path: "/about", changeFrequency: "monthly", priority: 0.7 },
   { path: "/mentor", changeFrequency: "monthly", priority: 0.7 },
   { path: "/volunteer", changeFrequency: "monthly", priority: 0.7 },
   { path: "/sponsor", changeFrequency: "monthly", priority: 0.7 },
@@ -24,13 +38,20 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const base = ROUTES.map((r) => ({
     url: `${BASE}${r.path}`,
     lastModified: now,
     changeFrequency: r.changeFrequency,
     priority: r.priority,
+  }));
+
+  const courses = (await getCourseIds()).map((id) => ({
+    url: `${BASE}/learning/${id}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
   }));
 
   const posts = getAllPosts().map((p) => ({
@@ -57,5 +78,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...base, ...posts, ...categories, ...authors];
+  return [...base, ...courses, ...posts, ...categories, ...authors];
 }

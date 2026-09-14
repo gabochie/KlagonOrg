@@ -19,7 +19,7 @@ const FAQ: { q: string; a: string }[] = [
   { q: "Can I volunteer?", a: "Absolutely! Visit /volunteer to see open roles like Youth Mentor, Event Coordinator, Digital Literacy Tutor, and more." },
   { q: "What learning tracks are available?", a: "We offer courses in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication, and Career Planning. Visit /learning to explore." },
   { q: "Where can I read articles and guides?", a: "Our blog at /blog has free articles on lifelong learning, digital transformation, thinking skills, building visions, and making things happen — visit /blog to explore by topic, or /blog/authors to meet the writers." },
-  { q: "How do I contact support?", a: "You can reach us at hello@klagon.org, call or WhatsApp +233 26 870 8895, or visit /contact to send us a message. We respond within 24 hours." },
+  { q: "How do I contact support?", a: "You can reach us at hello@klagon.org, WhatsApp +233 26 870 8895, call +233 24 326 2019, or visit /contact to send us a message. We respond within 24 hours." },
 ];
 
 function getBotReply(userMessage: string): string {

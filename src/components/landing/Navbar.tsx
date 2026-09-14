@@ -30,7 +30,7 @@ export function Navbar() {
             { label: "Blog", href: "/blog" },
             { label: "Projects", href: "/projects" },
             { label: "Community", href: "/news" },
-            { label: "About", href: "/contact" },
+            { label: "About", href: "/about" },
           ].map((link) => (
             <Link
               key={link.label}
@@ -68,7 +68,7 @@ export function Navbar() {
               { label: "Blog", href: "/blog" },
               { label: "Projects", href: "/projects" },
               { label: "Community", href: "/news" },
-              { label: "About", href: "/contact" },
+              { label: "About", href: "/about" },
             ].map((link) => (
               <Link key={link.label} href={link.href} className="text-sm font-medium text-gray hover:text-navy cursor-pointer">
                 {link.label}
