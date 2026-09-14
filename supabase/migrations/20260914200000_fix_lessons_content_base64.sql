@@ -27,5 +27,6 @@ with lesson_content(c_course, c_lesson, body) as (
 update public.lessons l
 set content = lc.body
 from lesson_content lc
-join public.courses c on c.title = lc.c_course and c.id = l.course_id
-where l.title = lc.c_lesson;
+join public.courses c on c.title = lc.c_course
+where l.title = lc.c_lesson
+  and c.id = l.course_id;
