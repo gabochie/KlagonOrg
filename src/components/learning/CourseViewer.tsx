@@ -336,7 +336,7 @@ export function CourseViewer({
                     <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm font-bold text-green-800">
                       <CheckCircle size={16} /> Completed · +10 XP earned
                     </div>
-                  ) : !selected.content_url ? (
+                  ) : !hasMaterial ? (
                     <button
                       disabled
                       className="w-full py-2.5 rounded-xl bg-light text-gray/60 text-sm font-bold cursor-not-allowed font-sans"
