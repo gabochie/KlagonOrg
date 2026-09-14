@@ -59,12 +59,12 @@ export const EVENTS: Event[] = [
 ];
 
 export const COURSES: Course[] = [
-  { id: "1", title: "Introduction to AI", category: "Future Skills", icon: "🤖", lessons: 5, lessonsDone: 0, color: "#EEF2FF" },
-  { id: "2", title: "Financial Literacy Basics", category: "Finance", icon: "💰", lessons: 4, lessonsDone: 3, color: "#FFF7E6" },
-  { id: "3", title: "Leadership Foundations", category: "Leadership", icon: "🏆", lessons: 6, lessonsDone: 0, color: "#ECFDF5" },
-  { id: "4", title: "Start Your First Business", category: "Entrepreneurship", icon: "🚀", lessons: 7, lessonsDone: 2, color: "#FFF3F0" },
-  { id: "5", title: "Communication That Wins", category: "Communication", icon: "💬", lessons: 4, lessonsDone: 0, color: "#F0F9FF" },
-  { id: "6", title: "Build Your Career Roadmap", category: "Career", icon: "🗺️", lessons: 5, lessonsDone: 0, color: "#F0FDF4" },
+  { id: "1", title: "Automate 3 Tasks at Work with AI", category: "Future Skills", icon: "🤖", lessons: 5, lessonsDone: 0, color: "#EEF2FF" },
+  { id: "2", title: "Build Your First Savings Habit and Budget", category: "Finance", icon: "💰", lessons: 4, lessonsDone: 3, color: "#FFF7E6" },
+  { id: "3", title: "Lead Your First Community Project", category: "Leadership", icon: "🏆", lessons: 6, lessonsDone: 0, color: "#ECFDF5" },
+  { id: "4", title: "Launch a Real Side Business in 90 Days", category: "Entrepreneurship", icon: "🚀", lessons: 8, lessonsDone: 2, color: "#FFF3F0" },
+  { id: "5", title: "Deliver a Talk People Remember", category: "Communication", icon: "💬", lessons: 4, lessonsDone: 0, color: "#F0F9FF" },
+  { id: "6", title: "Get Ready for Your First Job or Client", category: "Career", icon: "🗺️", lessons: 5, lessonsDone: 0, color: "#F0FDF4" },
 ];
 
 export const PROJECTS: Project[] = [
@@ -87,8 +87,8 @@ export const MEMBER_METRICS: Metric[] = [
 ];
 
 export const MEMBER_COURSES: Course[] = [
-  { id: "1", title: "Financial Literacy Basics", category: "Finance", icon: "💰", lessons: 4, lessonsDone: 3, color: "#FFF7E6" },
-  { id: "2", title: "Start Your First Business", category: "Entrepreneurship", icon: "🚀", lessons: 7, lessonsDone: 2, color: "#FFF3F0" },
+  { id: "1", title: "Build Your First Savings Habit and Budget", category: "Finance", icon: "💰", lessons: 4, lessonsDone: 3, color: "#FFF7E6" },
+  { id: "2", title: "Launch a Real Side Business in 90 Days", category: "Entrepreneurship", icon: "🚀", lessons: 8, lessonsDone: 2, color: "#FFF3F0" },
 ];
 
 export const MEMBER_BADGES: Badge[] = [
