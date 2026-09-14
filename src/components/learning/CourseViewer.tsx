@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { marked } from "marked";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { fetchMyLessonProgress } from "@/lib/queries";
@@ -13,6 +14,7 @@ export interface ViewerLesson {
   title: string;
   duration_min: number | null;
   content_url: string | null;
+  content: string | null;
   sort_order: number | null;
 }
 
@@ -29,6 +31,22 @@ function youtubeId(url: string): string | null {
     /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/
   );
   return m ? m[1] : null;
+}
+
+marked.setOptions({ gfm: true, breaks: false });
+
+function renderLessonMarkdown(markdown: string): string {
+  return (marked.parse(markdown, { async: false }) as string)
+    .replace(/<h2 /g, '<h2 class="blog-h2" ')
+    .replace(/<h3 /g, '<h3 class="blog-h3" ')
+    .replace(/<p>/g, '<p class="blog-p">')
+    .replace(/<li>/g, '<li class="blog-li">')
+    .replace(/<ul>/g, '<ul class="blog-ul">')
+    .replace(/<ol>/g, '<ol class="blog-ol">')
+    .replace(/<a /g, '<a class="blog-link" ')
+    .replace(/<blockquote>/g, '<blockquote class="blog-quote">')
+    .replace(/<table>/g, '<table class="blog-table">')
+    .replace(/<strong>/g, "<strong class=\"blog-strong\">");
 }
 
 export function CourseViewer({

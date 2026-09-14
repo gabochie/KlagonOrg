@@ -48,6 +48,7 @@ export default async function CoursePage({
     title: string;
     duration_min: number | null;
     content_url: string | null;
+    content: string | null;
     sort_order: number | null;
   }[] = [];
 
@@ -62,7 +63,7 @@ export default async function CoursePage({
       course = c;
       const { data: l } = await sb
         .from("lessons")
-        .select("id,title,duration_min,content_url,sort_order")
+        .select("id,title,duration_min,content_url,content,sort_order")
         .eq("course_id", id)
         .order("sort_order", { ascending: true });
       lessons = (l ?? []).map((row) => ({
@@ -70,6 +71,7 @@ export default async function CoursePage({
         title: row.title,
         duration_min: row.duration_min,
         content_url: row.content_url,
+        content: row.content,
         sort_order: row.sort_order,
       }));
     }
