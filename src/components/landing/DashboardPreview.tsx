@@ -61,10 +61,10 @@
                 </div>
                 <div>
                   <div className="text-xs font-bold text-navy">
-                    Next: Introduction to AI â€” Sat, 12 July Â· 10:00 AM
+                    Next: Introduction to AI — Sat, 12 July · 10:00 AM
                   </div>
                   <div className="text-[11px] text-gray mt-0.5">
-                    Community Hall, Klagon Â· 12 seats remaining
+                    Community Hall, Klagon · 12 seats remaining
                   </div>
                 </div>
               </div>
