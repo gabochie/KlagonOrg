@@ -81,6 +81,11 @@ export function CourseViewer({
   const yt = selected?.content_url ? youtubeId(selected.content_url) : null;
   const isPdf =
     !!selected?.content_url && !yt && /\.pdf($|[?#])/i.test(selected.content_url);
+  const hasMaterial = !!selected?.content_url || !!selected?.content;
+  let lessonMarkdownHtml = "";
+  if (selected?.content && !selected.content_url) {
+    lessonMarkdownHtml = renderLessonMarkdown(selected.content);
+  }
 
   const complete = async (lessonId: string) => {
     const client = getBrowserClient();
@@ -291,6 +296,19 @@ export function CourseViewer({
                       >
                         Open PDF in a new tab <ExternalLink size={12} />
                       </a>
+                    </div>
+                  ) : selected.content ? (
+                    <div className="mb-4">
+                      <div className="mb-3">
+                        <ReadAloud targetId={`lesson-material-${selected.id}`} />
+                      </div>
+                      <div
+                        id={`lesson-material-${selected.id}`}
+                        className="blog-content lesson-content"
+                        dangerouslySetInnerHTML={{
+                          __html: renderLessonMarkdown(selected.content),
+                        }}
+                      />
                     </div>
                   ) : selected.content_url ? (
                     <a
