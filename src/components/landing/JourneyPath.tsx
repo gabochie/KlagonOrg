@@ -1,10 +1,10 @@
-import { JOURNEY_STAGES } from "@/lib/constants";
+﻿import { JOURNEY_STAGES } from "@/lib/constants";
 
 export function JourneyPath() {
   return (
     <section className="bg-white py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
+        <div className="text-xs font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-3">
           Your Path
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.5fr] gap-8 sm:gap-12 items-start">
@@ -13,11 +13,11 @@ export function JourneyPath() {
               From curious<br />to leading your community.
             </h2>
             <p className="text-sm text-gray leading-relaxed max-w-[500px]">
-              KlagonOrg gives every young person in Klagon a clear, supported roadmap — from the moment
+              KlagonOrg gives every young person in Klagon a clear, supported roadmap â€” from the moment
               they show up, to the day they&apos;re mentoring the next person behind them.
             </p>
           </div>
-          <div className="flex items-center gap-0 overflow-x-auto pb-4">
+          <div className="flex items-center gap-0 overflow-x-auto pb-4" tabIndex={0} role="region" aria-label="Learning journey">
             {JOURNEY_STAGES.map((stage, i) => (
               <>
                 <div key={stage.id} className="flex flex-col items-center min-w-[100px]">

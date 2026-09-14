@@ -80,6 +80,7 @@ export default async function CoursePage({
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       {course ? (
         <CourseViewer course={course} lessons={lessons} />
       ) : (
@@ -96,6 +97,7 @@ export default async function CoursePage({
           </Link>
         </section>
       )}
+      </main>
       <Footer />
     </div>
   );

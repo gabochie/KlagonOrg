@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -83,7 +83,7 @@ export function CourseViewer({
     }
     setDone((prev) => new Set(prev).add(lessonId));
     await refreshProfile();
-    setXpToast("+10 XP earned 🎉");
+    setXpToast("+10 XP earned ðŸŽ‰");
     window.setTimeout(() => setXpToast(null), 3000);
     const nextDone = new Set(done).add(lessonId);
     if (nextDone.size === lessons.length && lessons.length > 0) {
@@ -104,7 +104,7 @@ export function CourseViewer({
           </Link>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-amber flex items-center justify-center text-2xl flex-shrink-0">
-              {course.icon ?? "📚"}
+              {course.icon ?? "ðŸ“š"}
             </div>
             <div className="min-w-0">
               {course.category && (
@@ -135,7 +135,7 @@ export function CourseViewer({
               />
             </div>
             <div className="text-xs font-bold text-white whitespace-nowrap">
-              {done.size}/{lessons.length} · {pct}%
+              {done.size}/{lessons.length} Â· {pct}%
             </div>
           </div>
         </div>
@@ -160,9 +160,9 @@ export function CourseViewer({
                 ))}
               </div>
               <div className="xp-toast-center fixed bottom-8 left-1/2 z-[85] rounded-2xl bg-navy px-6 py-3 text-sm font-extrabold text-white shadow-2xl text-center">
-                🎉 Course complete — amazing work!
+                ðŸŽ‰ Course complete â€” amazing work!
                 <div className="text-[10px] font-semibold text-amber mt-0.5">
-                  {course.title} · badges & XP updated
+                  {course.title} Â· badges & XP updated
                 </div>
               </div>
             </>
@@ -174,7 +174,7 @@ export function CourseViewer({
           )}
           {pct === 100 && lessons.length > 0 && (
             <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-800">
-              Course complete — nice work! Your XP and badges are updated on your dashboard.
+              Course complete â€” nice work! Your XP and badges are updated on your dashboard.
             </div>
           )}
           {notice && (
@@ -182,7 +182,7 @@ export function CourseViewer({
               {notice}{" "}
               {!profile && (
                 <Link href="/auth/login" className="font-bold text-blue hover:underline">
-                  Sign in →
+                  Sign in â†’
                 </Link>
               )}
             </div>
@@ -236,7 +236,7 @@ export function CourseViewer({
                 <div className="text-sm text-gray">Select a lesson to begin.</div>
               ) : (
                 <>
-                  <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1">
+<div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1">
                     Lesson
                   </div>
                   <h2 className="text-base font-extrabold text-navy mb-1">{selected.title}</h2>
@@ -298,7 +298,7 @@ export function CourseViewer({
 
                   {selectedDone ? (
                     <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm font-bold text-green-800">
-                      <CheckCircle size={16} /> Completed · +10 XP earned
+                      <CheckCircle size={16} /> Completed Â· +10 XP earned
                     </div>
                   ) : !selected.content_url ? (
                     <button
@@ -312,7 +312,7 @@ export function CourseViewer({
                       href="/auth/login"
                       className="block text-center w-full py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors"
                     >
-                      Sign in to complete · +10 XP
+                      Sign in to complete Â· +10 XP
                     </Link>
                   ) : (
                     <button
@@ -320,7 +320,7 @@ export function CourseViewer({
                       disabled={busy}
                       className="w-full py-2.5 rounded-xl bg-navy text-white text-sm font-bold cursor-pointer hover:bg-blue transition-colors disabled:opacity-50 font-sans"
                     >
-                      {busy ? "Saving…" : "Mark as complete · +10 XP"}
+                      {busy ? "Savingâ€¦" : "Mark as complete Â· +10 XP"}
                     </button>
                   )}
                 </>

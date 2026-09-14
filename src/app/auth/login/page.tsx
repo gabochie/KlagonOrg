@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-light px-4">
+    <main className="min-h-screen flex items-center justify-center bg-light px-4">
       <div className="bg-white rounded-2xl border border-border p-8 max-w-sm w-full shadow-sm">
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
@@ -99,6 +99,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 }

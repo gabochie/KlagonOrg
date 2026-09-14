@@ -114,6 +114,7 @@ export default async function BlogCategoryPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Navbar />
+      <main className="w-full">
 
       <section className="bg-navy py-14 sm:py-18 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
@@ -184,6 +185,7 @@ export default async function BlogCategoryPage({ params }: Props) {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );

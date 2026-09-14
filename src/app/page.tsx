@@ -15,6 +15,7 @@ export default function Home() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <Hero />
       <JourneyPath />
       <ValueProps />
@@ -25,6 +26,7 @@ export default function Home() {
       <Testimonials />
       <RegistrationForm />
       <SponsorDonate />
+      </main>
       <Footer />
     </div>
   );

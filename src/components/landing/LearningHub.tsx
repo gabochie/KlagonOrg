@@ -1,17 +1,17 @@
-import { COURSES } from "@/lib/constants";
+﻿import { COURSES } from "@/lib/constants";
 
 export function LearningHub() {
   return (
     <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
+        <div className="text-xs font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-3">
           Learning Hub
         </div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
           Skills that open doors.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-10">
-          Structured short courses built for Klagon youth — no laptop required to start. Each module
+          Structured short courses built for Klagon youth â€” no laptop required to start. Each module
           takes you from zero to confident.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -27,12 +27,12 @@ export function LearningHub() {
                 {c.icon}
               </div>
               <div className="p-3 sm:p-4">
-                <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1.5">
+                <div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1.5">
                   {c.category}
                 </div>
                 <div className="text-sm font-bold text-navy leading-tight mb-1">{c.title}</div>
                 <div className="text-xs text-gray mb-2.5">
-                  {c.lessons} lessons · PDF + Video
+                  {c.lessons} lessons Â· PDF + Video
                 </div>
                 <div className="h-1 bg-pale rounded-full overflow-hidden">
                   <div

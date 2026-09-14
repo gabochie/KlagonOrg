@@ -54,6 +54,7 @@ export default function ProjectsPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
@@ -92,7 +93,7 @@ export default function ProjectsPage() {
                     {p.icon}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-navy">{p.title}</h3>
+                    <h2 className="text-sm font-bold text-navy">{p.title}</h2>
                     <span
                       className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mt-1 ${
                         p.status === "active"
@@ -137,6 +138,7 @@ export default function ProjectsPage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

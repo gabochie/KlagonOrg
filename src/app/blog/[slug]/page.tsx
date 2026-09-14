@@ -59,13 +59,15 @@ export default async function BlogPostPage({ params }: Props) {
     return (
       <div className="w-full overflow-hidden">
         <Navbar />
-        <section className="bg-light dark:bg-ink py-20 px-4 text-center">
-          <div className="text-lg font-extrabold text-navy dark:text-white mb-2">Article not found</div>
-          <p className="text-sm text-gray mb-5">The article you requested is unavailable.</p>
-          <Link href="/blog" className="inline-block px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors">
-            Back to Blog
-          </Link>
-        </section>
+        <main className="w-full">
+          <section className="bg-light dark:bg-ink py-20 px-4 text-center">
+            <div className="text-lg font-extrabold text-navy dark:text-white mb-2">Article not found</div>
+            <p className="text-sm text-gray mb-5">The article you requested is unavailable.</p>
+            <Link href="/blog" className="inline-block px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors">
+              Back to Blog
+            </Link>
+          </section>
+        </main>
         <Footer />
       </div>
     );
@@ -139,6 +141,7 @@ export default async function BlogPostPage({ params }: Props) {
       />
       <Navbar />
 
+      <main className="w-full">
       {/* Article header */}
       <header className="bg-navy py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
@@ -214,7 +217,7 @@ export default async function BlogPostPage({ params }: Props) {
                 Written for KlagonOrg — where Ghana&apos;s youth learn real-world skills, free.{" "}
                 <Link
                   href="/blog/authors"
-                  className="text-blue hover:underline"
+                  className="text-blue underline"
                 >
                   More from our authors
                 </Link>
@@ -272,6 +275,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </div>

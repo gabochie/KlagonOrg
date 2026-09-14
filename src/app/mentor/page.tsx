@@ -68,6 +68,7 @@ export default function MentorPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
@@ -104,7 +105,7 @@ export default function MentorPage() {
                 <div className="text-2xl mb-2">{t.icon}</div>
                 <h3 className="text-sm font-bold text-navy mb-1">{t.title}</h3>
                 <p className="text-xs text-gray leading-relaxed mb-2">{t.description}</p>
-                <span className="text-[11px] font-semibold text-amber">{t.mentors} mentors available</span>
+                <span className="text-[11px] font-semibold text-amber-strong dark:text-amber">{t.mentors} mentors available</span>
               </button>
             ))}
           </div>
@@ -154,6 +155,7 @@ export default function MentorPage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

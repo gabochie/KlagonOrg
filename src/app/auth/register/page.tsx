@@ -89,7 +89,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-light px-4 py-8">
+    <main className="min-h-screen flex items-center justify-center bg-light px-4 py-8">
       <div className="bg-white rounded-2xl border border-border p-8 max-w-md w-full shadow-sm">
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold">
@@ -181,8 +181,9 @@ export default function RegisterPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-navy">Gender</label>
+              <label htmlFor="register-gender" className="text-xs font-semibold text-navy">Gender</label>
               <select
+                id="register-gender"
                 className="px-3 py-2 rounded-lg border border-border text-sm text-navy font-sans bg-white focus:outline-2 focus:outline-amber focus:border-transparent"
                 value={form.gender}
                 onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
@@ -259,6 +260,6 @@ export default function RegisterPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 }

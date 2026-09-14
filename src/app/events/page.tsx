@@ -58,6 +58,7 @@ export default function EventsPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Events</div>
@@ -93,7 +94,7 @@ export default function EventsPage() {
                     <Badge variant={typeBadge[e.type]} className="mb-3">
                       {e.type}
                     </Badge>
-                    <h3 className="text-base font-bold text-navy mb-2">{e.title}</h3>
+                    <h2 className="text-base font-bold text-navy mb-2">{e.title}</h2>
                     <div className="flex flex-col gap-1.5 mb-4">
                       <div className="flex items-center gap-1.5 text-xs text-gray">
                         <Calendar size="14" /> {d.toDateString()}
@@ -129,6 +130,7 @@ export default function EventsPage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

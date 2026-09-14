@@ -19,7 +19,7 @@ export function Navbar() {
               className="h-9 w-auto"
           />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
-            KLAGON<span className="text-amber">org</span>
+            KLAGON<span className="text-amber-strong dark:text-amber">org</span>
           </span>
         </Link>
 

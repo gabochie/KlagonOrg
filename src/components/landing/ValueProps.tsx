@@ -1,15 +1,15 @@
-import { VALUE_PROPS } from "@/lib/constants";
+﻿import { VALUE_PROPS } from "@/lib/constants";
 
 export function ValueProps() {
   return (
     <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Why KlagonOrg</div>
+        <div className="text-xs font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-3">Why KlagonOrg</div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
           Not just another youth group.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-10">
-          A structured system designed to take you from where you are to where you deserve to be —
+          A structured system designed to take you from where you are to where you deserve to be â€”
           with a community backing every step.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

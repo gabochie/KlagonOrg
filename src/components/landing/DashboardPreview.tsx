@@ -1,8 +1,8 @@
-export function DashboardPreview() {
+﻿export function DashboardPreview() {
   return (
     <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
+        <div className="text-xs font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-3">
           Member Dashboard
         </div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
@@ -41,7 +41,7 @@ export function DashboardPreview() {
               )}
             </div>
             <div className="p-5">
-              <div className="text-sm font-bold text-navy mb-1">Welcome back, Ama! 👋</div>
+              <div className="text-sm font-bold text-navy mb-1">Welcome back, Ama! ðŸ‘‹</div>
               <div className="text-xs text-gray mb-4">Saturday, 12 July 2025</div>
               <div className="grid grid-cols-3 gap-2.5 mb-4">
                 {[
@@ -57,14 +57,14 @@ export function DashboardPreview() {
               </div>
               <div className="bg-amber/10 rounded-lg p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-base flex-shrink-0">
-                  📅
+                  ðŸ“…
                 </div>
                 <div>
                   <div className="text-xs font-bold text-navy">
-                    Next: Introduction to AI — Sat, 12 July · 10:00 AM
+                    Next: Introduction to AI â€” Sat, 12 July Â· 10:00 AM
                   </div>
                   <div className="text-[11px] text-gray mt-0.5">
-                    Community Hall, Klagon · 12 seats remaining
+                    Community Hall, Klagon Â· 12 seats remaining
                   </div>
                 </div>
               </div>

@@ -67,6 +67,7 @@ export default function VolunteerPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
@@ -130,7 +131,7 @@ export default function VolunteerPage() {
                   <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pale text-blue-800 mb-2">
                     {v.category}
                   </span>
-                  <h3 className="text-sm font-bold text-navy mb-1">{v.title}</h3>
+                  <h2 className="text-sm font-bold text-navy mb-1">{v.title}</h2>
                   <p className="text-xs text-gray leading-relaxed mb-3">{v.description}</p>
                   <div className="flex items-center gap-2 text-xs text-gray mb-3">
                     <span className="font-semibold text-navy">{v.commitment}</span>
@@ -161,6 +162,7 @@ export default function VolunteerPage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

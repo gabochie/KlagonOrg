@@ -88,6 +88,7 @@ export default function DonatePage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
@@ -233,6 +234,7 @@ export default function DonatePage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

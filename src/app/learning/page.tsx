@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
@@ -8,7 +8,7 @@ import { getSupabase } from "@/lib/supabase";
 import type { Course } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Learning Hub — KlagonOrg",
+  title: "Learning Hub â€” KlagonOrg",
   description:
     "Free learning tracks in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning.",
   alternates: { canonical: "/learning" },
@@ -51,6 +51,7 @@ export default async function LearningPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
+      <main className="w-full">
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
@@ -60,7 +61,7 @@ export default async function LearningPage() {
             Skills that open doors.
           </h1>
           <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Structured short courses built for Klagon youth — no laptop required to start. Each
+            Structured short courses built for Klagon youth â€” no laptop required to start. Each
             module takes you from zero to confident.
           </p>
         </div>
@@ -83,16 +84,16 @@ export default async function LearningPage() {
                     {c.icon}
                   </div>
                   <div className="p-5">
-                    <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1.5">
+                    <div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1.5">
                       {c.category}
                     </div>
-                    <h3 className="text-sm font-bold text-navy leading-tight mb-1">{c.title}</h3>
+                    <h2 className="text-sm font-bold text-navy leading-tight mb-1">{c.title}</h2>
                     <p className="text-xs text-gray mb-3">
-                      {c.lessons} lessons · PDF + Video
+                      {c.lessons} lessons Â· PDF + Video
                     </p>
                     <ProgressBar value={pct} color={pct > 0 ? "#F59E0B" : "#E2E8F0"} showLabel />
                     <span className="mt-3 w-full block py-2 rounded-lg bg-navy text-white text-xs font-bold font-sans group-hover:bg-blue transition-colors text-center">
-                      {pct > 0 ? "Continue Learning →" : "Start Course →"}
+                      {pct > 0 ? "Continue Learning â†’" : "Start Course â†’"}
                     </span>
                   </div>
                 </Link>
@@ -101,6 +102,7 @@ export default async function LearningPage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

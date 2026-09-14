@@ -8,7 +8,7 @@ export function SponsorDonate() {
         <h2 className="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-navy tracking-tight mb-2">
           Help Klagon&apos;s youth get the future they deserve.
         </h2>
-        <p className="text-sm text-navy/70 leading-relaxed mb-6">
+        <p className="text-sm text-navy/85 leading-relaxed mb-6">
           Whether you&apos;re a company, diaspora member, NGO, or individual — your support funds
           workshops, equipment, mentors, and the next generation of Ghanaian innovators.
         </p>

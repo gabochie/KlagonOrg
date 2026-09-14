@@ -122,7 +122,7 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <div className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-3">
+            <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
               Platform
             </div>
             {platformLinks.map((l) => (
@@ -136,7 +136,7 @@ export function Footer() {
             ))}
           </div>
           <div>
-            <div className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-3">
+            <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
               Join
             </div>
             {joinLinks.map((l) => (
@@ -150,7 +150,7 @@ export function Footer() {
             ))}
           </div>
           <div>
-            <div className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-3">
+            <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
               Contact
             </div>
             {contactLinks.map((l) =>
@@ -179,7 +179,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-white/35">
+          <div className="text-xs text-white/55">
             © 2026 KlagonOrg. All rights reserved.
           </div>
           <div className="flex items-center gap-4">

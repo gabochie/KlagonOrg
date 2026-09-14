@@ -68,6 +68,7 @@ export default function BlogIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Navbar />
+      <main className="w-full">
 
       {/* Hero */}
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
@@ -193,6 +194,7 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );
