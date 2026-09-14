@@ -61,7 +61,7 @@
                 </div>
                 <div>
                   <div className="text-xs font-bold text-navy">
-                    Next: Introduction to AI — Sat, 12 July · 10:00 AM
+                    Next: Automate 3 Tasks at Work with AI — Sat, 12 July · 10:00 AM
                   </div>
                   <div className="text-[11px] text-gray mt-0.5">
                     Community Hall, Klagon · 12 seats remaining
