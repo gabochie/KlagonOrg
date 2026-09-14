@@ -93,8 +93,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-navy">Phone</div>
-                    <a href="tel:+233559624456" className="text-xs text-gray hover:text-amber transition-colors">
-                      055 962 4456
+                    <a href="tel:+233268708895" className="text-xs text-gray hover:text-amber transition-colors">
+                      026 870 8895
                     </a>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export default function ContactPage() {
                 <h3 className="text-xs font-bold text-navy mb-3">Connect online</h3>
                 <div className="flex flex-col gap-2.5">
                   {[
-                    { icon: <MessageCircle size="16" />, label: "WhatsApp", href: "https://wa.me/233559624456" },
+                    { icon: <MessageCircle size="16" />, label: "WhatsApp", href: "https://wa.me/233268708895" },
                     { icon: <ExternalLink size="16" />, label: "YouTube", href: "https://www.youtube.com/@KlagonOrg" },
                     { icon: <ExternalLink size="16" />, label: "TikTok", href: "https://www.tiktok.com/@klagonorg" },
                     { icon: <ExternalLink size="16" />, label: "Instagram", href: "https://instagram.com/klagonorg" },

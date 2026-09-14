@@ -9,7 +9,7 @@ const SOCIALS = [
   { icon: Music2, href: "https://www.tiktok.com/@klagonorg", label: "TikTok" },
   { icon: Instagram, href: "https://instagram.com/klagonorg", label: "Instagram" },
   { icon: Facebook, href: "https://facebook.com/klagonorg", label: "Facebook" },
-  { icon: MessageCircle, href: "https://wa.me/233559624456", label: "WhatsApp" },
+  { icon: MessageCircle, href: "https://wa.me/233268708895", label: "WhatsApp" },
 ];
 
 export default function ComingSoonPage() {
