@@ -175,6 +175,7 @@ export interface Database {
           course_id: string;
           title: string;
           duration_min: number;
+          content: string | null;
           content_url: string | null;
           sort_order: number;
           created_at: string;
@@ -184,6 +185,7 @@ export interface Database {
           course_id: string;
           title: string;
           duration_min?: number;
+          content?: string | null;
           content_url?: string | null;
           sort_order?: number;
         };

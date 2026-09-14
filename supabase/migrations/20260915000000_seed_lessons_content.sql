@@ -1,0 +1,495 @@
+﻿-- Seed rich markdown content into the existing lessons.content column.
+-- Applied via: supabase db push   (or paste into the Supabase Dashboard SQL Editor)
+-- Safe to re-run: uses update-by-id with exact title guards; content is replaced, never doubled.
+-- course: 'Launch a Real Side Business in 90 Days' (cb06ca78-add0-421c-8a8d-b7e4daa8a51c)
+
+update public.lessons set content = $$klag$$
+Welcome. This is the 90-day plan to turn a real side business into a source of income you can actually see in your bank account â€” not another "build in public, hope for the best" course.
+
+## What you are really doing here
+
+Most people never start a business. They wait. They wait until they feel ready, until they have more time, until the idea is perfect. That waiting is the only thing standing between you and a side income. So this course has one rule above all others: **you will not wait â€” you will build, in public, every single week.**
+
+By the end of these 90 days you will have something most of your friends will never have: a real product, a real customer who paid you, real revenue on record, and a repeatable way to produce more of it.
+
+## How the 90 days are structured
+
+The plan runs in four phases, each roughly three weeks long.
+
+- **Weeks 1â€“3 â€” Find and verify.** You hunt for a painful problem worth solving and stop at nothing until real people confirm it hurts.
+- **Weeks 4â€“6 â€” Build one thing.** You pick a single idea uneasy â€” a real niche business where you genuinely help one type of person.
+- **Weeks 7â€“9 â€” Sell and collect.** You put a price on it, publish an offer, and get the first real payment from a stranger.
+- **Weeks 10â€“12 â€” Rebuild and repeat.** You turn what worked into repeatable systems and prove it with the numbers.
+
+## What "real side business" means here
+
+We are not building a fantasy. A real side business means three things, and we check all three before the capstone:
+
+1. **You sell value.** A stranger, not your mom, pays you for something that improves their life.
+2. **The numbers are real.** Payments, receipts, and records â€” actual money, actual proof, recorded like a professional.
+3. **It can be repeated.** A one-off favor is not a business. A repeatable offer is.
+
+## Your one job for the next 90 days
+
+Pick a fixed time slot â€” two hours, three times a week, in the evening or early morning. Put it in your calendar like a doctor's appointmentholiday and protect it. Show up even when you are tired)Skip (skip). Businesses are not built on motivation â€” they are built on micro habits repeated daily.
+
+## Let's look at an example to model this
+
+Meet Maya. She is a full-time marketing assistant. She noticed that local real estate agents were constantly emailing her, each one a mess of conflicting data about the same house. She could see the market â€” she just couldn't see the pattern.
+
+Instead of building an app, Maya spent week one cold-messaging twelve agents: "In three sentences, tell me your single greatest frustration in your sales reports." Eleven answered. Seven said the same thing: the weekly market report took four hours to compile and always got ignored. That's a problem with proof.
+
+That's the kind of start we're after â€” small, verified, and built on a specific customer's genuine pain. We'll do exactly this in the next lesson.
+
+## What you'll do before the next session
+
+Write one sentence describing the slice of the market you know best â€” the industry you work in, the people you serve at your job, or the hobby community you live inside. Don't polish it. One sentence. That's your starting lane.
+
+You now have the map. Next we find the problem worth solving.
+$$klag$ where id = 'f492cb4e-f918-40e8-a53b-161bafcbddd5';
+
+update public.lessons set content = $$klag$$
+In the last lesson you wrote one sentence describing your lane â€” the people and industry you know best. Today we turn that lane into a real, painful problem worth solving. This is the most important hour of the whole course, so let's do it properly.
+
+## Why a problem, not an idea
+
+Idea-first businesses fail. Someone gets excited about an idea â€” a candle, a podcast, an app â€” and spends months building it, only to discover nobody cares. Problem-first businesses win because you already have a customer screaming about the pain before you ever build the solution.
+
+Here's the uncomfortable truth: **your opinion about your idea doesn't matter. The market's opinion about your problem is everything.** A validated problem is the only safe place to invest your 90 days.
+
+## Your one target customer
+
+You will not sell to "everyone." You will sell to one very specific type of person, and you will learn their language so well you could finish their sentences.
+
+Narrow it down until it feels uncomfortable:
+
+- Not "homeowners" â€” a "first-time homebuyer under 30 in the suburbs who got pre-approved last month."
+- Not "small businesses" â€” a "solo accountant with one client bigger than all the others."
+- Not "teachers" â€” a "high school math teacher grading 120 homework sets a week."
+
+This specificity is your superpower. It lets you market, price, and sell with precision that broad competitors can't match.
+
+## The problem deserves a Pro satisfaisant check
+
+Before a problem counts as "worth solving," it must pass all three of these:
+
+1. **Frequency.** How often does it happen? Every week? Every month? Once a year? Frequent beats rare â€” a problem that recurs is a problem you can build a business around.
+2. **Pain intensity.** How much does it cost when it goes wrong? Money lost, time wasted, sleep lost, risk financial, reputation damaged? The higher the stakes, the faster people pay.
+3. **Willingness to act.** Does the person already spend money to scratch this itch â€” paying for software, contractors, courses, or hours of their own time? If they're already paying money to solve it, they're already your customer.
+
+A problem that scores high on all three is gold. A problem that scores low on any of them is a hobby.
+
+## Where to find these problems
+
+- **Inside work.** What do you handle at your job that everyone else in your industry dreads? That dread is a market.
+- **In communities.** Forums, subreddits, Facebook groups, Discord servers, and industry newsletters where people complain out loud. Complaints are free market research.
+- **In the data.** Support tickest, Yelp reviews, app-store reviews, and Amazon reviews. The best data of all: "I wish this existed" and "this is so frustrating."
+
+## Turn prospect conversations into proof
+
+You will have fifteen to twenty real conversations with people in your target market. Not surveys â€” conversations. Here's the exact script that works:
+
+- "Tell me about the last time this [problem] happened to you."
+- Start with a probing invitation: "Walk me through what you did afterward."
+- Dig deeper: "And then what happened?"
+- Always follow with: "How much did that cost you â€” in money or time?"
+
+Write down verbatim what they say. That single line â€” their words, not yours â€” is the proof that will drive every decision from here on.
+
+## The benchmark that ends the hunt
+
+Here's the number that tells you you found your problem: **out of fifteen prospect conversations, at least seven independently describe the same painful problem, in their own words, without you suggesting it.**
+
+If you don't hit that benchmark, keep searching â€” do not move on. That's the entire discipline of this phase: resist the urge to build until the market has told you what to build. In the next lesson, we take that validated problem and pick the single idea to back with evidence.
+$$klag$ where id = '0e9e434f-7120-4c67-9b05-c262b419debe';
+
+update public.lessons set content = $$klag$$
+You've collected seven or eight verbatim complaints from real people in your target market. Now comes the moment that separates serious students from browsers: you freeze the scope and pick exactly one idea â€” one customer, one offer â€” and you back it with evidence until it's undeniable.
+
+One lesson later you'll have a single sentence you could print and frame. Let's earn it.
+
+## Why you must pick now
+
+Endless option-gathering feels productiveebb â€” every new idea feels safer than committing to one. But it's an illusion. Choosing, and betting your limited 90 days on the choice, is the only way to create real evidence. An uncommitted pickup chews through your calendar without ever producing a customer.
+
+Your "one idea" must satisfy three tests:
+
+1. **It hurts.** Problem evidence from your conversations â€” a recurring pain someone described in their own words.
+2. **It pays.** There's existing money â€” someone already spends time, or money (or both) to relieve this pain today.
+3. **You can serve it honestly.** You know more about this niche than the average person, or you can learn fast and show real expertise.
+
+If you can't check all three, the idea is still a fantasy. Reject it now and look again â€” cheaper than rejecting it at week eight.
+
+## The one-line idea formula
+
+A real business idea fits this shape:
+
+> **For [specific customer], who [specific pain], my [offer] gives [specific outcome], without [the common objection].**
+
+Say it out loud. If the sentence is vague in any slot â€” "some people," "maybe," "could probably help," "sort of" â€” rewrite it. Vagueness in the sentence means vagueness in the customer, and vagueness in the customer means nobody buys.
+
+- Weak: "I help businesses with marketing."
+- Strong: "For solo therapists who hate writing website copy, my interview-based copywriting service drafts their entire welcome page from one recorded conversation, without them typing a word."
+
+## Evidence â€” the three kinds you collect this week
+
+You're not picking on a whim. This week you collect three layers of proof, in this order:
+
+**1. Problem evidence.** Take your strongest verbatim complaint and write it as a one-paragraph story with numbers â€” how often it happens, how much it costs them. Put it on the page. This is the anchor content of your offer.
+
+**2. Demand evidence.** Find proof people actively search for or pay for this: subreddit posts, support forums, marketplaces where the service is bought and sold, job posts, or competitors already charging for a similar fix. Collect five real examples with links and keep them in a doc. Do not screen capture â€” paste the text, so it's searchable.
+
+**3. Ability evidence.** One example that shows you're credible on this problem: a project, a result, a testimonial, a paper, or a small experiment you ran. If you don't have one yet, run a tiny one this week.
+
+Most courses stop at demand evidence. We go deeper: a business built only on demand is fragile â€” the moment a competitor undercuts you, you lose. Problem evidence plus ability evidence is what lets you charge.
+
+## One experiment, this week
+
+You don't need a product to get evidence. Spend two focused sessions this week on a scrap of an offer for your [specific customer] and send it to three warm people: one previous colleague or friend in that niche, one person from your prospect conversations, and one stranger who is not a friend. Ask a single question: "If this solved your [pain] in a month, would you buy it? Are you willing to pay for it today?"
+
+Write down all three answers verbatim. Do not edit them. What people say about money is the closest thing to a decimal point you'll get before a real sale.
+
+## What done looks like
+
+When this lesson is complete you will have, in a single document:
+
+- One sentence: the one-line idea formula filled in, written so it could not apply to anyone else.
+- A one-paragraph problem story with numbers.
+- Five real demand examples with links.
+- One ability artifact.
+- Three recorded answers to your "would you pay" question.
+
+That document is your Proof. It's the pilot light of everything we build next. Bring it with you â€” in the next lesson we price the offer without guessing.
+$$klag$ where id = 'b4def719-3b12-4b04-9ab4-8f08a3018bd6';
+
+update public.lessons set content = $$klag$$
+You have one idea and a pile of evidence proving it hurts. Now you have to answer the question every new business owner gets wrong: how much do you charge?
+
+Most people pick a number by feel â€” "that seems fair," a round number, or what a friend said they'd pay. That's how you end up undercharging, overworking, and quitting. Today you learn to price without your gut, using three real methods you can run in an afternoon.
+
+## The only pricing rule that matters
+
+Price is not about cost plus margin. It's about the **value of the outcome** â€” what your customer gains (or loses) by not having their problem solved. Every pricing exercise below is a way to measure that value.
+
+## Method 1 â€” The value math
+
+For a business customer: what is the pain costing them? Go line by line.
+
+- **Time cost.** How many hours each month? Multiply by their hourly rate. If a solo therapist spends 8 hours a month writing copy they hate, at a realistic $80/hour blended rate, that's $640 a month of productive time spent avoiding the thing you solve.
+- **Money lost.** Did the pain cause missed revenue or refunds? Count it.
+- **Risk / stress.** Hard to price, but real. When the stakes are professional embarrassment or burnout, people pay surprisingly well to make it go away.
+
+**Your rule:** if the problem saves or earns them at least 3x your price in a year, you are not overcharging â€” you are underpriced. Price to the value, not to how hard the work felt.
+
+## Method 2 â€” Anchoring from what's out there
+
+You aren't the first person offering value, and that's good news. Go find comparable offers â€” freelancers, agencies, courses, templates â€” and note the range:
+
+- Write down the **low**, the **typical**, and the **premium** price in your lane.
+- Position your offer relative to them by evidence and framing, not by being cheapest. Cheapest is a race to the bottom you will lose.
+- If your nearest comparison is a $300 course, a $95 one-page deliverable is not "expensive relative to it" â€” position by outcome, and if your outcome is more complete, you justify more.
+
+## Method 3 â€” The willingness-to-pay conversation
+
+This is the method that produces the most accurate number, and it's the one you did in the last lesson's experiment. In a real conversation you ask, not "would you buy this?" but:
+
+- "What would you pay to never deal with this again â€” if it genuinely worked in a month?"
+- "What do you currently spend on this problem across tools, time, and help?"
+
+Then listen for the number the prospect sets themselves, and anchor your price just below their own stated value. People underprice their own pain; your job is to land at a price that still feels like a steal compared to what their answer implies.
+
+## Set your price floor and ceiling
+
+Take all three methods and write down:
+
+- **Your floor** â€” the price below which it isn't worth your time. This is personal and you must respect it.
+- **Your ceiling** â€” the price at which you'd be embarrassed to ask. Push one step past your comfort.
+- **Your anchor** â€” the specific price you'll quote this weekcarship: usually 60-70% of the way between floor and ceiling, rounded to a confidence-inspiring number ($97, $147, $297 â€” never an awkward $289 unless the rounding matters to you).
+
+For a first offer, bias slightly low but never under your floor. A slightly-low first price buys you testimonials; selling at a loss buys you burnout.
+
+## Script it so you never hesitate
+
+Write down word-for-word how you'll say the price when a prospect asks. Example: "The price is $147, and it includes the full welcome page plus one revision round â€” for most people it removes a whole month of writing they hate."
+
+Then practice saying it out loud until it feels like a normal, proud number. Hesitation reads as uncertainty, and uncertainty reads as cheapness.
+
+## What done looks like
+
+By the end of this lesson commit to paper:
+
+1. The value-math number: what your offer is worth to one customer per year.
+2. The anchoring range: low, typical, premium in your lane.
+3. Your customer's own stated willingness-to-pay, quoted verbatim.
+4. Your floor, your ceiling, and â€” most importantly â€” the exact **anchor price** you will quote this week.
+
+That number is now committed. In the next lesson you go sell your first one.
+$$klag$ where id = '25f4ef7b-7b05-4f14-90e8-a78583c38314';
+
+update public.lessons set content = $$klag$$
+Everything so far has been preparation. This is the week you stop planning and actually sell â€” you put your offer in front of a real stranger with a real price, and you collect your first payment and your first testimonial.
+
+Notice the goal: it is not "get thousands of views" and it is not "go viral." It is one real sale from a stranger who hands you money because your offer helped them. One genuine sale.
+
+## Reframe what selling actually is
+
+Most people freeze because they imagine selling as pressure, manipulation, or begging. It is none of those. Selling, done honestly, is a **service of clarity**: you are helping a person who already feels pain understand exactly what your offer does for them abbinder and decide.
+
+Your customer is not the enemy. Your customer is the person who wants to stop hurtingcarshiperly and has been waiting for someone to offer a clean solution. Your job is to reach them, be clear, and make it easy to say yes.
+
+## The one-sentence pitch, polished
+
+Take the offer sentence you wrote in lesson two and sharpen it until saying it takes three seconds:
+
+> For [customer], who [pain], my [offer] gives [outcome] without [objection].
+
+Three rules for the pitch that actually sells:
+
+1. **Lead with the customer, not with you.** "I'm a freelancer who..." puts the spotlight on you. "For solo therapists who hate writing..." puts it where it belongs.
+2. **Name one specific outcome, not a feature list.** Outcomes sell; features are furniture.
+3. **Preempt the one doubt.** If people usually worry about price or effort, address it in your own words before they ask.
+
+## Where your first buyers are
+
+You do not need an audience of ten thousand. You need ten people who trust you in a market that trusts itself. Rank your channels:
+
+1. **Warm introductions.** People you already know in that niche â€” colleagues, former clients, community members. A warm introduction converts far better than any cold message.
+2. **Your own small network.** A genuine post to friends-of-friends in the right niche works better than a cold ad.
+3. **The community that hosts your problem.** The same forums, groups, and threads where you collected demand evidence â€” show up with value first: answer the questions genuinely. Do not spam.
+4. **One direct, personalized offer.** For every ten targeted people you message personally and specifically, expect to talk seriously to two or three.
+
+## The message that gets replies
+
+Generic outreach dies. A personalized message follows this shape:
+
+- **A nod to them first:** "I read your comment about [their exact words] on [where]."
+- **Your proof of relevance:** " â€¢#0091that exact problem is why I built the thing I'm offering."
+- **A soft, specific ask:** "Would you have twenty minutes this week to look at it and tell me if it's useful for [their situation]? No pressure to buy."
+
+Short, specific, low-pressure. One link or none. No attachments, no "I hope this finds you well" filler.
+
+## Handling "no" before you send a single message
+
+You will be told no. That is the tuition for getting to yes. Build the discipline now:
+
+- A no is **not** a rejection of you; it's information about fit â€” maybe the person, the price, the timing, or the message.
+- Collect the no's. A candid "this isn't for me" is gold because it tells you how to sharpen the pitch.
+- Keep the funnel moving: for every no, send another yes-worthy message. The people who quit at the first no are the ones who never get a sale.
+
+## The ask that turns interest into a sale
+
+When someone is interested, don't soft-pedal the price â€” you already decided it in the last lesson. Be clear and confident:
+
+- Present the offer plainly, restate the outcome, state the price, and state what's included.
+- Give a **specific next action with a deadline**: "I have two slots this week â€” if it works, reply here before Thursday and I'll get started."
+- Scarcity only works if it's true; a real deadline (you genuinely only have two slots) beats invented urgency.
+
+## Close the loop
+
+The moment someone says yes is not the end of selling â€” it's the beginning of proof. Collect the sale cleanly: get the money and ask permission to use the result. And record the testimonial: "If it works for you, may I quote you?"
+
+A cold, real, paid first sale changes everything: it converts your idea from theory into an actual business and gives you the first brick of the proof you'll build on in the two lessons ahead.
+
+## What done looks like
+
+By the end of this lesson you will have sent your offer to at least ten targeted people. You will have had at least two real conversations. And you'll have one sale â€” first payment received from a stranger â€” or, if not yet, five recorded "no's" and a revision to pitch again this week with a clearer message.
+
+Do not move to the next lesson with zero attempts made. Send the messages. The sale exists at the other end of the send.
+$$klag$ where id = 'e137c679-8e4a-4fa5-978a-c791be58fbd0';
+
+update public.lessons set content = $$klag$$
+You've made a sale. Money has arrived. Now â€” and this surprises almost every new owner â€” comes the part that breaks most side businesses: getting the money straight. Messy money is the silent killer of small businesses, and tidying it now costs you an afternoon, not a disaster.
+
+Today we make your business financially visible, repeatable, and honestly taxed. No accountant-speak, just the few things that actually matter.
+
+## Choose one home for the money
+
+Right now your revenue probably lands in your personal account mixed with everything else. Fix that this week: open a **dedicated business checking account** (most are free, and a plain one is perfect). Every business dollar â€” income and expense â€” flows through it, and only through it.
+
+This gives you three things instantly:
+
+- **A truthful number.** You can answer "how much has my business made and spent?" in seconds, not an hour of mental archaeology.
+- **Clean habits.** When the money is separate, doing your taxes and seeing your real margin becomes trivial.
+- **Grown-up optics.** A business account, even to yourself, moves you from "side hustle" to "real thing," and customers and banks take it more seriously.
+
+## Track it like it's a job
+
+Keep four numbers, updated weekly. A simple spreadsheet is enough â€” no fancy software required:
+
+1. **Revenue** â€” total money in at your price point.
+2. **Costs** â€” your real out-of-pocket expenses: the tools, the software, the ads, the things you actually paid for.
+3. **Gross profit** = revenue minus costs. This is the number that tells you whether the business works.
+4. **Time spent** â€” hours you put in, because your real "hourly wage" is gross profit divided by hours. Dream jobs have a healthy hourly number.
+
+Update these every Sunday. Five minutes. If a number surprises you, that surprise is the entire point of tracking.
+
+## Watch the two traps
+
+- **The "someday tax" trap.** Number one reason small businesses fail financially: failing to set aside for taxes. Money that looks like profit isn't all yours. A simple rule that saves you: **put aside 25â€“30% of every payment** into a separate savings bucket, the moment it landscheddar. When tax time comes, you send it and keep your sanityalias.
+- **The "tools creep" trap.** It's shockingly easy to spend more on tools and software than you ever make. A $40/month subscription that saves an hour a month is often a losing trade. Audit every recurring tool you pay for â€” cancel anything that doesn't pay for itself.
+
+## Pick your business structure â€” without panic
+
+You do not need a fancy incorporation today. Here's the honest ladder:
+
+- **None (sole proprietorship)** â€” fine for your first sales almost everywhere. Your business income is simply reported on your taxes. Simple, zero cost, start here.
+- **Limited liability / LLC equivalent** â€” worth it later for protecting personal assets, usually when you have meaningful revenue flowing or real legal exposure. Not required on day one.
+
+Whatever you choose, do three things this week regardless: get the dedicated account, keep costs in it, and set aside taxes. Structure can catch up; clean books can't wait.
+
+## Tax time made boring
+
+Bookkeeping is the cure for tax anxiety. If you record as you go quickly:
+
+- Log each expense with the date, category, and what it was for. It's genuinely two minutes when done at the moment.
+- Keep receipts â€” a phone photo in one folder beats a shoebox of paper.
+- Revenue from the business account gives you a complete untraceable source of truth.
+
+When tax season comes, you hand over clean numbers and sleep well.
+
+## What done looks like
+
+By the end of this lesson you will have:
+
+1. A dedicated business checking account with your revenue and costs running through it.
+2. A weekly tracker listing revenue, gross profit, and hours â€” updated once.
+3. A tax bucket holding 25â€“30% of payments received and a list of recurring tools, with any losers cancelled.
+
+Your money is now straight â€” which means the business is honest, you sleep better, and you can see exactly what to scale. Next: we turn one-off success into something repeatable.
+$$klag$ where id = '452f7c10-3bb4-46fc-a0c1-e03f1923c8';
+
+update public.lessons set content = $$klag$$
+You have a first sale and the money is straight. This is a real milestone. But right now you have a one-off success, not yet a business. A business is a repeating machine: the same thing working for more customers, more predictably, with less chaos.
+
+Today we turn your first win into a repeatable process â€” the step most side businesses never take, and the reason so many stay stuck at "one lucky sale."
+
+## Why "repeatable" is the whole game
+
+A one-off feels great; it isn't a foundation. You cannot grow a business that depends on luck, heroics, or your getting it right from scratch each timealien.
+
+Repeatable means:
+
+- Someone else (or future-you following a checklist) can deliver the same result with the same quality.
+- New customers get the same great outcome, not a coin flip.
+- You know your cost, your time, and your margin for every unit â€” no surprises.
+
+## The March 12 replay trick
+
+The best way to find a repeatable process is to **replay what actually happened on the day you made the sale.** You know the real steps â€” take a blank page and write them down in order, as they truly happened (not as you'd like them to be):
+
+- Where did the customer come from? Which message, channel, or introduction?
+- What exactly did you show them?
+- How did you take them from interest to payment? What did they ask, and what did you say?
+- What did you deliver, in how many steps?
+- What did they say afterward?
+
+That log is your first draft of the system. It already worked once â€” now you make it repeatable.
+
+## Turn the log into a checklist
+
+From that draft, build a **checklist**: the fixed sequence of steps from first contact to delivered outcome. This is your operating manual.
+
+A great checklist is:
+
+- Step-ordered and specific ("Send follow-up email 24 hours after payment," not "follow up").
+- Short enough to actually follow â€” aim for under 20 steps for a service offer.
+- Versioned â€” every time you change how you do something, update the checklist so the new way becomes the default.
+
+The checklist is what lets you deliver consistent quality without reinventing anything, every single time.
+
+## Codify the part that floats
+
+The frustrating part of a first sale is the stuff that "just happened" â€” the phrasing you happened to use, the flow that felt natural. Repeatability means capturing the floating parts:
+
+1. **Your pitch wording** â€” freeze the exact sentence that got the yes, and the exact replies that handled the objections. Store them as templates, not memories.
+2. **Your delivery steps** â€” write down precisely what you deliver first, second, third.
+3. **Your follow-up cadence** â€” when you check in and what you send. This is where repeat orders and referrals live.
+
+You're not being robotic; you're preserving what works so it survives without you.
+
+## Set the standard you'll be judged on
+
+Define "done well" in measurable terms â€” the quality bar every delivery must hit. Example: "The customer can use the deliverable within 48 hours without asking questions" or "They say they'd recommend it."
+
+Write this bar down. It's your product spec, your testimonial generator, and your defense against course-creep where every job grows more scope than you agreed to.
+
+## Start delegating a slice
+
+You may not have money for staff yet â€” that's fine. Repeatability sets you up to hand off eventually, and you can start humbly: the moment a step is fully written down)Skip you can literally do it from a checklist, ask a trusted friend or helper to do one small slice, or simply reduce time by batching.
+
+The test of a truly repeatable process: **could you stop doing it and describe it so clearly that someone (or a future automated tool) could reproduce the result?** If yes, you're no longer selling your hours â€” you're operating a machine.
+
+## What done looks like
+
+By the end of this lesson you will have, in one document:
+
+1. The March 12 replay log of your real first sale.
+2. A versioned delivery checklist (under 20 steps).
+3. Frozen wording: the pitch, the objection replies, the follow-up cadence.
+4. A written "done well" quality bar.
+5. One test of repeatability â€” either you delivered the same result to a second buyer, or you describe it clearly enough that someone else can.
+
+With the machine built, one last thing remains: proving to the world â€” and to yourself â€” that this is real. That's the capstone.
+$$klag$ where id = 'e6e93090-da73-4526-84f7-4a97fd915bc3';
+
+update public.lessons set content = $$klag$$
+This is it â€” the capstone. Ninety days in, you've done the thing 99% of dreamers never do: you built a real side business. Now you turn everything into proof. This short lesson is about assembling your Proof so it's undeniable â€” to a bank, a future employer, an investor, or simply to the mirror.
+
+Keep it tight. This is a wrap-up, not new material.
+
+## Gather your real numbers
+
+Open your weekly tracker â€” the one you built in the money lesson â€” and pull the honest numbers:
+
+- Total revenue and total gross profit.
+- Number of paying customers.
+- Costs and your real hourly wage for the time you spent.
+- The one or two numbers that make your effort feel real, no matter how small.
+
+Small is fine. The point is that the numbers are true and you can say them out loud without flinching.
+
+## Pull your evidence together
+
+Assemble everything into a single Proof document, in this order:
+
+1. **The problem.** Your one-sentence idea â€” customer, pain, outcome.
+2. **The proof it was real.** Your verbatim customer quotes and the demand evidence.
+3. **The offer.** What you soldcommandanel at anchor, and the value math that justified the price.
+4. **The results.** Your real revenue, customers, and whatever social proof you have â€” a testimonial or reply.
+5. **The machine.** The repeatable checklist that shows this isn't luck.
+
+## Write the three-sentence summary
+
+If someone asks "so what did you do?," you answer in three sentences, no rambling:
+
+1. "I found [customer] who struggle with [pain]."
+2. "I built and sold [offer], and [number] of them paid me."
+3. "It's repeatable because [checklist/machine], and I made [gross profit]."
+
+Practice it until it feels easy. That's your one-liner forever â€” for your resume's side project line, a bank, or any future opportunity.
+
+## Deploy your proof
+
+Proof that stays in a folder does nothing. Do three concrete things this week:
+
+- **Show it where it counts.** Post the result (with numbers, honestly) where your market hangs out, or add it to your profile or portfolio. Pages: "Real proof, real numbers."
+- **Tell one specific person.** Pick one person â€” a future client, a friend who could refer you â€” and tell them the three-sentence story live.
+- **Save it as a reusable asset.** Keep the Proof document; it now feeds your pitch, your portfolio, and your confidence forever.
+
+## Decide the next 90 days
+
+Last, a choice, made deliberately:
+
+- **Run it again.** The machine works â€” grow it: raise the price, add the second offer, batch more customers.
+- **Fold with pride.** You've proven you can start, sell, and deliver â€” that skill is portable and permanent. Deciding to stop is legitimate.
+
+Refuse the worst option: doing nothing and letting the proof rot. Whatever you choose, choose it on purpose.
+
+## Final word
+
+This is not the finish line â€” it's proof you can start. You now own something rare: verified evidence that you can find a problem people care about, and solve it well enough that a stranger paid you. Everything else â€” the next idea, the next business, the raise, the promotion â€” is just running the same machine you just proved.
+
+Ninety days done. Now go do the next one.
+$$klag$ where id = 'aad63fd7-b761-4161-b711-bee1e6bd3aaa';
+
+
