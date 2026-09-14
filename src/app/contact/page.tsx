@@ -158,8 +158,9 @@ export default function ContactPage() {
                     </div>
                     <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-semibold text-navy">Subject</label>
+                      <label htmlFor="contact-subject" className="text-xs font-semibold text-navy">Subject</label>
                       <select
+                        id="contact-subject"
                         className="px-3 py-2 rounded-lg border border-border text-sm text-navy font-sans bg-white focus:outline-2 focus:outline-amber focus:border-transparent"
                         required
                         value={form.subject}

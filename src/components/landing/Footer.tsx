@@ -94,7 +94,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-2.5">
               <img
                 src="/brand/klagon-logo.png"
-                alt="KlagonOrg"
+                alt=""
                 className="h-11 w-auto rounded-lg"
               />
               <span className="text-base font-extrabold tracking-tight text-white">
