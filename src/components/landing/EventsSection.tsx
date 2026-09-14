@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+?import Link from "next/link";
 import { Button, Badge } from "@/components/ui";
 import { EVENTS } from "@/lib/constants";
 import { Calendar } from "lucide-react";
@@ -23,13 +23,13 @@ export function EventsSection() {
               Show up. Level up. Every week.
             </h2>
             <p className="text-sm text-gray leading-relaxed">
-              Workshops, hackathons, leadership sessions, and community service â€” all happening right
+              Workshops, hackathons, leadership sessions, and community service — all happening right
               here in Klagon.
             </p>
           </div>
           <div className="flex items-end justify-end">
             <Link href="/events">
-            <Button variant="primary">See All Events â†’</Button>
+            <Button variant="primary">See All Events →</Button>
           </Link>
           </div>
         </div>
@@ -42,7 +42,7 @@ export function EventsSection() {
                 </Badge>
                 <div className="text-sm font-bold text-navy mb-1">{e.title}</div>
                 <div className="flex items-center gap-1.5 text-xs text-gray">
-                  <Calendar size="12" /> {e.date} Â· {e.time}
+                  <Calendar size="12" /> {e.date} · {e.time}
                 </div>
               </div>
               <div className="px-4 sm:px-5 py-3 flex items-center justify-between">

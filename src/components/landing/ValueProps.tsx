@@ -1,4 +1,4 @@
-﻿import { VALUE_PROPS } from "@/lib/constants";
+?import { VALUE_PROPS } from "@/lib/constants";
 
 export function ValueProps() {
   return (
@@ -9,7 +9,7 @@ export function ValueProps() {
           Not just another youth group.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-10">
-          A structured system designed to take you from where you are to where you deserve to be â€”
+          A structured system designed to take you from where you are to where you deserve to be —
           with a community backing every step.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

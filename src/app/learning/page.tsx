@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+?import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
@@ -8,7 +8,7 @@ import { getSupabase } from "@/lib/supabase";
 import type { Course } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Learning Hub â€” KlagonOrg",
+  title: "Learning Hub — KlagonOrg",
   description:
     "Free learning tracks in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning.",
   alternates: { canonical: "/learning" },
@@ -61,7 +61,7 @@ export default async function LearningPage() {
             Skills that open doors.
           </h1>
           <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Structured short courses built for Klagon youth â€” no laptop required to start. Each
+            Structured short courses built for Klagon youth — no laptop required to start. Each
             module takes you from zero to confident.
           </p>
         </div>
@@ -89,11 +89,11 @@ export default async function LearningPage() {
                     </div>
                     <h2 className="text-sm font-bold text-navy leading-tight mb-1">{c.title}</h2>
                     <p className="text-xs text-gray mb-3">
-                      {c.lessons} lessons Â· PDF + Video
+                      {c.lessons} lessons · PDF + Video
                     </p>
                     <ProgressBar value={pct} color={pct > 0 ? "#F59E0B" : "#E2E8F0"} showLabel />
                     <span className="mt-3 w-full block py-2 rounded-lg bg-navy text-white text-xs font-bold font-sans group-hover:bg-blue transition-colors text-center">
-                      {pct > 0 ? "Continue Learning â†’" : "Start Course â†’"}
+                      {pct > 0 ? "Continue Learning →" : "Start Course →"}
                     </span>
                   </div>
                 </Link>

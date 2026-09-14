@@ -1,4 +1,4 @@
-﻿import { PROJECTS } from "@/lib/constants";
+?import { PROJECTS } from "@/lib/constants";
 
 export function CommunityProjects() {
   return (
@@ -11,7 +11,7 @@ export function CommunityProjects() {
           Build things that actually help Klagon.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-10">
-          Join active projects, volunteer your skills, and see the direct impact on your community â€”
+          Join active projects, volunteer your skills, and see the direct impact on your community —
           all tracked on your profile.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -38,7 +38,7 @@ export function CommunityProjects() {
               <p className="text-xs text-gray leading-relaxed mb-3">{p.description}</p>
               <div className="flex items-center gap-1.5 text-xs text-gray">
                 <span className="w-2 h-2 rounded-full bg-green" />
-                {p.volunteers} volunteers Â· {p.spotsOpen} spots open
+                {p.volunteers} volunteers · {p.spotsOpen} spots open
               </div>
             </div>
           ))}

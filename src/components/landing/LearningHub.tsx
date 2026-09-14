@@ -1,4 +1,4 @@
-﻿import { COURSES } from "@/lib/constants";
+?import { COURSES } from "@/lib/constants";
 
 export function LearningHub() {
   return (
@@ -11,7 +11,7 @@ export function LearningHub() {
           Skills that open doors.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-10">
-          Structured short courses built for Klagon youth â€” no laptop required to start. Each module
+          Structured short courses built for Klagon youth — no laptop required to start. Each module
           takes you from zero to confident.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -32,7 +32,7 @@ export function LearningHub() {
                 </div>
                 <div className="text-sm font-bold text-navy leading-tight mb-1">{c.title}</div>
                 <div className="text-xs text-gray mb-2.5">
-                  {c.lessons} lessons Â· PDF + Video
+                  {c.lessons} lessons · PDF + Video
                 </div>
                 <div className="h-1 bg-pale rounded-full overflow-hidden">
                   <div
