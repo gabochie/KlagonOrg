@@ -1,4 +1,4 @@
-?import Link from "next/link";
+import Link from "next/link";
 import { Button, Badge } from "@/components/ui";
 import { EVENTS } from "@/lib/constants";
 import { Calendar } from "lucide-react";

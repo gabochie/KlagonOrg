@@ -1,4 +1,4 @@
-?import { JOURNEY_STAGES } from "@/lib/constants";
+import { JOURNEY_STAGES } from "@/lib/constants";
 
 export function JourneyPath() {
   return (

@@ -1,4 +1,4 @@
-?import { COURSES } from "@/lib/constants";
+import { COURSES } from "@/lib/constants";
 
 export function LearningHub() {
   return (

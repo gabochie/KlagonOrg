@@ -1,4 +1,4 @@
-?import { VALUE_PROPS } from "@/lib/constants";
+import { VALUE_PROPS } from "@/lib/constants";
 
 export function ValueProps() {
   return (

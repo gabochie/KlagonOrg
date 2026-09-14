@@ -1,4 +1,4 @@
-?import { PROJECTS } from "@/lib/constants";
+import { PROJECTS } from "@/lib/constants";
 
 export function CommunityProjects() {
   return (
