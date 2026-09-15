@@ -269,6 +269,41 @@ export function CourseViewer({
                     </div>
                   )}
 
+                  {!profile ? (
+                    <div className="mb-4 rounded-xl border border-blue/20 bg-blue/5 px-4 py-4">
+                      <div className="text-sm font-extrabold text-navy mb-1">
+                        Create your free account to start
+                      </div>
+                      <p className="text-xs text-gray mb-3">
+                        Sign in so we can track your progress, XP, and badges as you learn.
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                          href="/auth/register"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-xs font-bold text-white hover:bg-blue transition-colors"
+                        >
+                          Create free account →
+                        </Link>
+                        <Link
+                          href="/auth/login"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3.5 py-2 text-xs font-bold text-navy hover:border-navy transition-colors"
+                        >
+                          I already have an account
+                        </Link>
+                      </div>
+                    </div>
+                  ) : profile.status !== "approved" ? (
+                    <div className="mb-4 rounded-xl border border-amber/30 bg-amber/10 px-4 py-4">
+                      <div className="text-sm font-extrabold text-navy mb-1">
+                        Your account is pending approval
+                      </div>
+                      <p className="text-xs text-gray">
+                        You're almost in! A mentor will review your application shortly. Once
+                        approved you can unlock every lesson here.
+                      </p>
+                    </div>
+                  ) : (
+                  <>
                   {yt ? (
                     <div className="rounded-xl overflow-hidden border border-border aspect-video mb-4">
                       <iframe
