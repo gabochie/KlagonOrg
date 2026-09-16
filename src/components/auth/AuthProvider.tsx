@@ -15,6 +15,19 @@ import type { Database, UserRole, MemberStatus } from "@/lib/database.types";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
+type ProfilePatch = Partial<
+  Pick<
+    ProfileRow,
+    | "full_name"
+    | "phone"
+    | "age"
+    | "gender"
+    | "occupation"
+    | "interests"
+    | "career_goal"
+  >
+>;
+
 interface SignUpData {
   email: string;
   password: string;
@@ -44,6 +57,9 @@ interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  updateProfile: (patch: ProfilePatch) => Promise<{ error: string | null }>;
+  changePassword: (newPassword: string) => Promise<{ error: string | null }>;
+  sendPasswordReset: (email: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -182,6 +198,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (client) await client.auth.signOut();
   }, []);
 
+  const updateProfile = useCallback(
+    async (patch: ProfilePatch) => {
+      const client = getBrowserClient();
+      if (!client) return { error: "Supabase is not configured yet." };
+      const { data } = await client.auth.getSession();
+      const userId = data.session?.user.id;
+      if (!userId) return { error: "You need to be signed in." };
+      const { error } = await client
+        .from("profiles")
+        .update(patch)
+        .eq("id", userId);
+      if (error) return { error: error.message };
+      await refreshProfile();
+      return { error: null };
+    },
+    [refreshProfile],
+  );
+
+  const changePassword = useCallback(async (newPassword: string) => {
+    const client = getBrowserClient();
+    if (!client) return { error: "Supabase is not configured yet." };
+    const { error } = await client.auth.updateUser({ password: newPassword });
+    return { error: error ? error.message : null };
+  }, []);
+
+  const sendPasswordReset = useCallback(async (email: string) => {
+    const client = getBrowserClient();
+    if (!client) return { error: "Supabase is not configured yet." };
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset`,
+    });
+    return { error: error ? error.message : null };
+  }, []);
+
   const value = useMemo<AuthContextValue>(() => {
     const role = (profile?.role ?? "anonymous") as UserRole | "anonymous";
     const status = (profile?.status ?? "none") as MemberStatus | "none";
@@ -199,8 +249,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signUp,
       signOut,
       refreshProfile,
+      updateProfile,
+      changePassword,
+      sendPasswordReset,
     };
-  }, [user, session, profile, loading, configured, signIn, signUp, signOut, refreshProfile]);
+  }, [user, session, profile, loading, configured, signIn, signUp, signOut, refreshProfile, updateProfile, changePassword, sendPasswordReset]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
