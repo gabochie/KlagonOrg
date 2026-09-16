@@ -53,7 +53,7 @@ const adminOps: NavItem[] = [
   { icon: "🤝", label: "Sponsors", href: SOON, soon: true },
   { icon: "🧑‍🏫", label: "Mentors", href: SOON, soon: true },
   { icon: "📈", label: "Analytics", href: SOON, soon: true },
-  { icon: "⚙️", label: "Settings", href: SOON, soon: true },
+  { icon: "⚙️", label: "Settings", href: "/dashboard/settings" },
 ];
 
 function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
