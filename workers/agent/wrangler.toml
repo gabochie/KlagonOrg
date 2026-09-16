@@ -1,0 +1,13 @@
+# KlagonOrg AI sales agent (Cloudflare Worker).
+# "Ama" — free membership-lead capture for visitors on klagon.org.
+# Secrets (wrangler secret put): SUPABASE_ANON_KEY, AGENT_KEY,
+#   optional TURNSTILE_SECRET for bot protection.
+name = "klagon-sales-agent"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+SUPABASE_URL = "https://rvavixcgtninzccskfpy.supabase.co"
+
+[ai]
+binding = "AI"

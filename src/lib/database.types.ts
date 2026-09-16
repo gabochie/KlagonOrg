@@ -461,15 +461,19 @@ export interface Database {
         Row: {
           id: number;
           name: string | null;
-          email: string;
+          phone: string | null;
+          email: string | null;
           source: string;
+          intent: string | null;
           profile_id: string | null;
           created_at: string;
         };
         Insert: {
           name?: string | null;
-          email: string;
-          source: string;
+          phone?: string | null;
+          email?: string | null;
+          source?: string;
+          intent?: string | null;
           profile_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["lead_captures"]["Insert"]>;
