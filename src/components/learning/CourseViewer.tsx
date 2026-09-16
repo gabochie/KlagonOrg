@@ -298,7 +298,7 @@ export function CourseViewer({
                         Your account is pending approval
                       </div>
                       <p className="text-xs text-gray">
-                        You're almost in! A mentor will review your application shortly. Once
+                        You&apos;re almost in! A mentor will review your application shortly. Once
                         approved you can unlock every lesson here.
                       </p>
                     </div>
@@ -397,6 +397,7 @@ export function CourseViewer({
                 </>
               )}
             </>
+              )}
             </div>
           </div>
         </div>
