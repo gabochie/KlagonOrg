@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { MemberGate } from "@/components/auth/MemberGate";
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
 import { getSupabase } from "@/lib/supabase";
 
@@ -44,7 +45,9 @@ export default async function CoursePage({
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
-      <CourseReaderContent id={id} />
+      <MemberGate>
+        <CourseReaderContent id={id} />
+      </MemberGate>
       <Footer />
     </div>
   );
