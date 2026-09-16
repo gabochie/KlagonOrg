@@ -113,6 +113,14 @@ export default function AdminLoginPage() {
                   </button>
                 </div>
               </div>
+              <div className="flex justify-end -mt-1">
+                <Link
+                  href="/auth/forgot"
+                  className="text-[11px] text-gray font-bold hover:text-amber-strong transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               {error && <p className="text-xs text-red font-semibold">{error}</p>}
               {loading && (
                 <p className="text-xs text-gray font-semibold">
