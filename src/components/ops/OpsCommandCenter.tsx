@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
+import type { Json } from "@/lib/database.types";
 
 interface KoccMsg {
   source?: string;
@@ -74,23 +75,25 @@ export function OpsCommandCenter() {
 
       if (msg.op === "save" && client && userId) {
         try {
-          const payload = msg.payload ?? {};
+          const pl = (msg.payload ?? {}) as Record<string, unknown>;
+          const startDate =
+            typeof pl["startDate"] === "string" ? pl["startDate"] : null;
+          const savedDays =
+            typeof pl["days"] === "number" ? pl["days"] : null;
           const { error } = await client
             .from("ops_kocc_snapshots")
             .upsert(
               {
                 owner: userId,
-                days:
-                  typeof payload.startDate === "string"
-                    ? Math.max(
-                        1,
-                        Math.ceil(
-                          (Date.now() - new Date(payload.startDate).getTime()) /
-                            86400000,
-                        ),
-                      )
-                    : null,
-                payload,
+                days: startDate
+                  ? Math.max(
+                      1,
+                      Math.ceil(
+                        (Date.now() - new Date(startDate).getTime()) / 86400000,
+                      ),
+                    )
+                  : null,
+                payload: pl as unknown as Json,
                 updated_at: new Date().toISOString(),
               },
               { onConflict: "owner" },
@@ -98,7 +101,11 @@ export function OpsCommandCenter() {
           if (error) throw error;
           await client.from("ops_kocc_audit").insert({
             owner: userId,
-            event: { kind: "save", at: new Date().toISOString(), days: payload.days ?? null },
+            event: {
+              kind: "save",
+              at: new Date().toISOString(),
+              days: savedDays,
+            },
           });
           reply({ nonce, ok: true, op: "save", data: { updatedAt: new Date().toISOString() } });
         } catch (err) {

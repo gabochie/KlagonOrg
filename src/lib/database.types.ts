@@ -457,6 +457,24 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["audit_logs"]["Insert"]>;
         Relationships: [];
       };
+      lead_captures: {
+        Row: {
+          id: number;
+          name: string | null;
+          email: string;
+          source: string;
+          profile_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          name?: string | null;
+          email: string;
+          source: string;
+          profile_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["lead_captures"]["Insert"]>;
+        Relationships: [];
+      };
       ops_kocc_audit: {
         Row: { id: number; owner: string; event: Json; created_at: string };
         Insert: { owner: string; event: Json };
