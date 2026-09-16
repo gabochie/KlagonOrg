@@ -61,7 +61,7 @@ export function LeadMagnet({
     return (
       <div className="flex flex-col items-center gap-2 rounded-2xl border border-amber/30 bg-amber/10 px-6 py-6 text-center">
         <CheckCircle size={28} className="text-green-600" />
-        <div className="text-sm font-extrabold text-navy">You're all set!</div>
+        <div className="text-sm font-extrabold text-navy">You&apos;re all set!</div>
         <div className="text-xs text-gray">The full course is now unlocked. Keep learning and earn XP.</div>
       </div>
     );

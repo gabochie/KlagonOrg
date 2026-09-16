@@ -1793,7 +1793,7 @@ function updateCloud(){
   koLast();
   if(!on) koStatus(KO.configured?"Cloud idle — sign in to klagon.org to sync":"Cloud sync — open from klagon.org /admin/ops");
 }
-window.addEventListener("message",function(e){
+if(window&&window.addEventListener) window.addEventListener("message",function(e){
   const m=e.data||{}; if(m.source!=="klagonops") return;
   if(m.type==="context"){
     KO.configured=!!m.configured; KO.userId=m.userId||null; KO.url=m.url||null;

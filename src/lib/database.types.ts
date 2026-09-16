@@ -457,6 +457,23 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["audit_logs"]["Insert"]>;
         Relationships: [];
       };
+      ops_kocc_audit: {
+        Row: { id: number; owner: string; event: Json; created_at: string };
+        Insert: { owner: string; event: Json };
+        Update: Partial<Database["public"]["Tables"]["ops_kocc_audit"]["Insert"]>;
+        Relationships: [];
+      };
+      ops_kocc_snapshots: {
+        Row: { owner: string; days: number | null; payload: Json; updated_at: string };
+        Insert: {
+          owner: string;
+          days?: number | null;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["ops_kocc_snapshots"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: {
       events_public: {

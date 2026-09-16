@@ -27,15 +27,17 @@ export function OpsCommandCenter() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const ctxRef = useRef<KoContext | null>(null);
 
-  ctxRef.current = {
-    source: "klagonops",
-    type: "context",
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    userId: user?.id ?? null,
-    isAdmin,
-    configured: isSupabaseConfigured(),
-  };
+  useEffect(() => {
+    ctxRef.current = {
+      source: "klagonops",
+      type: "context",
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      userId: user?.id ?? null,
+      isAdmin,
+      configured: isSupabaseConfigured(),
+    };
+  }, [user, isAdmin]);
 
   const postTo = useCallback((msg: unknown) => {
     const win = iframeRef.current?.contentWindow;
@@ -119,25 +121,27 @@ export function OpsCommandCenter() {
             .maybeSingle();
           if (error) throw error;
           if (!data) {
-            reply({ nonce, ok: true, data: null });
+            reply({ nonce, ok: true, op: "load", data: null });
             return;
           }
           reply({
             nonce,
             ok: true,
+            op: "load",
             data: { payload: data.payload, updatedAt: data.updated_at },
           });
         } catch (err) {
           reply({
             nonce,
             ok: false,
+            op: "load",
             error: err instanceof Error ? err.message : "Load failed",
           });
         }
         return;
       }
 
-      reply({ nonce, ok: false, error: "Unsupported op or not signed in" });
+      reply({ nonce, ok: false, op: msg.op, error: "Unsupported op or not signed in" });
     },
     [postContext, reply],
   );
