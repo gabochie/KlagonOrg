@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { CheckCircle2, KeyRound, Save, UserRound } from "lucide-react";
 
@@ -28,8 +28,10 @@ export function SettingsPanel() {
   const [profileBusy, setProfileBusy] = useState(false);
   const [pwBusy, setPwBusy] = useState(false);
 
-  useEffect(() => {
-    if (!profile) return;
+  const [prevProfileId, setPrevProfileId] = useState<string | null>(null);
+
+  if (profile && profile.id !== prevProfileId) {
+    setPrevProfileId(profile.id);
     setFullName(profile.full_name ?? "");
     setPhone(profile.phone ?? "");
     setAge(profile.age != null ? String(profile.age) : "");
@@ -37,7 +39,7 @@ export function SettingsPanel() {
     setOccupation(profile.occupation ?? "");
     setInterests((profile.interests ?? []).join(", "));
     setCareerGoal(profile.career_goal ?? "");
-  }, [profile]);
+  }
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();

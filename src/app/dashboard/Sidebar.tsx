@@ -26,7 +26,7 @@ const memberMenu: NavItem[] = [
 ];
 
 const memberAccount: NavItem[] = [
-  { icon: "👤", label: "My Profile", href: SOON, soon: true },
+  { icon: "👤", label: "My Profile", href: "/dashboard/settings" },
   { icon: "🎖️", label: "Achievements", href: SOON, soon: true },
   { icon: "📰", label: "News", href: "/news" },
   { icon: "📸", label: "Gallery", href: SOON, soon: true },
