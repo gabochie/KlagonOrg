@@ -98,6 +98,12 @@ export default function LoginPage() {
             Register
           </Link>
         </p>
+        <p className="text-center text-[11px] text-gray/70 mt-3">
+          Organizer?{" "}
+          <Link href="/admin/login" className="text-amber-strong font-bold hover:underline">
+            Admin sign in
+          </Link>
+        </p>
       </div>
     </main>
   );

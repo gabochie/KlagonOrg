@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export function RequireAdmin({ children }: { children: ReactNode }) {
-  const { loading, isAdmin } = useAuth();
+  const { loading, user, isAdmin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
-    if (!isAdmin) router.replace("/dashboard");
-  }, [loading, isAdmin, router]);
+    if (!user) router.replace("/admin/login");
+    else if (!isAdmin) router.replace("/dashboard");
+  }, [loading, user, isAdmin, router]);
 
   if (loading || !isAdmin) {
     return (
