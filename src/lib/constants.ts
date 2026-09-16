@@ -200,5 +200,5 @@ export const QUICK_ACTIONS: QuickAction[] = [
   { icon: "📅", label: "Create Event", sub: "Publish now" },
   { icon: "✅", label: "Mark Attendance", sub: "Today's session" },
   { icon: "📰", label: "Post Article", sub: "Community news" },
-  { icon: "📡", label: "Command Center", sub: "90-day ops", href: "/admin/ops" },
+  { icon: "📡", label: "Command Center", sub: "90-day ops", href: "/dashboard/admin/ops" },
 ];

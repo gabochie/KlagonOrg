@@ -1791,7 +1791,7 @@ function updateCloud(){
   const on=KO.configured&&KO.userId;
   ["koSave","koLoad"].forEach(id=>{ const b=$(id); if(b){ b.disabled=!on; b.style.opacity=on?1:.45; } });
   koLast();
-  if(!on) koStatus(KO.configured?"Cloud idle — sign in to klagon.org to sync":"Cloud sync — open from klagon.org /admin/ops");
+  if(!on) koStatus(KO.configured?"Cloud idle — sign in to klagon.org to sync":"Cloud sync — open from klagon.org Admin → Command Center");
 }
 if(window&&window.addEventListener) window.addEventListener("message",function(e){
   const m=e.data||{}; if(m.source!=="klagonops") return;
