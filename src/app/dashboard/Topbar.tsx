@@ -10,7 +10,7 @@ export function Topbar() {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
   const isAdmin = pathname.includes("/admin");
-  const isMemberArea = isAdmin || pathname.includes("/member");
+  const isMemberArea = isAdmin || pathname.includes("/dashboard");
 
   const firstName = profile?.full_name.trim().split(/\s+/)[0] ?? "";
   const initials = profile?.full_name

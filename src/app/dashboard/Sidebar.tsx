@@ -19,16 +19,16 @@ interface NavItem {
 
 const memberMenu: NavItem[] = [
   { icon: "🏠", label: "Dashboard", href: "/dashboard/member" },
-  { icon: "📚", label: "Learning Hub", href: "/learning" },
-  { icon: "📅", label: "Events", href: "/events" },
-  { icon: "🏗️", label: "Projects", href: "/projects" },
-  { icon: "🙋", label: "Volunteer", href: "/volunteer" },
+  { icon: "📚", label: "Learning Hub", href: "/dashboard/learning" },
+  { icon: "📅", label: "Events", href: "/dashboard/events" },
+  { icon: "🏗️", label: "Projects", href: "/dashboard/projects" },
+  { icon: "🙋", label: "Volunteer", href: "/dashboard/volunteer" },
 ];
 
 const memberAccount: NavItem[] = [
   { icon: "👤", label: "My Profile", href: "/dashboard/settings" },
   { icon: "🎖️", label: "Achievements", href: SOON, soon: true },
-  { icon: "📰", label: "News", href: "/news" },
+  { icon: "📰", label: "News", href: "/dashboard/news" },
   { icon: "📸", label: "Gallery", href: SOON, soon: true },
 ];
 

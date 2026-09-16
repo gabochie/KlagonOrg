@@ -70,7 +70,7 @@ export function LearningProgress() {
           <div className="text-sm font-bold text-navy">Learning Progress</div>
           <div className="text-[11px] text-gray mt-0.5">{subtitle}</div>
         </div>
-          <Link href="/learning" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
+          <Link href="/dashboard/learning" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
             All Courses →
           </Link>
       </div>
@@ -108,7 +108,7 @@ export function LearningProgress() {
                 </div>
                 <button
                   onClick={() => {
-                    if (isUuid(c.id)) router.push(`/learning/${c.id}`);
+                    if (isUuid(c.id)) router.push(`/dashboard/learning/${c.id}`);
                   }}
                   className="px-2.5 py-1 rounded-lg bg-navy text-white text-[10px] font-bold cursor-pointer whitespace-nowrap font-sans hover:bg-blue transition-colors"
                 >
