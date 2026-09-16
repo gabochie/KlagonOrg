@@ -9,6 +9,7 @@ import { QuickActions } from "@/components/admin/QuickActions";
 import { MembersTable } from "@/components/admin/MembersTable";
 import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
+import { LeadsList } from "@/components/admin/LeadsList";
 import { fetchAdminMetrics } from "@/lib/queries";
 
 export default function AdminDashboard() {
@@ -70,6 +71,8 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      <LeadsList />
       </RequireAdmin>
     );
 }

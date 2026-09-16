@@ -190,7 +190,9 @@ async function persistLead(env, lead, origin) {
       const detail = (await res.text()).slice(0, 200);
       return json({ ok: false, detail }, 502, origin);
     }
-    return json({ ok: true, saved: true, id: (await res.json())?.id ?? null }, 200, origin);
+    const body = await res.json();
+    const id = typeof body === "object" && body !== null ? body.id ?? null : body;
+    return json({ ok: true, saved: true, id }, 200, origin);
   } catch (err) {
     return json(
       { ok: false, error: err instanceof Error ? err.message : "lead-save-failed" },

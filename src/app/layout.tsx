@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { ChatBot } from "@/components/chat/ChatBot";
+import { SalesAgent } from "@/components/chat/SalesAgent";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -59,8 +59,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-          <ChatBot />
+          <AuthProvider>
+            {children}
+            <SalesAgent />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
