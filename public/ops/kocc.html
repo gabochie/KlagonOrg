@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KlagonOrg — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── KlagonOrg design tokens (from src/app/globals.css) ── */
+  :root{
+    --navy:#0F1B5C; --blue:#1A2E8C; --amber:#F59E0B; --amber-strong:#92400E;
+    --green:#10B981; --coral:#FF6B47; --purple:#8B5CF6; --gray:#5B6878;
+    --red:#EF4444; --border:#E8ECF0; --light:#F4F6FB; --pale:#EEF2FF;
+    --ink:#0A1128; --ink-2:#0E1732; --ink-3:#16224A;
+    --font:"Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  [data-theme="light"]{
+    color-scheme:light;
+    --bg:var(--light); --surface:#FFFFFF; --surface2:var(--pale); --surface3:#E5EBFF;
+    --line:var(--border); --text:var(--navy); --muted:var(--gray); --faint:#8A94A6;
+    --otline:rgba(15,27,92,.08); --sh:0 1px 2px rgba(15,27,92,.06),0 8px 24px rgba(15,27,92,.08);
+    --grid-line:rgba(15,27,92,.06); --scrim:rgba(10,17,40,.45);
+    --nav-bg:rgba(255,255,255,.92);
+  }
+  [data-theme="dark"]{
+    color-scheme:dark;
+    --bg:var(--ink); --surface:var(--ink-2); --surface2:var(--ink-3); --surface3:#1B2A5A;
+    --line:rgba(255,255,255,.1); --text:#FFFFFF; --muted:rgba(255,255,255,.62); --faint:rgba(255,255,255,.38);
+    --otline:rgba(255,255,255,.12); --sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    --grid-line:rgba(255,255,255,.08); --scrim:rgba(0,0,0,.55);
+    --nav-bg:rgba(14,23,50,.92);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .25s,color .25s}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+
+  ::selection{background:rgba(245,158,11,.35)}
+
+  /* ── Sidebar ── */
+  .sidebar{position:fixed;inset:0 auto 0 0;width:264px;background:var(--nav-bg);backdrop-filter:blur(14px);
+    border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;transform:translateX(0);transition:transform .28s ease}
+  .brand{display:flex;align-items:center;gap:12px;padding:20px 18px 16px}
+  .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--blue),var(--navy));box-shadow:0 6px 16px rgba(26,46,140,.35)}
+  .brand h1{font-size:15px;font-weight:800;margin:0;line-height:1.2}
+  .brand span{display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+  .nav{flex:1;overflow-y:auto;padding:4px 12px}
+  .nav-group{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+  .nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;margin:2px 0;border:0;border-radius:10px;background:transparent;
+    color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+  .nav-item svg{flex:none;opacity:.75}
+  .nav-item:hover{background:var(--surface2);color:var(--text)}
+  .nav-item.active{background:linear-gradient(90deg,rgba(245,158,11,.14),rgba(16,185,129,.10));color:var(--navy)}
+  [data-theme="dark"] .nav-item.active{color:#fff}
+  .nav-item.active svg{opacity:1;color:var(--amber)}
+  .nav-item .dot{margin-left:auto;font-size:10px;font-weight:800;background:var(--green);color:#04251b;border-radius:99px;padding:1px 7px}
+  .side-foot{padding:12px;border-top:1px solid var(--line)}
+  .side-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--surface);
+    color:var(--text);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn.small{padding:6px 10px;font-size:11.5px}
+  .btn.ghost{background:transparent;color:var(--muted)}
+  .btn.ghost:hover{border-color:var(--red);color:var(--red)}
+  .saved-note{font-size:10.5px;color:var(--faint);text-align:center;padding-top:6px}
+
+  .scrim{position:fixed;inset:0;background:var(--scrim);z-index:30;opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.show{opacity:1;pointer-events:auto}
+
+  /* ── Main ── */
+  .main{flex:1;margin-left:264px;min-width:0;display:flex;flex-direction:column}
+  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:14px 28px;background:var(--nav-bg);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .burger{display:none;border:0;background:transparent;color:var(--text);cursor:pointer;padding:6px}
+  .topbar .crumb{font-size:12px;font-weight:700;color:var(--faint);letter-spacing:.4px;text-transform:uppercase}
+  .topbar h2{font-size:19px;font-weight:800;margin:0;letter-spacing:-.2px}
+  .spacer{flex:1}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--muted);background:var(--surface);
+    border:1px solid var(--line);border-radius:99px;padding:6px 12px}
+  .theme-toggle{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--text)}
+
+  .content{padding:24px 28px 60px;animation:fadeIn .35s ease}
+  .view{display:none}
+  .view.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ── Cards / layout ── */
+  .grid{display:grid;gap:16px}
+  .g-4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  .g-2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+  .g-spot{grid-template-columns:1.4fr 1fr}
+  @media(max-width:1000px){.g-spot{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:20px}
+  .card .label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--faint);margin-bottom:8px}
+  .card h3{margin:0 0 4px;font-size:15px;font-weight:800}
+
+  .stat{position:relative;overflow:hidden}
+  .stat .ico{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:12px}
+  .stat .num{font-size:28px;font-weight:800;letter-spacing:-.5px}
+  .stat .tgt{font-size:11.5px;color:var(--mut, var(--muted));margin-top:2px}
+  .stat .orb{position:absolute;right:-18px;top:-18px;width:90px;height:90px;border-radius:50%;opacity:.14;filter:blur(2px)}
+
+  .hero{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center}
+  .ring{width:126px;height:126px}
+  .ring .track{fill:none;stroke:var(--grid-line);stroke-width:10}
+  .ring .bar{fill:none;stroke:url(#grad);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s}
+  .ring-txt{font-size:26px;font-weight:800}
+  .ring-sub{color:var(--muted);font-size:12px;font-weight:600}
+
+  .bar-row{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;margin-top:10px}
+  .bar-row .b{flex:1;height:8px;border-radius:99px;background:var(--grid-line);overflow:hidden}
+  .b{flex:1;height:8px;border-radius:99px;background:var(--grid-line);overflow:hidden;display:block}
+  .b>i{display:block;height:100%;border-radius:99px}
+  .bar-row .b>i{display:block;height:100%;border-radius:99px;width:0;transition:width .4s}
+  .bar-row .pv{min-width:34px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* phases */
+  .phase{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px;background:var(--surface);box-shadow:var(--sh);transition:border-color .15s}
+  .phase.open{border-color:rgba(245,158,11,.45)}
+  .phase-head{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none}
+  .phase-head:hover{background:var(--surface2)}
+  .pnum{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:11px;color:#fff;flex:none}
+  .phase-name{font-weight:800;font-size:14px}
+  .phase-window{color:var(--muted);font-size:11.5px;font-weight:600;margin-top:1px}
+  .pbar{flex:1;min-width:120px;height:8px;border-radius:99px;background:var(--grid-line);overflow:hidden}
+  .pbar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--green));border-radius:99px;transition:width .4s}
+  .pstat{min-width:42px;text-align:right;font-size:12px;font-weight:800;color:var(--muted)}
+  .chev{margin-left:2px;color:var(--faint);transition:transform .25s}
+  .phase.open .chev{transform:rotate(180deg)}
+  .phase-body{display:none;padding:6px 18px 18px;border-top:1px solid var(--line)}
+  .phase.open .phase-body{display:block;animation:fadeIn .25s ease}
+  .phase-goal{background:var(--surface2);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--muted);margin:12px 0}
+  .tasks{display:grid;gap:6px}
+  .task{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--surface2);font-size:13px;border:1px solid transparent;transition:border-color .15s,opacity .2s}
+  .task:hover{border-color:var(--line)}
+  .tag{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:.6px;white-space:nowrap}
+  .tag.build{background:rgba(26,46,140,.12);color:var(--blue)}
+  [data-theme="dark"] .tag.build{background:rgba(139,140,255,.16);color:#b7c4ff}
+  .tag.comm{background:rgba(245,158,11,.14);color:var(--amber-strong)}
+  [data-theme="dark"] .tag.comm{color:var(--amber)}
+  .task .lbl{flex:1}
+  .task select{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer}
+  .task.done{opacity:.55}
+  .task.done .lbl{text-decoration:line-through}
+  .task.blocked{border-left:3px solid var(--red)}
+  .task .chk{flex:none;width:18px;height:18px;border-radius:6px;border:2px solid var(--line);cursor:pointer;display:grid;place-items:center;transition:all .15s}
+  .task.done .chk{background:var(--green);border-color:var(--green)}
+  .task.done .chk::after{content:"✓";color:#04251b;font-weight:800;font-size:12px}
+  .gates{display:grid;gap:7px;padding-top:12px}
+  .gate-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--faint)}
+  .gate{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)}
+  .gate input{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+  .gate.checked{color:var(--text)}
+  .gate.checked .tick{font-weight:800;color:var(--green)}
+
+  /* gantt */
+  .gantt{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:center}
+  .gantt-lbl{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:700}
+  .gantt-lbl b{font-weight:800}
+  .gantt-lbl em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+  .gantt-lbls{display:grid;gap:8px}
+  .gantt-track{position:relative;height:22px;border-radius:8px;background:var(--grid-line);margin:1px 0}
+  .gantt-tracks{display:grid;gap:8px}
+  .gantt-track .bar{position:absolute;top:0;bottom:0;display:flex;gap:2px;padding:2px;border-radius:7px;background:rgba(15,27,92,.08)}
+  [data-theme="dark"] .gantt-track .bar{background:rgba(255,255,255,.08)}
+  .gantt-track .bar .seg{border-radius:5px;flex:1}
+  .gantt-cols{position:absolute;inset:0;display:grid;grid-template-columns:repeat(13,1fr);pointer-events:none}
+  .gantt-cols i{border-right:1px dashed var(--grid-line)}
+  .legend-line{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:14px}
+
+  /* KPI */
+  .kpi-card{padding:16px}
+  .kpi-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .kpi-top .lab{font-size:12.5px;font-weight:800;line-height:1.35}
+  .kpi-top .sub{font-size:11px;color:var(--faint);font-weight:600;margin-top:2px}
+  .num-input{background:var(--surface2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:7px 8px;font-size:20px;font-weight:800;width:92px;text-align:center;font-family:var(--font);transition:border-color .15s}
+  .num-input:focus{border-color:var(--amber);outline:none}
+  .mini{display:flex;gap:5px;margin-top:6px;justify-content:flex-end}
+  .mini button{width:30px;height:27px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);color:var(--text);cursor:pointer;font-size:14px;font-weight:800}
+  .mini button:hover{border-color:var(--amber);color:var(--amber)}
+  .kpi-bar{height:7px;border-radius:99px;background:var(--grid-line);margin-top:12px;overflow:hidden}
+  .kpi-bar>i{display:block;height:100%;width:0;border-radius:99px;transition:width .4s}
+  .kpi-foot{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--faint);font-weight:600}
+
+  .bars{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:8px}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .bar-col .v{font-size:12px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+  .bar-col .b{width:100%;max-width:34px;background:linear-gradient(180deg,var(--green),#059669);border-radius:7px 7px 3px 3px;min-height:3px;transition:height .4s}
+  .bar-col .m{font-size:10px;color:var(--faint);font-weight:700}
+  .bar-edit{width:52px;background:var(--surface2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px 4px;text-align:center;font-size:12px;font-weight:700}
+  .bar-edit:focus{border-color:var(--amber);outline:none}
+
+  .donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .donut{width:132px;height:132px;border-radius:50%;position:relative;flex:none}
+  .donut-inner{position:absolute;inset:24px;background:var(--surface);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut-inner b{font-size:22px;font-weight:800}
+  .donut-inner span{font-size:9.5px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .legend{display:grid;gap:7px;font-size:12px;flex:1;min-width:200px}
+  .legend .row{display:flex;align-items:center;gap:8px}
+  .legend .row b{flex:1;font-weight:700}
+  .legend .row s{width:10px;height:10px;border-radius:3px;flex:none}
+
+  /* posts */
+  .formrow{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+  .formrow input,.formrow select{background:var(--surface2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:var(--font);transition:border-color .15s}
+  .formrow input:focus,.formrow select:focus{border-color:var(--amber);outline:none}
+  .formrow .grow{flex:2;min-width:240px}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--faint);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;font-weight:800}
+  td{vertical-align:top}
+  tr:hover td{background:var(--surface2)}
+  .pill{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px}
+  .pill.posted{background:rgba(16,185,129,.14);color:var(--green)}
+  [data-theme="dark"] .pill.posted{color:#34d399}
+  .pill.due{background:rgba(245,158,11,.14);color:var(--amber-strong)}
+  [data-theme="dark"] .pill.due{color:var(--amber)}
+  .pill.skipped{background:rgba(239,68,68,.14);color:var(--red)}
+  .empty{color:var(--faint);font-size:12px;padding:18px 0;text-align:center}
+  .notice{color:var(--muted);font-size:12px;padding:11px 14px;border:1px dashed var(--line);border-radius:10px;margin-top:12px;line-height:1.6}
+  .notice b{color:var(--text)}
+  .quickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:14px}
+  .qa{display:flex;gap:10px;align-items:flex-start;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12.5px;color:var(--muted);line-height:1.55}
+  .qa b{display:block;color:var(--text);font-size:12.5px;margin-bottom:2px}
+
+  /* ── PM Coach ── */
+  .chipx{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:99px;letter-spacing:.5px;vertical-align:middle}
+  .chipx.red{background:rgba(239,68,68,.14);color:var(--red)}
+  .chipx.amber{background:rgba(245,158,11,.16);color:var(--amber-strong)}
+  [data-theme="dark"] .chipx.amber{color:var(--amber)}
+  .chipx.green{background:rgba(16,185,129,.14);color:var(--green)}
+  [data-theme="dark"] .chipx.green{color:#34d399}
+  .chipx.gray{background:var(--surface3);color:var(--muted)}
+  .coach-hero{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;margin-bottom:18px}
+  @media(max-width:720px){.coach-hero{grid-template-columns:1fr}}
+  .bigday{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+  .bigday small{display:block;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);font-weight:800;margin-bottom:6px}
+  .rec{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--gray);border-radius:13px;padding:13px 16px;background:var(--surface);box-shadow:var(--sh);margin-bottom:10px}
+  .rec.red{border-left-color:var(--red)}
+  .rec.amber{border-left-color:var(--amber)}
+  .rec.green{border-left-color:var(--green)}
+  .rec .ic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-top:1px}
+  .rec .rt{font-weight:800;font-size:13.5px}
+  .rec .rd{color:var(--muted);font-size:12.5px;line-height:1.6;margin-top:3px}
+  .rec .rb{margin-left:auto;flex:none;align-self:center}
+  .rec + .rec-clear{display:none}
+  .date-picker{display:flex;align-items:center;gap:10px;margin-top:14px}
+  .date-picker input[type=date]{background:var(--surface2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 10px;font-family:var(--font);font-size:12.5px}
+  .mini-bar{height:8px;border-radius:99px;background:var(--grid-line);overflow:hidden;margin-top:10px}
+  .mini-bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--green));width:0;transition:width .4s}
+  .gantt-track .today{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--coral);border-radius:2px;z-index:3;box-shadow:0 0 0 1px rgba(255,107,71,.18)}
+  .voice-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:13px 15px;border-radius:13px;background:var(--surface2);border:1px solid var(--line);margin-bottom:14px}
+  #vstatus{flex:1;min-width:190px;color:var(--muted);font-size:12.5px;font-weight:600}
+  .voice-bar .tgl{display:inline-flex;gap:7px;align-items:center;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .voice-bar .tgl input{accent-color:var(--green)}
+  .pulse{animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.4)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0)}}
+  .propo{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;border:1px solid var(--line);border-left:4px solid var(--gray);border-radius:12px;padding:11px 13px;margin-bottom:8px;background:var(--surface);box-shadow:var(--sh)}
+  .propo.green{border-left-color:var(--green)} .propo.amber{border-left-color:var(--amber)} .propo.red{border-left-color:var(--red)}
+  .propo .pd{flex:1;min-width:200px}
+  .propo .pt{font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .propo .dd{color:var(--muted);font-size:12px;margin-top:2px;line-height:1.55}
+  .propo .act{display:flex;gap:6px;flex:none;align-items:center}
+  .log-row{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 2px;border-bottom:1px dashed var(--grid-line);flex-wrap:wrap}
+  .auto-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+  #helpSearch{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13.5px;font-weight:600;margin-bottom:14px;outline:none}
+  #helpSearch:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,46,140,.15)}
+  .doc{display:none}
+  .kbd{display:inline-block;padding:1px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:var(--surface2);font-size:11px;font-weight:800;margin:0 2px}
+  #tour,#palette{position:fixed;inset:0;z-index:95}
+  #tourScrim{position:absolute;inset:0;background:rgba(2,6,23,.55);backdrop-filter:blur(2px)}
+  #tmask{display:none}
+  #tourBox{position:fixed;right:22px;bottom:22px;width:min(380px,92vw);border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,0,0,.5);padding:18px;z-index:96}
+  .tour-badge{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:var(--amber);margin-bottom:8px}
+  .tour-badge .spot{width:9px;height:9px;border-radius:99px;background:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+  #tourBox h3{font-size:15.5px;margin:0 0 7px;line-height:1.3}
+  #tourBody{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 14px}
+  .tour-tail{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+  #tourDots{color:var(--amber);font-size:11px;letter-spacing:3px}
+  .tour-target{outline:2.5px dashed var(--amber) !important;outline-offset:3px;border-radius:12px}
+  #paletteBox{position:fixed;left:50%;top:16vh;transform:translateX(-50%);width:min(560px,92vw);z-index:96;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.55);overflow:hidden}
+  #cmdInput{width:100%;padding:15px 16px;border:0;outline:none;background:transparent;color:var(--text);font-size:15px;font-weight:700;border-bottom:1px solid var(--line)}
+  #cmdList{max-height:320px;overflow:auto;padding:6px}
+  .cmd-item{display:flex;gap:10px;align-items:center;padding:9px 11px;border-radius:10px;cursor:pointer}
+  .cmd-item.hot,.cmd-item:hover{background:var(--surface3)}
+  .cmd-item .ci{color:var(--faint);font-size:11px;font-weight:800;letter-spacing:.05em;flex:none;width:58px}
+  .cmd-item b{font-size:13px}
+  .cmd-item span.sub{color:var(--muted);font-size:12px;font-weight:600}
+  .doc-search-empty{color:var(--faint);font-size:12.5px;padding:14px;text-align:center}
+  .task.off .lbl{opacity:.45;text-decoration:line-through}
+  #report{position:fixed;inset:0;z-index:95;background:rgba(2,6,23,.45)}
+  #reportBox{position:fixed;left:50%;top:10vh;transform:translateX(-50%);width:min(620px,94vw);z-index:96;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.55);overflow:hidden}
+  #reportText{width:100%;min-height:300px;resize:vertical;border:0;outline:none;padding:16px;font:600 12.5px/1.6 ui-monospace,Consolas,monospace;background:transparent;color:var(--text)}
+  .copied-ok{color:var(--green);font-size:12px;font-weight:800;align-self:center}
+
+  footer{padding:20px 28px;color:var(--faint);font-size:11px;text-align:center;border-top:1px solid var(--line);margin-top:auto}
+
+  @media(max-width:940px){
+    .sidebar{transform:translateX(-100%)}
+    .sidebar.open{transform:translateX(0)}
+    .main{margin-left:0}
+    .burger{display:grid}
+    .content{padding:18px 16px 50px}
+    .topbar{padding:12px 16px}
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo">K</div>
+    <div>
+      <h1>KlagonOrg <span>Command Center</span></h1>
+    </div>
+  </div>
+  <nav class="nav" id="nav"></nav>
+  <div class="side-foot">
+    <div class="side-actions">
+      <button class="btn" onclick="exportData()">↧ Export</button>
+      <button class="btn" onclick="document.getElementById('imp').click()">↥ Import</button>
+    </div>
+    <button class="btn ghost small" style="width:100%" onclick="resetAll()">Reset workspace</button>
+    <div class="saved-note">Auto-saved • stays in your browser</div>
+  </div>
+</aside>
+<div class="scrim" id="scrim" onclick="closeSidebar()"></div>
+<input type="file" id="imp" accept="application/json" style="display:none" onchange="importData(event)">
+
+<div class="main">
+  <header class="topbar">
+    <button class="burger" onclick="toggleSidebar()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div>
+      <div class="crumb" id="crumb">Overview</div>
+      <h2 id="pageTitle">Command overview</h2>
+    </div>
+    <div class="spacer"></div>
+    <span class="chip"><span id="todayLabel"></span></span>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle theme"></button>
+  </header>
+
+  <div class="content">
+    <section class="view active" id="view-overview"></section>
+    <section class="view" id="view-phases"></section>
+    <section class="view" id="view-gantt">
+      <div class="card" id="gantt" style="grid-template-columns:170px 1fr;gap:10px;align-items:center">
+        <div class="gantt-lbls" id="ganttLbls"></div>
+        <div class="gantt-tracks" id="ganttTracks"></div>
+      </div>
+      <div class="legend-line">
+        <span><i style="width:10px;height:10px;border-radius:3px;background:var(--grid-line);display:inline-block;margin-right:6px"></i>weeks 0–12</span>
+        <span><i style="width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block;margin-right:6px"></i>Done</span>
+        <span><i style="width:10px;height:10px;border-radius:3px;background:var(--amber);display:inline-block;margin-right:6px"></i>In progress</span>
+        <span><i style="width:10px;height:10px;border-radius:3px;background:var(--red);display:inline-block;margin-right:6px"></i>Blocked</span>
+        <span><i style="width:10px;height:10px;border-radius:3px;background:var(--surface3);display:inline-block;margin-right:6px"></i>Not started</span>
+        <span><i style="width:2px;height:14px;background:var(--coral);display:inline-block;margin-right:6px;border-radius:2px"></i>Today</span>
+      </div>
+      <div class="notice">Progress is driven by checking tasks in <b>Phases & tasks</b> — the bars here update automatically. P0 sits in week 0 (days 1–3), then each phase fills its 2-week window.</div>
+    </section>
+    <section class="view" id="view-coach"></section>
+    <section class="view" id="view-kpis"></section>
+    <section class="view" id="view-bip">
+      <div class="card">
+        <div class="label">Build-in-Public · 2 posts/week</div>
+        <h3>Ledger — show the build, don't announce it</h3>
+        <div class="formrow">
+          <input type="date" id="postDate">
+          <select id="postType">
+            <option value="Progress post (Tue/Wed)">Progress post (Tue/Wed)</option>
+            <option value="Lesson/evidence post (Thu/Fri)">Lesson/evidence post (Thu/Fri)</option>
+            <option value="Phase retrospective">Phase retrospective</option>
+            <option value="Honest numbers (monthly)">Honest numbers (monthly)</option>
+            <option value="Community question">Community question</option>
+          </select>
+          <select id="postChannel" title="Channel">
+            <option value="WhatsApp Channel">WhatsApp Channel</option>
+            <option value="WhatsApp Group">WhatsApp Group</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="X / Twitter">X / Twitter</option>
+            <option value="YouTube Shorts">YouTube Shorts</option>
+            <option value="Website / Newsletter">Website / Newsletter</option>
+          </select>
+          <select id="postFormat" title="Format / asset">
+            <option value="Photo / graphic">Photo / graphic</option>
+            <option value="Carousel">Carousel</option>
+            <option value="Reel / Short">Reel / Short</option>
+            <option value="Screenshot">Screenshot</option>
+            <option value="Video / Loom">Video / Loom</option>
+            <option value="Story / poll">Story / poll</option>
+            <option value="Graphic quote">Graphic quote</option>
+          </select>
+          <select id="postTpl" title="Copy template (fills the content box)" onchange="fillTemplate(this.value)">
+            <option value="">Copy template…</option>
+            <option value="progress">Progress</option>
+            <option value="lesson">Lesson / evidence</option>
+            <option value="retro">Retrospective</option>
+            <option value="numbers">Honest numbers</option>
+            <option value="question">Community question</option>
+          </select>
+          <input type="text" id="postContent" class="grow" placeholder="One line of real evidence: what shipped, one number, one finding…">
+          <select id="postStatus">
+            <option value="done">Posted</option>
+            <option value="due">Queued / due</option>
+            <option value="skip">Skipped</option>
+          </select>
+          <button class="btn" onclick="addPost()">＋ Add post</button>
+        </div>
+        <div id="bipWeek" style="margin-bottom:10px"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Channel</th><th>Format</th><th>Content (evidence)</th><th>Status</th><th></th></tr></thead>
+            <tbody id="bipTbody"></tbody>
+          </table>
+        </div>
+        <div class="notice"><b>Rules:</b> post progress when it happens · never fake traction · never “coming soon” with no date · use real Klagon screenshots/photos · lead with people, not tech-speak · reply to every serious community answer.</div>
+      </div>
+    </section>
+    <section class="view" id="view-quickref"></section>
+    <section class="view" id="view-help"></section>
+    <section class="view" id="view-community"></section>
+  </div>
+  <div id="tour" style="display:none">
+    <div id="tourScrim" onclick="tourSkip()"></div>
+    <div id="tourBox">
+      <div class="tour-badge"><span class="spot"></span> KLA·TOUR &nbsp;<span id="tourStep"></span></div>
+      <h3 id="tourTitle"></h3>
+      <p id="tourBody"></p>
+      <div class="tour-tail">
+        <span id="tourDots"></span>
+        <div style="display:flex;gap:6px">
+          <button class="btn ghost small" onclick="tourPrev()">‹ Back</button>
+          <button class="btn" id="tourNextB" onclick="tourNext()">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="palette" style="display:none" onclick="if(event.target===this)closeCmd()">
+    <div id="paletteBox">
+      <input id="cmdInput" placeholder="Search…  (overview · phases · autopilot · voice · quota · backup)" oninput="cmdFilter(this.value)" onkeydown="if(event.key==='Enter'&&window._cmdItems&&window._cmdItems[0])cmdPick(window._cmdItems[0].kind);if(event.key==='Escape')closeCmd()">
+      <div id="cmdList"></div>
+    </div>
+  <div id="report" style="display:none">
+    <div id="reportBox">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)">
+        <b style="font-size:14px">📋 Weekly report — copy & post (Sunday digest / LinkedIn)</b>
+        <button class="btn ghost small" onclick="closeReport()">✕</button>
+      </div>
+      <textarea id="reportText" readonly spellcheck="false"></textarea>
+      <div style="display:flex;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)">
+        <button class="btn" onclick="copyReport()">📋 Copy</button>
+        <button class="btn ghost" onclick="closeReport()">Close</button>
+        <span id="reportStatus" class="copied-ok"></span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>KlagonOrg Command Center · built on the klagon.org palette · export JSON to back up · data stays on this device</footer>
+
+<script>
+"use strict";
+const STORE = "kocc_v1"; const THEME = "kocc_theme"; const WEEKS = 12;
+const MONTHS = ["Sep 26","Oct 26","Nov 26","Dec 26","Jan 27","Feb 27"];
+const IC = {
+  home:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>',
+  layers:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>',
+  plan:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18M8 14h4M8 17h8"/></svg>',
+  target:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+  kpi:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>',
+  megaphone:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-6v12L3 13v-2Z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
+  ref:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>',
+  help:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5.1 1c0 1.5-2.6 2-2.6 3.6"/><path d="M12 17h.01"/></svg>',
+  users:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  sun:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  moon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>'
+};
+const NAV = [
+  {group:"Overview"},
+  {id:"overview", lab:"Command overview", icon:"home"},
+  {group:"Execution"},
+  {id:"phases", lab:"Phases & tasks", icon:"layers", dot:"tasks"},
+  {id:"gantt", lab:"Weekly plan", icon:"plan"},
+  {id:"coach", lab:"PM Coach · Focus", icon:"target", dot:"blocked"},
+  {group:"Metrics"},
+  {id:"kpis", lab:"KPIs & charts", icon:"kpi"},
+  {group:"Publishing"},
+  {id:"bip", lab:"Build-in-Public", icon:"megaphone", dot:"posts"},
+  {group:"Community"},
+  {id:"community", lab:"Community kickoff", icon:"users"},
+  {group:"Reference"},
+  {id:"quickref", lab:"Quick reference", icon:"ref"},
+  {id:"help", lab:"Help & tour", icon:"help"}
+];
+const TITLES = {overview:["Command overview","Overview"], phases:["Phases & tasks","Execution"], gantt:["Weekly plan","Execution"], coach:["PM Coach — focus for today","PM Coach"], kpis:["KPIs & charts","Metrics"], bip:["Build-in-Public ledger","Publishing"], quickref:["Quick reference card","Reference"], help:["Help center & guided tour","Reference"], community:["Community kickoff — onboarding","Community"]};
+
+const PHASES = [
+  {id:"p0", label:"P0", name:"Baseline & alignment", window:"Days 1–3", start:0, end:0,
+   goal:"Know exactly what is real vs mock, and start the community conversation on day one.",
+   tasks:[
+     {id:"p0t1", area:"build", label:"Run npm build / typecheck / lint; fix anything broken"},
+     {id:"p0t2", area:"build", label:"Functional audit: register, login, RSVP, courses, volunteer, donate → label Live/Partial/Mock"},
+     {id:"p0t3", area:"build", label:"Reconcile brainstorm features → repo status in one sheet"},
+     {id:"p0t4", area:"comm", label:"Publish first Klagon Community Question (WhatsApp + social); reply to every serious answer"},
+     {id:"p0t5", area:"build", label:"Stand up KPI sheet: north star + supporting metrics from current DB"}
+   ],
+   gates:["Mock/real report written","First community question live","Baseline KPIs recorded"]},
+  {id:"p1", label:"P1", name:"Fix the fundamentals", window:"Weeks 1–2", start:1, end:2,
+   goal:"The site stops lying: no stale events, no empty courses, no registration wall, no fake numbers.",
+   tasks:[
+     {id:"p1t1", area:"build", label:"Event lifecycle engine: statuses + auto-archive stale events"},
+     {id:"p1t2", area:"build", label:"RSVP end-to-end: writes, capacity, attendance, my-events"},
+     {id:"p1t3", area:"build", label:"Course content gate: no published course without 100% lessons + progress verify"},
+     {id:"p1t4", area:"build", label:"Registration 2-step (name+phone+password, optional profile)"},
+     {id:"p1t5", area:"build", label:"Approval → welcome via WhatsApp/email"},
+     {id:"p1t6", area:"build", label:"WhatsApp share on events, courses, projects, opportunities, articles"},
+     {id:"p1t7", area:"build", label:"One-box site search"},
+     {id:"p1t8", area:"comm", label:"Start weekly WhatsApp rhythm (Mon–Sun schedule)"},
+     {id:"p1t9", area:"comm", label:"Interviews: 20 residents + 10 businesses + 5 orgs logged"}
+   ],
+   gates:["No stale event anywhere","Every published course completes start-to-finish","Registration under 60 seconds","WhatsApp share on all key objects","Search works","First interviews logged"]},
+  {id:"p2", label:"P2", name:"The community layer", window:"Weeks 3–4", start:3, end:4,
+   goal:"People can talk, organize, and build a reputation in one place — the engagement engine.",
+   tasks:[
+     {id:"p2t1", area:"build", label:"Community feed with 7 structured post types (discussion, help, opportunity, announcement, project-update, achievement, event)"},
+     {id:"p2t2", area:"build", label:"Reactions + comments + report + moderation queue + audit trail"},
+     {id:"p2t3", area:"build", label:"Unified member profile (one identity: bio, skills, courses, hours, badges, history)"},
+     {id:"p2t4", area:"build", label:"Groups MVP (max 6): Community, Youth, Entrepreneurs, Students, Jobs & Opps, Volunteers"},
+     {id:"p2t5", area:"build", label:"Dashboard surfaces feed + groups + next-actions (not just settings)"},
+     {id:"p2t6", area:"comm", label:"Founding Members program: invite first 100–250 active people + private feedback group"},
+     {id:"p2t7", area:"comm", label:"“What should KlagonOrg build next?” community vote"},
+     {id:"p2t8", area:"comm", label:"Keep WhatsApp rhythm running through Phase 2"}
+   ],
+   gates:["Member can post, join group, get a reply, build profile","Moderation works","25+ members active in founding group"]},
+  {id:"p3", label:"P3", name:"Opportunities first-class", window:"Weeks 5–6", start:5, end:6,
+   goal:"Become the place Klagon checks for jobs, scholarships, training, grants, and gigs.",
+   tasks:[
+     {id:"p3t1", area:"build", label:"Opportunities board: 8 types + filters (type, location, deadline, category)"},
+     {id:"p3t2", area:"build", label:"Mandatory expiry: deadline passes → APPLICATIONS CLOSED, auto-removed"},
+     {id:"p3t3", area:"build", label:"Member submission + admin approval workflow"},
+     {id:"p3t4", area:"build", label:"Personalized recommendations from member interests"},
+     {id:"p3t5", area:"build", label:"Application CTAs incl. one-tap WhatsApp apply"},
+     {id:"p3t6", area:"comm", label:"Klagon Opportunities — Weekly: 5 jobs·3 scholarships·2 training·1 volunteer"},
+     {id:"p3t7", area:"comm", label:"Recruit 2–3 volunteer opportunity scouts"}
+   ],
+   gates:["20+ live, dated opportunities","Weekly digest on WhatsApp","Expired items never seen","First applications tracked end-to-end"]},
+  {id:"p4", label:"P4", name:"Learning engine + recognition", window:"Weeks 7–8", start:7, end:8,
+   goal:"Take learning from “courses exist” to “completion means something real”.",
+   tasks:[
+     {id:"p4t1", area:"build", label:"Finish existing courses before adding new ones"},
+     {id:"p4t2", area:"build", label:"Challenges: 7-Day AI, 14-Day Public Speaking, Build-for-Klagon"},
+     {id:"p4t3", area:"build", label:"XP/levels/badges wired to real actions; levels unlock privileges"},
+     {id:"p4t4", area:"build", label:"Certificates + public verify page (klagon.org/verify/<id>)"},
+     {id:"p4t5", area:"build", label:"Volunteer hours ledger + downloadable record"},
+     {id:"p4t6", area:"comm", label:"Digital Klagon pilot: free 20-min check-ups + scorecards for 10 businesses"},
+     {id:"p4t7", area:"comm", label:"Publish first Klagon story (learner → volunteer → builder)"}
+   ],
+   gates:["First certificate issued and verifiable","Volunteer hours recorded + downloadable","10 business digital scorecards","One real success story published"]},
+  {id:"p5", label:"P5", name:"Projects + local economy", window:"Weeks 9–10", start:9, end:10,
+   goal:"Make community work visible and plant the directory that becomes the economic layer.",
+   tasks:[
+     {id:"p5t1", area:"build", label:"Project impact dashboards: goal/progress, volunteers, needs, photos, updates"},
+     {id:"p5t2", area:"build", label:"Local directory MVP: curated page, real data by hand first"},
+     {id:"p5t3", area:"build", label:"Public member profiles switched on"},
+     {id:"p5t4", area:"comm", label:"Business outreach: 50 businesses for “Klagon 50 Digital Businesses”"},
+     {id:"p5t5", area:"comm", label:"Ambassadors: 5 students + 5 entrepreneurs + 5 professionals + 5 volunteers"}
+   ],
+   gates:["2 live projects with progress bars taking volunteers","25+ businesses listed","Ambassador network functional"]},
+  {id:"p6", label:"P6", name:"Mentorship + polish + launch", window:"Weeks 11–12", start:11, end:12,
+   goal:"Ship a coherent, tested Community 2.0 with humans in the loop.",
+   tasks:[
+     {id:"p6t1", area:"build", label:"Mentorship: profiles, request, matching (recommendations → human confirmation)"},
+     {id:"p6t2", area:"build", label:"Notifications engine: in-app bell + weekly email digest + WhatsApp alerts"},
+     {id:"p6t3", area:"build", label:"Onboarding wizard (personalizes dashboard immediately)"},
+     {id:"p6t4", area:"build", label:"Polish: mobile, perf, SEO/OG, a11y, security, analytics, moderation"},
+     {id:"p6t5", area:"build", label:"Admin console pass for all content types"},
+     {id:"p6t6", area:"comm", label:"Klagon Digital Community Day (free 2–3 hr event)"},
+     {id:"p6t7", area:"comm", label:"Community 2.0 launch + measure first-week participation"}
+   ],
+   gates:["Launch event held","Mentorship live with ≥5 mentors","Dashboard personalized","Launch-week participation recorded"]}
+];
+
+const DEFAULT_KPIS = {
+  northStar:0, members:0, attended:0, courses:0, hours:0, posts:0, applied:0, business:0, interviews:0, bipp:0, founders:0,
+  months:[0,0,0,0,0,0],
+  mix:{attend:0,learn:0,volunteer:0,post:0,apply:0,mentor:0}
+};
+const KPI_DEFS = [
+  {id:"northStar",label:"Monthly Active Participants",target:150,unit:"pts",color:"var(--green)",hint:"North Star"},
+  {id:"members",label:"Registered members",target:300,unit:"",color:"var(--blue)"},
+  {id:"attended",label:"Events attended",target:120,unit:"",color:"var(--amber)"},
+  {id:"courses",label:"Courses completed",target:60,unit:"",color:"var(--green)"},
+  {id:"hours",label:"Volunteer hours",target:500,unit:"hrs",color:"var(--amber)"},
+  {id:"posts",label:"Community posts",target:200,unit:"",color:"var(--purple)"},
+  {id:"applied",label:"Opportunity applications",target:80,unit:"",color:"var(--blue)"},
+  {id:"business",label:"Businesses listed (Klagon 50)",target:50,unit:"",color:"var(--amber)"},
+  {id:"interviews",label:"Community interviews (35 total)",target:35,unit:"",color:"var(--purple)"},
+  {id:"bipp",label:"Build-in-public posts",target:12,unit:"",color:"var(--amber)",hint:"2/week"},
+  {id:"founders",label:"Founding members active",target:100,unit:"",color:"var(--blue)"}
+];
+const PHASE_COLORS = ["var(--blue)","var(--blue)","var(--amber)","var(--green)","var(--purple)","var(--blue)","var(--amber)"];
+
+let state = load();
+function load(){ try{ const r=JSON.parse(localStorage.getItem(STORE)); if(r&&r.tasks){ if(!r.startDate) r.startDate=new Date().toISOString().slice(0,10); if(!r.dailyLog) r.dailyLog={}; if(r.coachTalk===undefined) r.coachTalk=false; if(r.autopilot===undefined) r.autopilot=false; if(!r.autolog) r.autolog=[]; if(!r.dismissed) r.dismissed=[]; if(r.toured===undefined) r.toured=false; if(!r.blockSince) r.blockSince={}; if(!r.released) r.released={}; if(r.lastBackup===undefined) r.lastBackup=null; if(r.lastStandup===undefined) r.lastStandup=null; if(!r.community) r.community={invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""}; if(r.community.link===undefined) r.community.link=""; ["invited","joined","active","builders","opps","directory","checkups","founders"].forEach(k=>{ if(r.community[k]===undefined) r.community[k]=0; }); if(!r.communityChecked) r.communityChecked=[]; if(!r.contacts) r.contacts=[]; return r; } }catch(e){} return fresh(); }
+function fresh(){
+  const s={tasks:{},gates:{},kpis:JSON.parse(JSON.stringify(DEFAULT_KPIS)),posts:[],dailyLog:{},coachTalk:false,autopilot:false,autolog:[],dismissed:[],toured:false,blockSince:{},released:{},lastBackup:null,lastStandup:null,community:{invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""},communityChecked:[],contacts:[],startDate:new Date().toISOString().slice(0,10)};
+  PHASES.forEach(p=>p.tasks.forEach(t=>s.tasks[t.id]="todo"));
+  return s;
+}
+function save(){ localStorage.setItem(STORE,JSON.stringify(state)); }
+const $=id=>document.getElementById(id);
+
+function taskDone(id){ return state.tasks[id]==="done"; }
+function phaseProgress(p){ const t=p.tasks.length, d=p.tasks.filter(x=>taskDone(x.id)).length; return t?d/t:0; }
+function overall(){ let t=0,d=0; PHASES.forEach(p=>p.tasks.forEach(x=>{t++; if(taskDone(x.id))d++;})); return {t,d}; }
+
+/* theme */
+function applyTheme(){ const th=localStorage.getItem(THEME)||"light"; document.documentElement.dataset.theme=th; $("themeBtn").innerHTML=IC[th==="light"?"moon":"sun"]; }
+function toggleTheme(){ localStorage.setItem(THEME, document.documentElement.dataset.theme==="light"?"dark":"light"); applyTheme(); save(); }
+
+function renderNav(active){
+  const nav=$("nav"); nav.innerHTML="";
+  NAV.forEach(n=>{
+    if(n.group){ const g=document.createElement("div"); g.className="nav-group"; g.textContent=n.group; nav.appendChild(g); return; }
+    const b=document.createElement("button");
+    b.className="nav-item"+(active===n.id?" active":"");
+    b.innerHTML=IC[n.icon]+'<span>'+n.lab+'</span>';
+    if(n.dot){
+      const d=document.createElement("span"); d.className="dot";
+      if(n.dot==="tasks") d.textContent = overall().d+"/"+overall().t;
+      else if(n.dot==="blocked"){ const b=PHASES.reduce((a,p)=>a+p.tasks.filter(t=>state.tasks[t.id]==="blocked").length,0); if(b>0){ d.textContent=b; d.style.background="var(--red)"; d.style.color="#fff"; } else d.style.display="none"; }
+      else d.textContent = state.posts.filter(p=>p.status==="done").length;
+      b.appendChild(d);
+    }
+    b.onclick=()=>showView(n.id);
+    nav.appendChild(b);
+  });
+  $("todayLabel").textContent = new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+}
+function showView(v){
+  sessionStorage.setItem("kocc_view",v);
+  document.querySelectorAll(".view").forEach(s=>s.classList.remove("active"));
+  $("view-"+v).classList.add("active");
+  $("crumb").textContent=TITLES[v][1]; $("pageTitle").textContent=TITLES[v][0];
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.textContent.includes(TITLES[v][1])||b.textContent.includes(TITLES[v][0])));
+  renderNav(v); closeSidebar();
+  renderView(v);
+}
+function renderView(v){ ({overview:renderOverview,phases:renderPhases,gantt:renderGantt,coach:renderCoach,kpis:renderKPIs,bip:renderPosts,quickref:renderQuickRef,help:renderHelp,community:renderCommunity})[v](); }
+
+function toggleSidebar(){ $("sidebar").classList.toggle("open"); $("scrim").classList.toggle("show"); }
+function closeSidebar(){ $("sidebar").classList.remove("open"); $("scrim").classList.remove("show"); }
+
+/* ── Overview ── */
+function renderOverview(){
+  const {t,d}=overall(); const pct=t?Math.round(d/t*100):0;
+  const active = PHASES.find(p=>p.tasks.some(x=>state.tasks[x.id]==="inprogress"||state.tasks[x.id]==="blocked")) ||
+                 PHASES.find(p=>phaseProgress(p)>0&&phaseProgress(p)<1) || PHASES[0];
+  const gates=PHASES.reduce((a,p)=>a+p.gates.length,0);
+  const gOk=PHASES.reduce((a,p)=>a+p.gates.filter(g=>state.gates[p.id+"|"+g]).length,0);
+  const posted=state.posts.filter(p=>p.status==="done").length;
+  const ring=100; const R=42; const circ=2*Math.PI*R; const off=circ*(1-d/t);
+  const steps=[
+    ["Baseline (P0)","Days 1–3",phaseProgress(PHASES[0]),PHASE_COLORS[0]],
+    ["Fundamentals (P1)","Weeks 1–2",phaseProgress(PHASES[1]),PHASE_COLORS[1]],
+    ["Community (P2)","Weeks 3–4",phaseProgress(PHASES[2]),PHASE_COLORS[2]],
+    ["Opportunities (P3)","Weeks 5–6",phaseProgress(PHASES[3]),PHASE_COLORS[3]],
+    ["Learning (P4)","Weeks 7–8",phaseProgress(PHASES[4]),PHASE_COLORS[4]],
+    ["Economy (P5)","Weeks 9–10",phaseProgress(PHASES[5]),PHASE_COLORS[5]],
+    ["Launch (P6)","Weeks 11–12",phaseProgress(PHASES[6]),PHASE_COLORS[6]]
+  ];
+  $("view-overview").innerHTML=`
+  ${state.toured?``:`<div class="notice" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px"><b style="flex:1;min-width:200px">👋 New here? This is your 90-day launch hub.</b><button class="btn" onclick="tourStart()">🚀 Take the 2-minute tour</button><button class="btn ghost" onclick="showView('help')">📖 Browse help</button></div>`}
+  <div class="card" style="margin-bottom:16px">
+    <div class="hero">
+      <div style="text-align:center">
+        <svg class="ring" viewBox="0 0 100 100">
+          <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#10B981"/></linearGradient></defs>
+          <circle class="track" cx="50" cy="50" r="${R}"/>
+          <circle class="bar" cx="50" cy="50" r="${R}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/>
+        </svg>
+        <div class="ring-txt">${pct}%</div>
+        <div class="ring-sub">${dayInfo().day}/90 days · ${d}/${t} tasks</div>
+      </div>
+      <div>
+        <div class="label">Active phase</div>
+        <h3>${active.label} — ${active.name}</h3>
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin:8px 0 16px">${active.goal}</p>
+        <div id="ovSteps"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid g-4">
+    ${mStat("North Star this month", state.kpis.northStar, "target "+KPI_DEFS[0].target+" · day 90","#10B981", state.kpis.northStar/KPI_DEFS[0].target)}
+    ${mStat("Build-in-Public posts", posted, "2/week target","#F59E0B", posted/12)}
+    ${mStat("Phase gates met", gOk+"/"+gates, "exit criteria","#1A2E8C", gOk/gates)}
+    ${mStat("Opportunities in flight", state.kpis.applied, "applications tracked","#FF6B47", state.kpis.applied/KPI_DEFS[6].target)}
+  </div>`;
+  const st=$("ovSteps"); st.innerHTML=steps.map(s=>`
+    <div class="bar-row"><span style="width:150px">${s[0]} <span style="color:var(--faint);font-weight:600">${s[1]}</span></span>
+    <span class="b"><i style="width:${Math.round(s[2]*100)}%;background:${s[3]}"></i></span><span class="pv">${Math.round(s[2]*100)}%</span></div>`).join("");
+}
+function mStat(lab,num,tgt,color,ratio){
+  return `<div class="card stat"><div class="orb" style="background:${color}"></div>
+    <div class="ico" style="background:${color}1f;color:${color}">${IC.layers}</div>
+    <div class="num" style="color:${color}">${num}</div>
+    <div style="font-weight:800;font-size:13px">${lab}</div>
+    <div class="tgt">${tgt}</div>
+    <div class="bar-row"><span class="b"><i style="width:${Math.max(2,Math.min(100,Math.round(ratio*100)))}%;background:${color}"></i></span><span class="pv">${Math.round(ratio*100)}%</span></div>
+  </div>`;
+}
+
+/* ── Phases ── */
+function renderPhases(){
+  const wrap=document.createElement("div"); 
+  PHASES.forEach((p,i,l)=>{
+    const prog=phaseProgress(p), pct=Math.round(prog*100);
+    const st=phaseStatus(p), dl=Math.max(0,daysLeft(phaseRange(p).end));
+    const scls=st==="complete"?"green":(st==="overdue"?"red":(st==="risk"?"amber":"gray"));
+    const stxt=st==="complete"?"✓ done":(st==="overdue"?"OVERDUE":(st==="risk"?dl+"d left · at risk":dl+"d left"));
+    const el=document.createElement("div");
+    el.className="phase"+(i===currentPhaseIndex()?" open":"");
+    el.innerHTML=`
+      <div class="phase-head" onclick="togglePhase(${i})">
+        <span class="pnum" style="background:${PHASE_COLORS[i]}">${p.label}</span>
+        <div style="flex:1;min-width:0">
+          <div class="phase-name">${p.name} <span class="chipx ${scls}">${stxt}</span></div>
+          <div class="phase-window">${p.window}</div>
+        </div>
+        <div class="pbar"><i style="width:${pct}%"></i></div>
+        <span class="pstat">${pct}%</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="phase-body">
+        <div class="phase-goal">🎯 ${p.goal}</div>
+        <div class="tasks">${p.tasks.map(t=>`
+          <div class="task ${state.tasks[t.id]==="done"?"done":""} ${state.tasks[t.id]==="blocked"?"blocked":""} ${state.released[t.id]?"off":""}">
+            <span class="chk" onclick="quickToggle('${t.id}')"></span>
+            <span class="tag ${t.area}">${t.area==="build"?"BUILD":"COMM"}</span>
+            <span class="lbl">${t.label}</span>${state.released[t.id]?'<span class="chipx gray" style="margin-left:6px">post-90</span>':""}
+            <select onchange="setTask('${t.id}',this.value)">
+              <option value="todo"      ${state.tasks[t.id]==="todo"?"selected":""}>Not started</option>
+              <option value="inprogress"${state.tasks[t.id]==="inprogress"?"selected":""}>In progress</option>
+              <option value="done"      ${state.tasks[t.id]==="done"?"selected":""}>Done</option>
+              <option value="blocked"   ${state.tasks[t.id]==="blocked"?"selected":""}>Blocked</option>
+            </select>
+          </div>`).join("")}
+        </div>
+        <div class="gate-label">
+          ${p.gates.filter(g=>state.gates[p.id+"|"+g]).length}/${p.gates.length} exit gates met
+        </div>
+        <div class="gates">${p.gates.map(g=>{const k=p.id+"|"+g,c=!!state.gates[k];return `
+          <label class="gate ${c?"checked":""}"><input type="checkbox" ${c?"checked":""} onchange="setGate('${k}',this.checked)">
+          <span class="tick">${c?"✓":""}</span> ${g}</label>`;}).join("")}</div>
+      </div>`;
+    wrap.appendChild(el);
+  });
+  $("view-phases").innerHTML="";
+  $("view-phases").appendChild(wrap);
+}
+function currentPhaseIndex(){ let idx=0; PHASES.forEach((p,i)=>{ if(p.tasks.some(x=>state.tasks[x.id]==="inprogress"||state.tasks[x.id]==="blocked"))idx=i; }); return idx; }
+function togglePhase(i){ const els=document.querySelectorAll("#view-phases .phase"); els.forEach((el,j)=>el.classList.toggle("open",j===i)); }
+function quickToggle(id){ const was=taskDone(id); state.tasks[id]=was?"todo":"done"; if(was) delete state.blockSince[id]; save(); renderAll(); if(state.coachTalk&&!was){ const n=currentTopTask(); speak("Nice. "+(n?("Next: "+n.label):"All tasks for now are complete.")); } }
+  function setTask(id,v){ const was=state.tasks[id]; state.tasks[id]=v; if(v==="blocked"&&was!=="blocked") state.blockSince[id]=keyOf(new Date()); if(was==="blocked"&&v!=="blocked") delete state.blockSince[id]; save(); renderAll(); }
+  function setGate(k,v){ state.gates[k]=v; save(); renderAll(); }
+
+/* ── Gantt ── */
+function renderGantt(){
+  const lbls=$("ganttLbls"), tracks=$("ganttTracks"); lbls.innerHTML=""; tracks.innerHTML="";
+  PHASES.forEach((p,i)=>{
+    const l=document.createElement("div"); l.className="gantt-lbl"; l.innerHTML=`<b>${p.label} · ${p.name}</b><em>${Math.round(phaseProgress(p)*100)}%</em>`; lbls.appendChild(l);
+    const tr=document.createElement("div"); tr.className="gantt-track";
+    tr.innerHTML=`<div class="bar"><div style="flex:1;border-radius:6px;display:flex;gap:2px" >${p.tasks.map(t=>`<div class="seg" style="background:${segColor(t)}"></div>`).join("")}</div></div>
+      <div class="gantt-cols">${Array.from({length:13},(_,w)=>`<i title="Week ${w===0?"(P0) day "+((w+1)):w}"></i>`).join("")}</div>`;
+    const bar=tr.querySelector(".bar");
+    const total=13;
+    bar.style.left=(p.start/total*100)+"%"; bar.style.width=(p.end-p.start+1)/total*100+"%";
+    tr.querySelectorAll(".seg").forEach(s=>{s.style.minWidth="3px"});
+    const colToday=Math.floor((new Date()-todayStart(state.startDate))/(86400000*7));
+    if(colToday>=0&&colToday<=WEEKS){ const td=document.createElement("div"); td.className="today"; td.style.left=(colToday/total*100)+"%"; td.title="Today"; tr.appendChild(td); }
+    tracks.appendChild(tr);
+  });
+  $("gantt").style.display="grid";
+}
+function segColor(t){ const s=state.tasks[t.id]; if(s==="done")return "var(--green)"; if(s==="inprogress")return "var(--amber)"; if(s==="blocked")return "var(--red)"; return "var(--surface3)"; }
+
+/* ── KPIs ── */
+function renderKPIs(){
+  const m=state.kpis.mix,total=Object.values(m).reduce((a,b)=>a+b,0)||1;
+  const colors={attend:"var(--green)",learn:"var(--blue)",volunteer:"var(--amber)",post:"var(--purple)",apply:"var(--coral)",mentor:"#06b6d4"};
+  const labels={attend:"Attended",learn:"Completed learning",volunteer:"Volunteered",post:"Posted",apply:"Applied",mentor:"Mentored"};
+  let acc=0,parts=[];
+  const legend=document.createElement("div"); legend.className="legend";
+  Object.keys(labels).forEach(k=>{
+    const pct=Math.round(m[k]/total*100);
+    if(pct){parts.push(`${colors[k]} ${acc}% ${acc+pct}%`);acc+=pct;}
+    const row=document.createElement("div"); row.className="row";
+    row.innerHTML=`<s style="background:${colors[k]}"></s><b>${labels[k]}</b>
+      <input type="number" class="bar-edit" style="width:52px" value="${m[k]}" min="0" title="edit ${labels[k].toLowerCase()}" onchange="setMix('${k}',this.value)">
+      <span style="color:var(--faint);font-weight:700;width:38px;text-align:right">${pct}%</span>`;
+    legend.appendChild(row);
+  });
+  const bars=document.createElement("div");
+  const max=Math.max(...state.kpis.months,1);
+  bars.innerHTML=`<h3>Monthly active participants</h3>`;
+  const bwrap=document.createElement("div"); bwrap.className="bars";
+  state.kpis.months.forEach((v,i)=>{
+    const c=document.createElement("div"); c.className="bar-col";
+    c.innerHTML=`<div class="v">${v}</div><div class="b" style="height:${Math.round(v/max*100)}%"></div><div class="m">${MONTHS[i]}</div>`;
+    bwrap.appendChild(c);
+  });
+  bars.appendChild(bwrap);
+  const binp=document.createElement("div"); binp.style.cssText="display:flex;gap:8px;margin-top:10px";
+  state.kpis.months.forEach((v,i)=>{
+    const inp=document.createElement("input"); inp.type="number"; inp.className="bar-edit"; inp.value=v; inp.min=0; inp.title=MONTHS[i];
+    inp.onchange=e=>{state.kpis.months[i]=Math.max(0,+e.target.value||0);save();renderAll();};
+    binp.appendChild(inp);
+  });
+  bars.appendChild(binp);
+  bars.appendChild(elNotice("North Star = members who this month attended an event · finished a lesson · volunteered · posted · applied or mentored."));
+
+  const donut=document.createElement("div"); donut.className="card";
+  donut.innerHTML=`<div class="label">Activity mix · this month</div><div class="donut-wrap">
+    <div class="donut" style="background:${parts.join(",")||"var(--grid-line)"}">
+      <div class="donut-inner"><b>${Object.values(m).reduce((a,b)=>a+b,0)}</b><span>actions</span></div>
+    </div></div>`;
+  donut.querySelector(".donut-wrap").appendChild(legend);
+
+  const grid=document.createElement("div"); grid.className="grid"; grid.style.cssText="grid-template-columns:repeat(auto-fill,minmax(235px,1fr));margin-top:14px";
+  KPI_DEFS.forEach(k=>{
+    const v=state.kpis[k.id],r=Math.min(100,Math.round(v/k.target*100));
+    const c=document.createElement("div"); c.className="card kpi-card";
+    c.innerHTML=`<div class="kpi-top"><div><div class="lab">${k.label}</div><div class="sub">target ${k.target}${k.unit?" "+k.unit:""}${k.hint?" · "+k.hint:""}</div></div>
+      <div><input type="number" class="num-input" value="${v}" min="0" onchange="setKpi('${k.id}',this.value)">
+      <div class="mini"><button onclick="bumpKpi('${k.id}',-1)">−</button><button onclick="bumpKpi('${k.id}',1)">+</button></div></div></div>
+      <div class="kpi-bar"><i style="width:${r}%;background:${k.color}"></i></div>
+      <div class="kpi-foot"><span>${r}% of target</span><span style="color:${v>=k.target?"var(--green)":"var(--faint)"}">${v>=k.target?"✓ reached":"building"}</span></div>`;
+    grid.appendChild(c);
+  });
+
+  const wrap=$("view-kpis"); wrap.innerHTML="";
+  const two=document.createElement("div"); two.className="grid g-2";
+  const bc=document.createElement("div"); bc.className="card"; bc.appendChild(bars);
+  two.appendChild(bc); two.appendChild(donut);
+  wrap.appendChild(two); wrap.appendChild(grid);
+}
+function elNotice(t){ const n=document.createElement("div"); n.className="notice"; n.innerHTML=t; return n; }
+function setMix(k,v){ state.kpis.mix[k]=Math.max(0,+v||0); save(); renderAll(); }
+function setKpi(id,v){ state.kpis[id]=Math.max(0,+v||0); save(); renderAll(); }
+function bumpKpi(id,d){ setKpi(id,(state.kpis[id]||0)+d); }
+
+/* ── Build-in-public ── */
+function renderPosts(){
+  const tb=document.querySelector("#bipTbody"); if(!tb) return;
+  tb.innerHTML="";
+  const wk=thisWeekPosts().filter(p=>p.status==="done").length;
+  const bw=$("bipWeek");
+  if(bw) bw.innerHTML=`<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:800">This week: ${wk}/2 posted</span>
+      <span class="b" style="flex:1;min-width:120px"><i style="width:${Math.min(100,wk/2*100)}%;background:linear-gradient(90deg,var(--amber),var(--green))"></i></span>
+      ${wk>=2?'<span class="chipx green">quota met ✓</span>':`<span class="chipx gray">${2-wk} more to post</span>`}
+      <button class="btn small ghost" onclick="openReport()">📋 Weekly report</button>
+      <span style="font-size:11px;color:var(--faint)">queue with Channel + Format + copy template → publish → quota ticks → Coach & autopilot see it.</span>
+    </div>`;
+  if(!state.posts.length){ tb.innerHTML='<tr><td colspan="7" class="empty">No posts yet — choose a channel + format + copy template above, then ship.</td></tr>'; return; }
+  state.posts.slice().reverse().forEach((p,i)=>{
+    const st=p.status==="done"?"posted":(p.status==="due"?"due":"skipped");
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td style="white-space:nowrap">${p.date||"—"}</td><td>${p.type}</td><td>${p.channel||"—"}</td><td>${p.format||"—"}</td><td>${p.content}</td>
+      <td><span class="pill ${st}">${p.status}</span></td>
+      <td style="text-align:right"><button class="btn ghost small" onclick="delPost(${state.posts.length-1-i})">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+const POST_TPL={
+  progress:"Shipped: ___ today. Result: ___. ___ people already on it.",
+  lesson:"We asked __who__. Finding: __finding__. Fixing it with __action__.",
+  retro:"Closing __P# — Phase__: __shipped__. Would redo: __1 thing__. Next: __next phase__.",
+  numbers:"__Month__ update: __n__ participants — __a__ events, __b__ lessons, __c__ volunteer hours. Real numbers.",
+  question:"If you could change ONE thing about Klagon, what would it be?"
+};
+function fillTemplate(v){ if(POST_TPL[v]) $("postContent").value=POST_TPL[v]; }
+function addPost(){
+  const date=$("postDate").value||new Date().toISOString().slice(0,10);
+  const type=$("postType").value, channel=$("postChannel").value, format=$("postFormat").value, content=$("postContent").value.trim(), status=$("postStatus").value;
+  if(!content){ alert("Write one line of real evidence first."); return; }
+  state.posts.push({date,type,channel,format,content,status}); $("postContent").value=""; save(); renderAll();
+}
+function delPost(i){ state.posts.splice(i,1); save(); renderAll(); }
+
+/* ── Community kickoff — WhatsApp onboarding tracker ── */
+const COMMUNITY_COPY={
+  kinvite:"Hey {NAME} — we're building Klagon for real over the next 90 days: jobs, training and community in one place. Here's the WhatsApp front door: {link} I'd love you in — one thing a week, no fluff. In?",
+  kwelcome:"Welcome to Klagon 👊 Digital, learning & income in one place JOIN HERE: {link} 3 rules: 1) real people, 2) honest traction, 3) one thing a week. This week: {first question} You're in the 90-day build with us.",
+  krules:"RULES — 1) Real people: your real name & photo. 2) Honest traction: real numbers only. 3) One thing a week: one share, one ask, one answer. Admin DM settles everything.",
+  kquestion:"If you could change ONE thing about Klagon, what would it be? Real answers shape what we build.",
+  kscore:"DIGITAL SCORECARD — {BUSINESS}\n🟢 WhatsApp Business · 🟢 Facebook · 🔴 Google Business · 🔴 Website 🟡 · 🟡 Instagram · 🔴 Online ordering/booking\nRecommended next step: claim a Google Business Profile with photos + opening hours.\nWant us to set it up? The check-up is free — setup happens only if you say yes."
+};
+const COMMUNITY=[
+ {stage:"1 · Prepare the environment (Day 1–2)",items:[
+   {id:"c1",t:"Name the group properly — 'Klagon · Digital, Learning & Income' (+ “90-day build” note)",w:"A real name signals a real community, not a spare chat"},
+   {id:"c2",t:"Write the 3-line group description",w:"What it is · who it's for · the one rule"},
+   {id:"c3",t:"Pin the 3 group rules",w:"Real people · honest traction · one thing a week",copy:"krules"},
+   {id:"c4",t:"Pin the weekly rhythm (Mon→Sun)",w:"Question · Opportunity · Meet-Someone · Tip · Weekend · Spotlight · Weekly"},
+   {id:"c5",t:"Create the welcome message for every new member",w:"Instant orientation beats 100 explanations",copy:"kwelcome"},
+   {id:"c6",t:"Draft the 'do 90 days with us' invite line",w:"Your doorstep — make it personal and concrete",copy:"kinvite"}
+ ]},
+ {stage:"2 · Invite your warm wave (Day 2–4)",items:[
+   {id:"c7",t:"List your first 20 warm contacts here",w:"Family → friends → professionals who already trust you"},
+   {id:"c8",t:"Send personal invites — 5 a day, never a group broadcast",w:"A name in the first sentence doubles the reply rate"},
+   {id:"c9",t:"Recruit 2–3 anchor members first",w:"Respected locals who'll greet others — the space feels alive before it opens wide"},
+   {id:"c10",t:"Post the first Community Question within 24h of the first joiners",w:"Zero-content groups die. Start the conversation on day one",copy:"kquestion"},
+   {id:"c11",t:"Reply to every serious answer within the hour",w:"Speed is the strongest retention signal you own"}
+ ]},
+ {stage:"3 · Engage the build (Week 1)",items:[
+   {id:"c12",t:"Run the daily cadence for 7 straight days",w:"Consistency recruits. A skipped day teaches skipping."},
+   {id:"c13",t:"Launch 'One thing a week' — every member shares ONE thing they did",w:"Progress not perfection — turns lurkers into contributors"},
+   {id:"c14",t:"Recruit 3 roles from engaged members",w:"Opportunities scout · Events scout · Digital tip sharer"},
+   {id:"c15",t:"Ask the group to shape one decision",w:"'What should the free course cover first?' — ownership, not audience"},
+   {id:"c16",t:"Ship something visible every 3 days",w:"Screenshots of the real build — living proof"},
+   {id:"c17",t:"Celebrate every win publicly",w:"First RSVP · first volunteer hour · first application"},
+   {id:"c18",t:"Deliver 'Klagon Weekly' on Sunday",w:"Turn the Command Center report into the broadcast"}
+ ]},
+ {stage:"4 · Launch the 30-day experiments (content, not code)",items:[
+   {id:"c19",t:"Launch 'Klagon Opportunities — Weekly' as a curated list",w:"5 jobs · 3 scholarships · 2 trainings · 1 volunteer every week — people don't need an app to use it",copy:"kscore"},
+   {id:"c20",t:"Start the curated 'Find it in Klagon' Directory page",w:"Approach owners: 'We're building a free directory — can we list you?' → test demand + grow relationships",copy:"kscore"},
+   {id:"c21",t:"Run 2 free Digital Check-ups — share a Digital Scorecard",w:"Assess (WhatsApp Business? Google? Facebook? photos?), show the scorecard, offer low-cost next step only if they say yes",copy:"kscore"},
+   {id:"c22",t:"Founding Members: invite question-responders into a private builder group",w:"First 100–250 active people · early access · suggest features · badge them",copy:"krules"},
+   {id:"c23",t:"Collect the 'What should KlagonOrg build next?' vote (WhatsApp poll)",w:"Jobs board / Directory / Events / Courses / Marketplace — roadmap comes from evidence, not guesswork"},
+   {id:"c24",t:"Ship visible build progress every 3 days (Day 1/10/22/30 beats)",w:"Never 'Coming Soon' — proof > promises; the software grows around what residents demonstrate they need"}
+ ]}
+];
+const EXP=[["opps","Weekly Opportunities posted",4],["directory","Businesses listed",30],["checkups","Digital Check-ups done",10],["founders","Founding members invited",100]];
+function renderCommunity(){
+  const w=$("view-community");
+  const total=COMMUNITY.reduce((a,s)=>a+s.items.length,0);
+  const doneCnt=state.communityChecked.filter(id=>COMMUNITY.some(s=>s.items.some(i=>i.id===id))).length;
+  const pct=Math.round(doneCnt/total*100);
+  const next=COMMUNITY.flatMap(s=>s.items).filter(i=>!state.communityChecked.includes(i.id));
+  const punch=next.slice(0,3);
+  const c=state.community;
+  const invitedN=(state.contacts||[]).filter(x=>x.status&&x.status!=="none").length;
+  const stat=(k,lab,fmt,derived)=>`<div class="card stat"><div style="font-weight:800;font-size:20px">${fmt?fmt(c[k]):c[k]}</div><div style="font-size:12px;font-weight:700;color:var(--muted)">${lab}</div>
+    ${derived?`<div style="font-size:10.5px;color:var(--faint);font-weight:700;margin-top:8px">auto from Contacts</div>`:`<div style="display:flex;gap:6px;margin-top:8px"><button class="btn ghost small" onclick="setCommunity('${k}',-1)">−</button><button class="btn ghost small" onclick="setCommunity('${k}',1)">+</button></div>`}</div>`;
+  w.innerHTML=`
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <h2 style="margin:0;font-size:17px;flex:1;min-width:180px">Community kickoff — bring Klagon alive</h2>
+      <span style="font-size:12px;font-weight:800;color:var(--faint)">${doneCnt}/${total} setup steps</span>
+      <span class="b" style="flex:1;min-width:120px"><i style="width:${pct}%;background:linear-gradient(90deg,var(--amber),var(--green))"></i></span>
+      <span class="chipx ${pct===100?"green":"blue"}">${pct}%</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+      <b style="font-size:13px">WhatsApp group link</b>
+      <input id="waLink" value="${state.community.link||""}" placeholder="paste chat.whatsapp.com/…" style="flex:1;min-width:220px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:13px;outline:none" onchange="setWALink(this.value)">
+      <button class="btn" onclick="copyWALink()">📋 Copy</button>
+      ${state.community.link?`<a class="btn" href="${state.community.link}" target="_blank" rel="noopener">↗ Open in WhatsApp</a>`:""}
+      <span style="font-size:11.5px;color:var(--faint)">auto-inserted into the 📋 invite & welcome templates</span>
+    </div>
+    <div class="notice" style="margin-bottom:12px"><b>North Star scoreboard</b> — invite → join → participate → build. Grow these 4 numbers each week; they feed your Monthly Active Participants (150 target).</div>
+    <div class="grid cards-top">
+      ${stat("invited","invited",n=>n)}
+      ${stat("joined","joined",n=>n)}
+      ${stat("active","participated this month",n=>n)}
+      ${stat("builders","in the build (helpers)",n=>n)}
+    </div>
+    <div class="grid cards-top" style="margin-top:8px">
+      ${EXP.map(([k,lab,tgt])=>{ const v=state.community[k]||0; const p=Math.min(100,Math.round(v/tgt*100)); return `
+        <div class="card stat">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-weight:800;font-size:16px">${v}<span style="color:var(--faint);font-weight:700;font-size:11px"> / ${tgt}</span></span><span class="chipx ${p>=100?"green":p>=50?"amber":"gray"}">${p}%</span></div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);margin-top:2px">${lab}</div>
+          <span class="b" style="margin:8px 0"><i style="width:${p}%;background:${p>=100?"var(--green)":"linear-gradient(90deg,var(--amber),var(--green))"}"></i></span>
+          <div style="display:flex;gap:6px"><button class="btn ghost small" onclick="setCommunity('${k}',-1)">−</button><button class="btn ghost small" onclick="setCommunity('${k}',1)">+</button></div>
+        </div>`; }).join("")}
+    </div>
+    <div class="label" style="margin-top:14px">30-day experiments · content, not code</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+      <button class="btn" onclick="copyStack()">📋 Copy today's copy stack</button>
+      <span style="font-size:11.5px;color:var(--faint)">Opportunities Weekly · curated Directory · Digital Check-ups · Founding Members — run them as posts and pages, ship the software only where they prove demand.</span>
+    </div>
+    <div class="label" style="margin-top:14px">Today's community punch ${punch.length?`· <span style="color:var(--amber)">${punch.length} step${punch.length>1?"s":""} to knock out</span>`:""}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      ${punch.length?punch.map(i=>`<button class="btn ghost" onclick="toggleCommunity('${i.id}')">${i.t.split(" — ")[0]}</button>`).join(""):`<span style="font-size:12px;color:var(--green);font-weight:800">All setup steps done — keep running the daily cadence + the 4 growth numbers. 🎉</span>`}
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="label" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">Contacts · your warm wave <span class="chipx blue">${(state.contacts||[]).length} in list</span><span class="chipx ${invitedN>=20?"green":"amber"}">${invitedN} invited</span><span style="font-weight:700;font-size:11px;color:var(--faint)">mark Invited → auto-counts in the scoreboard ↑</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input id="ctName" placeholder="Name — first + last" style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')addContact()">
+      <input id="ctPhone" placeholder="Phone / WhatsApp" style="flex:1;min-width:150px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')addContact()">
+      <select id="ctCat" style="padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:12.5px;outline:none">
+        <option>Anchor</option><option>Family</option><option>Friend</option><option>Professional</option><option>Business</option><option>Organization</option>
+      </select>
+      <button class="btn" onclick="addContact()">＋ Add</button>
+    </div>
+    <div>${(state.contacts||[]).length?(state.contacts.map(contactRow).join("")):`<div class="doc-search-empty">Empty — add your first warm contacts here (2–3 <b>Anchors</b> first, then family, friends, professionals, businesses). After you send each DM mark them <b>Invited</b>, then <b>Joined</b> / <b>Active</b> as they move. </div>`}</div>
+  </div>
+  ${COMMUNITY.map(st=>`<div class="card" style="margin-bottom:14px">
+    <div class="label">${st.stage}</div>
+    ${st.items.map(it=>`<div class="task ${state.communityChecked.includes(it.id)?"done":""}" style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px dashed var(--grid-line)">
+      <span class="chk" onclick="toggleCommunity('${it.id}')"></span>
+      <div style="flex:1;min-width:0"><span class="lbl" style="display:inline;font-size:13px">${it.t}</span><div style="font-size:11.5px;color:var(--faint);margin-top:2px;line-height:1.5">${it.w}</div></div>
+      ${it.copy?`<button class="btn ghost small" onclick="copyTpl('${it.copy}')" title="Copy template">📋</button>`:""}
+    </div>`).join("")}
+  </div>`).join("")}
+  <span id="communityCopy" class="copied-ok"></span>`;
+}
+function contactRow(c){
+  const st=c.status||"none";
+  const cls=st==="active"?"green":st==="joined"?"blue":st==="invited"?"amber":"gray";
+  const catCls=c.cat==="Anchor"?"amber":(c.cat==="Business"||c.cat==="Organization")?"blue":"gray";
+  return `<div class="task" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed var(--grid-line)">
+    <span class="tag ${catCls}" style="padding:2px 7px;border-radius:7px;font-size:10px;font-weight:800;letter-spacing:.4px">${(c.cat||"").toUpperCase()}</span>
+    <span class="lbl" style="display:inline;flex:1;min-width:140px;font-size:13px">${c.name}</span>
+    <span style="font-size:11px;color:var(--faint)">${c.phone||""}</span>
+    <span class="chipx ${cls}" style="min-width:64px;text-align:center">${st==="active"?"Active":st==="joined"?"Joined":st==="invited"?"Invited":"Not sent"}</span>
+    <select style="padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;outline:none" onchange="setContactStatus('${c.id}',this.value)">
+      <option value="none" ${st==="none"?"selected":""}>Not sent</option>
+      <option value="invited" ${st==="invited"?"selected":""}>Invited ☑</option>
+      <option value="joined" ${st==="joined"?"selected":""}>Joined</option>
+      <option value="active" ${st==="active"?"selected":""}>Active</option>
+    </select>
+    <button class="btn ghost small" onclick="delContact('${c.id}')" title="Remove">🗑</button>
+  </div>`;
+}
+function addContactRaw(name,phone,cat){ state.contacts=state.contacts||[]; state.contacts.push({id:"ct"+(Date.now()+Math.random()).toString(36).slice(2,8),name:name||"Unnamed",phone:phone||"",cat:cat||"Friend",status:"none"}); save(); renderAll(); }
+function addContact(){ const n=($("ctName")||{}).value||""; const p=($("ctPhone")||{}).value||""; const cat=($("ctCat")||{}).value||"Friend"; if(!n.trim()) return; addContactRaw(n.trim(),p.trim(),cat); const inp=$("ctName"); if(inp) inp.value=""; }
+function setContactStatus(id,st){ const c=(state.contacts||[]).find(x=>x.id===id); if(!c) return; c.status=st; save(); renderAll(); }
+function delContact(id){ state.contacts=(state.contacts||[]).filter(x=>x.id!==id); save(); renderAll(); }
+function toggleCommunity(id){ const i=state.communityChecked.indexOf(id); if(i>=0) state.communityChecked.splice(i,1); else state.communityChecked.push(id); save(); renderAll(); }
+function setCommunity(k,d){ state.community[k]=Math.max(0,(state.community[k]||0)+d); save(); renderAll(); }
+function setWALink(v){ state.community.link=(v||"").trim(); save(); renderAll(); }
+function copyWALink(){
+  const link=state.community.link||"";
+  let copied=false;
+  if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText&&link){ navigator.clipboard.writeText(link).then(()=>{ const s=$("communityCopy"); if(s) s.textContent="Invite link copied ✓"; setTimeout(()=>{ if(s) s.textContent=""; },2000); }); return; }
+  const s=$("communityCopy"); if(s) s.textContent=link?"Copy manually — link above.":"Paste your invite link first.";
+}
+function copyTpl(id){
+  const txt=(COMMUNITY_COPY[id]||"").replace("{NAME}","NAME").replace("{first question}","the community question").replace("{link}",state.community.link?state.community.link+" ":"(paste invite link here) ");
+  if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>{ const s=$("communityCopy"); if(s) s.textContent="Template copied ✓"; setTimeout(()=>{ if(s) s.textContent=""; },2000); }); return; }
+  const s=$("communityCopy"); if(s) s.textContent="Clipboard unavailable — copy from the playbook doc.";
+}
+function generateCopyStack(){
+  const now=new Date(); const {day}=dayInfo(); const {t,d}=overall();
+  const plan=todayPlan(); const pf=plan.phase||PHASES[0];
+  const link=state.community.link?state.community.link:"(paste your invite link here)";
+  const wk=thisWeekPosts().filter(x=>x.status==="done").length;
+  const cd=cadenceFor(now);
+  return [
+    `KLAGON — TODAY'S COPY STACK · Day ${day}/${90} · ${now.toDateString()} · ${weekday(now)}`,
+    `Active: ${pf.label} ${pf.name} ${Math.round(d/t*100)}% · posts this week ${wk}/2 · North Star ${state.kpis.northStar}`,
+    ``,
+    `1 · POST THE FIRST COMMUNITY QUESTION (in the Group now)`,
+    `If you could change ONE thing about Klagon, what would it be?`,
+    `We're building KlagonOrg to help people connect, learn, find opportunities and build their community — but we don't want to guess what Klagon needs.`,
+    `Tell us. Comment below or DM us. We're listening. 🇬🇭`,
+    `Join the build: ${link}`,
+    ``,
+    `2 · TODAY'S CADENCE — ${cd.name} (${cd.how})`,
+    ``,
+    `3 · WELCOME (send the moment they join)`,
+    `Welcome to Klagon 👊 Digital, learning & income in one place. JOIN HERE: ${link} 3 rules: 1) real people, 2) honest traction, 3) one thing a week. This week: ${COMMUNITY_COPY.kquestion.split("?").slice(0,1)[0]}? You're in the 90-day build with us.`,
+    ``,
+    `4 · INVITE (personal DM — 5 a day)`,
+    `Hey {NAME} — we're building Klagon for real over the next 90 days: jobs, training and community in one place. Here's the WhatsApp front door: ${link} I'd love you in — one thing a week, no fluff. In?`,
+    ``,
+    `5 · RULES (pin)`,
+    `RULES — 1) Real people: your real name & photo. 2) Honest traction: real numbers only. 3) One thing a week: one share, one ask, one answer. Admin DM settles everything.`,
+    ``,
+    `6 · KLAGON WEEKLY — Sunday`,
+    `Use the 📋 Weekly report button for live numbers. Template: “Klagon Week ${Math.min(12,Math.max(1,Math.ceil(day/7)))} — what happened, what's next, 1 opportunity, 1 welcome.”`,
+    ``
+  ].join("\n");
+}
+function copyStack(){
+  const txt=generateCopyStack();
+  if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>{ const s=$("communityCopy"); if(s){ s.textContent="Today's copy stack copied ✓"; setTimeout(()=>{ if(s) s.textContent=""; },2500); } }); return; }
+  const s=$("communityCopy"); if(s) s.textContent="Clipboard unavailable — use the Help playbook doc.";
+}
+
+/* ── Help center, guided tour & search palette ── */
+const DOCS=[
+ {id:"getting-started",icon:"📍",title:"Getting started",body:`<ol><li>Open <b>KlagonOrg-Command-Center.html</b> in Chrome or Edge.</li><li>Open <b>PM Coach</b> → set the <b>Schedule start</b> date (top right). <b>All deadlines derive from it</b> — set it before marking anything done.</li><li>Sun/moon icon (top bar) switches light/dark. Everything auto-saves.</li></ol>`},
+ {id:"overview",icon:"👁️",title:"Command overview",body:`Your 5-second daily check: the <b>progress ring</b> (amber→green ribbon), the <b>active phase</b> (what to work on + its goal), per-phase bars, and 4 live stat cards (North Star · posts · gates · opportunities). If you only look at one screen, look here.`},
+ {id:"phases",icon:"🧩",title:"Phases & tasks",body:`7 phases unlock the 90-day plan. Each has a <b>status chip</b> — <span class="chipx green">✓ done</span> <span class="chipx amber">at risk</span> <span class="chipx red">OVERDUE</span> <span class="chipx gray">12d left</span> — computed from your start date. Tasks are tagged <b style="color:var(--blue)">BUILD</b> or <b style="color:var(--amber)">COMM</b>. Tick the ✓ to mark done, or change the dropdown (Not started / In progress / Done / <b>Blocked</b>). A phase closes only when its <b>exit gates</b> (the "Done when" checklist) are all ticked.`},
+ {id:"gantt",icon:"📊",title:"Weekly plan (gantt)",body:`One bar per phase over the 12 weeks. Segments inside = tasks: <span class="seg" style="background:var(--green)">green done</span>, <span class="seg" style="background:var(--amber)">amber in progress</span>, <span class="seg" style="background:var(--red)">red blocked</span>, dark = not started. The coral vertical line is <b>today</b>. Progress happens by ticking tasks — nothing to drag.`},
+ {id:"coach",icon:"🦉",title:"PM Coach",body:`Your assistant. Top card = <b>Day X of 90</b>, active phase, days left, sprint bar. Then the <b>Priority list</b>, auto-generated and re-scored on every change: overdue → blocked → today's focus → two-track rhythm → post quota → exit-gate check → next phase → North Star nudge. Every item has an <b>Open phase / Write post</b> button that jumps you there.`},
+ {id:"dailytasks",icon:"📅",title:"Daily task breakdown",body:`<b>Today card</b>: today's recommended 2–3 tasks (tick them right here), today's <b>cadence</b> (WhatsApp rhythm), a red <b>pace warning</b> if tasks outnumber days left, weekly <b>build-in-public quota</b> (X/2), and your <b>🔥 day streak</b>. <b>Next 7 days</b> table = the week ahead (phase, tasks, cadence).`},
+ {id:"voice",icon:"🎧",title:"Voice assistant",body:`Works in <b>Chrome/Edge</b>. 🔊 <b>Speak today</b> reads the brief. 🎧 <b>Listen</b> (allow mic) then say: <b>"done"</b> ticks the current task + announces next · <b>"next"</b> · <b>"blocked"</b> · <b>"status"</b> (progress %) · <b>"today"</b> · <b>"help"</b> · <b>"stop listening"</b>. The <b>Coach talks to me</b> checkbox adds spoken confirmations as you work.`},
+ {id:"autopilot",icon:"⚙️",title:"Autopilot & approvals",body:`Proposals appear automatically when an action is ready: <i>close phase</i>, <i>start next phase</i>, <i>record KPI milestone</i>, <i>queue a draft</i>, <i>launch Community Question</i>. <b>Approve</b> executes, <b>✕</b> dismisses. Everything lands in the <b>Autonomy log</b> with <b>↩ undo</b>. Autopilot <b>OFF</b> = proposals only. <b>ON</b> = auto-safe actions run themselves; consequential ones (new phase, community question) always ask you first. Bonus automations: <b>stale-blocker escalation</b> (blocked >3 days → red "decide now"), <b>scope-release advisor</b> (at-risk phase → defer tasks to post-90), <b>weekly report</b> (📋 copy-paste summary), <b>voice KPI entry</b> ("attendance today was 12"), <b>auto-standup</b> (brief spoken on first open), <b>backup nag</b>. Rule: automate the loop, never the judgment.`},
+ {id:"kpis",icon:"📈",title:"KPIs & target bars",body:`Edit the <b>monthly active bars</b> (small boxes under each bar). The <b>Activity mix</b> donut is editable too. The 11 metric cards have <b>+/− steppers</b> and a % of target bar. <b>North Star = Monthly Active Participants (target 150)</b> — everything else feeds it.`},
+ {id:"bip",icon:"📣",title:"Build-in-Public ledger",body:`Your 2 posts/week, tracked with a live <b>quota bar</b>. Pick <b>Channel</b> (WhatsApp Channel/IG/FB/LinkedIn/X…), <b>Format</b> (Reel/carousel/screenshot…) and a <b>copy template</b> that fills the content box, then press ＋. Publishing ticks the quota; Coach and Autopilot see it instantly — and Autopilot proposes drafts named after the tasks you just completed.`},
+ {id:"backup",icon:"💾",title:"Saving & backup",body:`Everything auto-saves to this browser. <b>↧ Export</b> downloads a JSON snapshot (do it weekly). <b>↥ Import</b> restores one or moves to another device. <b>Reset</b> wipes to a fresh plan (only when you truly want a clean start). Data never leaves your device.`},
+ {id:"routine",icon:"🗓️",title:"Daily routine (5 min)",body:`<b>Morning:</b> open PM Coach → glance the Priority list → what's #1? · 🔊 speak today. <b>Working:</b> tick tasks / say <b>"done"</b>. <b>Evening:</b> update KPIs, log today's build-in-public post (Channel + Format + template). <b>Sunday (10 min):</b> queue next week's 2 posts → <b>↧ Export JSON</b>.`},
+ {id:"faq",icon:"❓",title:"FAQ & gotchas",body:`• <b>Voice won't hear me?</b> Use Chrome/Edge, click 🎧, allow mic, internet needed; it only listens while active.<br>• <b>Change the start date?</b> All deadlines, gantt 'today' line and coach recs recompute. <br>• <b>One task everywhere:</b> Phases, Today card and voice are the same task — always in sync.<br>• <b>Blocked = decide:</b> do it · simplify it · drop it.<br>• <b>Where is my data?</b> Only in this browser — export weekly.<br>• <b>New computer?</b> ↧ Export here → ↥ Import there.<br>• <b>Reset?</b> Bottom of sidebar — clears everything.`}
+];
+function docEl(d){ const el=document.createElement("div"); el.className="card doc"; el.id="doc-"+d.id; el.style.display="block"; el.innerHTML=`<div class="label">${d.icon} ${d.title}</div>${d.body}`; el.dataset.search=(d.title+" "+stripTags(d.body)).toLowerCase(); return el; }
+function stripTags(h){ return h.replace(/<[^>]+>/g," ").replace(/\s+/g," "); }
+function renderHelp(){
+  const w=$("view-help"); w.innerHTML=`
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <h2 style="margin:0;font-size:17px">Help center & guided tour</h2>
+      <span class="chipx blue">search live</span>
+    </div>
+    <input id="helpSearch" placeholder="🔍  Search help — try “voice”, “autopilot”, “backup”, “blocked”, “quota”…" oninput="helpFilter(this.value)">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="tourStart()">🚀 Start the 2-minute tour</button>
+      <button class="btn ghost" onclick="openReport()">📋 Weekly report</button>
+      <button class="btn ghost" onclick="openCmd()"><span class="kbd">Ctrl</span><span class="kbd">K</span> Quick search</button>
+    </div>
+  </div>
+  <div id="helpDocs"></div>`;
+  const box=$("helpDocs"); DOCS.forEach(d=>box.appendChild(docEl(d)));
+  const qi=$("helpSearch");
+  if(qi) qi.addEventListener("input",()=>helpFilter(qi.value));
+}
+function helpFilter(q){
+  q=(q||"").trim().toLowerCase(); let shown=0;
+  document.querySelectorAll("#helpDocs .doc").forEach(el=>{ const ok=!q||el.dataset.search.indexOf(q)>=0; el.style.display=ok?"block":"none"; if(ok) shown++; });
+  const box=document.getElementById("helpDocs");
+  if(!shown){ const e=box.querySelector(".doc-search-empty"); if(!e){ const d=document.createElement("div"); d.className="doc-search-empty"; d.textContent='No results — try “voice”, “autopilot”, “backup”, “gantt”, “quota”…'; box.appendChild(d); } }
+  else { const e=box.querySelector(".doc-search-empty"); if(e) e.remove(); }
+}
+const TOUR=[
+ {view:"overview",sel:"#sidebar",title:"Welcome — this is your Command Center",body:`Everything you do here <b>auto-saves</b> to your browser. This is a 2-minute tour of every screen. Use <b>Next</b> to move through it — or <b>Skip</b> anytime and explore on your own. Press <b>Ctrl+K</b> anywhere to search.`},
+ {view:"overview",sel:"#view-overview",title:"Command overview",body:`Your daily 5-second glance: the <b>progress ring</b>, the <b>active phase</b>, per-phase bars, and 4 live stats (North Star, posts, gates, opportunities).`},
+ {view:"phases",sel:"#view-phases",expand:0,title:"Phases & tasks",body:`7 phases = the 90-day plan. Each phase has a <b>status chip</b> (days left / at risk / overdue) and <b>BUILD</b> / <b>COMM</b> tasks. <b>Try it:</b> click the ✓ on the first task to mark it done — everything re-syncs. Gate = the “Done when” checklist that closes a phase.`},
+ {view:"gantt",sel:"#gantt",title:"Weekly plan",body:`Bars = phases across 12 weeks; segments = tasks (green done · amber in progress · red blocked). The <b>coral line</b> is today. No dragging — ticking tasks moves everything.`},
+ {view:"coach",sel:"#view-coach",title:"PM Coach",body:`Your assistant. <b>Day X of 90</b>, days left, sprint bar, then the auto-generated <b>Priority list</b>: overdue → blocked → today's focus → two-track rhythm → post quota → exit gates → next phase → North Star. Each has a button that jumps you straight to it.`},
+ {view:"coach",sel:"#dailyWrap",title:"Daily task breakdown",body:`The <b>Today card</b> gives you today's 2–3 tasks (tickable here), the weekday <b>cadence</b>, a red pace warning if you're behind, the weekly post quota, and your <b>🔥 day streak</b>. Below: the <b>Next 7 days</b> table.`},
+ {view:"coach",sel:"#listenBtn",title:"Voice assistant",body:`Click <b>🎧 Listen</b>, allow the mic, then speak: <b>“done”</b> ticks the current task and tells you the next; also <b>“next”</b> · <b>“blocked”</b> · <b>“status”</b> · <b>“today”</b> · <b>“help”</b> · <b>“stop listening”</b>. “Speak today” reads the whole brief aloud.`},
+ {view:"coach",sel:"#autoCard",title:"Autopilot",body:`Proposals appear when actions are ready — close phase, start next, sync KPI, queue a draft. <b>Approve</b> or <b>✕</b>. See them in the <b>Autonomy log</b> with <b>↩ undo</b>. Toggle <b>Autopilot</b> to let safe actions run themselves.`},
+ {view:"kpis",sel:"#kpiBars",title:"KPIs & target bars",body:`Edit the monthly bars (small boxes), set the activity mix donut, and use <b>+/− steppers</b> on the 11 metric cards. <b>North Star = 150 monthly active participants</b> — everything feeds it.`},
+ {view:"bip",sel:"#bipWeek",title:"Build-in-Public",body:`Track your <b>2 posts/week</b> here. Pick a <b>Channel</b> + <b>Format</b> + <b>copy template</b>, then ＋. Publishing ticks the quota bar — and Coach/Autopilot see it instantly.`},
+ {view:"help",sel:"#helpSearch",title:"Help center & search",body:`You're here. <b>Search</b> above filters every help card live. Ctrl+K opens the global search from anywhere — great for jumping to “autopilot” or “backup”.`},
+ {view:"quickref",sel:"#view-quickref",title:"Quick reference card",body:`The printable one-pager, now built in — voice commands, autopilot rules, fast actions and the 5-minute routine, with live numbers at the top.`},
+ {view:"overview",sel:"#view-overview",title:"You're ready 🎉",body:`Routine: glance Overview in the morning, let PM Coach pick your #1, tick tasks (or say “done”), log posts, export every Sunday. <b>Ctrl+K</b> to search any screen, Help center live here. Good luck shipping Klagon.`}
+];
+let tourIdx=0, tourOn=false;
+function tourStart(){ tourOn=true; tourIdx=0; $("tour").style.display="block"; setTimeout(tourGo,60); }
+function tourNext(){ if(tourIdx>=TOUR.length-1){ tourSkip(); return; } tourIdx++; tourGo(); }
+function tourPrev(){ if(tourIdx>0) tourIdx--; tourGo(); }
+function tourSkip(){
+  tourOn=false; tourIdx=-1; $("tour").style.display="none";
+  document.querySelectorAll(".tour-target").forEach(e=>e.classList.remove("tour-target"));
+  if(!state.toured){ state.toured=true; save(); }
+}
+function tourGo(){
+  const s=TOUR[tourIdx]; if(!s){ tourSkip(); return; }
+  showView(s.view);
+  setTimeout(()=>{
+    if(s.expand!=null) togglePhase(s.expand);
+    document.querySelectorAll(".tour-target").forEach(e=>e.classList.remove("tour-target"));
+    const el=document.querySelector(s.sel)||document.querySelector("#view-"+s.view);
+    if(el){ el.classList.add("tour-target"); try{ el.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){} }
+    try{
+      $("tourTitle").textContent=s.title;
+      $("tourBody").innerHTML=s.body;
+      $("tourStep").textContent=(tourIdx+1)+" / "+TOUR.length;
+      $("tourDots").textContent=Array.from({length:TOUR.length},(_,i)=>i===tourIdx?"●":"○").join("");
+      $("tourNextB").textContent=tourIdx===TOUR.length-1?"Finish 🎉":"Next →";
+    }catch(e){}
+  },120);
+}
+let paletteOpen=false;
+function openCmd(){ paletteOpen=true; $("palette").style.display="block"; const i=$("cmdInput"); i.value=""; cmdFilter(""); setTimeout(()=>{ try{ i.focus(); }catch(e){} },30); }
+function closeCmd(){ paletteOpen=false; $("palette").style.display="none"; }
+function cmdFilter(q){
+  q=(q||"").trim().toLowerCase();
+  const items=[];
+  NAV.forEach(v=>{ if(v.id&&(v.lab+" "+(v.group||"")).toLowerCase().indexOf(q)>=0) items.push({t:v.lab,sub:(v.group||"View"),kind:"v:"+v.id}); });
+  DOCS.forEach(d=>{ if(q&&(d.title.toLowerCase().indexOf(q)>=0||stripTags(d.body).toLowerCase().indexOf(q)>=0)) items.push({t:d.title,sub:"Help",kind:"d:"+d.id}); });
+  const l=$("cmdList");
+  if(!items.length){ l.innerHTML=`<div class="doc-search-empty">No matches for “${q}” — try overview, phases, autopilot, voice…</div>`; return; }
+  l.innerHTML=items.map((it,i)=>`<div class="cmd-item ${i===0?"hot":""}" onclick="cmdPick('${it.kind}')"><span class="ci">${it.sub}</span><b>${it.t}</b></div>`).join("");
+  window._cmdItems=items;
+}
+function cmdPick(kind){
+  closeCmd();
+  if(kind.startsWith("v:")){ showView(kind.slice(2)); return; }
+  const d=DOCS.find(x=>x.id===kind.slice(2)); if(!d) return;
+  showView("help");
+  setTimeout(()=>{ const si=$("helpSearch"); if(si){ si.value=d.title.split(" ").slice(0,2).join(" "); helpFilter(si.value); } },80);
+}
+function generateReportText(){
+  const now=new Date(); const {day}=dayInfo(); const wk=Math.min(12,Math.max(1,Math.ceil(day/7)));
+  const {t,d}=overall(); const pct=t?Math.round(d/t*100):0;
+  const posted=state.posts.filter(p=>p.status==="done").length;
+  const pw=thisWeekPosts().filter(p=>p.status==="done").length;
+  const gates=PHASES.reduce((a,p)=>a+p.gates.length,0);
+  const gOk=PHASES.reduce((a,p)=>a+p.gates.filter(g=>state.gates[p.id+"|"+g]).length,0);
+  const closed=PHASES.filter(p=>phaseComplete(p)).map(p=>p.label).join(", ")||"none yet";
+  const cur=currentPhase();
+  const top=buildRecs()[0];
+  const k=state.kpis;
+  const chans=[...new Set(state.posts.filter(p=>p.status==="done").map(p=>p.channel).filter(Boolean))].join(", ")||"none yet";
+  const blocked=Object.keys(state.blockSince||{}).length;
+  return [
+    `KLA·REPORT — Week ${wk}/12 · Day ${day}/90`,
+    ``,
+    `PROGRESS · ${d}/${t} tasks (${pct}%) · exit gates ${gOk}/${gates} · closed: ${closed}`,
+    `ACTIVE · ${cur.label} — ${cur.name}`,
+    blocked?`BLOCKED · ${blocked} task(s) awaiting a decide`:`BLOCKED · none`,
+    `NORTH STAR · ${k.northStar}/150 monthly active participants`,
+    ``,
+    `BUILD-IN-PUBLIC · ${pw}/2 this week · ${posted} total`,
+    `CHANNELS · ${chans}`,
+    `METRICS · attended ${k.attended} · lessons ${k.lessons} · volunteer ${k.volunteer} · interviews ${k.interviews} · courses ${k.courses} · applied ${k.applied} · mentors ${k.mentors}`,
+    ``,
+    `WHAT'S NEXT · ${top?top.title.replace(/"/g,"").slice(0,140):"keep the North Star moving"}`,
+    ``,
+    `KlagonOrg Command Center · started ${state.startDate} · 90-day sprint`
+  ].join("\n");
+}
+function openReport(){ $("report").style.display="block"; $("reportText").value=generateReportText(); const st=$("reportStatus"); st.textContent=""; }
+function closeReport(){ $("report").style.display="none"; }
+function copyReport(){
+  const ta=$("reportText"); ta.focus(); ta.select();
+  let copied=false;
+  try{ if(document.execCommand){ copied=document.execCommand("copy"); } }catch(e){}
+  if(!copied&&typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(()=>{ const s=$("reportStatus"); s.textContent="Copied ✓"; }); return; }
+  const s=$("reportStatus"); s.textContent=copied?"Copied ✓":"Select text & copy manually.";
+}
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&(e.key==="k"||e.key==="K")){ e.preventDefault(); paletteOpen?closeCmd():openCmd(); }
+  else if(e.key==="Escape"){ if(paletteOpen) closeCmd(); else if(tourOn) tourSkip(); }
+});
+
+/* ── Quick reference card ── */
+function renderQuickRef(){
+  const wrap=$("view-quickref"); wrap.innerHTML=`
+  <div class="grid cards-top" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px">
+    <div class="card stat"><div class="ico" style="font-size:20px;font-weight:800;background:rgba(245,158,11,.14);color:var(--amber);margin-bottom:8px">90</div><div style="font-weight:800;font-size:13px">day sprint</div><div class="tgt">7 phases · 2 posts/wk</div></div>
+    <div class="card stat"><div class="ico" style="font-size:20px;font-weight:800;background:rgba(16,185,129,.14);color:var(--green);margin-bottom:8px">150</div><div style="font-weight:800;font-size:13px">North Star target</div><div class="tgt">Month-3 goal</div></div>
+    <div class="card stat"><div class="ico" style="font-size:20px;font-weight:800;background:rgba(26,46,140,.14);color:var(--blue);margin-bottom:8px">${state.kpis.bipp||0}</div><div style="font-weight:800;font-size:13px">posts done</div><div class="tgt">2/week quota</div></div>
+    <div class="card stat"><div class="ico" style="font-size:20px;font-weight:800;background:rgba(139,92,246,.14);color:var(--purple);margin-bottom:8px">${dayInfo().day}</div><div style="font-weight:800;font-size:13px">day of 90</div><div class="tgt">start ${state.startDate}</div></div>
+  </div>
+  <div class="grid g-2">
+    <div class="card">
+      <div class="label">🗣️ Voice (PM Coach · Chrome/Edge · 🎧 first)</div>
+      <table>
+        <thead><tr><th>Say</th><th>It does</th></tr></thead>
+        <tbody>
+          <tr><td><b>"done"</b></td><td>Ticks off current task + tells you the next</td></tr>
+          <tr><td><b>"next"</b></td><td>Tells you the next task</td></tr>
+          <tr><td><b>"blocked"</b></td><td>Marks current task blocked</td></tr>
+          <tr><td><b>"status"</b></td><td>Overall progress (%)</td></tr>
+          <tr><td><b>"today"</b></td><td>Re-reads the daily brief</td></tr>
+          <tr><td><b>"help"</b></td><td>Lists commands</td></tr>
+          <tr><td><b>"stop listening"</b></td><td>Ends the session</td></tr>
+        </tbody>
+      </table>
+      <div class="notice" style="margin-top:10px">🔊 <b>Speak today</b> reads the whole brief aloud. Voice = Chrome/Edge + mic + internet.</div>
+    </div>
+    <div class="card">
+      <div class="label">⚙️ Autopilot (in PM Coach)</div>
+      <table>
+        <tbody>
+          <tr><td><b>OFF (default)</b></td><td>Every action waits for your <b>Approve</b> / <b>✕</b></td></tr>
+          <tr><td><b>ON</b></td><td>Auto-safe actions run (close phase · KPI sync · queue draft) — logged + ↩ undo</td></tr>
+          <tr><td><b>Consequential</b></td><td><b>Start new phase</b> · <b>Launch Community Question</b> — ALWAYS ask you</td></tr>
+        </tbody>
+      </table>
+      <div class="label" style="margin-top:12px">⚡ Fast actions</div>
+      <table>
+        <thead><tr><th>Do this</th><th>That happens</th></tr></thead>
+        <tbody>
+          <tr><td>Tick a task check box</td><td>Done → % ring, gantt, coach recalc</td></tr>
+          <tr><td>Task dropdown → Blocked</td><td>Row red; red badge in sidebar</td></tr>
+          <tr><td><b>Approve</b> a proposal</td><td>Executes + logged</td></tr>
+          <tr><td><b>↩ undo</b></td><td>Last logged action reverses</td></tr>
+          <tr><td>Change schedule <b>start date</b></td><td>ALL deadlines recompute</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="label">🗓️ Daily routine (5 min)</div>
+    <table>
+      <tbody>
+        <tr><td><b>Morning — PM Coach</b></td><td>Glance Priority list → #1 task · 🔊 speak today</td></tr>
+        <tr><td><b>Work</b></td><td>Tick tasks / say <b>"done"</b></td></tr>
+        <tr><td><b>Evening</b></td><td>Update KPIs · log today's build-in-public post (Channel + Format + template)</td></tr>
+        <tr><td><b>Sunday (10 min)</b></td><td>Queue next week's 2 posts → <b>↧ Export JSON</b> backup</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="label">🔑 Remember</div>
+    <div class="quickgrid">
+      <div class="qa"><b>📅 Start date first</b>Everything else derives from it.</div>
+      <div class="qa"><b>🔗 One task = everywhere</b>Phases, Today card & voice all sync.</div>
+      <div class="qa"><b>🚪 Exit gates</b>A phase closes only when its gates are ticked.</div>
+      <div class="qa"><b>💾 Export weekly</b>Data lives in the browser only.</div>
+      <div class="qa"><b>🔄 Import</b>Moves the Command Center to another computer.</div>
+      <div class="qa"><b>🚦 Blocked = decide</b>Do it · simplify it · drop it.</div>
+    </div>
+  </div>`;
+}
+
+/* ── PM Coach — dates, priorities, recommendations ── */
+const PHASE_DAYS={p0:[1,3],p1:[4,17],p2:[18,31],p3:[32,45],p4:[46,59],p5:[60,73],p6:[74,87]};
+function todayStart(d){ const t=new Date(d); t.setHours(0,0,0,0); return t; }
+function addDays(d,n){ const t=todayStart(d); t.setDate(t.getDate()+n); return t; }
+function fmt(d){ return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"}); }
+function daysLeft(end){ const now=new Date(); now.setHours(0,0,0,0); return Math.round((todayStart(end)-now)/86400000); }
+function dayInfo(){ const now=new Date(); now.setHours(0,0,0,0); const day=Math.floor((now-todayStart(state.startDate))/86400000)+1; return {day,total:90}; }
+function phaseRange(p){
+  const base=PHASE_DAYS[p.id];
+  return {start:addDays(state.startDate,base[0]-1), end:addDays(state.startDate,base[1]-1), span:base[1]-base[0]+1};
+}
+function phaseComplete(p){ return p.gates.length>0 && p.gates.every(g=>state.gates[p.id+"|"+g]); }
+function phaseStatus(p){
+  if(phaseComplete(p)) return "complete";
+  const r=phaseRange(p), dl=daysLeft(r.end);
+  if(dl<0) return "overdue";
+  if((r.span-Math.max(0,dl))/r.span>=0.5) return "risk";
+  return "track";
+}
+function openTasks(p){ return p.tasks.filter(t=>state.tasks[t.id]!=="done"); }
+function currentPhase(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const s0=todayStart(state.startDate);
+  for(const p of PHASES){
+    if(phaseComplete(p)) continue;
+    const r=phaseRange(p);
+    if((now>=s0&&now<=r.end)||now<r.start) return p;
+  }
+  return PHASES[PHASES.length-1];
+}
+function thisWeekPosts(){
+  const now=new Date(); const start=new Date(now); start.setHours(0,0,0,0);
+  const d=start.getDay(); start.setDate(start.getDate()-(d===0?6:d-1));
+  const end=new Date(start); end.setDate(start.getDate()+7);
+  return state.posts.filter(p=>{ if(!p.date) return false; const x=new Date(p.date+"T00:00:00"); return x>=start && x<end; });
+}
+function rec(sev,title,detail,phaseId,cta,view){
+  return {sev,title,detail,phaseId,cta,view};
+}
+function buildRecs(){
+  const r=[], cur=currentPhase(), dl=Math.max(0,daysLeft(phaseRange(cur).end));
+  const curOpen=openTasks(cur);
+  const blocked=curOpen.filter(t=>state.tasks[t.id]==="blocked");
+  const inprog=curOpen.filter(t=>state.tasks[t.id]==="inprogress");
+  const rest=curOpen.filter(t=>state.tasks[t.id]==="todo");
+  const postedWeek=thisWeekPosts().filter(p=>p.status==="done").length;
+
+  // 1. Overdue phases (hardest first)
+  PHASES.forEach(p=>{ const st=phaseStatus(p); if(st==="overdue") r.push(rec("red","Overdue — "+p.label+" "+p.name,`Window ended ${fmt(phaseRange(p).end)} with ${openTasks(p).length} open tasks. Later phases depend on this. Close it this week.`,p.id,"Open phase")); });
+
+  // 2. Blocked tasks in current phase
+  if(blocked.length && !phaseComplete(cur)) r.push(rec("red",`Unblock ${blocked.length} task${blocked.length>1?"s":""} in ${cur.label}`,blocked.map(t=>"“"+t.label+"”").join(" · ")+". Decide now: do it, simplify it, or drop it with a note — a blocker stops the whole phase.",cur.id,"Open phase"));
+
+  // 3. Today's focus
+  if(!phaseComplete(cur) && rest.length) r.push(rec("amber","Focus today — "+cur.label+" "+cur.name,`Work on “${(inprog[0]||rest[0]).label}”. ${curOpen.length} task${curOpen.length>1?"s":""} open · ends ${fmt(phaseRange(cur).end)}${dl>0?" · "+dl+" day"+(dl>1?"s":"")+" left":" · OVERDUE"}.`,cur.id,"Open phase"));
+
+  // 4. Two-track rule (one build + one community together)
+  if(!phaseComplete(cur)){
+    const a=curOpen.find(t=>t.area==="build"), c=curOpen.find(t=>t.area==="comm");
+    if(a||c) r.push(rec("amber","Two-track rhythm this week","Keep BUILD and COMM moving together: "+(a?"BUILD — "+a.label:"all build tasks done ✓")+" + "+(c?"COMM — "+c.label:"all community tasks done ✓")+".",cur.id,"Open phase"));
+  }
+
+  // 5. Build-in-public quota
+  if(postedWeek<2) r.push(rec("amber","Build-in-Public "+postedWeek+"/2 this week",postedWeek===0?"Post one concrete progress item (shipped + a number) and one lesson/evidence item (interview finding or stat).":"One more evidence post this week.",null,"Write post","bip"));
+
+  // 6. Exit gates verification
+  const gatesDone=cur.gates.filter(g=>state.gates[cur.id+"|"+g]).length;
+  if(curOpen.length===0 && gatesDone<cur.gates.length) r.push(rec("green",cur.label+" tasks done — verify the exit gate",`All ${cur.tasks.length} tasks are done. Tick the remaining ${cur.gates.length-gatesDone} “Done when” checklist below to officially close ${cur.label}.`,cur.id,"Check gates"));
+
+  // 7. Phase complete → next
+  if(phaseComplete(cur)){ const nx=PHASES.find(x=>x!==cur&&!phaseComplete(x)); if(nx) r.push(rec("green",cur.label+" complete — start "+nx.label,`Kick off ${nx.name} (${nx.window}). Ship a phase retrospective first, then open the next phase.`,nx.id,"Start next phase")); }
+
+  // 8. North star engine starter
+  if(state.kpis.northStar===0) r.push(rec("amber","Jump-start the North Star","0 active participants this month. Run the Klagon Community Question + WhatsApp rhythm to get the first attendance, lesson completion, or volunteer — anything counts.",null,"Open phases","phases"));
+
+  // 9. Day count
+  const {day}=dayInfo();
+  r.push(rec("green",`Day ${day} of ${90}`,"You"+ (90-day<=0?" are at the end":` have ${90-day} days left in the 90-day sprint`)+". North Star so far: "+state.kpis.northStar+" active participants.",null));
+
+  const bd=state.lastBackup?Math.max(0,Math.round((new Date()-todayStart(state.lastBackup))/86400000)):-1;
+  if((bd<0||bd>=7)&&(overall().d>0||state.posts.length)) r.push(rec("amber","Backup reminder"+(bd>=0?` (last ${bd===0?"today":bd+"d ago"})`:" — no backup yet"),"Your data lives only in this browser. ↧ Export JSON weekly to keep it safe.",null,"Export now","export"));
+  return r;
+}
+
+/* ── Daily breakdown ── */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function keyOf(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function weekday(d){ return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()]; }
+const MONTHS_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function phaseForDate(d){
+  for(const p of PHASES){ const r=phaseRange(p); if(d>=r.start&&d<=r.end) return p; }
+  return PHASES[0];
+}
+const CADENCE={
+  1:"Ask the community one simple question",
+  2:"Opportunity Tuesday — share one job / scholarship / course",
+  3:"Meet someone in Klagon — introduce a local person or business",
+  4:"Digital Tip — one genuinely useful tech trick",
+  5:"Weekend roundup — what's happening this weekend",
+  6:"Spotlight a community activity, photo or volunteer win",
+  0:"Klagon Weekly — what happened, what's next, opportunities"
+};
+function cadenceFor(d){ return CADENCE[d.getDay()]; }
+function dailyTasksFor(d){
+  const p=phaseForDate(d); if(!p) return {phase:null,tasks:[],msg:""};
+  const ord=[...p.tasks.filter(t=>state.tasks[t.id]==="blocked"&&!state.released[t.id]),
+             ...p.tasks.filter(t=>state.tasks[t.id]==="inprogress"&&!state.released[t.id]),
+             ...p.tasks.filter(t=>state.tasks[t.id]==="todo"&&!state.released[t.id])];
+  if(!ord.length){ if(phaseComplete(p)) return {phase:p,tasks:[],msg:"Phase closed ✓ — rest day or prep the next phase."}; return {phase:p,tasks:[],msg:"All tasks done — verify the exit gates to close "+p.label+"."}; }
+  const r=phaseRange(p);
+  const idx=Math.max(0,Math.floor((d-r.start)/86400000));
+  const remaining=Math.max(1,r.span-idx);
+  const per=Math.max(1,Math.ceil(ord.length/remaining));
+  return {phase:p,tasks:ord.slice(idx*per,(idx+1)*per)};
+}
+function todayPlan(){ const now=new Date(); now.setHours(0,0,0,0); return dailyTasksFor(now); }
+function setCadence(k,on){ if(!state.dailyLog) state.dailyLog={}; state.dailyLog[k]={cadence:on}; save(); renderCoach(); }
+function dayStreak(){
+  const start=todayStart(state.startDate), now=new Date(); now.setHours(0,0,0,0);
+  const d=new Date(now); let streak=0;
+  while(d>=start){
+    const a=dailyTasksFor(d);
+    const tasksOk=a.tasks.every(t=>state.tasks[t.id]==="done");
+    const cadOk=!!(state.dailyLog&&state.dailyLog[keyOf(d)]&&state.dailyLog[keyOf(d)].cadence);
+    if(tasksOk&&cadOk) streak++; else break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+function renderDaily(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const plan=todayPlan(), p=plan.phase||PHASES[0], k=keyOf(now);
+  const wk=thisWeekPosts().filter(x=>x.status==="done").length;
+  const cadOk=!!(state.dailyLog&&state.dailyLog[k]&&state.dailyLog[k].cadence);
+  const r=phaseRange(p), dl=daysLeft(r.end), st=phaseStatus(p);
+  const openCount=p.tasks.filter(t=>state.tasks[t.id]!=="done"&&!state.released[t.id]).length;
+  const pace=(st!=="complete"&&dl>=0&&openCount>dl+1)?`<span class="chipx red">${openCount-dl} task${(openCount-dl)>1?"s":""} over budget — pick up the pace</span>`:"";
+  const tasksHtml=plan.tasks.length?plan.tasks.map(t=>`
+    <div class="task ${state.tasks[t.id]==="done"?"done":""}"><span class="chk" onclick="quickToggle('${t.id}')"></span><span class="lbl">${t.label}</span><span class="tag ${t.area}">${t.area==="build"?"BUILD":"COMM"}</span></div>`).join("")
+    :`<div class="empty">${plan.msg}</div>`;
+  const stCls=st==="complete"?"green":(st==="overdue"?"red":(st==="risk"?"amber":"gray"));
+  const wrap=$("dailyWrap"); wrap.innerHTML="";
+  const today=document.createElement("div"); today.className="card"; today.style.marginBottom="12px";
+  today.innerHTML=`
+    <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+      <b style="font-size:16px">${weekday(now)}, ${fmt(now)}</b>
+      <span class="chipx ${stCls}">${p.label} · ${p.name}</span>
+      <span class="chipx gray">${st==="complete"?"closed":(dl<0?"OVERDUE":dl+"d left")}</span>
+      ${pace}
+    </div>
+    <div style="color:var(--muted);font-size:12.5px;margin:9px 0 11px">🎯 <b>Today's cadence:</b> ${cadenceFor(now)}</div>
+    <div class="tasks">${tasksHtml}</div>
+    <div class="bar-row" style="margin-top:10px">
+      <span style="font-size:12px;font-weight:800;min-width:225px">🔁 Build-in-public (this week)</span>
+      <span class="b"><i style="width:${Math.min(100,wk/2*100)}%;background:var(--amber)"></i></span>
+      <span class="pv" style="color:var(--faint)">${wk}/2</span>
+      ${wk>=2?'<span class="chipx green">quota met ✓</span>':'<span class="chipx gray">'+ (2-wk) +' more</span>'}
+    </div>
+    <div class="bar-row" style="margin-top:12px">
+      <label class="gate ${cadOk?"checked":""}" style="margin:0;cursor:pointer;white-space:nowrap"><input type="checkbox" ${cadOk?"checked":""} onchange="setCadence('${k}',this.checked)"><span class="tick">${cadOk?"✓":""}</span> Cadence reflected</label>
+      <div class="spacer"></div>
+      <span class="pv" style="color:var(--green);font-weight:800">🔥 ${dayStreak()}-day streak</span>
+    </div>`;
+  wrap.appendChild(today);
+  const nxt=document.createElement("div"); nxt.className="tbl-wrap";
+  let rows="";
+  for(let i=1;i<=7;i++){
+    const d=new Date(now); d.setDate(d.getDate()+i); const a=dailyTasksFor(d);
+    rows+=`<tr><td style="white-space:nowrap;font-weight:700">${weekday(d).slice(0,3)} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}</td>
+      <td>${a.phase?`<span class="chipx gray">${a.phase.label}</span>`:"—"}</td>
+      <td>${a.tasks.length?a.tasks.slice(0,2).map(t=>(state.tasks[t.id]==="done"?"✓ ":"")+t.label).join(" · "):(a.msg||"—")}</td>
+      <td style="color:var(--muted)">${cadenceFor(d).slice(0,44)}</td></tr>`;
+  }
+  nxt.innerHTML=`<table><thead><tr><th>Date</th><th>Phase</th><th>Planned tasks</th><th>Cadence</th></tr></thead><tbody>${rows}</tbody></table>`;
+  wrap.appendChild(nxt);
+}
+
+/* ── Voice coach (Web Speech API) ── */
+function speak(text){
+  try{
+    if(!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const vs=window.speechSynthesis.getVoices();
+    const v=vs.find(x=>/^en-GB/i.test(x.lang))||vs.find(x=>/^en-US/i.test(x.lang))||vs[0];
+    if(v) u.voice=v;
+    u.rate=1.03; u.pitch=1; u.volume=1;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function stopSpeak(){ try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){} }
+let voiceRec=null, voiceListening=false;
+function setVoiceStatus(msg){ const el=$("vstatus"); if(el) el.textContent=msg||""; }
+function dailyBrief(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const plan=todayPlan(), p=plan.phase||PHASES[0], st=phaseStatus(p), dl=daysLeft(phaseRange(p).end), {day}=dayInfo();
+  let s=`Day ${day} of 90. Today is ${weekday(now)}, in ${p.label}, ${p.name}.`;
+  if(st==="overdue") s+=" This phase is overdue.";
+  else if(st==="complete") s+=" This phase is complete.";
+  else if(dl>=0) s+=` ${dl} days remaining.`;
+  s+=" Your focus today: "+(plan.tasks.length?plan.tasks.map(t=>t.label).join(". Then, "):(plan.msg||"nothing scheduled."));
+  s+=`. Today's cadence: ${cadenceFor(now)}.`;
+  if(state.kpis.northStar===0) s+=" The North Star is still zero — run the community question to get your first participants.";
+  return s;
+}
+function setCoachTalk(on){ state.coachTalk=!!on; save(); if(on){ speak(dailyBrief()); setVoiceStatus("Coach talk enabled — I'll speak the daily brief and confirm completions."); } }
+function currentTopTask(){ const p=todayPlan().tasks.filter(t=>state.tasks[t.id]!=="done"); if(p.length) return p[0]; const cp=currentPhase(); return cp.tasks.filter(t=>state.tasks[t.id]!=="done")[0]||null; }
+function toggleListen(){
+  const W=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!W){ setVoiceStatus("Voice input isn't supported in this browser — use Chrome or Edge."); return; }
+  voiceListening=!voiceListening;
+  if(voiceListening){
+    if(!voiceRec){
+      voiceRec=new W(); voiceRec.lang="en-US"; voiceRec.continuous=true; voiceRec.interimResults=false;
+      voiceRec.onresult=e=>{ let t=""; for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript; setVoiceStatus("You said: “"+t.trim()+"”"); handleCommand(t.toLowerCase().trim()); };
+      voiceRec.onend=()=>{ if(voiceListening){ try{voiceRec.start();}catch(e){} } };
+      voiceRec.onerror=()=>{};
+    }
+    try{ voiceRec.start(); }catch(e){}
+    const btn=$("listenBtn"); if(btn){ btn.textContent="⏹ Stop listening"; btn.classList.add("pulse"); }
+    setVoiceStatus("🎧 Listening — say “done”, “next”, “blocked”, “status” or “stop listening”.");
+    if(state.coachTalk) speak("Listening. Tell me done, next, or status.");
+  } else {
+    try{ voiceRec.stop(); }catch(e){}
+    const btn=$("listenBtn"); if(btn){ btn.textContent="🎧 Listen"; btn.classList.remove("pulse"); }
+    setVoiceStatus("");
+  }
+}
+function handleCommand(t){
+  const top=currentTopTask();
+  const numM=/\b(\d{1,3})\b/.exec(t);
+  const KPI_ALIAS=[["northStar",/participants?|members?|north.?star/],["attended",/attend(?:eddance)?|show.?up/],["lessons",/lessons?/],["volunteer",/volunteer/],["bipp",/posted|published|posts?/],["applied",/appl/],["mentors",/mentor/],["interviews",/interview/],["courses",/course/],["events",/events?/]];
+  if(/^\s*$/.test(t)) return;
+  if(/stop listening|mute|quiet|shut/.test(t)){ stopSpeak(); if(voiceListening) toggleListen(); return; }
+  if(/status|progress|how far/.test(t)){
+    const o=overall(); speak(`${o.d} of ${o.t} tasks complete — ${Math.round(o.d/o.t*100)} percent.`);
+    return;
+  }
+  if(numM){ const hit=KPI_ALIAS.find(([k,re])=>re.test(t)); if(hit){ const v=Math.max(0,parseInt(numM[1],10)); state.kpis[hit[0]]=v; save(); renderAll(); speak("Set "+hit[0].replace(/([A-Z])/g," $1").toLowerCase()+" to "+v+"."); return; } }
+  if(!numM&&/today|plan|brief|schedule/.test(t)){ speak(dailyBrief()); return; }
+  if(/next/.test(t)){ if(top) speak((top.area==="build"?"Build track: ":"Community track: ")+top.label); else speak("All tasks done — verify the exit gates."); return; }
+  if(/done|complete|finished|tick|crossed.off/.test(t)){
+    if(!top){ speak("Nothing left on the list. Verify the exit gates, then open the next phase."); return; }
+    const id=top.id, label=top.label;
+    state.tasks[id]="done"; delete state.blockSince[id]; save(); renderAll();
+    const next=todayPlan().tasks.filter(x=>state.tasks[x.id]!=="done")[0]||currentPhase().tasks.filter(x=>state.tasks[x.id]!=="done")[0]||null;
+    speak("Done. "+(next?("Next: "+next.label):"All tasks for now are complete."));
+    return;
+  }
+  if(/blocked|stuck/.test(t)){
+    if(!top) return;
+    state.tasks[top.id]="blocked"; state.blockSince[top.id]=keyOf(new Date()); save(); renderAll();
+    speak("Marked as blocked. Decide: do it, simplify it, or drop it.");
+    return;
+  }
+  if(/help|what can you/.test(t)){ speak("Say done to finish the current task, next for the next task, blocked if you're stuck, or status for progress."); return; }
+  if(/^[a-z]/i.test(t)) setVoiceStatus("Heard: “"+t+"”. Try: done, next, blocked, status, today, help.");
+  speak("I didn't catch that. Try done, next, blocked, or status.");
+}
+
+/* ── Autopilot — automated decisions, human in the loop ── */
+function proposalList(){
+  const out=[];
+  const cur=currentPhase(); const now=new Date(); now.setHours(0,0,0,0); const ky=keyOf(now);
+  const curDone=cur.tasks.every(t=>state.tasks[t.id]==="done");
+  const openGateList=()=>cur.gates.filter(g=>!state.gates[cur.id+"|"+g]);
+
+  if(curDone&&openGateList().length>0) out.push({id:"close-"+cur.id,sev:"green",
+    title:`Close ${cur.label} — tick ${openGateList().length} remaining exit gate${openGateList().length>1?"s":""}`,
+    detail:`All tasks in ${cur.name} are done. Approving ticks the “Done when” checklist and records the phase close.`,
+    auto:true,
+    run:()=>{ const all=openGateList(); all.forEach(g=>{state.gates[cur.id+"|"+g]=true;}); return {done:`${cur.label} closed — ${all.length} gate${all.length>1?"s":""} ticked`, undo:()=>all.forEach(g=>{state.gates[cur.id+"|"+g]=false;}) }; }});
+
+  const lastDone=PHASES.filter(p=>phaseComplete(p)).pop();
+  const nxt=lastDone?PHASES[PHASES.indexOf(lastDone)+1]:null;
+  if(lastDone&&nxt&&!phaseComplete(nxt)&&!state.autolog.some(l=>l.pid==="start-"+nxt.id)) out.push({id:"start-"+nxt.id,sev:"amber",
+    title:`Start ${nxt.label} — ${nxt.name}`,
+    detail:`${lastDone.label} is closed. This marks ${nxt.name} as the active focus (${nxt.window}). Human OK required — kicking off a phase is consequential.`,
+    auto:false,
+    run:()=>({done:`${nxt.label} marked as active focus`, undo:()=>{}}) });
+
+  Object.entries(state.blockSince||{}).forEach(([id,ds])=>{
+    if(state.tasks[id]!=="blocked") return;
+    const tl=PHASES.flatMap(p=>p.tasks).find(x=>x.id===id); if(!tl) return;
+    const days=Math.max(0,Math.round((now-todayStart(ds))/86400000));
+    if(days>3) out.push({id:"decide-"+id,sev:"red",
+      title:`Blocked ${days} days: “${tl.label}”`,
+      detail:"Decide now — do it (find the unblocking path), simplify it (cut scope), or drop it. Approving jumps you to Phases; Autopilot can't make this call for you.",
+      auto:false,
+      run:()=>{ showView("phases"); return {done:"Opened Phases to decide “"+tl.label+"”",undo:()=>{}}; }});
+  });
+
+  const rrx=phaseRange(cur), dlx=daysLeft(rrx.end);
+  const openN=cur.tasks.filter(t=>state.tasks[t.id]!=="done"&&!state.released[t.id]).length;
+  if(phaseStatus(cur)==="risk"&&openN>dlx+1&&dlx>0){
+    const suggest=cur.tasks.filter(t=>state.tasks[t.id]!=="done"&&!state.released[t.id]).slice(-2);
+    if(suggest.length) out.push({id:"release-"+cur.id,sev:"amber",
+      title:`${cur.label} at risk — release scope to fit ${Math.max(0,dlx)} days`,
+      detail:`${openN} open tasks vs ${Math.max(0,dlx)} days left in ${cur.name}. Defer to post-90: ${suggest.map(t=>"“"+t.label+"”").join(", ")} — leaves ${openN-suggest.length} tasks.`,
+      auto:false,
+      run:()=>{ const ids=suggest.map(t=>t.id); ids.forEach(id=>state.released[id]=true); renderAll(); return {done:`Deferred ${ids.length} task${ids.length>1?"s":""} to post-90`,undo:()=>ids.forEach(id=>delete state.released[id])}; }});
+  }
+
+  const postedWeek=thisWeekPosts().filter(p=>p.status==="done").length;
+  const doneTask=PHASES.flatMap(p=>p.tasks).find(t=>state.tasks[t.id]==="done");
+  if(postedWeek<2) out.push({id:"draft-"+ky,sev:"amber",
+    title:doneTask?`Queue a story about “${doneTask.label}” (${postedWeek}/2 this week)`:`Queue a build-in-public draft (${postedWeek}/2 this week)`,
+    detail:doneTask?`You just completed “${doneTask.label}” — that's your story. Queues a draft of ${doneTask.area==="build"?"the build":"the community work"} so it's one edit away from posting.`:"Adds a queued draft to the ledger so it's one edit away from posting.",
+    auto:true,
+    run:()=>{ const idx=state.posts.length; state.posts.push({date:ky,type:"Progress post (Tue/Wed)",content:doneTask?`Autopilot draft — share “${doneTask.label}”: what we actually did + one number.`:"Autopilot draft — what we shipped today + one number.",status:"due"}); return {done:"Draft queued in Build-in-Public", undo:()=>{ if(state.posts[idx]) state.posts.splice(idx,1); } }; }});
+
+  if(state.kpis.northStar===0&&dayInfo().day>=2) out.push({id:"ns-"+ky,sev:"red",
+    title:"Launch the Klagon Community Question",
+    detail:"0 active participants this month — this kickstarts the North Star with real actions. Always a human decision.",
+    auto:false,
+    run:()=>{ const idx=state.posts.length; state.posts.push({date:ky,type:"Community question",content:"If you could change ONE thing about Klagon, what would it be? (autopilot)",status:"done"}); state.kpis.bipp=(state.kpis.bipp||0)+1; return {done:"Community Question recorded & counted", undo:()=>{ if(state.posts[idx]) state.posts.splice(idx,1); state.kpis.bipp=Math.max(0,(state.kpis.bipp||1)-1); } }; }});
+
+  const rules=[
+    {t:"p1t9", k:"interviews", need:10, max:35, by:20},
+    {t:"p4t1", k:"courses",   need:6,  max:60, by:6},
+    {t:"p3t6", k:"applied",   need:5,  max:80, by:5}
+  ];
+  rules.forEach(r=>{
+    if(state.tasks[r.t]==="done"&&state.kpis[r.k]<r.need){
+      const tl=PHASES.flatMap(p=>p.tasks).find(x=>x.id===r.t);
+      out.push({id:"kpi-"+r.k,sev:"green",
+        title:`Record ${r.k} milestone (+${r.by})`,
+        detail:`“${tl?tl.label:"Task"}” is done — sync the metric toward its target.`,
+        auto:true,
+        run:()=>{ state.kpis[r.k]=Math.min(r.max,state.kpis[r.k]+r.by); return {done:`${r.k} KPI +${r.by}`, undo:()=>{ state.kpis[r.k]=Math.max(0,state.kpis[r.k]-r.by); } }; }});
+    }
+  });
+  return out;
+}
+function logAction(pid,title,label,undo,auto){ state.autolog.push({pid,t:new Date().toISOString(),title,label,undo,auto}); if(state.autolog.length>40) state.autolog=state.autolog.slice(-40); }
+function setAutopilot(on){ state.autopilot=!!on; save(); renderAll(); }
+function approve(id){ const p=proposalList().find(x=>x.id===id); if(p){ const res=p.run(); logAction(p.id,p.title,res.done,res.undo,false); save(); renderAll(); } }
+function dismissProp(id){ state.dismissed.push(id); save(); renderAll(); }
+function clearDismissed(){ state.dismissed=[]; save(); renderAll(); }
+function undoAction(i){ const e=state.autolog[i]; if(e&&typeof e.undo==="function"){ e.undo(); state.autolog.splice(i,1); save(); renderAll(); } }
+function renderAuto(){
+  const el=$("autoCard"); if(!el) return;
+  if(state.autopilot){
+    const auto=proposalList().filter(p=>p.auto&&!state.dismissed.includes(p.id));
+    let applied=false;
+    auto.forEach(p=>{
+      if(state.autolog.some(l=>l.pid===p.id)) return;
+      const res=p.run(); logAction(p.id,p.title,res.done,res.undo,true); applied=true;
+    });
+    if(applied){ save(); renderAll(); return; }
+  }
+  const props=proposalList().filter(p=>!(p.auto&&state.autopilot)&&!state.dismissed.includes(p.id));
+  const head=`<div class="auto-head">
+      <label class="tgl" style="gap:8px"><input type="checkbox" ${state.autopilot?"checked":""} onchange="setAutopilot(this.checked)"><b style="font-size:13px">Autopilot</b></label>
+      <span style="font-size:12px;color:var(--muted);flex:1;min-width:220px">${state.autopilot?"Auto-executing <b>safe</b> proposals; consequential actions still ask you first.":"<b>Proposals only</b> — every action waits for your approval. Turn on Autopilot to auto-run safe ones."}</span>
+    </div>`;
+  const list=props.length?props.map(p=>`
+    <div class="propo ${p.sev}">
+      <div class="pd"><div class="pt">${p.title} ${p.auto?'<span class="chipx gray">auto-safe</span>':''}</div><div class="dd">${p.detail}</div></div>
+      <div class="act">
+        <button class="btn small" onclick="approve('${p.id}')">Approve</button>
+        <button class="btn small ghost" onclick="dismissProp('${p.id}')">✕</button>
+      </div>
+    </div>`).join(""):`<div class="empty">No pending proposals — you're on track.</div>`;
+  const log=state.autolog.slice().reverse().slice(0,6).map((e,i)=>`
+    <div class="log-row">${e.auto?"⚙️":"👤"} <b>${e.title}</b> <span style="color:var(--muted)">· ${e.label}</span>
+      ${typeof e.undo==="function"?`<button class="btn small ghost" onclick="undoAction(${state.autolog.length-1-i})">↩ undo</button>`:""}</div>`).join("");
+  el.innerHTML=`${head}
+    <div class="label">Proposed actions</div>${list}
+    ${state.dismissed.length?`<div style="margin-top:8px"><button class="btn small ghost" onclick="clearDismissed()">Restore ${state.dismissed.length} dismissed proposal(s)</button></div>`:""}
+    ${state.autolog.length?`<div class="label" style="margin-top:16px">Autonomy log</div>${log}`:""}`;
+}
+
+function renderCoach(){
+  const cur=currentPhase(), r=phaseRange(cur), st=phaseStatus(cur), dl=daysLeft(r.end);
+  const {day}=dayInfo();
+  const done=overall().d, total=overall().t;
+  const scls=st==="overdue"?"red":(st==="risk"?"amber":"green");
+  const stxt=st==="complete"?"✓ closed":(st==="overdue"?"OVERDUE":(st==="risk"?"at risk":"on track"));
+  const recs=buildRecs();
+  const weekFrac=Math.max(0,Math.min(1,(day-1)/(12*7)));
+  const wrap=$("view-coach"); wrap.innerHTML=`
+  <div class="card coach-hero">
+    <div>
+      <div class="bigday"><small>Day ${day} of 90</small>${90-day}</div>
+      <div style="color:var(--muted);font-size:12.5px;font-weight:600">days to go</div>
+    </div>
+    <div>
+      <div class="label">Current priority</div>
+      <h3 style="font-size:18px">${cur.label} — ${cur.name}</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px">
+        <span class="chipx ${scls}">${stxt.toUpperCase()}</span>
+        <span class="chipx gray">ends ${fmt(r.end)}${dl>=0?" · "+dl+"d left":""}</span>
+        <span class="chipx gray">${openTasks(cur).length} open · ${(cur.tasks.length-openTasks(cur).length)} done</span>
+      </div>
+      <div class="mini-bar"><i style="width:${weekFrac*100}%"></i></div>
+      <div style="font-size:11px;color:var(--faint);font-weight:600;margin-top:5px">sprint timeline · ${Math.round(weekFrac*100)}%</div>
+    </div>
+    <div style="text-align:right">
+      <div class="label">Schedule start</div>
+      <div class="date-picker" style="justify-content:flex-end">
+        <input type="date" value="${state.startDate}" onchange="setStartDate(this.value)">
+      </div>
+      <div style="font-size:11px;color:var(--faint);margin-top:6px">All deadlines derive from this.</div>
+    </div>
+  </div>
+  <div class="voice-bar">
+    <button class="btn" onclick="speak(dailyBrief())">🔊 Speak today</button>
+    <button class="btn" id="listenBtn" onclick="toggleListen()">🎧 Listen</button>
+    <span id="vstatus"></span>
+    <label class="tgl"><input type="checkbox" ${state.coachTalk?"checked":""} onchange="setCoachTalk(this.checked)"> Coach talks to me</label>
+  </div>
+  <div class="card" style="margin-bottom:14px" id="autoCard"></div>
+  <div class="label">Priority list — what to do next</div>
+  <div id="recList"></div>
+  <div class="label" style="margin-top:24px">Daily task breakdown</div>
+  <div id="dailyWrap"></div>
+  <div class="label" style="margin-top:22px">Week ${Math.max(1,Math.ceil(day/7))} · build-in-public quota</div>
+  <div class="quickgrid">${wkCards().join("")}</div>`;
+  const rl=$("recList");
+  recs.forEach(rx=>{
+    const sev=rx.sev, ico=rx.sev==="red"?"⚠️":(rx.sev==="amber"?"🎯":"✅");
+    const d=document.createElement("div"); d.className="rec "+sev;
+    d.innerHTML=`<div class="ic" style="background:${sev==="red"?"rgba(239,68,68,.12)":(sev==="amber"?"rgba(245,158,11,.14)":"rgba(16,185,129,.12)")};font-size:15px">${ico}</div>
+      <div style="flex:1;min-width:0"><div class="rt">${rx.title}</div><div class="rd">${rx.detail}</div></div>
+      <div class="rb">${rx.cta?`<button class="btn" onclick="goAction(${JSON.stringify({view:rx.view,phaseId:rx.phaseId}).replace(/"/g,"'")})">${rx.cta}</button>`:""}</div>`;
+    rl.appendChild(d);
+  });
+  renderDaily();
+  renderAuto();
+}
+function wkCards(){
+  return [
+    `<div class="qa"><b>📚 Build track</b>${curBuild()}</div>`,
+    `<div class="qa"><b>🤝 Community track</b>${curComm()}</div>`,
+    `<div class="qa"><b>📣 Posts this week</b>${thisWeekPosts().filter(p=>p.status==="done").length}/2 published${pNextPostHint()}</div>`,
+    `<div class="qa"><b>🎯 North Star</b>${state.kpis.northStar} active participants this month · target ${KPI_DEFS[0].target} by day 90</div>`
+  ];
+}
+function curBuild(){ const p=currentPhase(); const t=p.tasks.filter(x=>x.area==="build"&&state.tasks[x.id]!=="done"); return t.length?("Next: “"+t[0].label+"”"):"All build tasks done ✓ (verify gates)"; }
+function curComm(){ const p=currentPhase(); const t=p.tasks.filter(x=>x.area==="comm"&&state.tasks[x.id]!=="done"); return t.length?("Next: “"+t[0].label+"”"):"All community tasks done ✓ (verify gates)"; }
+function pNextPostHint(){ const p=thisWeekPosts().filter(x=>x.status==="done").length; return p>=2?" · quota met 🎉":(" · need "+ (2-p) + " more"); }
+function goAction(a){
+  if(a&&a.view==="export"){ exportData(); return; }
+  if(a&&a.view){ showView(a.view); return; }
+  if(a&&a.phaseId){ showView("phases"); const i=PHASES.findIndex(p=>p.id===a.phaseId); setTimeout(()=>{ togglePhase(i); const el=document.querySelectorAll("#view-phases .phase")[i]; if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); },60); }
+  else showView("bip");
+}
+function setStartDate(v){ state.startDate=v||new Date().toISOString().slice(0,10); save(); renderAll(); }
+
+/* lifecycle */
+function renderAll(){ renderOverview(); renderPhases(); renderGantt(); renderCoach(); renderKPIs(); renderPosts(); renderQuickRef(); renderHelp(); renderCommunity(); renderNav(sessionStorage.getItem("kocc_view")||"overview"); }
+function exportData(){
+  state.lastBackup=new Date().toISOString().slice(0,10); save();
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="klagonorg-command-center-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(d&&d.tasks){ state=d; save(); renderAll(); alert("Imported ✓"); } else alert("Not a valid export."); }catch(err){ alert("Bad file."); } };
+  rd.readAsText(f); e.target.value="";
+}
+function resetAll(){ if(!confirm("Reset ALL data? Progress, KPIs and posts will be erased.")) return; state=fresh(); save(); renderAll(); }
+
+document.addEventListener("DOMContentLoaded",()=>{
+  applyTheme();
+  $("postDate").value=new Date().toISOString().slice(0,10);
+  const start=sessionStorage.getItem("kocc_view")||"overview";
+  renderNav(start); showView(start);
+  if(state.coachTalk){ const ky=keyOf(new Date()); if(state.lastStandup!==ky){ state.lastStandup=ky; save(); setTimeout(()=>speak(dailyBrief()),500); } }
+});
+</script>
+</body>
+</html>
