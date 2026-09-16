@@ -47,7 +47,7 @@ export function OpsCommandCenter() {
   }, [postTo]);
 
   const reply = useCallback(
-    (msg: { nonce?: string; ok: boolean; data?: unknown; error?: string }) => {
+    (msg: { nonce?: string; op?: string; ok: boolean; data?: unknown; error?: string }) => {
       postTo({ source: "klagonops", type: "result", ...msg });
     },
     [postTo],
@@ -98,11 +98,12 @@ export function OpsCommandCenter() {
             owner: userId,
             event: { kind: "save", at: new Date().toISOString(), days: payload.days ?? null },
           });
-          reply({ nonce, ok: true, data: { updatedAt: new Date().toISOString() } });
+          reply({ nonce, ok: true, op: "save", data: { updatedAt: new Date().toISOString() } });
         } catch (err) {
           reply({
             nonce,
             ok: false,
+            op: "save",
             error: err instanceof Error ? err.message : "Save failed",
           });
         }

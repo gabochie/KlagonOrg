@@ -609,9 +609,9 @@ const KPI_DEFS = [
 const PHASE_COLORS = ["var(--blue)","var(--blue)","var(--amber)","var(--green)","var(--purple)","var(--blue)","var(--amber)"];
 
 let state = load();
-function load(){ try{ const r=JSON.parse(localStorage.getItem(STORE)); if(r&&r.tasks){ if(!r.startDate) r.startDate=new Date().toISOString().slice(0,10); if(!r.dailyLog) r.dailyLog={}; if(r.coachTalk===undefined) r.coachTalk=false; if(r.autopilot===undefined) r.autopilot=false; if(!r.autolog) r.autolog=[]; if(!r.dismissed) r.dismissed=[]; if(r.toured===undefined) r.toured=false; if(!r.blockSince) r.blockSince={}; if(!r.released) r.released={}; if(r.lastBackup===undefined) r.lastBackup=null; if(r.lastStandup===undefined) r.lastStandup=null; if(!r.community) r.community={invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""}; if(r.community.link===undefined) r.community.link=""; ["invited","joined","active","builders","opps","directory","checkups","founders"].forEach(k=>{ if(r.community[k]===undefined) r.community[k]=0; }); if(!r.communityChecked) r.communityChecked=[]; if(!r.contacts) r.contacts=[]; return r; } }catch(e){} return fresh(); }
+function load(){ try{ const r=JSON.parse(localStorage.getItem(STORE)); if(r&&r.tasks){ if(!r.startDate) r.startDate=new Date().toISOString().slice(0,10); if(!r.dailyLog) r.dailyLog={}; if(r.coachTalk===undefined) r.coachTalk=false; if(r.autopilot===undefined) r.autopilot=false; if(!r.autolog) r.autolog=[]; if(!r.dismissed) r.dismissed=[]; if(r.toured===undefined) r.toured=false; if(!r.blockSince) r.blockSince={}; if(!r.released) r.released={}; if(r.lastBackup===undefined) r.lastBackup=null; if(r.lastStandup===undefined) r.lastStandup=null; if(!r.community) r.community={invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""}; if(r.community.link===undefined) r.community.link=""; ["invited","joined","active","builders","opps","directory","checkups","founders"].forEach(k=>{ if(r.community[k]===undefined) r.community[k]=0; }); if(!r.communityChecked) r.communityChecked=[]; if(!r.contacts) r.contacts=[]; if(r.cloudKlast===undefined) r.cloudKlast=null; return r; } }catch(e){} return fresh(); }
 function fresh(){
-  const s={tasks:{},gates:{},kpis:JSON.parse(JSON.stringify(DEFAULT_KPIS)),posts:[],dailyLog:{},coachTalk:false,autopilot:false,autolog:[],dismissed:[],toured:false,blockSince:{},released:{},lastBackup:null,lastStandup:null,community:{invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""},communityChecked:[],contacts:[],startDate:new Date().toISOString().slice(0,10)};
+  const s={tasks:{},gates:{},kpis:JSON.parse(JSON.stringify(DEFAULT_KPIS)),posts:[],dailyLog:{},coachTalk:false,autopilot:false,autolog:[],dismissed:[],toured:false,blockSince:{},released:{},lastBackup:null,lastStandup:null,community:{invited:0,joined:0,active:0,builders:0,opps:0,directory:0,checkups:0,founders:0,link:""},communityChecked:[],contacts:[],cloudKlast:null,startDate:new Date().toISOString().slice(0,10)};
   PHASES.forEach(p=>p.tasks.forEach(t=>s.tasks[t.id]="todo"));
   return s;
 }
@@ -679,6 +679,13 @@ function renderOverview(){
   ];
   $("view-overview").innerHTML=`
   ${state.toured?``:`<div class="notice" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px"><b style="flex:1;min-width:200px">👋 New here? This is your 90-day launch hub.</b><button class="btn" onclick="tourStart()">🚀 Take the 2-minute tour</button><button class="btn ghost" onclick="showView('help')">📖 Browse help</button></div>`}
+  <div class="card" style="margin-bottom:14px;padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <b style="font-size:13px">☁ Cloud sync</b>
+    <button class="btn small" id="koSave" onclick="koSave()">☁ Save</button>
+    <button class="btn small ghost" id="koLoad" onclick="koLoad()">Load from cloud</button>
+    <span id="koStatus" style="font-size:12px;font-weight:700;color:var(--muted)"></span>
+    <span id="koLast" style="font-size:11px;color:var(--faint)"></span>
+  </div>
   <div class="card" style="margin-bottom:16px">
     <div class="hero">
       <div style="text-align:center">
@@ -1116,6 +1123,7 @@ function renderHelp(){
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn" onclick="tourStart()">🚀 Start the 2-minute tour</button>
       <button class="btn ghost" onclick="openReport()">📋 Weekly report</button>
+      <button class="btn ghost" onclick="koSave()">☁ Save to cloud</button>
       <button class="btn ghost" onclick="openCmd()"><span class="kbd">Ctrl</span><span class="kbd">K</span> Quick search</button>
     </div>
   </div>
@@ -1774,12 +1782,45 @@ function importData(e){
 }
 function resetAll(){ if(!confirm("Reset ALL data? Progress, KPIs and posts will be erased.")) return; state=fresh(); save(); renderAll(); }
 
+/* ── ☁ Cloud sync (klagon.org admin bridge) ── */
+const KO={configured:false,userId:null,pending:null,last:state.cloudKlast||null};
+let _koN=0;
+function koStatus(m){ const el=$("koStatus"); if(el) el.textContent=m||""; }
+function koLast(){ const el=$("koLast"); if(el) el.textContent=KO.last?("Last synced "+KO.last):""; }
+function updateCloud(){
+  const on=KO.configured&&KO.userId;
+  ["koSave","koLoad"].forEach(id=>{ const b=$(id); if(b){ b.disabled=!on; b.style.opacity=on?1:.45; } });
+  koLast();
+  if(!on) koStatus(KO.configured?"Cloud idle — sign in to klagon.org to sync":"Cloud sync — open from klagon.org /admin/ops");
+}
+window.addEventListener("message",function(e){
+  const m=e.data||{}; if(m.source!=="klagonops") return;
+  if(m.type==="context"){
+    KO.configured=!!m.configured; KO.userId=m.userId||null; KO.url=m.url||null;
+    updateCloud();
+    if(KO.userId&&!KO.last) koStatus("Cloud linked ✓ — tap ☁ Save or Load");
+    return;
+  }
+  if(m.type!=="result"||m.nonce!==KO.pending) return; KO.pending=null;
+  if(m.ok){
+    if(m.op==="save"){ const ts=new Date().toLocaleString([],{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}); state.cloudKlast=ts; KO.last=ts; save(); koStatus("Saved to cloud ✓"); koLast(); }
+    else if(m.op==="load"){
+      if(m.data&&m.data.payload&&typeof m.data.payload==="object"){ const base=fresh(); state=Object.assign(base,m.data.payload); state.cloudKlast=m.data.updatedAt?new Date(m.data.updatedAt).toLocaleString([],{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}):KO.last; KO.last=state.cloudKlast; save(); renderAll(); koStatus("Loaded from cloud ✓"); koLast(); }
+      else koStatus("No cloud backup yet — press ☁ Save");
+    }
+  } else koStatus("Cloud "+m.op+" failed: "+(m.error||"error"));
+},false);
+function koReq(op,payload){ if(!KO.configured||!KO.userId) return koStatus("Sign in first"); KO.pending=++_koN; koStatus(op==="save"?"Syncing…":"Loading…"); try{ parent.postMessage({source:"kocc",type:"request",op:op,nonce:KO.pending,payload:payload},"*"); }catch(err){ KO.pending=null; koStatus("Cloud unreachable"); } }
+function koSave(){ koReq("save",state); }
+function koLoad(){ koReq("load"); }
+function koReady(){ try{ parent.postMessage({source:"kocc",type:"ready"},"*"); }catch(e){} }
 document.addEventListener("DOMContentLoaded",()=>{
   applyTheme();
   $("postDate").value=new Date().toISOString().slice(0,10);
   const start=sessionStorage.getItem("kocc_view")||"overview";
   renderNav(start); showView(start);
   if(state.coachTalk){ const ky=keyOf(new Date()); if(state.lastStandup!==ky){ state.lastStandup=ky; save(); setTimeout(()=>speak(dailyBrief()),500); } }
+  koReady();
 });
 </script>
 </body>

@@ -188,9 +188,17 @@ export const MENTOR_TOPICS: MentorTopic[] = [
   { id: "6", title: "Financial Literacy", icon: "💰", description: "Budgeting, saving, mobile money, and financial planning for youth.", mentors: 2 },
 ];
 
-export const QUICK_ACTIONS = [
+export type QuickAction = {
+  icon: string;
+  label: string;
+  sub: string;
+  href?: string;
+};
+
+export const QUICK_ACTIONS: QuickAction[] = [
   { icon: "👤", label: "Approve Member", sub: "7 pending" },
   { icon: "📅", label: "Create Event", sub: "Publish now" },
   { icon: "✅", label: "Mark Attendance", sub: "Today's session" },
   { icon: "📰", label: "Post Article", sub: "Community news" },
+  { icon: "📡", label: "Command Center", sub: "90-day ops", href: "/admin/ops" },
 ];
