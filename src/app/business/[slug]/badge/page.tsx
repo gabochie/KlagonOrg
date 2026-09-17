@@ -4,6 +4,16 @@ import { Footer } from "@/components/landing/Footer";
 import { BadgePageContent } from "@/components/sponsor/BadgePageContent";
 import { getSupabase } from "@/lib/supabase";
 
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const sb = getSupabase();
+    const { data } = await sb.from("sponsors").select("slug").eq("status", "active");
+    return (data ?? []).map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
