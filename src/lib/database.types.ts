@@ -40,6 +40,19 @@ export type PostArea = "klagon" | "tema_west" | "other";
 export type BoostTier = "none" | "featured" | "premium";
 export type BroadcastKind = "email" | "whatsapp" | "social";
 export type AuthorBadge = "member" | "verified" | "editorial";
+export type MapEntityType =
+  | "project"
+  | "event"
+  | "business"
+  | "school"
+  | "health"
+  | "faith"
+  | "community"
+  | "facility"
+  | "governance"
+  | "need"
+  | "sponsor";
+export type MapSeverity = "low" | "medium" | "high" | "critical";
 
 export interface Database {
   public: {
@@ -863,6 +876,61 @@ export interface Database {
             foreignKeyName: "broadcasts_post_id_fkey";
             columns: ["post_id"];
             referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      map_points: {
+        Row: {
+          id: string;
+          entity_type: MapEntityType;
+          entity_id: string | null;
+          name: string;
+          description: string | null;
+          category: string | null;
+          latitude: number;
+          longitude: number;
+          community_area: string;
+          severity: MapSeverity | null;
+          icon: string | null;
+          status: MemberStatus;
+          source: string;
+          reported_by: string | null;
+          moderated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          entity_type: MapEntityType;
+          entity_id?: string | null;
+          name: string;
+          description?: string | null;
+          category?: string | null;
+          latitude: number;
+          longitude: number;
+          community_area?: string;
+          severity?: MapSeverity | null;
+          icon?: string | null;
+          status?: MemberStatus;
+          source?: string;
+          reported_by?: string | null;
+          moderated_by?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["map_points"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "map_points_reported_by_fkey";
+            columns: ["reported_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "map_points_moderated_by_fkey";
+            columns: ["moderated_by"];
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
