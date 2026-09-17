@@ -982,6 +982,23 @@ export interface Database {
         };
         Relationships: [];
       };
+      map_points_public: {
+        Row: {
+          id: string;
+          entity_type: MapEntityType;
+          entity_id: string | null;
+          name: string;
+          description: string | null;
+          category: string | null;
+          latitude: number;
+          longitude: number;
+          community_area: string;
+          severity: MapSeverity | null;
+          icon: string | null;
+          created_at: string;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       current_role: {
@@ -1039,6 +1056,13 @@ export interface Database {
         };
         Returns: boolean;
       };
+      moderate_map_point: {
+        Args: {
+          p_map_id: string;
+          p_status: MemberStatus;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: UserRole;
@@ -1056,6 +1080,8 @@ export interface Database {
       post_area: PostArea;
       boost_tier: BoostTier;
       broadcast_kind: BroadcastKind;
+      map_entity_type: MapEntityType;
+      map_severity: MapSeverity;
     };
   };
 }
