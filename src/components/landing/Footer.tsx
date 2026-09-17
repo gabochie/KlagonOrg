@@ -10,6 +10,7 @@ const platformLinks = [
 ];
 
 const joinLinks = [
+  { label: "Log in", href: "/auth/login" },
   { label: "Register Now", href: "/auth/register" },
   { label: "Become a Mentor", href: "/mentor" },
   { label: "Sponsor KlagonOrg", href: "/sponsor" },
