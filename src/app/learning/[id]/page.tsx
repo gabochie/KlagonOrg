@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
+import { COURSES } from "@/lib/constants";
 import { getSupabase } from "@/lib/supabase";
 
 export async function generateStaticParams() {
   try {
     const sb = getSupabase();
     const { data, error } = await sb.from("courses").select("id").eq("published", true);
-    if (error || !data) return [];
-    return data.map((c) => ({ id: c.id }));
+    if (!error && data && data.length > 0) return data.map((c) => ({ id: c.id }));
   } catch {
-    return [];
+    /* fall through to local fallback */
   }
+  return COURSES.map((c) => ({ id: c.id }));
 }
 
 export async function generateMetadata({
