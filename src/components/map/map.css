@@ -1,0 +1,134 @@
+/* ------------------------------------------------------------------
+   Klagon Map — component styles (map.css)
+   Imported by MapExplorer / MiniMap client components.
+   ------------------------------------------------------------------ */
+
+.klagon-map-root {
+  position: relative;
+  width: 100%;
+  height: clamp(30rem, 68vh, 44rem);
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid #e8ecf0;
+}
+
+.klagon-map-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.klagon-map-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 246, 251, 0.85);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+.klagon-map-panel {
+  position: absolute;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e8ecf0;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(10, 17, 40, 0.12);
+  padding: 0.75rem;
+}
+
+.klagon-map-search {
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 4.5rem;
+}
+
+.klagon-map-layers-toggle {
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.klagon-map-layers-panel {
+  top: 3.5rem;
+  right: 0.75rem;
+  width: 15rem;
+  max-height: calc(100% - 4.5rem);
+  overflow-y: auto;
+}
+
+.klagon-map-card {
+  position: absolute;
+  z-index: 6;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  max-height: 42%;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #e8ecf0;
+  border-radius: 0.9rem;
+  box-shadow: 0 12px 32px rgba(10, 17, 40, 0.18);
+}
+
+@media (min-width: 640px) {
+  .klagon-map-card {
+    left: auto;
+    right: 1rem;
+    width: 24rem;
+  }
+}
+
+.klagon-map-chip-row {
+  position: absolute;
+  z-index: 5;
+  left: 0.75rem;
+  right: 0.75rem;
+  top: 3.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.klagon-map-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid #e8ecf0;
+  background: rgba(255, 255, 255, 0.94);
+  color: #3f4a5a;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(10, 17, 40, 0.08);
+}
+
+.klagon-map-chip[aria-pressed="false"] {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.klagon-map-chip-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* MapLibre tweaks */
+.maplibregl-ctrl-attrib {
+  font-size: 0.6rem;
+}
+
+.maplibregl-canvas {
+  outline: none;
+}
+
+@media (max-width: 480px) {
+  .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib {
+    font-size: 0.55rem;
+  }
+}

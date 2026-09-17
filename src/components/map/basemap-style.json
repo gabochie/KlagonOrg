@@ -1,0 +1,91 @@
+{
+  "version": 8,
+  "name": "Klagon Basemap (Protomaps schema)",
+  "sources": {
+    "basemap": { "type": "vector", "url": "pmtiles://__TILES_URL__" }
+  },
+  "glyphs": "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "earth",
+      "type": "background",
+      "paint": { "background-color": "#f0f3f7" }
+    },
+    {
+      "id": "landuse",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landuse",
+      "filter": ["==", "$type", "Polygon"],
+      "paint": { "fill-color": "#e4ede2", "fill-opacity": 0.45 }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "water",
+      "filter": ["==", "$type", "Polygon"],
+      "paint": { "fill-color": "#b9d4ea" }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "buildings",
+      "minzoom": 14,
+      "filter": ["==", "$type", "Polygon"],
+      "paint": { "fill-color": "#d6dbe2", "fill-opacity": 0.7 }
+    },
+    {
+      "id": "roads-casing",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "roads",
+      "minzoom": 10,
+      "layout": { "line-join": "round", "line-cap": "round" },
+      "paint": {
+        "line-color": "#ffffff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 14, 4, 17, 11]
+      }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "roads",
+      "minzoom": 10,
+      "layout": { "line-join": "round", "line-cap": "round" },
+      "paint": {
+        "line-color": "#f7f9fb",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 14, 3, 17, 9]
+      }
+    },
+    {
+      "id": "boundaries",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "boundaries",
+      "layout": { "line-join": "round" },
+      "paint": { "line-color": "#a8b3c2", "line-dasharray": [4, 2], "line-width": 1 }
+    },
+    {
+      "id": "places",
+      "type": "symbol",
+      "source": "basemap",
+      "source-layer": "places",
+      "layout": {
+        "text-font": ["Open Sans Regular"],
+        "text-field": ["coalesce", ["get", "name_latin"], ["get", "name"], ""],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 10, 9, 14, 12],
+        "text-anchor": "top",
+        "text-offset": [0, 0.7],
+        "text-max-width": 8
+      },
+      "paint": {
+        "text-color": "#3f4a5a",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.2
+      }
+    }
+  ]
+}
