@@ -41,9 +41,9 @@ export function SponsorAdminContent() {
     setSponsors(s ?? []);
     setLoading(false);
   };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+  }, []);
 
   const startPromote = (app: Application) => {
     setPromoting(app);
