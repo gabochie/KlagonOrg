@@ -42,7 +42,7 @@ export function SponsorAdminContent() {
     setLoading(false);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
   useEffect(() => { void load(); }, []);
 
   const startPromote = (app: Application) => {
