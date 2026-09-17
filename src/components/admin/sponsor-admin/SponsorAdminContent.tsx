@@ -29,20 +29,28 @@ export function SponsorAdminContent() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const load = async () => {
+  const fetchData = async () => {
     const c = getBrowserClient();
-    if (!c) return;
-    setLoading(true);
+    if (!c) return { apps: [], sponsors: [] };
     const [{ data: a }, { data: s }] = await Promise.all([
       c.from("sponsor_applications").select("*").order("created_at", { ascending: false }),
       c.from("sponsors").select("*").order("created_at", { ascending: false }),
     ]);
-    setApps(a ?? []);
-    setSponsors(s ?? []);
-    setLoading(false);
+    return { apps: a ?? [], sponsors: s ?? [] };
   };
+
+  const applyData = (r: { apps: Application[]; sponsors: Sponsor[] }) => {
+    setApps(r.apps);
+    setSponsors(r.sponsors);
+  };
+
+  const load = async () => applyData(await fetchData());
+
   useEffect(() => {
-    void load();
+    void (async () => {
+      applyData(await fetchData());
+      setLoading(false);
+    })();
   }, []);
 
   const startPromote = (app: Application) => {
