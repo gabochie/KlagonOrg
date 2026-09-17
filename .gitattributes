@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Patch files must stay LF: patch-package cannot parse CRLF on Linux builders
+patches/*.patch text eol=lf
