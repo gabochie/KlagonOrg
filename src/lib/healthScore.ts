@@ -242,7 +242,7 @@ function recommendationText(areaId: HealthAreaId): { title: string; detail: stri
 }
 
 /** Weighted 0–100 health score + ranked top-3 recommendations. Pure & deterministic. */
-export function computeHealthScore(inputsEndOfficer: HealthInputs): HealthScore {
+export function computeHealthScore(inputs: HealthInputs): HealthScore {
   const entries = Object.keys(AREA_ID) as HealthAreaId[];
   const breakdown = entries.map((areaId) => {
     const grade = oneOrZero(inputs[areaId]);
