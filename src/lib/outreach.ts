@@ -1,0 +1,197 @@
+/**
+ * KLAGON WhatsApp outreach — shared pure kernel.
+ *
+ * Zero-cost, semi-automated outreach over verified shop records that live in
+ * the DBGABOCHIE repo (read-only snapshot, never written back):
+ *
+ *   1. GATE  — only VERIFIED + phone + allowed consent + not opted-out/STOP
+ *              records are sendable. Everything else is quarantined with reasons.
+ *   2. QUEUE — deterministic daily split across staff numbers (cap/day),
+ *              business-hours friendly, round-robin rotation per day.
+ *   3. SEND  — zero-cost `wa.me` tap-to-send links. Staff taps Send in the
+ *              browser / WhatsApp Business app. No API, no ban wave.
+ *   4. CRM   — replies that convert become `lead_captures` rows
+ *              (source 'whatsapp-outreach') on the admin side.
+ *
+ * Pure TS, no React, no Supabase. Deterministic. Fully unit-tested.
+ */
+
+export interface RawShopRecord {
+  id: string;
+  company: string;
+  contact_name: string;
+  phone: string;
+  location: string;
+  district: string;
+  region: string;
+  verified_status: string;
+  consent_status: string;
+  opt_out_date: string;
+  record_type: string;
+}
+
+export type OutreachArea = "klagon" | "standard";
+export type OutreachOffer = "health" | "sprint" | "both";
+
+export interface GateVerdict {
+  record: RawShopRecord;
+  sendable: boolean;
+  /** wa.me-ready digits when sendable, else null. */
+  waPhone: string | null;
+  area: OutreachArea;
+  reasons: string[];
+}
+
+const ALLOWED_CONSENT = new Set(["OPTED_IN", "B2B_PUBLISHED"]);
+
+/** Normalize a raw phone to wa.me-ready digits, or null when unusable. */
+export function normalizePhone(raw: string): string | null {
+  const digits = (raw ?? "").replace(/\D/g, "");
+  if (digits.length < 9 || digits.length > 15) return null;
+  // Ghana local formats -> E.164 without '+'.
+  if (digits.length === 10 && digits.startsWith("0")) return "233" + digits.slice(1);
+  if (digits.length === 9) return "233" + digits;
+  return digits;
+}
+
+/** Klagon shops get the founding-discount variant; everyone else standard. */
+export function detectArea(r: Pick<RawShopRecord, "location" | "district" | "region">): OutreachArea {
+  const s = `${r.location ?? ""} ${r.district ?? ""} ${r.region ?? ""}`.toLowerCase();
+  return s.includes("klagon") ? "klagon" : "standard";
+}
+
+export function gateRecord(r: RawShopRecord, stops: Set<string>): GateVerdict {
+  const reasons: string[] = [];
+  const area = detectArea(r);
+  const verified = (r.verified_status ?? "").trim().toUpperCase() === "VERIFIED";
+  if (!verified) reasons.push(`not-verified:${r.verified_status || "blank"}`);
+  const waPhone = normalizePhone(r.phone ?? "");
+  if (!waPhone) reasons.push("no-phone");
+  const consent = (r.consent_status ?? "").trim().toUpperCase();
+  if (!ALLOWED_CONSENT.has(consent)) reasons.push(`bad-consent:${r.consent_status || "blank"}`);
+  if ((r.opt_out_date ?? "").trim() !== "") reasons.push("opted-out");
+  if (waPhone && stops.has(waPhone)) reasons.push("stopped");
+  return { record: r, sendable: reasons.length === 0, waPhone: reasons.length === 0 ? waPhone : null, area, reasons };
+}
+
+export function gateBatch(records: RawShopRecord[], stops: Set<string>): GateVerdict[] {
+  return records.map((r) => gateRecord(r, stops));
+}
+
+export interface DedupeResult {
+  /** One verdict per phone number (first record id wins, deterministic). */
+  unique: GateVerdict[];
+  /** Dropped verdicts: same phone already covered by the kept record. */
+  duplicates: { keptId: string; dropped: GateVerdict }[];
+}
+
+/**
+ * Phone-keyed dedupe. Shops sharing one number (branches, same owner —
+ * e.g. KGB0183/KGB0185) are sent once. Operates on sendable verdicts;
+ * sort by record id so the winner is stable across runs.
+ */
+export function dedupeByPhone(sendable: GateVerdict[]): DedupeResult {
+  const sorted = [...sendable].sort((a, b) => a.record.id.localeCompare(b.record.id));
+  const seen = new Map<string, GateVerdict>();
+  const duplicates: DedupeResult["duplicates"] = [];
+  for (const v of sorted) {
+    const key = v.waPhone as string;
+    const kept = seen.get(key);
+    if (kept) duplicates.push({ keptId: kept.record.id, dropped: v });
+    else seen.set(key, v);
+  }
+  return { unique: [...seen.values()], duplicates };
+}
+
+/** First cold message. Always carries identity + opt-out (consent basis). */
+export function pickTemplate(area: OutreachArea, offer: OutreachOffer): string {
+  const health = area === "klagon" ? "GH₵150 (Klagon founding rate)" : "GH₵250";
+  const sprint = area === "klagon" ? "GH₵300 (Klagon founding rate)" : "GH₵450";
+  const head = "Hello, this is KLAGON (Klagon, Tema) — we help local shops get found on Google + sell on WhatsApp.";
+  const tail = "Reply STOP to opt out.";
+  if (offer === "health")
+    return `${head} Our Digital Health Check scores your shop 0-100 with 3 fixes: ${health}. Want the 15-min intake? ${tail}`;
+  if (offer === "sprint")
+    return `${head} Our 1-hour Google + WhatsApp Setup Sprint (profile claimed, catalogue, greeting, quick replies): ${sprint}. Want a slot? ${tail}`;
+  return `${head} This week: Digital Health Check ${health}, or 1-hour Google + WhatsApp Setup ${sprint}. Reply HEALTH or SETUP and your shop name. ${tail}`;
+}
+
+export function buildWaLink(waPhone: string, text: string): string {
+  return `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`;
+}
+
+export interface StaffQueue {
+  staffIndex: number;
+  records: GateVerdict[];
+}
+
+/**
+ * Deterministic daily queue. Sorted by record id for stability, rotated by
+ * dayIndex so no shop is always first, capped at perDay, dealt round-robin
+ * across staffCount numbers.
+ */
+export function buildDailyQueue(
+  sendable: GateVerdict[],
+  opts: { perDay: number; staffCount: number; dayIndex: number }
+): StaffQueue[] {
+  const { perDay, staffCount, dayIndex } = opts;
+  const n = Math.max(1, Math.floor(staffCount));
+  const cap = Math.max(0, Math.floor(perDay));
+  const sorted = [...sendable].sort((a, b) => a.record.id.localeCompare(b.record.id));
+  const rotated = sorted.length === 0 ? sorted : [...sorted.slice(dayIndex % sorted.length), ...sorted.slice(0, dayIndex % sorted.length)];
+  const today = rotated.slice(0, cap);
+  const queues: StaffQueue[] = Array.from({ length: n }, (_, i) => ({ staffIndex: i, records: [] }));
+  today.forEach((v, i) => queues[i % n].records.push(v));
+  return queues;
+}
+
+/** STOP / opt-out intent in a reply (case-insensitive, word-boundary). */
+export function isStopReply(text: string): boolean {
+  return /\bstop\b|\bopt[\s-]?out\b|\bunsubscribe\b|\bremove me\b/i.test(text ?? "");
+}
+
+/** Minimal quoted-CSV parser (handles the DBGABOCHIE exports, no deps). */
+export function parseShopCsv(text: string): RawShopRecord[] {
+  const rows: string[][] = [];
+  let cur = "";
+  let row: string[] = [];
+  let inQ = false;
+  const src = (text ?? "").replace(/^\uFEFF/, "");
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    if (inQ) {
+      if (c === '"') {
+        if (src[i + 1] === '"') { cur += '"'; i++; }
+        else inQ = false;
+      } else cur += c;
+    } else if (c === '"') inQ = true;
+    else if (c === ",") { row.push(cur); cur = ""; }
+    else if (c === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; }
+    else if (c === "\r") { /* skip */ }
+    else cur += c;
+  }
+  if (cur !== "" || row.length > 0) { row.push(cur); rows.push(row); }
+  const data = rows.filter((r) => r.some((c) => c.trim() !== ""));
+  if (data.length === 0) return [];
+  const head = data[0].map((h) => h.trim());
+  const idx = (name: string) => head.indexOf(name);
+  return data.slice(1).map((cells) => {
+    const get = (name: string) => {
+      const i = idx(name);
+      return i >= 0 ? (cells[i] ?? "").trim() : "";
+    };
+    return {
+      id: get("id"),
+      company: get("company"),
+      contact_name: get("contact_name"),
+      phone: get("phone"),
+      location: get("location"),
+      district: get("district"),
+      region: get("region"),
+      verified_status: get("verified_status"),
+      consent_status: get("consent_status"),
+      opt_out_date: get("opt_out_date"),
+      record_type: get("record_type"),
+    };
+  });
+}

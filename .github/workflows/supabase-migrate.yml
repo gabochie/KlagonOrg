@@ -1,0 +1,47 @@
+# Auto-apply Supabase migrations on every push to main.
+#
+# INERT UNTIL CONFIGURED: the migrate job only runs if the repository
+# secrets below exist (GitHub repo Settings -> Secrets and variables ->
+# Actions -> New repository secret). Until then pushes skip it silently.
+#   SUPABASE_PROJECT_REF : rvavixcgtninzccskfpy
+#   SUPABASE_ACCESS_TOKEN: Supabase dashboard -> Account -> Access Tokens
+#   SUPABASE_DB_PASSWORD : Dashboard -> Project Settings -> Database
+#                          (reset it there first if the original is lost)
+
+name: supabase-migrate
+
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/migrations/**"]
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets present
+        id: gate
+        run: |
+          if [ -z "${{ secrets.SUPABASE_PROJECT_REF }}" ] || \
+             [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ] || \
+             [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          version: latest
+
+      - name: Apply pending migrations
+        if: steps.gate.outputs.ready == 'true'
+        run: >
+          supabase db push
+          --db-url "postgresql://postgres:${{ secrets.SUPABASE_DB_PASSWORD }}@db.${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co:5432/postgres"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

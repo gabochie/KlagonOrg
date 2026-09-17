@@ -121,6 +121,8 @@ export interface HealthRecommendation {
   title: string;
   detail: string;
   effort: "5-min" | "1-hour" | "half-day" | "1-2 days";
+  /** 0-100 gap for this area (100 = fully missing). Used to rank recommendations. */
+  gapPct: number;
 }
 
 export interface HealthScore {
@@ -242,7 +244,7 @@ function recommendationText(areaId: HealthAreaId): { title: string; detail: stri
 }
 
 /** Weighted 0–100 health score + ranked top-3 recommendations. Pure & deterministic. */
-export function computeHealthScore(inputsEndOfficer: HealthInputs): HealthScore {
+export function computeHealthScore(inputs: HealthInputs): HealthScore {
   const entries = Object.keys(AREA_ID) as HealthAreaId[];
   const breakdown = entries.map((areaId) => {
     const grade = oneOrZero(inputs[areaId]);
@@ -259,7 +261,7 @@ export function computeHealthScore(inputsEndOfficer: HealthInputs): HealthScore 
     .slice(0, 3)
     .map((b) => {
       const t = recommendationText(b.areaId);
-      return { areaId: b.areaId, title: t.title, detail: t.detail, effort: t.effort as HealthRecommendation["effort"] };
+      return { areaId: b.areaId, title: t.title, detail: t.detail, effort: t.effort as HealthRecommendation["effort"], gapPct: b.gap };
     });
   return { overall, breakdown, recommendations };
 }

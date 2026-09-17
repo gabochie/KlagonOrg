@@ -237,9 +237,9 @@ export type QuickAction = {
 };
 
 export const QUICK_ACTIONS: QuickAction[] = [
-  { icon: "👥", label: "Invite Members", sub: "Share the join link" },
-  { icon: "📅", label: "Create Event", sub: "Publish now" },
-  { icon: "✅", label: "Mark Attendance", sub: "Today's session" },
-  { icon: "📰", label: "Post Article", sub: "Community news" },
+  { icon: "👥", label: "Invite Members", sub: "Share the join link", href: "/auth/register" },
+  { icon: "📅", label: "Create Event", sub: "Publish now", href: "/dashboard/events" },
+  { icon: "✅", label: "Mark Attendance", sub: "Today's session", href: "/dashboard/events" },
+  { icon: "📰", label: "Post Article", sub: "Community news", href: "/dashboard/news" },
   { icon: "📡", label: "Command Center", sub: "90-day ops", href: "/dashboard/admin/ops" },
 ];

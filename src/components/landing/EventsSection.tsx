@@ -11,6 +11,8 @@ const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "servi
 };
 
 export function EventsSection() {
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = EVENTS.filter((e) => e.date >= today);
   return (
     <section className="bg-white py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
@@ -33,8 +35,20 @@ export function EventsSection() {
           </Link>
           </div>
         </div>
+        {upcoming.length === 0 ? (
+          <div className="border border-border rounded-xl p-6 sm:p-8 text-center">
+            <div className="text-sm font-bold text-navy mb-1">New dates announced soon.</div>
+            <p className="text-sm text-gray leading-relaxed mb-4">
+              The next round of workshops and community sessions is being scheduled. Join free and
+              we will notify you first.
+            </p>
+            <Link href="/auth/register">
+              <Button variant="primary">Join Free — Get Notified →</Button>
+            </Link>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {EVENTS.map((e) => (
+          {upcoming.map((e) => (
             <div key={e.id} className="border border-border rounded-xl overflow-hidden">
               <div className="p-4 sm:p-5 border-b border-pale">
                 <Badge variant={typeBadge[e.type]} className="mb-2">
@@ -54,6 +68,7 @@ export function EventsSection() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

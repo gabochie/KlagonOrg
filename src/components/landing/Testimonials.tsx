@@ -8,9 +8,9 @@ export function Testimonials() {
           Voices from Klagon
         </div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
-          What our members say.
+          The change we are building toward.
         </h2>
-        <p className="text-sm text-gray leading-relaxed mb-8">Real youth, real growth, real community change.</p>
+        <p className="text-sm text-gray leading-relaxed mb-8">Illustrative stories — real member voices coming soon.</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {TESTIMONIALS.map((t, i) => (
             <div key={i} className="bg-pale rounded-xl p-5 sm:p-6 border border-border">

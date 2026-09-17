@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { WelcomeBanner } from "@/components/member/WelcomeBanner";
 import { WelcomeOnboarding } from "@/components/member/WelcomeOnboarding";
 import { MetricsRow } from "@/components/member/MetricsRow";
@@ -13,6 +14,26 @@ export default function MemberDashboard() {
     <>
       <WelcomeBanner />
       <WelcomeOnboarding />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <Link
+          href="/submit"
+          className="block bg-navy rounded-xl p-4 text-white hover:opacity-95 transition-opacity"
+        >
+          <div className="text-sm font-extrabold">Share with the community →</div>
+          <div className="text-[11px] text-white/70 mt-0.5">
+            Post news, events, classifieds, jobs — free, reviewed before going live
+          </div>
+        </Link>
+        <Link
+          href="/my/posts"
+          className="block bg-white rounded-xl border border-border p-4 hover:border-amber transition-colors"
+        >
+          <div className="text-sm font-extrabold text-navy">My Posts →</div>
+          <div className="text-[11px] text-gray mt-0.5">
+            Track reviews, edit while pending, see admin notes
+          </div>
+        </Link>
+      </div>
       <MetricsRow />
       <JourneyTracker />
       <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr] gap-2.5">

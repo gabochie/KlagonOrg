@@ -39,13 +39,21 @@ describe("KLAGON Instant Digital Health Score kernel", () => {
   });
 
   it("gives a fully-digital Google visibility its full 15 points", () => {
-    const r = computeHealthScore(full({ google_visibility: 1 }));
+    const r = computeHealthScore(full({
+      google_visibility: 1, website: 0, social_presence: 0,
+      customer_conversion: 0, reviews_reputation: 0, ecommerce: 0,
+      whatsapp_sales: 0, ai_readiness: 0, automation: 0, data_analytics: 0,
+    }));
     // Only-area contribution: 1.0 * 0.15 * 100 = 15
     expect(r.overall).toBe(15);
   });
 
   it("gives WhatsApp presence exactly 12 points (weight 0.12, spec 2.02)", () => {
-    const r = computeHealthScore(full({ whatsapp_sales: 1 }));
+    const r = computeHealthScore(full({
+      google_visibility: 0, website: 0, social_presence: 0,
+      customer_conversion: 0, reviews_reputation: 0, ecommerce: 0,
+      whatsapp_sales: 1, ai_readiness: 0, automation: 0, data_analytics: 0,
+    }));
     expect(r.overall).toBe(12);
   });
 

@@ -26,7 +26,7 @@
 --    the intended (public-read) source before running.
 -- ============================================================
 alter view public.projects_public
-  set (security_invoker = trueonge);
+  set (security_invoker = true);
 alter view public.courses_public
   set (security_invoker = true);
 alter view public.events_public
