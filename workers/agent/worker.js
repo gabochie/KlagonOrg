@@ -144,7 +144,7 @@ async function rateLimited(env, bucket, key, memLimit, memWindowSeconds, kvLimit
 // bounds
 //  - turn: 60/min per isolate + 240/hour per IP cluster-wide
 //  - lead: 10/hour per isolate + 50/day per IP cluster-wide
-const TURN_RL = { memLimit: 2, memWindow: 60, kvLimit: 240, kvWindow: 3600 };
+const TURN_RL = { memLimit: 60, memWindow: 60, kvLimit: 240, kvWindow: 3600 };
 const LEAD_RL = { memLimit: 10, memWindow: 3600, kvLimit: 50, kvWindow: 86400 };
 
 // ------------------------------------------------------------------
@@ -298,20 +298,13 @@ export default {
 
     if (url.pathname === "/health") return json({ ok: true });
     if (url.pathname === "/debug") {
-      const ip = clientIp(request);
-      const turnKey = `turn:${ip}:${Math.floor(Date.now() / 1000 / 3600)}`;
-      const raw = (await env.AGENT_RATE?.get(turnKey)).catch?.(() => null) ?? null;
-      let kvWrite = "n/a";
-      let kvRead = null;
-      try {
-        const probeKey = `probe:${Math.random().toString(36).slice(2)}`;
-        await env.AGENT_RATE?.put(probeKey, "1", { expirationTtl: 60 });
-        kvWrite = "ok";
-        kvRead = await env.AGENT_RATE.get(probeKey);
-      } catch (e) {
-        kvWrite = e instanceof Error ? e.message : String(e);
-      }
-      return json({ ok: true, hasKV: Boolean(env.AGENT_RATE), kvWrite, kvRead, turnKey, turnCount: raw });
+      return json({
+        ok: true,
+        hasKV: Boolean(env.AGENT_RATE),
+        turnLimitPerIpPerMinute: TURN_RL.memLimit,
+        turnCapPerIpPerHour: TURN_RL.kvLimit,
+        leadCapPerIpPerDay: LEAD_RL.kvLimit,
+      });
     }
 
     return json({ error: "not-found" }, 404);
