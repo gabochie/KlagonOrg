@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Mic, MicOff, ChevronDown } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { getInvisibleToken, verifyTurnstile } from "@/lib/turnstile";
 import {
   createRecognition,
   recognitionSupported,
@@ -111,12 +112,25 @@ export function SalesAgent() {
   const callTurn = useCallback(
     async (payload: unknown): Promise<TurnResult> => {
       if (!AGENT_URL) return { reply: undefined, error: "Agent is not configured yet." };
+      let token: string;
+      try {
+        token = await getInvisibleToken();
+      } catch {
+        return { reply: undefined, error: "Could not complete the human check. Please try again." };
+      }
+      const human = await verifyTurnstile(token);
+      if (!human.success) {
+        return { reply: undefined, error: human.error ?? "Could not verify you're human. Please refresh and try again." };
+      }
       const res = await fetch(`${AGENT_URL}/api/agent/turn`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...(payload as object), token }),
       });
       if (!res.ok) {
+        if (res.status === 403 || res.status === 400) {
+          return { reply: undefined, error: "Could not verify you're human. Please refresh and try again." };
+        }
         return { reply: undefined, error: "Ama is unavailable right now. Please try again shortly." };
       }
       return (await res.json()) as TurnResult;
