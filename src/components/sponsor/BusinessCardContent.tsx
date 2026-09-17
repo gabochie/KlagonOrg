@@ -105,7 +105,6 @@ export async function BusinessCardContent({ slug }: { slug: string }) {
             icon={<MessageSquareQuote size="16" />}
             label="Chat on WhatsApp"
             sub="Fastest response"
-            external
           />
           {contact.phone && (
             <TapAction
@@ -129,7 +128,6 @@ export async function BusinessCardContent({ slug }: { slug: string }) {
               icon={<Globe size="16" />}
               label="Website"
               sub={contact.website.replace(/^https?:\/\//, "")}
-              external
             />
           )}
           {location.google_maps_url && (
@@ -138,7 +136,6 @@ export async function BusinessCardContent({ slug }: { slug: string }) {
               icon={<MapPin size="16" />}
               label="Directions"
               sub={location.area ?? "Open in Maps"}
-              external
             />
           )}
           {wa !== "#" && (

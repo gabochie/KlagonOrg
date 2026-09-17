@@ -265,7 +265,7 @@ export async function SponsorProfileContent({ slug }: { slug: string }) {
               </div>
             </Section>
 
-            <ProfileActions whatsapp={contact.whatsapp} businessName={sponsor.name} />
+            <ProfileActions whatsapp={contact.whatsapp} businessName={sponsor.name ?? ""} />
 
             {showsStudio && (
               <div className="bg-gradient-to-br from-navy to-blue rounded-2xl p-5 text-white">

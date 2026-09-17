@@ -29,23 +29,21 @@ export function SponsorAdminContent() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const sb = getBrowserClient();
-  if (!sb) return <div className="text-sm text-gray p-4">Supabase not configured.</div>;
-
   const load = async () => {
+    const c = getBrowserClient();
+    if (!c) return;
     setLoading(true);
     const [{ data: a }, { data: s }] = await Promise.all([
-      sb.from("sponsor_applications").select("*").order("created_at", { ascending: false }),
-      sb.from("sponsors").select("*").order("created_at", { ascending: false }),
+      c.from("sponsor_applications").select("*").order("created_at", { ascending: false }),
+      c.from("sponsors").select("*").order("created_at", { ascending: false }),
     ]);
     setApps(a ?? []);
     setSponsors(s ?? []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    void load();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { void load(); }, []);
 
   const startPromote = (app: Application) => {
     setPromoting(app);
@@ -58,9 +56,11 @@ export function SponsorAdminContent() {
 
   const doPromote = async () => {
     if (!promoting || !slug.trim() || !name.trim()) return;
+    const c = getBrowserClient();
+    if (!c) return;
     setBusy(true);
     setMsg(null);
-    const { data, error } = await sb.rpc("promote_sponsor_application", {
+    const { data, error } = await c.rpc("promote_sponsor_application", {
       p_application_id: promoting.id,
       p_slug: slug.trim(),
       p_tier: tier,
@@ -77,7 +77,9 @@ export function SponsorAdminContent() {
   };
 
   const updateStatus = async (id: string, status: Sponsor["status"]) => {
-    await sb.from("sponsors").update({ status }).eq("id", id);
+    const c = getBrowserClient();
+    if (!c) return;
+    await c.from("sponsors").update({ status }).eq("id", id);
     await load();
   };
 

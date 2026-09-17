@@ -88,7 +88,7 @@ export async function fetchSponsorBadges(sponsorId: string): Promise<BadgeRow[]>
   const sb = getSupabase();
   const { data, error } = await sb
     .from("sponsor_badges")
-    .select("sponsor_id,tier_type,awarded_at")
+    .select("id,sponsor_id,tier_type,awarded_at")
     .eq("sponsor_id", sponsorId)
     .order("awarded_at", { ascending: true });
   if (error || !data) return [];
