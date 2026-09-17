@@ -386,8 +386,6 @@ export function CourseViewer({
                   )}
                 </>
               )}
-            </>
-              )}
             </div>
           </div>
         </div>

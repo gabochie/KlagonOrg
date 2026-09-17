@@ -28,10 +28,8 @@ export default function LoginPage() {
     setBusy(false);
     if (err) return setError(err);
     const role = profile?.role;
-    const status = profile?.status;
     if (role === "admin" || role === "super_admin") return router.push("/dashboard/admin");
-    if (status === "approved") return router.push("/dashboard/member");
-    return router.push("/auth/pending");
+    return router.push("/dashboard/member");
   };
 
   return (
