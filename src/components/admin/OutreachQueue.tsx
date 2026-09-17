@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import {
   gateBatch,
+  dedupeByPhone,
   buildDailyQueue,
   pickTemplate,
   buildWaLink,
@@ -75,7 +76,12 @@ export function OutreachQueue() {
   }, []);
 
   const verdicts = useMemo(() => gateBatch(records, stops), [records, stops]);
-  const sendable = useMemo(() => verdicts.filter((v) => v.sendable), [verdicts]);
+  const deduped = useMemo(
+    () => dedupeByPhone(verdicts.filter((v) => v.sendable)),
+    [verdicts]
+  );
+  const sendable = deduped.unique;
+  const mergedCount = deduped.duplicates.length;
   const quarantined = useMemo(() => verdicts.filter((v) => !v.sendable), [verdicts]);
 
   const dayIndex = useMemo(() => {
@@ -231,6 +237,7 @@ export function OutreachQueue() {
             <span className="font-bold text-navy">{fileName}</span>
             <span className="text-gray">
               {records.length} rows · {sendable.length} sendable · {quarantined.length} quarantined
+              {mergedCount > 0 && ` · ${mergedCount} shared-number ${mergedCount === 1 ? "row" : "rows"} merged (send once)`}
             </span>
             <button
               onClick={() => { setRecords([]); setFileName(""); }}

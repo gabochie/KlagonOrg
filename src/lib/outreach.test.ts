@@ -3,6 +3,7 @@ import {
   normalizePhone,
   detectArea,
   gateRecord,
+  dedupeByPhone,
   buildDailyQueue,
   pickTemplate,
   buildWaLink,
@@ -56,6 +57,17 @@ describe("outreach kernel", () => {
     expect(gateRecord(shop({ consent_status: "NONE" }), new Set()).reasons[0]).toMatch(/bad-consent/);
     expect(gateRecord(shop({ opt_out_date: "2026-09-01" }), new Set()).reasons).toContain("opted-out");
     expect(gateRecord(shop(), new Set(["233241234567"])).reasons).toContain("stopped");
+  });
+
+  it("dedupes shared numbers deterministically (first id wins, send once)", () => {
+    const a = gateRecord(shop({ id: "KGB0183", phone: "+233 24 000 5487" }), new Set());
+    const b = gateRecord(shop({ id: "KGB0185", phone: "0240005487" }), new Set());
+    const c = gateRecord(shop({ id: "KGB0009", phone: "+233 24 999 0001" }), new Set());
+    const { unique, duplicates } = dedupeByPhone([b, a, c]);
+    expect(unique.map((v) => v.record.id).sort()).toEqual(["KGB0009", "KGB0183"]);
+    expect(duplicates).toHaveLength(1);
+    expect(duplicates[0].keptId).toBe("KGB0183");
+    expect(duplicates[0].dropped.record.id).toBe("KGB0185");
   });
 
   it("splits fairly across staff with a daily cap and rotation", () => {

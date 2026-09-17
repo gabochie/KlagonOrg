@@ -78,6 +78,31 @@ export function gateBatch(records: RawShopRecord[], stops: Set<string>): GateVer
   return records.map((r) => gateRecord(r, stops));
 }
 
+export interface DedupeResult {
+  /** One verdict per phone number (first record id wins, deterministic). */
+  unique: GateVerdict[];
+  /** Dropped verdicts: same phone already covered by the kept record. */
+  duplicates: { keptId: string; dropped: GateVerdict }[];
+}
+
+/**
+ * Phone-keyed dedupe. Shops sharing one number (branches, same owner —
+ * e.g. KGB0183/KGB0185) are sent once. Operates on sendable verdicts;
+ * sort by record id so the winner is stable across runs.
+ */
+export function dedupeByPhone(sendable: GateVerdict[]): DedupeResult {
+  const sorted = [...sendable].sort((a, b) => a.record.id.localeCompare(b.record.id));
+  const seen = new Map<string, GateVerdict>();
+  const duplicates: DedupeResult["duplicates"] = [];
+  for (const v of sorted) {
+    const key = v.waPhone as string;
+    const kept = seen.get(key);
+    if (kept) duplicates.push({ keptId: kept.record.id, dropped: v });
+    else seen.set(key, v);
+  }
+  return { unique: [...seen.values()], duplicates };
+}
+
 /** First cold message. Always carries identity + opt-out (consent basis). */
 export function pickTemplate(area: OutreachArea, offer: OutreachOffer): string {
   const health = area === "klagon" ? "GH₵150 (Klagon founding rate)" : "GH₵250";
