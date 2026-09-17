@@ -298,6 +298,9 @@ export default {
 
     if (url.pathname === "/health") return json({ ok: true });
     if (url.pathname === "/debug") {
+      const ip = clientIp(request);
+      const turnKey = `turn:${ip}:${Math.floor(Date.now() / 1000 / 3600)}`;
+      const raw = (await env.AGENT_RATE?.get(turnKey)).catch?.(() => null) ?? null;
       let kvWrite = "n/a";
       let kvRead = null;
       try {
@@ -308,7 +311,7 @@ export default {
       } catch (e) {
         kvWrite = e instanceof Error ? e.message : String(e);
       }
-      return json({ ok: true, hasKV: Boolean(env.AGENT_RATE), kvWrite, kvRead });
+      return json({ ok: true, hasKV: Boolean(env.AGENT_RATE), kvWrite, kvRead, turnKey, turnCount: raw });
     }
 
     return json({ error: "not-found" }, 404);
