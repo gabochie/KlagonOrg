@@ -145,7 +145,7 @@ export default function ComingSoonPage() {
       <footer className="relative z-10 border-t border-white/8 py-5 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/25">
-            © 2026 KlagonOrg. Klagon, Greater Accra, Ghana.
+            © {new Date().getFullYear()} KlagonOrg. Klagon, Greater Accra, Ghana.
           </div>
           <Link
             href="/contact"

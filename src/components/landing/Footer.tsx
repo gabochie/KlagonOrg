@@ -181,7 +181,7 @@ export function Footer() {
         </div>
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/55">
-            © 2026 KlagonOrg. All rights reserved.
+            © {new Date().getFullYear()} KlagonOrg. All rights reserved.
           </div>
           <div className="flex items-center gap-4">
             {legalLinks.map((l) => (

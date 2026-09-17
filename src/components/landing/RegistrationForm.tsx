@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Button, Input, Select } from "@/components/ui";
 import { INTERESTS } from "@/lib/constants";
@@ -59,7 +60,7 @@ export function RegistrationForm() {
           <div className="text-xl font-extrabold text-navy tracking-tight mb-1">
             Create your KlagonOrg account
           </div>
-          <div className="text-sm text-gray mb-6">Free membership — approved within 24 hours</div>
+          <div className="text-sm text-gray mb-6">Free membership — instant access, no waiting</div>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <Input
               label="Full name"
@@ -127,11 +128,13 @@ export function RegistrationForm() {
               </button>
             ))}
           </div>
-          <Button variant="dark" size="lg" className="w-full">
-            Request Membership →
-          </Button>
+          <Link href="/auth/register">
+            <Button variant="dark" size="lg" className="w-full">
+              Create Free Account →
+            </Button>
+          </Link>
           <p className="text-center text-xs text-gray mt-3">
-            Your application is reviewed within 24 hours. 100% free, always.
+            Instant access. 100% free, always.
           </p>
         </div>
       </div>
