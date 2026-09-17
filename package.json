@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build",
+    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build",`n    "test": "vitest run",
     "start": "next start",
     "lint": "eslint src",
     "postinstall": "patch-package",
@@ -34,6 +34,8 @@
     "eslint-config-next": "^16.3.5",
     "patch-package": "^8.0.1",
     "tailwindcss": "^4.1.6",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^5.0.1"
   }
 }
+

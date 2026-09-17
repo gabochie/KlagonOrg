@@ -34,6 +34,12 @@ export type BadgeType =
   | "innovation_partner"
   | "youth_employer"
   | "impact_partner";
+export type PostType = "news" | "event" | "business" | "classified" | "job" | "announcement";
+export type PostStatus = "pending" | "approved" | "rejected" | "hidden";
+export type PostArea = "klagon" | "tema_west" | "other";
+export type BoostTier = "none" | "featured" | "premium";
+export type BroadcastKind = "email" | "whatsapp" | "social";
+export type AuthorBadge = "member" | "verified" | "editorial";
 
 export interface Database {
   public: {
@@ -53,6 +59,8 @@ export interface Database {
           status: MemberStatus;
           xp: number;
           avatar_url: string | null;
+          verified_contributor: boolean;
+          approved_posts: number;
           onboarded_at: string | null;
           created_at: string;
           updated_at: string;
@@ -71,6 +79,8 @@ export interface Database {
           status?: MemberStatus;
           xp?: number;
           avatar_url?: string | null;
+          verified_contributor?: boolean;
+          approved_posts?: number;
           onboarded_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]> & {
@@ -629,6 +639,198 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["ops_kocc_snapshots"]["Insert"]>;
         Relationships: [];
       };
+      posts: {
+        Row: {
+          id: string;
+          type: PostType;
+          title: string;
+          excerpt: string | null;
+          body: string | null;
+          category: string;
+          subcategory: string | null;
+          details: Json;
+          area: PostArea;
+          status: PostStatus;
+          rejected_reason: string | null;
+          submitted_by: string | null;
+          author_name: string | null;
+          author_badge: AuthorBadge;
+          cover_url: string | null;
+          gallery: Json;
+          price_ghs: number | null;
+          contact_phone: string | null;
+          contact_email: string | null;
+          event_date: string | null;
+          event_time: string | null;
+          event_location: string | null;
+          boost_tier: BoostTier;
+          boost_fee_ghs: number | null;
+          boost_until: string | null;
+          reports: number;
+          views: number;
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          type?: PostType;
+          title: string;
+          excerpt?: string | null;
+          body?: string | null;
+          category?: string;
+          subcategory?: string | null;
+          details?: Json;
+          area?: PostArea;
+          status?: PostStatus;
+          rejected_reason?: string | null;
+          submitted_by?: string | null;
+          author_name?: string | null;
+          author_badge?: AuthorBadge;
+          cover_url?: string | null;
+          gallery?: Json;
+          price_ghs?: number | null;
+          contact_phone?: string | null;
+          contact_email?: string | null;
+          event_date?: string | null;
+          event_time?: string | null;
+          event_location?: string | null;
+          boost_tier?: BoostTier;
+          boost_fee_ghs?: number | null;
+          boost_until?: string | null;
+          reports?: number;
+          views?: number;
+          published_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["posts"]["Insert"]> & {
+          id?: string;
+          status?: PostStatus;
+          rejected_reason?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "posts_submitted_by_fkey";
+            columns: ["submitted_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      post_reports: {
+        Row: {
+          id: string;
+          post_id: string;
+          reported_by: string;
+          reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          reported_by: string;
+          reason?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["post_reports"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "post_reports_post_id_fkey";
+            columns: ["post_id"];
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      post_views: {
+        Row: { id: string; post_id: string; viewed_at: string };
+        Insert: { id?: string; post_id: string; viewed_at?: string };
+        Update: Partial<Database["public"]["Tables"]["post_views"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [];
+      };
+      post_contact_messages: {
+        Row: {
+          id: string;
+          post_id: string;
+          sender_name: string | null;
+          sender_phone: string | null;
+          sender_email: string | null;
+          message: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          sender_name?: string | null;
+          sender_phone?: string | null;
+          sender_email?: string | null;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["post_contact_messages"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "post_contact_messages_post_id_fkey";
+            columns: ["post_id"];
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          phone: string | null;
+          source: string;
+          subscribed: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          phone?: string | null;
+          source?: string;
+          subscribed?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["subscribers"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [];
+      };
+      broadcasts: {
+        Row: {
+          id: string;
+          kind: BroadcastKind;
+          post_id: string | null;
+          sent_by: string | null;
+          delivered_to: number | null;
+          payload: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          kind: BroadcastKind;
+          post_id?: string | null;
+          sent_by?: string | null;
+          delivered_to?: number | null;
+          payload?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["broadcasts"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "broadcasts_post_id_fkey";
+            columns: ["post_id"];
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       events_public: {
@@ -726,6 +928,13 @@ export interface Database {
         };
         Returns: undefined;
       };
+      purchase_boost: {
+        Args: {
+          p_post_id: string;
+          p_tier: BoostTier;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       user_role: UserRole;
@@ -738,6 +947,11 @@ export interface Database {
       sponsor_status: SponsorStatus;
       wall_group: WallGroup;
       badge_type: BadgeType;
+      post_type: PostType;
+      post_status: PostStatus;
+      post_area: PostArea;
+      boost_tier: BoostTier;
+      broadcast_kind: BroadcastKind;
     };
   };
 }

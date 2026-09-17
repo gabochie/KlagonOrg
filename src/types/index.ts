@@ -174,3 +174,75 @@ export interface RegistrationFormData {
   careerGoal: string;
   interests: string[];
 }
+
+// ------------------------------------------------------------------
+// Hyperlocal community portal
+// ------------------------------------------------------------------
+
+export type PostType = "news" | "event" | "business" | "classified" | "job" | "announcement";
+export type PostStatus = "pending" | "approved" | "rejected" | "hidden";
+export type PostArea = "klagon" | "tema_west" | "other";
+export type BoostTier = "none" | "featured" | "premium";
+export type AuthorBadge = "member" | "verified" | "editorial";
+
+export interface Post {
+  id: string;
+  type: PostType;
+  title: string;
+  excerpt: string;
+  body: string;
+  category: string;
+  subcategory: string | null;
+  details: Record<string, unknown>;
+  area: PostArea;
+  status: PostStatus;
+  rejectedReason: string | null;
+  submittedBy: string | null;
+  authorName: string;
+  authorBadge: AuthorBadge;
+  coverUrl: string | null;
+  gallery: string[];
+  priceGhs: number | null;
+  contactPhone: string | null;
+  contactEmail: string | null;
+  eventDate: string | null;
+  eventTime: string | null;
+  eventLocation: string | null;
+  boostTier: BoostTier;
+  boostFeeGhs: number | null;
+  boostUntil: string | null;
+  reports: number;
+  views: number;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PostFilters {
+  type?: PostType | "all";
+  area?: PostArea | "all";
+  category?: string;
+  subcategory?: string;
+  search?: string;
+  boostedFirst?: boolean;
+  limit?: number;
+}
+
+export interface PostInput {
+  type: PostType;
+  title: string;
+  excerpt?: string;
+  body?: string;
+  category?: string;
+  subcategory?: string | null;
+  details?: Record<string, unknown>;
+  area?: PostArea;
+  cover_url?: string | null;
+  gallery?: string[];
+  price_ghs?: number | null;
+  contact_phone?: string | null;
+  contact_email?: string | null;
+  event_date?: string | null;
+  event_time?: string | null;
+  event_location?: string | null;
+}
