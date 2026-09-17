@@ -9,6 +9,7 @@ import { MembersTable } from "@/components/admin/MembersTable";
 import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
 import { LeadsList } from "@/components/admin/LeadsList";
+import { OutreachQueue } from "@/components/admin/OutreachQueue";
 
 export default function AdminDashboard() {
   const today = new Date().toLocaleDateString(undefined, {
@@ -63,6 +64,9 @@ export default function AdminDashboard() {
       </div>
 
       <LeadsList />
+      <div className="mt-2.5">
+        <OutreachQueue />
+      </div>
       </RequireAdmin>
     );
 }

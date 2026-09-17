@@ -9,6 +9,7 @@ type LeadRow = Database["public"]["Tables"]["lead_captures"]["Row"];
 const sourceColor: Record<string, string> = {
   "voice-agent": "bg-blue/10 text-blue-800",
   "chat-agent": "bg-amber/10 text-amber-800",
+  "whatsapp-outreach": "bg-pale text-navy",
   website: "bg-pale text-blue-800",
 };
 
@@ -87,6 +88,11 @@ export function LeadsList() {
                   {l.phone && <span>{l.phone}</span>}
                 </div>
                 {l.intent && <div className="text-[10px] text-gray/70 italic truncate mt-0.5">“{l.intent}”</div>}
+                {l.status && l.status !== "new" && (
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-navy/50 mt-0.5">
+                    {l.status}
+                  </div>
+                )}
               </div>
               <div className="text-[10px] text-gray/60 flex-shrink-0 whitespace-nowrap pt-1">
                 {new Date(l.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
