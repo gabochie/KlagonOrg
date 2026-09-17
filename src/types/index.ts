@@ -115,9 +115,38 @@ export interface SponsorPlan {
   id: string;
   name: string;
   amount: string;
+  headline: string;
   description: string;
   benefits: string[];
   highlighted?: boolean;
+  featured?: boolean;
+  tier: string;
+}
+
+export interface SponsorWallGroup {
+  id: string;
+  label: string;
+  description: string;
+  defaultTiers: string[];
+}
+
+export interface SponsorshipTier {
+  id: string;
+  label: string;
+  short: string;
+  amount: string;
+  badge: string;
+  priceMonthly: number | null;
+}
+
+export interface BusinessTemplate {
+  id: string;
+  title: string;
+  category: string;
+  industryTag: string | null;
+  description: string | null;
+  fileUrl: string;
+  starter: boolean;
 }
 
 export interface DonationTier {

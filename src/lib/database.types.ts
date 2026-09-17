@@ -17,6 +17,23 @@ export type NewsCategory =
   | "Community"
   | "Environment"
   | "Partnerships";
+export type SponsorTier = "community" | "growth" | "talent" | "digital" | "strategic";
+export type SponsorStatus = "pending" | "active" | "paused";
+export type WallGroup =
+  | "founding"
+  | "strategic"
+  | "innovation"
+  | "skills"
+  | "community"
+  | "business";
+export type BadgeType =
+  | "verified"
+  | "sponsor"
+  | "community_partner"
+  | "skills_partner"
+  | "innovation_partner"
+  | "youth_employer"
+  | "impact_partner";
 
 export interface Database {
   public: {
@@ -408,6 +425,122 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["sponsor_applications"]["Insert"]>;
         Relationships: [];
       };
+      business_cards: {
+        Row: {
+          id: string;
+          sponsor_id: string;
+          slug: string;
+          created_at: string;
+        };
+        Insert: {
+          sponsor_id: string;
+          slug: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["business_cards"]["Insert"]>;
+        Relationships: [];
+      };
+      sponsor_badges: {
+        Row: {
+          id: string;
+          sponsor_id: string;
+          tier_type: BadgeType;
+          awarded_at: string;
+        };
+        Insert: {
+          sponsor_id: string;
+          tier_type: BadgeType;
+          awarded_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["sponsor_badges"]["Insert"]>;
+        Relationships: [];
+      };
+      sponsors: {
+        Row: {
+          id: string;
+          slug: string;
+          tier: SponsorTier;
+          status: SponsorStatus;
+          wall_group: WallGroup | null;
+          featured: boolean;
+          name: string;
+          tagline: string | null;
+          logo_url: string | null;
+          cover_url: string | null;
+          about: string | null;
+          why_supports: string | null;
+          categories: string[];
+          products_services: string[];
+          contact: Json;
+          location: Json;
+          opening_hours: string | null;
+          service_areas: string[];
+          certifications: string[];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          slug: string;
+          tier: SponsorTier;
+          status?: SponsorStatus;
+          wall_group?: WallGroup | null;
+          featured?: boolean;
+          name: string;
+          tagline?: string | null;
+          logo_url?: string | null;
+          cover_url?: string | null;
+          about?: string | null;
+          why_supports?: string | null;
+          categories?: string[];
+          products_services?: string[];
+          contact?: Json;
+          location?: Json;
+          opening_hours?: string | null;
+          service_areas?: string[];
+          certifications?: string[];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["sponsors"]["Insert"]>;
+        Relationships: [];
+      };
+      template_downloads: {
+        Row: {
+          id: string;
+          template_id: string;
+          sponsor_id: string | null;
+          downloaded_at: string;
+        };
+        Insert: {
+          template_id: string;
+          sponsor_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["template_downloads"]["Insert"]>;
+        Relationships: [];
+      };
+      templates: {
+        Row: {
+          id: string;
+          title: string;
+          category: string;
+          industry_tag: string | null;
+          description: string | null;
+          file_url: string;
+          min_tier: SponsorTier;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          title: string;
+          category: string;
+          industry_tag?: string | null;
+          description?: string | null;
+          file_url: string;
+          min_tier?: SponsorTier;
+          sort_order?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["templates"]["Insert"]>;
+        Relationships: [];
+      };
       donations: {
         Row: {
           id: string;
@@ -561,6 +694,29 @@ export interface Database {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
       };
+      promote_sponsor_application: {
+        Args: {
+          p_application_id: string;
+          p_slug: string;
+          p_tier: SponsorTier;
+          p_name: string;
+          p_tagline?: string;
+          p_logo_url?: string;
+          p_cover_url?: string;
+          p_about?: string;
+          p_why_supports?: string;
+          p_categories?: string[];
+          p_products_services?: string[];
+          p_contact?: Json;
+          p_location?: Json;
+          p_opening_hours?: string;
+          p_service_areas?: string[];
+          p_certifications?: string[];
+          p_wall_group?: WallGroup;
+          p_featured?: boolean;
+        };
+        Returns: string;
+      };
       log_audit: {
         Args: {
           p_action: string;
@@ -578,6 +734,10 @@ export interface Database {
       donation_status: DonationStatus;
       project_status: ProjectStatus;
       news_category: NewsCategory;
+      sponsor_tier: SponsorTier;
+      sponsor_status: SponsorStatus;
+      wall_group: WallGroup;
+      badge_type: BadgeType;
     };
   };
 }

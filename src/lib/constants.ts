@@ -12,6 +12,8 @@ import type {
   SponsorPlan,
   DonationTier,
   MentorTopic,
+  SponsorWallGroup,
+  SponsorshipTier,
 } from "@/types";
 
 export const NAV_LINKS = [
@@ -166,10 +168,49 @@ export const NEWS_ARTICLES: NewsArticle[] = [
 ];
 
 export const SPONSOR_PLANS: SponsorPlan[] = [
-  { id: "1", name: "Community Friend", amount: "GH₵ 500/mo", description: "Support a single workshop or learning session each month.", benefits: ["Name listed on KlagonOrg website", "Quarterly impact report", "Social media shoutout"], highlighted: false },
-  { id: "2", name: "Youth Champion", amount: "GH₵ 2,000/mo", description: "Fund a full learning track for 10 youth members each quarter.", benefits: ["Logo on KlagonOrg materials", "Monthly impact report", "Recognition at events", "2 seats at annual gala"], highlighted: true },
-  { id: "3", name: "Future Builder", amount: "GH₵ 5,000/mo", description: "Underwrite equipment, venue, and mentor stipends for an entire cohort.", benefits: ["Featured sponsor at all events", "Dedicated KlagonOrg partnership page", "Quarterly video updates", "Volunteer engagement days", "Naming rights on funded program"], highlighted: false },
+  { id: "community", tier: "community", name: "Community Partner", amount: "GH₵ 500/mo", headline: "Support the mission", description: "A simple, affordable way to back KLAGON's workshops and programs while getting recognised as a trusted community business.", benefits: ["Verified Business badge", "Sponsor Wall listing", "Quarterly impact report"], highlighted: false },
+  { id: "growth", tier: "growth", name: "Growth Partner", amount: "GH₵ 2,000/mo", headline: "Grow your business", description: "Turn sponsorship into visibility: a full business profile, digital tools, and templates that help your company win customers.", benefits: ["Business profile + Digital Business Score™", "20+ business toolkits & templates", "Academy courses & content packs"], highlighted: true },
+  { id: "talent", tier: "talent", name: "Talent Partner", amount: "GH₵ 5,000/mo", headline: "Build your workforce", description: "Connect directly with KLAGON's trained young talent — hire, post jobs, and run challenges that build your pipeline.", benefits: ["Hire talent & post jobs", "Run branded challenges", "Recruit mentors"], highlighted: false },
+  { id: "digital", tier: "digital", name: "Digital Transformation Partner", amount: "GH₵ 10,000/mo", headline: "Modernise your business", description: "A full digital upgrade: audits, AI tools, smart QR, and analytics that put your business ahead of the market.", benefits: ["Full digital audit + AI tools", "AI assistants & smart QR", "Live analytics dashboard"], highlighted: false },
+  { id: "strategic", tier: "strategic", name: "Strategic Partner", amount: "GH₵ 20,000+/mo", headline: "Build the future together", description: "A bespoke partnership that co-designs programmes, brands challenges, and shapes the workforce of tomorrow.", benefits: ["Bespoke impact dashboard", "Branded public challenges", "Premium market intelligence"], highlighted: false, featured: true },
 ];
+
+export const WALL_GROUPS: SponsorWallGroup[] = [
+  { id: "founding", label: "Founding Partners", description: "The first businesses that built KLAGON with us.", defaultTiers: ["strategic", "digital"] },
+  { id: "strategic", label: "Strategic Partners", description: "Custom programmes + innovation partners.", defaultTiers: ["strategic"] },
+  { id: "innovation", label: "Innovation Partners", description: "Challenges, prototype work, and technology partners.", defaultTiers: ["digital"] },
+  { id: "skills", label: "Skills Partners", description: "Talent, academy, and mentorship-focused partners.", defaultTiers: ["talent"] },
+  { id: "business", label: "Business Partners", description: "Standard sponsors helping Klagon businesses grow.", defaultTiers: ["growth"] },
+  { id: "community", label: "Community Partners", description: "General business support for the mission.", defaultTiers: ["community"] },
+];
+
+export const SPONSOR_TIERS: SponsorshipTier[] = [
+  { id: "community", label: "Community Partner", short: "Community", amount: "GH₵ 500/mo", badge: "community_partner", priceMonthly: 500 },
+  { id: "growth", label: "Growth Partner", short: "Growth", amount: "GH₵ 2,000/mo", badge: "skills_partner", priceMonthly: 2000 },
+  { id: "talent", label: "Talent Partner", short: "Talent", amount: "GH₵ 5,000/mo", badge: "innovation_partner", priceMonthly: 5000 },
+  { id: "digital", label: "Digital Transformation Partner", short: "Digital", amount: "GH₵ 10,000/mo", badge: "innovation_partner", priceMonthly: 10000 },
+  { id: "strategic", label: "Strategic Partner", short: "Strategic", amount: "GH₵ 20,000+/mo", badge: "impact_partner", priceMonthly: null },
+];
+
+export const BADGE_LABELS: Record<string, string> = {
+  verified: "KLAGON Verified Business",
+  sponsor: "KLAGON Sponsor",
+  community_partner: "KLAGON Community Partner",
+  skills_partner: "KLAGON Skills Partner",
+  innovation_partner: "KLAGON Innovation Partner",
+  youth_employer: "KLAGON Youth Employer",
+  impact_partner: "KLAGON Impact Partner",
+};
+
+export const TEMPLATE_CATEGORIES = [
+  "Finance",
+  "Sales",
+  "Operations",
+  "People",
+  "Marketing",
+  "Strategy",
+  "Security",
+] as const;
 
 export const DONATION_TIERS: DonationTier[] = [
   { id: "1", amount: "GH₵ 50", label: "Supplies for 1 workshop", description: "Covers learning materials and refreshments for a single session." },
