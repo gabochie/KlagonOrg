@@ -27,6 +27,8 @@ const memberMenu: NavItem[] = [
 
 const memberAccount: NavItem[] = [
   { icon: "👤", label: "My Profile", href: "/dashboard/settings" },
+  { icon: "✍️", label: "Submit Post", href: "/submit" },
+  { icon: "📮", label: "My Posts", href: "/my/posts" },
   { icon: "🎖️", label: "Achievements", href: SOON, soon: true },
   { icon: "📰", label: "News", href: "/dashboard/news" },
   { icon: "📸", label: "Gallery", href: SOON, soon: true },
@@ -35,6 +37,7 @@ const memberAccount: NavItem[] = [
 const adminMain: NavItem[] = [
   { icon: "📊", label: "Dashboard", href: "/dashboard/admin" },
   { icon: "📡", label: "Command Center", href: "/dashboard/admin/ops" },
+  { icon: "🛂", label: "Moderation", href: "/dashboard/admin/moderation" },
   { icon: "👥", label: "Members", href: SOON, soon: true },
   { icon: "📅", label: "Events", href: SOON, soon: true },
   { icon: "📚", label: "Learning Hub", href: SOON, soon: true },

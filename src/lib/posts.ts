@@ -265,6 +265,18 @@ export async function updateMyPost(postId: string, input: Partial<PostInput>): P
   return { ok: true, id: postId };
 }
 
+/** Re-submit a rejected post: back to pending, clears the rejection reason. */
+export async function resubmitPost(postId: string): Promise<SubmitResult> {
+  const c = client();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+  const { error } = await c
+    .from("posts")
+    .update({ status: "pending", rejected_reason: null })
+    .eq("id", postId);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, id: postId };
+}
+
 export async function deleteMyPost(postId: string): Promise<SubmitResult> {
   const c = client();
   if (!c) return { ok: false, error: "Supabase is not configured." };

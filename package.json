@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build",`n    "test": "vitest run",
+    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build",
+    "test": "vitest run",
     "start": "next start",
     "lint": "eslint src",
     "postinstall": "patch-package",
