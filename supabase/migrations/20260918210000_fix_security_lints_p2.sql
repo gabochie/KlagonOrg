@@ -48,33 +48,54 @@ create policy "lessons_admin_update" on public.lessons
 revoke execute on function public.award_lesson_xp() from anon, authenticated;
 revoke execute on function public.award_reader_xp() from anon, authenticated;
 revoke execute on function public.touch_updated_at() from anon, authenticated;
-revoke execute on function public.set_sponsor_updated_at() from anon, authenticated;
 revoke execute on function public.handle_new_user() from anon, authenticated;
 revoke execute on function public.on_profile_approved() from anon, authenticated;
-revoke execute on function public.posts_before_upsert() from anon, authenticated;
-revoke execute on function public.posts_on_approve() from anon, authenticated;
-revoke execute on function public.posts_report_auto_hide() from anon, authenticated;
 revoke execute on function public.is_admin() from anon, authenticated;
 revoke execute on function public.is_super_admin() from anon, authenticated;
 revoke execute on function public.is_approved_member() from anon, authenticated;
 revoke execute on function public.current_role() from anon, authenticated;
 revoke execute on function public.is_klagon_admin() from anon, authenticated;
 
+-- Helper block: revoke anon EXECUTE only on functions that exist.
+-- Live databases upgraded by hand can hold a mix of applied migrations
+-- (e.g. the sponsor platform function may be absent), so every object
+-- below is looked up with to_regprocedure (NULL when missing) and skipped.
+do $$
+declare
+  f regprocedure;
+  targets regprocedure[] := array[
+    to_regprocedure('public.set_sponsor_updated_at()'),
+    to_regprocedure('public.posts_before_upsert()'),
+    to_regprocedure('public.posts_on_approve()'),
+    to_regprocedure('public.posts_report_auto_hide()'),
+    to_regprocedure('public.purchase_boost(uuid, public.boost_tier)')
+  ];
+begin
+  foreach f in array targets loop
+    if f is not null then
+      execute 'revoke execute on function ' || f::text || ' from anon';
+    end if;
+  end loop;
+end;
+$$;
+
 -- promote_sponsor_application: admin client calls it (SponsorAdminContent),
 -- so authenticated stays — but anon never should. Internal is_admin()
 -- guard already present in the body; this removes the public path.
-revoke all on function public.promote_sponsor_application(
-  uuid, text, public.sponsor_tier, text, text, text, text, text,
-  text[], text[], jsonb, jsonb, text, text[], text[], public.wall_group, boolean
-) from public, anon;
-grant execute on function public.promote_sponsor_application(
-  uuid, text, public.sponsor_tier, text, text, text, text, text,
-  text[], text[], jsonb, jsonb, text, text[], text[], public.wall_group, boolean
-) to authenticated;
-
--- purchase_boost: members call it for their own posts (owner check inside),
--- anon must not.
-revoke execute on function public.purchase_boost(uuid, public.boost_tier) from anon;
+-- Guarded: the sponsor platform migration may not have applied yet.
+do $$
+declare oid_ oid;
+begin
+  select p.oid into oid_ from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public' and p.proname = 'promote_sponsor_application'
+   limit 1;
+  if oid_ is not null then
+    execute 'revoke all on function ' || oid_::regprocedure || ' from public, anon';
+    execute 'grant execute on function ' || oid_::regprocedure || ' to authenticated';
+  end if;
+end;
+$$;
 
 -- ------------------------------------------------------------------
 -- §4 log_audit: close the audit-forgery hole
