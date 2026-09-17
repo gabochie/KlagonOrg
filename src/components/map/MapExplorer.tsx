@@ -33,7 +33,6 @@ import {
   MAP_TILES_URL,
   MAP_STYLE_URL,
   OSM_RASTER_TILES,
-  hasConfiguredTiles,
 } from "@/lib/map/tiles";
 import { SEVERITY_META } from "@/lib/map/types";
 import type { MapEntityType, MapPoint } from "@/lib/map/types";
@@ -104,9 +103,9 @@ export function MapExplorer() {
 
   // ---- load data -------------------------------------------------
   useEffect(() => {
-    setConfigured(isSupabaseConfigured());
     let cancelled = false;
     (async () => {
+      setConfigured(isSupabaseConfigured());
       const data = await fetchMapPoints();
       if (cancelled) return;
       pointsByIdNow.current = new Map(data.map((p) => [p.id, p]));
@@ -125,7 +124,7 @@ export function MapExplorer() {
     let disposed = false;
 
     (async () => {
-      const maplibregl = (await import("maplibre-gl")).default;
+      const maplibregl = await import("maplibre-gl");
       const { Protocol } = await import("pmtiles");
       if (disposed) return;
 

@@ -33,7 +33,7 @@ export function MiniMap({ point, className }: MiniMapProps) {
     let disposed = false;
 
     (async () => {
-      const maplibregl = (await import("maplibre-gl")).default;
+      const maplibregl = await import("maplibre-gl");
       const { Protocol } = await import("pmtiles");
       if (disposed) return;
 

@@ -108,3 +108,9 @@ begin
   );
 end;
 $$;
+
+-- Lock the moderation RPC to signed-in users (internal is_admin() guard
+-- already fails closed for non-admins; this removes the anon path so the
+-- security advisor stays clean).
+revoke all on function public.moderate_map_point(uuid, public.member_status) from public, anon;
+grant execute on function public.moderate_map_point(uuid, public.member_status) to authenticated;
