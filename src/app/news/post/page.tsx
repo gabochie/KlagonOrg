@@ -38,11 +38,11 @@ function Detail() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
     void (async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
       const p = await fetchPostById(id);
       setPost(p);
       setLoading(false);

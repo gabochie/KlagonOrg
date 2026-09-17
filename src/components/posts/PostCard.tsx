@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { AREA_LABELS, POST_TYPE_LABELS } from "@/lib/posts";
 import type { Post } from "@/types";
@@ -9,8 +10,11 @@ export function postHref(p: Pick<Post, "id">): string {
 }
 
 export function BoostRibbon({ until }: { until: string | null }) {
-  if (!until || new Date(until).getTime() < Date.now()) return null;
-  const days = Math.max(1, Math.ceil((new Date(until).getTime() - Date.now()) / 86400000));
+  // Pinned per mount: Date.now() is impure, so it may only run in the
+  // state initializer, never in the render body (react-hooks/purity).
+  const [now] = useState(() => Date.now());
+  if (!until || new Date(until).getTime() < now) return null;
+  const days = Math.max(1, Math.ceil((new Date(until).getTime() - now) / 86400000));
   return (
     <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber text-navy mb-2">
       Featured · {days}d left
