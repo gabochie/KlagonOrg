@@ -1,73 +1,87 @@
-﻿export function DashboardPreview() {
+﻿import { BadgeCheck, Building2, Megaphone, BarChart3, GraduationCap, Handshake } from "lucide-react";
+
+const BENEFITS_FOR_BUSINESS = [
+  {
+    icon: <Megaphone size="16" />,
+    title: "Build a loyal customer base",
+    body: "Verified KLAGON partner badge on your profile, card, and badged storefront puts your business in front of an engaged local audience that actively buys from sponsors.",
+  },
+  {
+    icon: <BadgeCheck size="16" />,
+    title: "Get verified & trusted",
+    body: "A public verification badge, digital business certificate, and QR business card signal credibility — so customers, schools, and partners trust you instantly.",
+  },
+  {
+    icon: <Handshake size="16" />,
+    title: "Hire trained local talent",
+    body: "Recruit directly from KlagonOrg's workshops and accelerated learning talent pool. Join the wall of businesses that give Klagon youth their first real opportunity.",
+  },
+  {
+    icon: <Building2 size="16" />,
+    title: "A full storefront, not a link",
+    body: "Your own business profile, digital card, and badge page — with WhatsApp, directions, and contact in one tap. No website needed to look professional.",
+  },
+];
+
+const BENEFITS_FOR_SPONSORS = [
+  {
+    icon: <GraduationCap size="16" />,
+    title: "Shape tomorrow's workforce",
+    body: "Co-design challenges and content with KLAGON's trained young talent, so the skills they build match what your business actually needs.",
+  },
+  {
+    icon: <BarChart3 size="16" />,
+    title: "Sponsor wall presence",
+    body: "Featured placement on the public sponsor wall by tier — the founding, strategic, and innovation groups are front and centre with KlagonOrg.",
+  },
+];
+
+export function DashboardPreview() {
   return (
     <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
         <div className="text-xs font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-3">
-          Member Dashboard
+          For Partners & Sponsors
         </div>
         <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold text-navy tracking-tight leading-tight mb-2">
-          Everything you need, in one place.
+          Benefits that build real partnership.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-8">
-          Track your progress, RSVP to events, join projects, and manage your KlagonOrg journey from your
-          personal dashboard.
+          KlagonOrg partnerships are built for local businesses and sponsors who want more than a logo —
+          they want customers, talent, and a workforce for tomorrow.
         </p>
-        <div className="bg-white rounded-xl border border-border overflow-hidden shadow-sm">
-          <div className="bg-navy px-4 sm:px-6 py-3 flex items-center justify-between">
-            <span className="text-white text-sm font-bold">KlagonOrg Member Dashboard</span>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-amber flex items-center justify-center text-xs font-bold text-navy">
-                AK
-              </div>
-              <span className="text-white/70 text-xs">Ama Kofi</span>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb- pretends-8">
+          <div className="lg:col-span-3">
+            <div className="text-xs font-bold text-navy mb-3">For local businesses</div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {BENEFITS_FOR_BUSINESS.map((b) => (
+                <div key={b.title} className="bg-white rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber/10 text-amber-strong flex items-center justify-center flex-shrink-0">
+                    {b.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-bold text-navy mb-0.5">{b.title}</div>
+                    <div className="text-[11px] text-gray leading-relaxed">{b.body}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr]">
-            <div className="border-r border-pale py-2 hidden sm:block">
-              {["Overview", "Events", "Learning", "Projects", "Volunteer", "Messages", "Profile"].map(
-                (item, i) => (
-                  <div
-                    key={item}
-                    className={`px-5 py-2 text-xs font-medium cursor-pointer flex items-center gap-2 ${
-                      i === 0
-                        ? "bg-pale text-navy font-bold border-r-3 border-amber"
-                        : "text-gray"
-                    }`}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray" />
-                    {item}
+          <div className="lg:col-span-2">
+            <div className="text-xs font-bold text-navy mb-3">For sponsors & partners</div>
+            <div className="flex flex-col gap-3">
+              {BENEFITS_FOR_SPONSORS.map((b) => (
+                <div key={b.title} className="bg-white rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber/10 text-amber-strong flex items-center justify-center flex-shrink-0">
+                    {b.icon}
                   </div>
-                ),
-              )}
-            </div>
-            <div className="p-5">
-              <div className="text-sm font-bold text-navy mb-1">Welcome back, Ama! 👋</div>
-              <div className="text-xs text-gray mb-4">Saturday, 12 July 2025</div>
-              <div className="grid grid-cols-3 gap-2.5 mb-4">
-                {[
-                  { val: "3", label: "Events attended" },
-                  { val: "60%", label: "Fin. Literacy done" },
-                  { val: "1", label: "Projects joined" },
-                ].map((m) => (
-                  <div key={m.label} className="bg-pale rounded-lg p-3">
-                    <div className="text-xl font-extrabold text-navy">{m.val}</div>
-                    <div className="text-[11px] text-gray mt-0.5">{m.label}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-amber/10 rounded-lg p-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-base flex-shrink-0">
-                  📅
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-navy">
-                    Next: Automate 3 Tasks at Work with AI — Sat, 12 July · 10:00 AM
-                  </div>
-                  <div className="text-[11px] text-gray mt-0.5">
-                    Community Hall, Klagon · 12 seats remaining
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-bold text-navy mb-0.5">{b.title}</div>
+                    <div className="text-[11px] text-gray leading-relaxed">{b.body}</div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
