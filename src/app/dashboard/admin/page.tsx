@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { MetricCards } from "@/components/admin/MetricCards";
 import { BarChart } from "@/components/admin/BarChart";
@@ -10,23 +9,14 @@ import { MembersTable } from "@/components/admin/MembersTable";
 import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
 import { LeadsList } from "@/components/admin/LeadsList";
-import { fetchAdminMetrics } from "@/lib/queries";
 
 export default function AdminDashboard() {
-  const [pendingCount, setPendingCount] = useState(0);
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-
-  useEffect(() => {
-    void (async () => {
-      const live = await fetchAdminMetrics();
-      setPendingCount(live.pendingCount);
-    })();
-  }, []);
 
   return (
     <RequireAdmin>
@@ -58,7 +48,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <QuickActions pendingCount={pendingCount} />
+      <QuickActions />
 
       <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-2.5">
         <MembersTable />

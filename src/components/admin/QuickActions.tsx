@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { QUICK_ACTIONS } from "@/lib/constants";
 
-export function QuickActions({ pendingCount = 0 }: { pendingCount?: number }) {
-  const actions = QUICK_ACTIONS.map((a) =>
-    a.label === "Approve Member" ? { ...a, sub: `${pendingCount} pending` } : a
-  );
+export function QuickActions() {
   return (
     <div>
       <div className="text-xs font-bold text-navy mb-2">Quick Actions</div>
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-        {actions.map((a) => {
+        {QUICK_ACTIONS.map((a) => {
           const inner = (
             <>
               <div className="text-lg mb-1.5">{a.icon}</div>

@@ -36,7 +36,7 @@ export function WelcomeOnboarding() {
   const { profile, refreshProfile } = useAuth();
   const [dismissed, setDismissed] = useState(false);
 
-  if (!profile || profile.status !== "approved" || profile.onboarded_at || dismissed) return null;
+  if (!profile || profile.onboarded_at || dismissed) return null;
 
   const firstName = profile.full_name.trim().split(/\s+/)[0] ?? "there";
 
@@ -62,8 +62,7 @@ export function WelcomeOnboarding() {
               Welcome to KlagonOrg, {firstName}! 🎉
             </div>
             <p className="text-xs text-gray mt-1 max-w-md">
-              Your membership is approved. Here are the fastest ways to earn XP and become part of
-              the community.
+              Here are the fastest ways to earn XP and become part of the community.
             </p>
           </div>
           <div className="bg-amber/15 border border-amber/30 rounded-lg px-3 py-1.5 text-center">

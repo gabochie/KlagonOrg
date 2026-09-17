@@ -14,12 +14,9 @@ export function RequireAuth({ children }: { children: ReactNode }) {
       router.replace("/auth/login");
       return;
     }
-    if (profile && profile.status !== "approved") {
-      router.replace("/auth/pending");
-    }
-  }, [loading, user, profile, router]);
+  }, [loading, user, router]);
 
-  if (loading || !user || !profile || profile.status !== "approved") {
+  if (loading || !user) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">

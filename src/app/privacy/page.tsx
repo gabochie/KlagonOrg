@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">How we use it</h2>
             <p>
-              We use your information to run membership (approvals, event RSVPs, learning
+              We use your information to run membership (event RSVPs, learning
               progress, volunteer roles), communicate about programs, and report impact to
               sponsors. We never sell your personal data.
             </p>

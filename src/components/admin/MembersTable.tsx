@@ -133,7 +133,7 @@ export function MembersTable() {
           <div className="text-sm font-bold text-navy">Recent Members</div>
           <div className="text-[11px] text-gray">
             {live
-              ? `${members.length} total · ${pendingCount} awaiting approval`
+              ? `${members.length} total`
               : "Demo data — connect Supabase to view live members"}
           </div>
         </div>
@@ -212,25 +212,22 @@ export function MembersTable() {
                     </span>
                   </td>
                   <td className="px-3 py-2.5 border-t border-border">
-                    {m.status === "pending" ? (
-                      <div className="flex gap-1.5">
-                        <button
-                          onClick={() => void setStatus(m.id, "approved")}
-                          className="px-2 py-1 rounded-lg bg-green text-white text-[11px] font-semibold cursor-pointer font-sans hover:bg-green/90 transition-colors"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => void setStatus(m.id, "rejected")}
-                          className="px-2 py-1 rounded-lg border border-border text-[11px] font-semibold text-navy bg-white cursor-pointer font-sans hover:bg-light transition-colors"
-                        >
-                          Reject
-                        </button>
-                      </div>
+                    {m.status === "approved" ? (
+                      <button
+                        onClick={() => void setStatus(m.id, "rejected")}
+                        className="px-2 py-1 rounded-lg border border-border text-[11px] font-semibold text-navy bg-white cursor-pointer font-sans hover:bg-red-50 hover:border-red-300 transition-colors"
+                        title="Suspend this member"
+                      >
+                        Suspend
+                      </button>
                     ) : (
-                      <span className="text-[11px] text-gray font-semibold">
-                        {m.status === "approved" ? "Active" : "Not approved"}
-                      </span>
+                      <button
+                        onClick={() => void setStatus(m.id, "approved")}
+                        className="px-2 py-1 rounded-lg bg-navy text-white text-[11px] font-semibold cursor-pointer font-sans hover:bg-blue transition-colors"
+                        title="Restore this member"
+                      >
+                        Restore
+                      </button>
                     )}
                   </td>
                 </tr>

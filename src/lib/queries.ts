@@ -226,13 +226,12 @@ export async function fetchMyMetrics(
 export interface AdminMetrics {
   cards: Metric[];
   registrationTrend: { label: string; value: number; pct: number; isLatest: boolean }[];
-  pendingCount: number;
 }
 
 export async function fetchAdminMetrics(): Promise<AdminMetrics> {
   const c = client();
   if (!c) {
-    return { cards: [], registrationTrend: [], pendingCount: 0 };
+    return { cards: [], registrationTrend: [] };
   }
 
   const now = new Date();
@@ -259,10 +258,6 @@ export async function fetchAdminMetrics(): Promise<AdminMetrics> {
     .from("projects")
     .select("id", { count: "exact", head: true })
     .eq("status", "active");
-  const pendingResult = await c
-    .from("profiles")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "pending");
 
   // registrations per week over the last 8 weeks
   const { data: regs } = await c
@@ -299,7 +294,7 @@ export async function fetchAdminMetrics(): Promise<AdminMetrics> {
     { label: "Active Projects", value: projectsResult.count ?? 0, sub: "In progress", accent: "#FF6B47" },
   ];
 
-  return { cards, registrationTrend, pendingCount: pendingResult.count ?? 0 };
+  return { cards, registrationTrend };
 }
 
 export async function fetchAdminEvents(): Promise<Event[]> {

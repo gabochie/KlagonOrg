@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { fetchAdminMetrics, fetchAdminEvents, fetchPublicEvents } from "@/lib/queries";
+import { fetchAdminEvents, fetchPublicEvents } from "@/lib/queries";
 
 const SOON = "/dashboard/coming-soon";
 
@@ -123,18 +123,13 @@ function initialsOf(name: string): string {
 export function Sidebar() {
   const pathname = usePathname();
   const { profile, isAdmin } = useAuth();
-  const [pendingCount, setPendingCount] = useState(0);
   const [upcomingCount, setUpcomingCount] = useState(0);
 
   useEffect(() => {
     if (!profile) return;
     void (async () => {
       if (isAdmin) {
-        const [metrics, events] = await Promise.all([
-          fetchAdminMetrics(),
-          fetchAdminEvents(),
-        ]);
-        setPendingCount(metrics.pendingCount);
+        const events = await fetchAdminEvents();
         setUpcomingCount(events.length);
       } else {
         const events = await fetchPublicEvents();
@@ -148,9 +143,6 @@ export function Sidebar() {
 
   const withBadges = (items: NavItem[]): NavItem[] =>
     items.map((item) => {
-      if (item.label === "Members" && pendingCount > 0) {
-        return { ...item, badge: { count: pendingCount } };
-      }
       if (item.label === "Events" && upcomingCount > 0) {
         return { ...item, badge: { count: upcomingCount } };
       }

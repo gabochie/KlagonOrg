@@ -126,11 +126,11 @@ export const ADMIN_METRICS: Metric[] = [
 ];
 
 export const ADMIN_MEMBERS = [
-  { initials: "AK", name: "Ama Kofi", email: "ama.kofi@gmail.com", age: 22, interests: ["Tech", "AI"], joined: "8 Jul", status: "active" as const, color: "#EEF2FF", textColor: "#3730A3" },
-  { initials: "EO", name: "Ebenezer Ofori", email: "e.ofori@yahoo.com", age: 24, interests: ["Bizness", "Jobs"], joined: "7 Jul", status: "active" as const, color: "#FFF7E6", textColor: "#B45309" },
-  { initials: "SB", name: "Serwaa Boateng", email: "serwaa.b@outlook.com", age: 19, interests: ["Leadership"], joined: "9 Jul", status: "pending" as const, color: "#ECFDF5", textColor: "#065F46" },
-  { initials: "KA", name: "Kofi Asante", email: "k.asante@gmail.com", age: 27, interests: ["Tech", "Finance"], joined: "10 Jul", status: "pending" as const, color: "#FFF3F0", textColor: "#9A3412" },
-  { initials: "MA", name: "Mary Acheampong", email: "m.acheampong@gmail.com", age: 21, interests: ["AI", "Career"], joined: "11 Jul", status: "active" as const, color: "#F0F9FF", textColor: "#185FA5" },
+  { initials: "AK", name: "Ama Kofi", email: "ama.kofi@gmail.com", age: 22, interests: ["Tech", "AI"], joined: "8 Jul", status: "approved" as const, color: "#EEF2FF", textColor: "#3730A3" },
+  { initials: "EO", name: "Ebenezer Ofori", email: "e.ofori@yahoo.com", age: 24, interests: ["Bizness", "Jobs"], joined: "7 Jul", status: "approved" as const, color: "#FFF7E6", textColor: "#B45309" },
+  { initials: "SB", name: "Serwaa Boateng", email: "serwaa.b@outlook.com", age: 19, interests: ["Leadership"], joined: "9 Jul", status: "approved" as const, color: "#ECFDF5", textColor: "#065F46" },
+  { initials: "KA", name: "Kofi Asante", email: "k.asante@gmail.com", age: 27, interests: ["Tech", "Finance"], joined: "10 Jul", status: "approved" as const, color: "#FFF3F0", textColor: "#9A3412" },
+  { initials: "MA", name: "Mary Acheampong", email: "m.acheampong@gmail.com", age: 21, interests: ["AI", "Career"], joined: "11 Jul", status: "approved" as const, color: "#F0F9FF", textColor: "#185FA5" },
 ];
 
 export const ADMIN_EVENTS: Event[] = [
@@ -140,7 +140,7 @@ export const ADMIN_EVENTS: Event[] = [
 ];
 
 export const ACTIVITIES: Activity[] = [
-  { id: "1", icon: "👤", iconBg: "#EEF2FF", title: "Serwaa Boateng registered — awaiting approval", time: "2 minutes ago" },
+  { id: "1", icon: "👤", iconBg: "#EEF2FF", title: "Serwaa Boateng joined as a member", time: "2 minutes ago" },
   { id: "2", icon: "📅", iconBg: "#FFF7E6", title: "Ama Kofi RSVP'd to Intro to AI Workshop", time: "14 minutes ago" },
   { id: "3", icon: "✅", iconBg: "#ECFDF5", title: "Financial Literacy session marked complete by 11 members", time: "1 hour ago" },
   { id: "4", icon: "🌳", iconBg: "#FFF3F0", title: "Kofi Asante joined Tree-Planting Project as volunteer", time: "3 hours ago" },
@@ -196,7 +196,7 @@ export type QuickAction = {
 };
 
 export const QUICK_ACTIONS: QuickAction[] = [
-  { icon: "👤", label: "Approve Member", sub: "7 pending" },
+  { icon: "👥", label: "Invite Members", sub: "Share the join link" },
   { icon: "📅", label: "Create Event", sub: "Publish now" },
   { icon: "✅", label: "Mark Attendance", sub: "Today's session" },
   { icon: "📰", label: "Post Article", sub: "Community news" },

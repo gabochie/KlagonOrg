@@ -29,9 +29,8 @@ export default function TermsPage() {
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Membership</h2>
             <p>
-              Registration is free. Membership is approved by a KlagonOrg admin; we may
-              decline or suspend accounts for misuse, false information, or behaviour that
-              harms the community.
+              Registration is free and open to everyone. We may suspend or remove accounts for
+              misuse, false information, or behaviour that harms the community.
             </p>
           </div>
           <div>
