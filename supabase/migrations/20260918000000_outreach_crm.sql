@@ -68,9 +68,15 @@ security definer
 set search_path = public
 as $$
 begin
+  if not is_klagon_admin() then
+    raise exception 'admin only';
+  end if;
   if p_status not in ('new', 'working', 'converted', 'lost') then
     raise exception 'unknown lead status %', p_status;
   end if;
   update public.lead_captures set status = p_status where id = p_id;
 end;
 $$;
+
+revoke all on function public.advance_lead_status(bigint, text) from public, anon;
+grant execute on function public.advance_lead_status(bigint, text) to authenticated;

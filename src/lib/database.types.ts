@@ -609,6 +609,9 @@ export interface Database {
           source: string;
           intent: string | null;
           profile_id: string | null;
+          status: string;
+          area: string | null;
+          source_record_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -618,6 +621,9 @@ export interface Database {
           source?: string;
           intent?: string | null;
           profile_id?: string | null;
+          status?: string;
+          area?: string | null;
+          source_record_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["lead_captures"]["Insert"]>;
         Relationships: [];
@@ -626,6 +632,36 @@ export interface Database {
         Row: { id: number; owner: string; event: Json; created_at: string };
         Insert: { owner: string; event: Json };
         Update: Partial<Database["public"]["Tables"]["ops_kocc_audit"]["Insert"]>;
+        Relationships: [];
+      };
+      outreach_sends: {
+        Row: {
+          id: number;
+          source_record_id: string;
+          company: string | null;
+          wa_phone: string;
+          staff_slot: number;
+          template: string;
+          area: string;
+          outcome: string;
+          created_at: string;
+        };
+        Insert: {
+          source_record_id: string;
+          company?: string | null;
+          wa_phone: string;
+          staff_slot?: number;
+          template?: string;
+          area?: string;
+          outcome?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["outreach_sends"]["Insert"]>;
+        Relationships: [];
+      };
+      outreach_suppressions: {
+        Row: { wa_phone: string; reason: string; created_at: string };
+        Insert: { wa_phone: string; reason?: string };
+        Update: Partial<Database["public"]["Tables"]["outreach_suppressions"]["Insert"]>;
         Relationships: [];
       };
       ops_kocc_snapshots: {
