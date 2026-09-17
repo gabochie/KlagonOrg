@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { MemberGate } from "@/components/auth/MemberGate";
 import { LearningHubContent } from "@/components/sections/LearningHubContent";
 
 export const metadata: Metadata = {
@@ -15,9 +14,7 @@ export default function LearningPage() {
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
-      <MemberGate>
-        <LearningHubContent />
-      </MemberGate>
+      <LearningHubContent />
       <Footer />
     </div>
   );

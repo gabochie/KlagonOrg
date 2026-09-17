@@ -272,10 +272,11 @@ export function CourseViewer({
                   {!profile ? (
                     <div className="mb-4 rounded-xl border border-blue/20 bg-blue/5 px-4 py-4">
                       <div className="text-sm font-extrabold text-navy mb-1">
-                        Create your free account to start
+                        Free to read — sign in to track your progress
                       </div>
                       <p className="text-xs text-gray mb-3">
-                        Sign in so we can track your progress, XP, and badges as you learn.
+                        Create a free account so we can track your progress, XP, and badges as you
+                        learn.
                       </p>
                       <div className="flex flex-wrap items-center gap-2">
                         <Link
@@ -292,18 +293,7 @@ export function CourseViewer({
                         </Link>
                       </div>
                     </div>
-                  ) : profile.status !== "approved" ? (
-                    <div className="mb-4 rounded-xl border border-amber/30 bg-amber/10 px-4 py-4">
-                      <div className="text-sm font-extrabold text-navy mb-1">
-                        Your account is pending approval
-                      </div>
-                      <p className="text-xs text-gray">
-                        You&apos;re almost in! A mentor will review your application shortly. Once
-                        approved you can unlock every lesson here.
-                      </p>
-                    </div>
-                  ) : (
-                  <>
+                  ) : null}
                   {yt ? (
                     <div className="rounded-xl overflow-hidden border border-border aspect-video mb-4">
                       <iframe
