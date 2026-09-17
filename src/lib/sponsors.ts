@@ -95,18 +95,6 @@ export async function fetchSponsorBadges(sponsorId: string): Promise<BadgeRow[]>
   return data;
 }
 
-export async function fetchCardSlug(slug: string): Promise<SponsorRow | null> {
-  const sb = getSupabase();
-  const { data, error } = await sb
-    .from("business_cards")
-    .select("sponsor_id,slug")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error || !data) return null;
-  const sponsor = await fetchPublicSponsorBySlug(data.slug);
-  return sponsor ?? (await fetchSponsorById(data.sponsor_id));
-}
-
 export async function fetchSponsorById(id: string): Promise<SponsorRow | null> {
   const sb = getSupabase();
   const { data, error } = await sb
@@ -117,6 +105,17 @@ export async function fetchSponsorById(id: string): Promise<SponsorRow | null> {
     .maybeSingle();
   if (error || !data) return null;
   return data;
+}
+
+export async function fetchSponsorByCardSlug(slug: string): Promise<SponsorRow | null> {
+  const sb = getSupabase();
+  const { data, error } = await sb
+    .from("business_cards")
+    .select("sponsor_id")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return fetchSponsorById(data.sponsor_id);
 }
 
 export async function fetchPublicTemplates(): Promise<TemplateRow[]> {

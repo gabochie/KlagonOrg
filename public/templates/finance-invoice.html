@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simple Invoice</title>
+<style>
+  @page{margin:0.75in}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,sans-serif;color:#0F1B5C;max-width:800px;margin:0 auto;padding:2rem;line-height:1.5}
+  h1{font-size:1.5rem;margin:0 0 0.25rem}
+  h2{font-size:0.95rem;font-weight:800;margin:1.5rem 0 0.5rem;color:#F59E0B;border-bottom:2px solid #F59E0B;padding-bottom:0.25rem}
+  table{width:100%;border-collapse:collapse;margin:0.75rem 0}
+  th,td{border:1px solid #e5e7eb;padding:0.5rem;text-align:left;font-size:0.85rem}
+  th{background:#F0F4FF;font-weight:700}
+  .total{text-align:right;font-weight:800;font-size:1.1rem}
+  .note{background:#FFF7E6;border-left:3px solid #F59E0B;padding:0.75rem 1rem;margin:1rem 0;font-size:0.8rem;color:#B45309}
+  .footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:0.75rem;color:#6b7280;text-align:center}
+  @media print{body{padding:0}button{display:none}}
+</style>
+</head>
+<body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
+    <div>
+      <div style="font-weight:800;font-size:1.15rem;color:#0F1B5C">[Your Company Name]</div>
+      <div style="font-size:0.8rem;color:#6b7280">[Your Address]<br>[City, Region]<br>[Phone · Email]</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-weight:800;font-size:1.4rem;color:#F59E0B">INVOICE</div>
+      <div style="font-size:0.8rem;color:#6b7280;margin-top:0.25rem">
+        Invoice #: [INV-001]<br>
+        Date: [DD/MM/YYYY]<br>
+        Due: [DD/MM/YYYY]
+      </div>
+    </div>
+  </div>
+
+  <h2>Bill To</h2>
+  <div style="font-size:0.85rem;margin-bottom:1rem">
+    <strong>[Client Name]</strong><br>
+    [Client Address]<br>
+    [Client Phone · Email]
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Description</th><th>Qty</th><th>Unit Price (GH₵)</th><th>Amount (GH₵)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>[Service / product]</td><td>1</td><td>[0.00]</td><td>[0.00]</td></tr>
+      <tr><td>[Service / product]</td><td>1</td><td>[0.00]</td><td>[0.00]</td></tr>
+      <tr><td>[Service / product]</td><td>1</td><td>[0.00]</td><td>[0.00]</td></tr>
+    </tbody>
+  </table>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem">
+    <div class="note">Payment terms: [e.g. Net 14 days]</div>
+    <div>
+      <div>Subtotal: GH₵ [0.00]</div>
+      <div>Tax (0%): GH₵ [0.00]</div>
+      <div class="total" style="margin-top:0.25rem;color:#0F1B5C;border-top:2px solid #0F1B5C;padding-top:0.25rem">Total: GH₵ [0.00]</div>
+    </div>
+  </div>
+
+  <h2>Payment Details</h2>
+  <div style="font-size:0.85rem">
+    Bank: [Bank Name]<br>
+    Account Name: [Account Name]<br>
+    Account Number: [Account Number]<br>
+    MoMo: [Phone Number]
+  </div>
+
+  <div class="footer">Generated using the KLAGON Business Toolkit · <a href="https://klagon.org" style="color:#F59E0B">klagon.org</a></div>
+</body>
+</html>

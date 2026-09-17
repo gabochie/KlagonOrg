@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cash Flow Tracker</title>
+<style>
+  @page{margin:0.75in}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,sans-serif;color:#0F1B5C;max-width:900px;margin:0 auto;padding:2rem;line-height:1.4}
+  h1{font-size:1.4rem;margin:0 0 0.25rem}
+  h2{font-size:0.95rem;font-weight:800;margin:1.5rem 0 0.5rem;color:#F59E0B;border-bottom:2px solid #F59E0B;padding-bottom:0.25rem}
+  table{width:100%;border-collapse:collapse;margin:0.75rem 0;font-size:0.8rem}
+  th,td{border:1px solid #e5e7eb;padding:0.4rem 0.5rem;text-align:right}
+  th{background:#F0F4FF;font-weight:700;text-align:left}
+  td:nth-child(1),td:nth-child(2){text-align:left}
+  th:nth-child(1),th:nth-child(2){text-align:left}
+  .total-row td{background:#F0F4FF;font-weight:800;border-top:2px solid #0F1B5C}
+  .negative{color:#DC2626}
+  .positive{color:#059669}
+  .note{background:#FFF7E6;border-left:3px solid #F59E0B;padding:0.75rem 1rem;margin:1rem 0;font-size:0.8rem;color:#B45309}
+  .footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:0.75rem;color:#6b7280;text-align:center}
+  @media print{body{padding:0}button{display:none}}
+</style>
+</head>
+<body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
+    <div>
+      <h1>Cash Flow Tracker</h1>
+      <div style="font-size:0.85rem;color:#6b7280">[Your Company Name] · [Month, Year]</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>How to use:</strong> Update weekly. Positive cash flow means money is coming in faster than it's going out.
+    A negative week is a warning — plan ahead for the next week to cover gaps.
+  </div>
+
+  <h2>Cash Flow Summary</h2>
+  <table>
+    <thead>
+      <tr><th>Week</th><th>Description</th><th style="text-align:right">Income (GH₵)</th><th style="text-align:right">Expenses (GH₵)</th><th style="text-align:right">Net (GH₵)</th><th style="text-align:right">Running Balance (GH₵)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Week 1</td><td>[Opening balance]</td><td></td><td></td><td></td><td>[0.00]</td></tr>
+      <tr><td></td><td>[Sales / revenue]</td><td>[0.00]</td><td></td><td></td><td></td></tr>
+      <tr><td></td><td>[Rent, supplies, wages]</td><td></td><td>[0.00]</td><td></td><td></td></tr>
+      <tr class="total-row"><td colspan="2">Week 1 total</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td></tr>
+
+      <tr><td>Week 2</td><td>[Sales / revenue]</td><td>[0.00]</td><td></td><td></td><td></td></tr>
+      <tr><td></td><td>[Expenses]</td><td></td><td>[0.00]</td><td></td><td></td></tr>
+      <tr class="total-row"><td colspan="2">Week 2 total</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td></tr>
+
+      <tr><td>Week 3</td><td>[Sales / revenue]</td><td>[0.00]</td><td></td><td></td><td></td></tr>
+      <tr><td></td><td>[Expenses]</td><td></td><td>[0.00]</td><td></td><td></td></tr>
+      <tr class="total-row"><td colspan="2">Week 3 total</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td></tr>
+
+      <tr><td>Week 4</td><td>[Sales / revenue]</td><td>[0.00]</td><td></td><td></td><td></td></tr>
+      <tr><td></td><td>[Expenses]</td><td></td><td>[0.00]</td><td></td><td></td></tr>
+      <tr class="total-row"><td colspan="2">Week 4 total</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td></tr>
+
+      <tr class="total-row"><td colspan="2" style="font-size:0.95rem">Month total</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td><td>[0.00]</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Expense Categories</h2>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Examples</th><th style="text-align:right">This Month (GH₵)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Rent / Utilities</td><td>Shop rent, electricity, water, internet</td><td>[0.00]</td></tr>
+      <tr><td>Supplies / Stock</td><td>Raw materials, products, packaging</td><td>[0.00]</td></tr>
+      <tr><td>Wages</td><td>Staff salaries, casual labour</td><td>[0.00]</td></tr>
+      <tr><td>Transport</td><td>Delivery, fuel, trotro</td><td>[0.00]</td></tr>
+      <tr><td>Marketing</td><td>Ads, flyers, social media</td><td>[0.00]</td></tr>
+      <tr><td>Other</td><td>Phone, bank charges, misc</td><td>[0.00]</td></tr>
+      <tr class="total-row"><td><strong>Total Expenses</strong></td><td></td><td>[0.00]</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">Generated using the KLAGON Business Toolkit · <a href="https://klagon.org" style="color:#F59E0B">klagon.org</a></div>
+</body>
+</html>

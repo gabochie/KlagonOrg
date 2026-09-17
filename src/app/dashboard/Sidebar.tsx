@@ -50,7 +50,7 @@ const adminEngagement: NavItem[] = [
 
 const adminOps: NavItem[] = [
   { icon: "💰", label: "Donations", href: SOON, soon: true },
-  { icon: "🤝", label: "Sponsors", href: SOON, soon: true },
+  { icon: "🤝", label: "Sponsors", href: "/dashboard/admin/sponsors" },
   { icon: "🧑‍🏫", label: "Mentors", href: SOON, soon: true },
   { icon: "📈", label: "Analytics", href: SOON, soon: true },
   { icon: "⚙️", label: "Settings", href: "/dashboard/settings" },
