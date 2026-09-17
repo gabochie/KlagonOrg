@@ -41,7 +41,7 @@
               )}
             </div>
             <div className="p-5">
-              <div className="text-sm font-bold text-navy mb-1">Welcome back, Ama! ðŸ‘‹</div>
+              <div className="text-sm font-bold text-navy mb-1">Welcome back, Ama! 👋</div>
               <div className="text-xs text-gray mb-4">Saturday, 12 July 2025</div>
               <div className="grid grid-cols-3 gap-2.5 mb-4">
                 {[
@@ -57,7 +57,7 @@
               </div>
               <div className="bg-amber/10 rounded-lg p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-base flex-shrink-0">
-                  ðŸ“…
+                  📅
                 </div>
                 <div>
                   <div className="text-xs font-bold text-navy">
