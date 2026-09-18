@@ -185,4 +185,4 @@ export function parseListingCsv(text: string): RawListingRow[] {
 
 export const LISTING_CSV_TEMPLATE =
   "type,category,subcategory,title,excerpt,body,price_ghs,area,contact_name,contact_phone,contact_email,event_date,event_time,event_location,consent_status,consent_date,source,notes\n" +
-  'classified,Properties,House,"3-bed house for rent, Klagon","Fenced 3-bed with visitors washroom","Full description here: rooms, water, parking, terms.",2500,klagon,Ama Landlady,0244123456,,,,OPTED_IN,2026-09-18,whatsapp,"Agreed on WhatsApp Sep 18"\n';
+  'classified,Properties,House,"3-bed house for rent, Klagon","Fenced 3-bed with visitors washroom","Full description here: rooms, water, parking, terms.",2500,klagon,Ama Landlady,0244123456,,,,,OPTED_IN,2026-09-18,whatsapp,"Agreed on WhatsApp Sep 18"\n';
