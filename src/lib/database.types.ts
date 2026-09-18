@@ -498,6 +498,15 @@ export interface Database {
           opening_hours: string | null;
           service_areas: string[];
           certifications: string[];
+          photos: string[];
+          price_range: string | null;
+          amenities: string[];
+          check_in: string | null;
+          check_out: string | null;
+          stay_type: string | null;
+          latitude: number | null;
+          longitude: number | null;
+          booking_note: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -520,6 +529,15 @@ export interface Database {
           opening_hours?: string | null;
           service_areas?: string[];
           certifications?: string[];
+          photos?: string[];
+          price_range?: string | null;
+          amenities?: string[];
+          check_in?: string | null;
+          check_out?: string | null;
+          stay_type?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          booking_note?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -880,6 +898,57 @@ export interface Database {
           },
         ];
       };
+      reviews: {
+        Row: {
+          id: string;
+          sponsor_id: string | null;
+          post_id: string | null;
+          reviewer_name: string;
+          reviewer_id: string | null;
+          rating: number;
+          title: string | null;
+          body: string | null;
+          photos: string[];
+          staff_pick: boolean;
+          reply: string | null;
+          replied_at: string | null;
+          helpful: number;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          sponsor_id?: string | null;
+          post_id?: string | null;
+          reviewer_name: string;
+          reviewer_id?: string | null;
+          rating: number;
+          title?: string | null;
+          body?: string | null;
+          photos?: string[];
+          staff_pick?: boolean;
+          reply?: string | null;
+          helpful?: number;
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reviews"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reviews_sponsor_id_fkey";
+            columns: ["sponsor_id"];
+            referencedRelation: "sponsors";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_post_id_fkey";
+            columns: ["post_id"];
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       map_points: {
         Row: {
           id: string;
@@ -1062,6 +1131,12 @@ export interface Database {
         Args: {
           p_map_id: string;
           p_status: MemberStatus;
+        };
+        Returns: undefined;
+      };
+      bump_review_helpful: {
+        Args: {
+          p_review_id: string;
         };
         Returns: undefined;
       };
