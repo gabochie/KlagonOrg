@@ -182,6 +182,10 @@ export function Footer() {
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/55">
             © {new Date().getFullYear()} KlagonOrg. All rights reserved.
+            <span className="block mt-0.5 text-white/40">
+              A Gabochie Design community initiative — currently in pilot · P.O. Box SK 2125,
+              Sakumono, Tema — Ghana
+            </span>
           </div>
           <div className="flex items-center gap-4">
             {legalLinks.map((l) => (

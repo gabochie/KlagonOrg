@@ -106,7 +106,8 @@ export default function ContactPage() {
                   <div>
                     <div className="text-xs font-bold text-navy">Location</div>
                     <div className="text-xs text-gray">
-                      Community Center, Klagon<br />Greater Accra Region, Ghana
+                      Community Center, Klagon<br />Greater Accra Region, Ghana<br />
+                      P.O. Box SK 2125, Sakumono, Tema — Ghana
                     </div>
                   </div>
                 </div>
