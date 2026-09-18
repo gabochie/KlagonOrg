@@ -508,6 +508,7 @@ export interface Database {
           latitude: number | null;
           longitude: number | null;
           booking_note: string | null;
+          claimed_by: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -539,11 +540,44 @@ export interface Database {
           latitude?: number | null;
           longitude?: number | null;
           booking_note?: string | null;
+          claimed_by?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["sponsors"]["Insert"]>;
         Relationships: [];
+      };
+      sponsor_claims: {
+        Row: {
+          id: string;
+          sponsor_id: string;
+          claimant_id: string;
+          phone: string | null;
+          relationship: string | null;
+          note: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          sponsor_id: string;
+          claimant_id: string;
+          phone?: string | null;
+          relationship?: string | null;
+          note?: string | null;
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["sponsor_claims"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_claims_sponsor_id_fkey";
+            columns: ["sponsor_id"];
+            referencedRelation: "sponsors";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       template_downloads: {
         Row: {

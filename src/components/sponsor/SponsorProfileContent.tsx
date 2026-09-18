@@ -4,6 +4,7 @@ import { fetchPublicSponsorBySlug, fetchSponsorBadges, parseContact, parseLocati
 import { BADGE_LABELS, WALL_GROUPS } from "@/lib/constants";
 import { TierBadge } from "@/components/sponsor/TierBadge";
 import { ProfileActions } from "@/components/sponsor/ProfileActions";
+import { ClaimBusiness } from "@/components/sponsor/ClaimBusiness";
 
 function initialsOf(name: string): string {
   return (
@@ -266,6 +267,12 @@ export async function SponsorProfileContent({ slug }: { slug: string }) {
             </Section>
 
             <ProfileActions whatsapp={contact.whatsapp ?? null} businessName={sponsor.name ?? ""} />
+
+            <ClaimBusiness
+              sponsorId={sponsor.id}
+              sponsorName={sponsor.name ?? "this business"}
+              claimedBy={sponsor.claimed_by ?? null}
+            />
 
             {showsStudio && (
               <div className="bg-gradient-to-br from-navy to-blue rounded-2xl p-5 text-white">

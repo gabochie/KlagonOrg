@@ -10,6 +10,7 @@
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 
 export const POST_MEDIA_BUCKET = "post-media";
+export const SPONSOR_MEDIA_BUCKET = "sponsor-media";
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -74,6 +75,31 @@ export async function uploadPostMedia(file: File, userId: string): Promise<Uploa
   if (error) return { ok: false, error: error.message };
 
   const { data } = c.storage.from(POST_MEDIA_BUCKET).getPublicUrl(path);
+  return { ok: true, url: data.publicUrl, path };
+}
+
+/** Upload a listing photo to sponsor-media under the sponsor's folder. */
+export async function uploadSponsorMedia(
+  file: File,
+  sponsorId: string
+): Promise<UploadResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase is not configured." };
+  const c = getBrowserClient();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+
+  const invalid = validateImage(file);
+  if (invalid) return { ok: false, error: invalid };
+
+  const path = `sponsors/${sponsorId}/${Date.now()}-${slugify(file.name)}.${extOf(file)}`;
+
+  const { error } = await c.storage.from(SPONSOR_MEDIA_BUCKET).upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  const { data } = c.storage.from(SPONSOR_MEDIA_BUCKET).getPublicUrl(path);
   return { ok: true, url: data.publicUrl, path };
 }
 
