@@ -4,7 +4,7 @@
  * Turns the DBGABOCHIE `staging_tema_west_osm.csv` rows (real OpenStreetMap
  * points with coordinates) into `map_points` inserts. Every row lands as
  * `status = 'pending'`, `source = 'osm-staging'` for admin approval —
- * nothing unverified ever reaches the public map. `entity_id` carries the
+ * nothing unverified ever reaches the public map. `external_id` carries the
  * stable `osm:{osm_id}` key so re-uploads dedupe instead of doubling.
  *
  * Pure TS. Deterministic. Fully unit-tested.
@@ -28,7 +28,8 @@ export interface RawOsmRow {
 
 export interface ValidMapPoint {
   entity_type: MapEntityType;
-  entity_id: string;
+  /** Stable text key for imports (e.g. 'osm:way788490441'). Never the uuid entity_id. */
+  external_id: string;
   name: string;
   description: string | null;
   category: string;
@@ -133,7 +134,7 @@ export function validateOsmRow(row: RawOsmRow, rowNumber: number): OsmVerdict {
     importable: true,
     point: {
       entity_type: mapEntityType(row.record_type, row.osm_tag),
-      entity_id: `osm:${row.osm_id.trim()}`,
+      external_id: `osm:${row.osm_id.trim()}`,
       name,
       description,
       category: row.record_type.trim() || row.osm_tag.trim() || "Place",

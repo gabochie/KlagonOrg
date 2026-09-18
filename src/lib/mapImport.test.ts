@@ -37,7 +37,7 @@ describe("osm staging import kernel", () => {
   it("passes a clean row with osm entity id", () => {
     const v = validateOsmRow(row(), 2);
     expect(v.importable).toBe(true);
-    expect(v.point?.entity_id).toBe("osm:way788490441");
+    expect(v.point?.external_id).toBe("osm:way788490441");
     expect(v.point?.dedupeKey).toBe("osm:way788490441");
   });
 

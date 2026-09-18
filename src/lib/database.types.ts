@@ -885,6 +885,7 @@ export interface Database {
           id: string;
           entity_type: MapEntityType;
           entity_id: string | null;
+          external_id: string | null;
           name: string;
           description: string | null;
           category: string | null;
@@ -904,6 +905,7 @@ export interface Database {
           id?: string;
           entity_type: MapEntityType;
           entity_id?: string | null;
+          external_id?: string | null;
           name: string;
           description?: string | null;
           category?: string | null;

@@ -83,18 +83,18 @@ export function MapImporter() {
         setProgress(`Checking batch ${Math.floor(i / BATCH) + 1} of ${Math.ceil(points.length / BATCH)}…`);
         const { data: existing, error: checkError } = await c
           .from("map_points")
-          .select("entity_id")
+          .select("external_id")
           .in(
-            "entity_id",
-            chunk.map((p) => p.entity_id)
+            "external_id",
+            chunk.map((p) => p.external_id)
           );
         if (checkError) {
           errors.push(`Dedupe check failed: ${checkError.message}`);
           break;
         }
-        const seen = new Set((existing ?? []).map((r) => r.entity_id));
+        const seen = new Set((existing ?? []).map((r) => r.external_id));
         const fresh = chunk.filter((p) => {
-          if (seen.has(p.entity_id)) {
+          if (seen.has(p.external_id)) {
             skipped++;
             return false;
           }
@@ -107,7 +107,7 @@ export function MapImporter() {
           .insert(
             fresh.map((p) => ({
               entity_type: p.entity_type,
-              entity_id: p.entity_id,
+              external_id: p.external_id,
               name: p.name,
               description: p.description,
               category: p.category,
