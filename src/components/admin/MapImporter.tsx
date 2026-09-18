@@ -24,6 +24,7 @@ export function MapImporter() {
   const [fileName, setFileName] = useState("");
   const [verdicts, setVerdicts] = useState<OsmVerdict[]>([]);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState("");
   const [importedIds, setImportedIds] = useState<string[]>([]);
   const [result, setResult] = useState<string | null>(null);
 
@@ -67,50 +68,70 @@ export function MapImporter() {
     }
     setBusy(true);
     setResult(null);
+    setProgress("Starting…");
+    const points = importable
+      .map((v) => v.point)
+      .filter((p): p is NonNullable<typeof p> => p !== null);
+    const BATCH = 100;
     let inserted = 0;
     let skipped = 0;
     const ids: string[] = [];
     const errors: string[] = [];
-    for (const v of importable) {
-      const p = v.point;
-      if (!p) continue;
-      try {
-        const { data: existing } = await c
+    try {
+      for (let i = 0; i < points.length; i += BATCH) {
+        const chunk = points.slice(i, i + BATCH);
+        setProgress(`Checking batch ${Math.floor(i / BATCH) + 1} of ${Math.ceil(points.length / BATCH)}…`);
+        const { data: existing, error: checkError } = await c
           .from("map_points")
-          .select("id")
-          .eq("entity_id", p.entity_id)
-          .limit(1);
-        if (existing && existing.length > 0) {
-          skipped++;
-          continue;
+          .select("entity_id")
+          .in(
+            "entity_id",
+            chunk.map((p) => p.entity_id)
+          );
+        if (checkError) {
+          errors.push(`Dedupe check failed: ${checkError.message}`);
+          break;
         }
+        const seen = new Set((existing ?? []).map((r) => r.entity_id));
+        const fresh = chunk.filter((p) => {
+          if (seen.has(p.entity_id)) {
+            skipped++;
+            return false;
+          }
+          return true;
+        });
+        if (fresh.length === 0) continue;
+        setProgress(`Inserting ${inserted + fresh.length} of ${points.length}…`);
         const { data, error } = await c
           .from("map_points")
-          .insert({
-            entity_type: p.entity_type,
-            entity_id: p.entity_id,
-            name: p.name,
-            description: p.description,
-            category: p.category,
-            latitude: p.latitude,
-            longitude: p.longitude,
-            community_area: p.community_area,
-            source: "osm-staging",
-            status: "pending",
-            reported_by: user.id,
-          })
-          .select("id")
-          .single();
-        if (error) errors.push(`Row ${v.rowNumber}: ${error.message}`);
-        else {
-          inserted++;
-          if (data) ids.push(data.id);
+          .insert(
+            fresh.map((p) => ({
+              entity_type: p.entity_type,
+              entity_id: p.entity_id,
+              name: p.name,
+              description: p.description,
+              category: p.category,
+              latitude: p.latitude,
+              longitude: p.longitude,
+              community_area: p.community_area,
+              source: "osm-staging",
+              status: "pending",
+              reported_by: user.id,
+            }))
+          )
+          .select("id");
+        if (error) {
+          errors.push(`Insert failed: ${error.message}`);
+          break;
         }
-      } catch (e) {
-        errors.push(`Row ${v.rowNumber}: ${e instanceof Error ? e.message : "failed"}`);
+        inserted += data?.length ?? 0;
+        (data ?? []).forEach((r) => ids.push(r.id));
       }
+    } catch (e) {
+      errors.push(e instanceof Error ? e.message : "failed");
     }
     setBusy(false);
+    setProgress("");
     setImportedIds(ids);
     setResult(
       `Imported ${inserted} as pending, skipped ${skipped} duplicate(s).` +
@@ -204,7 +225,7 @@ export function MapImporter() {
               onClick={() => void runImport()}
               className="flex-1 px-3 py-2 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer disabled:opacity-50"
             >
-              {busy ? "Working…" : `Import ${importable.length} as Pending →`}
+              {busy ? `Working… ${progress}` : `Import ${importable.length} as Pending →`}
             </button>
             <button
               disabled={busy || importedIds.length === 0}
