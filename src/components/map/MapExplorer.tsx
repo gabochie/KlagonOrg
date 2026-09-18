@@ -32,7 +32,7 @@ import {
   MAP_ATTRIBUTION,
   MAP_TILES_URL,
   MAP_STYLE_URL,
-  OSM_RASTER_TILES,
+  OPENFREEMAP_STYLE_URL,
 } from "@/lib/map/tiles";
 import { SEVERITY_META } from "@/lib/map/types";
 import type { MapEntityType, MapPoint } from "@/lib/map/types";
@@ -144,19 +144,7 @@ export function MapExplorer() {
               },
             },
           }
-        : {
-            version: 8,
-            sources: {
-              basemap: {
-                type: "raster",
-                tiles: [OSM_RASTER_TILES],
-                tileSize: 256,
-                maxzoom: 18,
-                attribution: MAP_ATTRIBUTION,
-              },
-            },
-            layers: [{ id: "basemap-raster", type: "raster", source: "basemap" }],
-          };
+        : OPENFREEMAP_STYLE_URL;
 
       const map = new maplibregl.Map({
         container,

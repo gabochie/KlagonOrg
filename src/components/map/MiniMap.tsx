@@ -14,7 +14,8 @@ import "./map.css";
 import {
   MAP_ATTRIBUTION,
   MAP_TILES_URL,
-  OSM_RASTER_TILES,
+  MAP_STYLE_URL,
+  OPENFREEMAP_STYLE_URL,
 } from "@/lib/map/tiles";
 import type { MapPoint } from "@/lib/map/types";
 
@@ -53,23 +54,11 @@ export function MiniMap({ point, className }: MiniMapProps) {
               },
             },
           }
-        : {
-            version: 8,
-            sources: {
-              basemap: {
-                type: "raster",
-                tiles: [OSM_RASTER_TILES],
-                tileSize: 256,
-                maxzoom: 18,
-                attribution: MAP_ATTRIBUTION,
-              },
-            },
-            layers: [{ id: "basemap-raster", type: "raster", source: "basemap" }],
-          };
+        : OPENFREEMAP_STYLE_URL;
 
       const map = new maplibregl.Map({
         container,
-        style,
+        style: MAP_STYLE_URL || style,
         center: [point.longitude, point.latitude],
         zoom: 15,
         interactive: false,
