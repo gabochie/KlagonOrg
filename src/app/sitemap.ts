@@ -37,6 +37,8 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/classifieds", changeFrequency: "daily", priority: 0.9 },
   { path: "/classifieds/properties", changeFrequency: "daily", priority: 0.8 },
   { path: "/classifieds/vehicles", changeFrequency: "daily", priority: 0.8 },
+  { path: "/visit", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/visit/stays", changeFrequency: "daily", priority: 0.9 },
   { path: "/auth/register", changeFrequency: "monthly", priority: 0.8 },
   { path: "/auth/login", changeFrequency: "monthly", priority: 0.5 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
