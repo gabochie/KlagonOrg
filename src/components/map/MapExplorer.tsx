@@ -80,6 +80,7 @@ function toFeature(p: MapPoint): Feature<Point, PointProps> {
 function layerHref(point: MapPoint): string | null {
   if (point.entity_type === "project") return "/projects";
   if (point.entity_type === "event") return "/events";
+  if (point.entity_type === "stay") return "/visit/stays";
   return null;
 }
 

@@ -55,6 +55,7 @@ export const TEMA_BBOX = {
 };
 
 const TAG_ENTITY: { match: RegExp; entity: MapEntityType }[] = [
+  { match: /hotel|guest[\s-]?house|lodge|hostel|airbnb|short[\s-]?stay/i, entity: "stay" },
   { match: /worship|church|mosque|relig/i, entity: "faith" },
   { match: /school|college|university|kindergarten/i, entity: "school" },
   { match: /hospital|clinic|pharmacy|health|doctor|dental/i, entity: "health" },

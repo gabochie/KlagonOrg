@@ -51,7 +51,8 @@ export type MapEntityType =
   | "facility"
   | "governance"
   | "need"
-  | "sponsor";
+  | "sponsor"
+  | "stay";
 export type MapSeverity = "low" | "medium" | "high" | "critical";
 
 export interface Database {

@@ -86,6 +86,15 @@ export const MAP_LAYERS: MapLayerConfig[] = [
     defaultOn: true,
   },
   {
+    key: "stay",
+    label: "Places to Stay",
+    entityTypes: ["stay"],
+    color: "#D97706",
+    icon: "🛏️",
+    defaultOn: true,
+    badge: "New",
+  },
+  {
     key: "sponsor",
     label: "Sponsors",
     entityTypes: ["sponsor"],
