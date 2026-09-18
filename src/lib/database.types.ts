@@ -929,6 +929,7 @@ export interface Database {
           photos?: string[];
           staff_pick?: boolean;
           reply?: string | null;
+          replied_at?: string | null;
           helpful?: number;
           status?: string;
         };
