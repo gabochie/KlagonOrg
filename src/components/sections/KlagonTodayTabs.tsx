@@ -43,7 +43,7 @@ function demoJobs(): FeedItem[] {
 export function KlagonTodayTabs() {
   const [tab, setTab] = useState<Tab>("All");
   const [posts, setPosts] = useState<PostSummary[]>([]);
-  const [events, setEvents] = useState<Event[]>([] proiektuak;
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     void fetchPublicPosts().then(setPosts);
@@ -66,7 +66,7 @@ export function KlagonTodayTabs() {
       tag: "EVENT",
     })),
     ...COMMUNITY_SHOTS.slice(0, 6).map((s) => ({
-      key: `community-${s.id}`,
+      key: `community-${s.src}`,
       kind: "Community" as Tab,
       title: s.caption,
       excerpt: "Community photo — real moments from Klagon.",

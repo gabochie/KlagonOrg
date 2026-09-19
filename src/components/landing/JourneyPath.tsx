@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { JOURNEY_STAGES } from "@/lib/constants";
 
 export function JourneyPath() {
@@ -19,7 +20,7 @@ export function JourneyPath() {
           </div>
           <div className="flex items-center gap-0 overflow-x-auto pb-4" tabIndex={0} role="region" aria-label="Learning journey">
             {JOURNEY_STAGES.map((stage, i) => (
-              <>
+              <Fragment key={stage.id}>
                 <div key={stage.id} className="flex flex-col items-center min-w-[100px]">
                   <div
                     className={`w-14 h-14 rounded-full flex items-center justify-center text-xl relative mb-2.5 ${
@@ -43,7 +44,7 @@ export function JourneyPath() {
                 {i < JOURNEY_STAGES.length - 1 && (
                   <div className="flex-1 h-0.5 bg-gradient-to-r from-amber to-green opacity-40 min-w-[16px] -mt-8" />
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
         </div>
