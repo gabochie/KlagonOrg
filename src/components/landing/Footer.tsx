@@ -1,26 +1,29 @@
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/landing/NewsletterSignup";
 
-const platformLinks = [
+const exploreLinks = [
   { label: "About", href: "/about" },
-  { label: "Events", href: "/events" },
-  { label: "Learning Hub", href: "/learning" },
-  { label: "Blog", href: "/blog" },
-  { label: "Projects", href: "/projects" },
   { label: "Map", href: "/map" },
   { label: "Classifieds", href: "/classifieds" },
   { label: "Visit Klagon", href: "/visit" },
-  { label: "Sponsors", href: "/sponsors" },
-  { label: "Free Health Score", href: "/tools/health-score" },
-  { label: "Volunteer", href: "/volunteer" },
+  { label: "Events", href: "/events" },
   { label: "News", href: "/news" },
 ];
 
-const joinLinks = [
-  { label: "Log in", href: "/auth/login" },
-  { label: "Register Now", href: "/auth/register" },
+const learnLinks = [
+  { label: "Learning Hub", href: "/learning" },
+  { label: "Blog", href: "/blog" },
+  { label: "Projects", href: "/projects" },
+  { label: "Volunteer", href: "/volunteer" },
   { label: "Become a Mentor", href: "/mentor" },
-  { label: "Sponsor KLAGON.org", href: "/sponsor" },
+];
+
+const businessLinks = [
+  { label: "Sponsors", href: "/sponsors" },
+  { label: "Become a Sponsor", href: "/sponsor" },
+  { label: "Free Health Score", href: "/tools/health-score" },
   { label: "Donate", href: "/donate" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 const contactLinks = [
@@ -96,7 +99,7 @@ export function Footer() {
   return (
     <footer className="bg-navy py-10 sm:py-12 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 mb-8">
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-2.5">
               <img
@@ -130,9 +133,9 @@ export function Footer() {
           </div>
           <div>
             <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
-              Platform
+              Explore
             </div>
-            {platformLinks.map((l) => (
+            {exploreLinks.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
@@ -144,9 +147,9 @@ export function Footer() {
           </div>
           <div>
             <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
-              Join
+              Learn & Grow
             </div>
-            {joinLinks.map((l) => (
+            {learnLinks.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
@@ -158,31 +161,40 @@ export function Footer() {
           </div>
           <div>
             <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
-              Contact
+              Business
             </div>
-            {contactLinks.map((l) =>
-              l.external ? (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  suppressHydrationWarning={l.href.startsWith("mailto:")}
-                  className="block text-xs text-white/60 hover:text-amber mb-2 transition-colors"
-                >
-                  {l.label}
-                </a>
-              ) : (
-                <Link
-                  key={l.label}
-                  href={l.href}
-                  suppressHydrationWarning={l.href.startsWith("mailto:")}
-                  className="block text-xs text-white/60 hover:text-amber mb-2 transition-colors"
-                >
-                  {l.label}
-                </Link>
-              )
-            )}
+            {businessLinks.map((l) => (
+              <Link
+                key={l.label}
+                href={l.href}
+                className="block text-xs text-white/60 hover:text-amber mb-2 transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+          <div>
+            <div className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">
+              Stay Updated
+            </div>
+            <p className="text-xs text-white/50 leading-relaxed mb-3">
+              Community news and new listings, once a month.
+            </p>
+            <NewsletterSignup />
+            <div className="mt-4 flex flex-col gap-1.5">
+              <a
+                href="mailto:hello@klagon.org"
+                className="text-xs text-white/60 hover:text-amber transition-colors"
+              >
+                hello@klagon.org
+              </a>
+              <a
+                href="tel:+233243262019"
+                className="text-xs text-white/60 hover:text-amber transition-colors"
+              >
+                +233 24 326 2019
+              </a>
+            </div>
           </div>
         </div>
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
