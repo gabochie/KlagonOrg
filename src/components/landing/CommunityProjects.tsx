@@ -1,6 +1,40 @@
-import { PROJECTS } from "@/lib/constants";
+import Link from "next/link";
+import { getSupabase } from "@/lib/supabase";
 
-export function CommunityProjects() {
+type PublicProject = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  status: string;
+  volunteers: number;
+  spotsOpen: number;
+  color: string;
+};
+
+async function getProjects(): Promise<PublicProject[]> {
+  try {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("projects_public").select("*");
+    if (error || !data || data.length === 0) return [];
+    return data.map((r) => ({
+      id: r.id,
+      title: r.title,
+      description: r.description ?? "",
+      icon: r.icon,
+      status: r.status,
+      volunteers: r.volunteer_count,
+      spotsOpen: r.spots_open,
+      color: r.status === "active" ? "#ECFDF5" : "#EEF2FF",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function CommunityProjects() {
+  const projects = await getProjects();
+
   return (
     <section className="bg-white py-14 sm:py-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
@@ -14,35 +48,51 @@ export function CommunityProjects() {
           Join active projects, volunteer your skills, and see the direct impact on your community —
           all tracked on your profile.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {PROJECTS.map((p) => (
-            <div key={p.id} className="border border-border rounded-xl p-5">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                  style={{ background: p.color }}
-                >
-                  {p.icon}
+        {projects.length === 0 ? (
+          <div className="border border-border rounded-xl p-6 sm:p-8 text-center">
+            <div className="text-sm font-bold text-navy mb-1">Project days are being scheduled.</div>
+            <p className="text-sm text-gray leading-relaxed mb-4">
+              The first Klagon community build days are being planned. Join free and we&apos;ll
+              notify you the moment you can volunteer.
+            </p>
+            <Link
+              href="/auth/register"
+              className="inline-block px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors"
+            >
+              Join Free — Get Notified →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {projects.map((p) => (
+              <div key={p.id} className="border border-border rounded-xl p-5">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                    style={{ background: p.color }}
+                  >
+                    {p.icon}
+                  </div>
+                  <div className="text-sm font-bold text-navy">{p.title}</div>
                 </div>
-                <div className="text-sm font-bold text-navy">{p.title}</div>
+                <span
+                  className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-2 ${
+                    p.status === "active"
+                      ? "bg-green/10 text-green-800"
+                      : "bg-amber/10 text-amber-800"
+                  }`}
+                >
+                  {p.status === "active" ? "Active" : "Recruiting"}
+                </span>
+                <p className="text-xs text-gray leading-relaxed mb-3">{p.description}</p>
+                <div className="flex items-center gap-1.5 text-xs text-gray">
+                  <span className="w-2 h-2 rounded-full bg-green" />
+                  {p.volunteers} volunteers · {p.spotsOpen} spots open
+                </div>
               </div>
-              <span
-                className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-2 ${
-                  p.status === "active"
-                    ? "bg-green/10 text-green-800"
-                    : "bg-amber/10 text-amber-800"
-                }`}
-              >
-                {p.status === "active" ? "Active" : "Recruiting"}
-              </span>
-              <p className="text-xs text-gray leading-relaxed mb-3">{p.description}</p>
-              <div className="flex items-center gap-1.5 text-xs text-gray">
-                <span className="w-2 h-2 rounded-full bg-green" />
-                {p.volunteers} volunteers · {p.spotsOpen} spots open
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

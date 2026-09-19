@@ -105,7 +105,7 @@ export default function MentorPage() {
                 <div className="text-2xl mb-2">{t.icon}</div>
                 <h3 className="text-sm font-bold text-navy mb-1">{t.title}</h3>
                 <p className="text-xs text-gray leading-relaxed mb-2">{t.description}</p>
-                <span className="text-[11px] font-semibold text-amber-strong dark:text-amber">{t.mentors} mentors available</span>
+                <span className="text-[11px] font-semibold text-amber-strong dark:text-amber">Open to new mentors</span>
               </button>
             ))}
           </div>
