@@ -211,6 +211,27 @@ function ManageInner() {
         <div className="text-xs font-semibold text-navy bg-pale rounded-lg px-3 py-2">{notice}</div>
       )}
 
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-white border border-border rounded-xl p-3 text-center">
+          <div className="text-xl font-extrabold text-navy">{reviews.length}</div>
+          <div className="text-[10px] text-gray font-bold">Reviews</div>
+        </div>
+        <div className="bg-white border border-border rounded-xl p-3 text-center">
+          <div className="text-xl font-extrabold text-navy">
+            {reviews.length === 0
+              ? "—"
+              : (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
+          </div>
+          <div className="text-[10px] text-gray font-bold">Avg rating</div>
+        </div>
+        <div className="bg-white border border-border rounded-xl p-3 text-center">
+          <div className="text-xl font-extrabold text-navy">
+            {reviews.filter((r) => !r.reply).length}
+          </div>
+          <div className="text-[10px] text-gray font-bold">Need reply</div>
+        </div>
+      </div>
+
       <div className="bg-white border border-border rounded-2xl p-5">
         <div className="text-sm font-extrabold text-navy mb-3">Photos ({sponsor.photos.length}/12)</div>
         <div className="grid grid-cols-3 gap-2 mb-3">
