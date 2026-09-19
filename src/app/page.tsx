@@ -8,7 +8,6 @@ import { ValueProps } from "@/components/landing/ValueProps";
 import { EventsSection } from "@/components/landing/EventsSection";
 import { LearningHub } from "@/components/landing/LearningHub";
 import { CommunityProjects } from "@/components/landing/CommunityProjects";
-import { KlagonTodayTabs } from "@/components/sections/KlagonTodayTabs";
 import { DashboardPreview } from "@/components/landing/DashboardPreview";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { RegistrationForm } from "@/components/landing/RegistrationForm";
@@ -29,7 +28,6 @@ export default function Home() {
         <EventsSection />
         <LearningHub />
         <CommunityProjects />
-        <KlagonTodayTabs />
         <DashboardPreview />
         <Testimonials />
         <RegistrationForm />
