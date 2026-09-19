@@ -110,6 +110,11 @@ export function MyPostsList() {
                 {fmt(p.createdAt)}
                 {p.status === "approved" && p.publishedAt ? ` · live ${fmt(p.publishedAt)}` : ""}
                 {p.area ? ` · ${AREA_LABELS[p.area]}` : ""}
+                {p.type === "job" && p.expiresAt
+                  ? new Date(p.expiresAt) <= new Date()
+                    ? " · closed"
+                    : ` · closes ${fmt(p.expiresAt)}`
+                  : ""}
               </div>
               {p.status === "rejected" && p.rejectedReason && (
                 <div className="mt-2 text-[11px] text-red-700 bg-red-50 border border-red/30 rounded-lg px-2.5 py-1.5">

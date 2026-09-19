@@ -18,9 +18,6 @@ interface FeedItem {
   tag: string;
 }
 
-const JOBS_LABEL =
-  "Klagon Jobs & Opportunities — real listings coming soon. This tab shows illustrative examples only. Nothing here is a live opening yet.";
-
 function demoJobs(): FeedItem[] {
   return [
     {
@@ -53,10 +50,10 @@ export function KlagonTodayTabs() {
   const items: FeedItem[] = [
     ...posts.map((p) => ({
       key: `post-${p.id}`,
-      kind: "News" as Tab,
+      kind: (p.type === "job" ? "Jobs" : "News") as Tab,
       title: p.title,
       excerpt: p.excerpt,
-      tag: "NEWS",
+      tag: p.type === "job" ? "JOB" : "NEWS",
     })),
     ...events.map((e) => ({
       key: `event-${e.id}`,
@@ -131,8 +128,10 @@ export function KlagonTodayTabs() {
         </div>
 
         <p className="mt-6 text-[11px] text-gray bg-gray-50 border border-gray-100 rounded-lg px-3 py-2">
-          <strong>Klagon Today honesty note:</strong> News, Events and Community show real published items only.
-          Jobs &amp; Businesses tabs show illustrative examples — real listings and verified openings are still coming soon. That distinction matters.
+          <strong>Klagon Today honesty note:</strong> News, Jobs, Events and Community show real published
+          items only — job listings come from the reviewed board and expire automatically. Businesses &amp;
+          Opportunities tabs show illustrative examples; verified storefronts and named opportunities are
+          coming soon. That distinction matters.
         </p>
       </div>
     </section>

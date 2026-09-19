@@ -5,6 +5,7 @@ const exploreLinks = [
   { label: "About", href: "/about" },
   { label: "Map", href: "/map" },
   { label: "Classifieds", href: "/classifieds" },
+  { label: "Jobs & Opportunities", href: "/jobs" },
   { label: "Visit Klagon", href: "/visit" },
   { label: "Events", href: "/events" },
   { label: "News", href: "/news" },

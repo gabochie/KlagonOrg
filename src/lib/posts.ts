@@ -157,6 +157,11 @@ export function mapPost(row: PostRow): Post {
 // public reads
 // ------------------------------------------------------------------
 
+/** True once a listing has passed its auto-expiry date (jobs). */
+export function isPostExpired(post: Pick<Post, "expiresAt">, now = new Date()): boolean {
+  return Boolean(post.expiresAt && new Date(post.expiresAt) <= now);
+}
+
 export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[]> {
   const c = client();
   if (!c) return [];
@@ -168,7 +173,7 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
     .select("*")
     .eq("status", "approved")
     .lte("published_at", now)
-    .lte("reports", 2)
+    .lt("reports", 3)
     .or(`expires_at.is.null,expires_at.gt.${now}`);
 
   if (filters.type && filters.type !== "all") query = query.eq("type", filters.type);
@@ -193,13 +198,15 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
 export async function fetchFeaturedPosts(limit = 3): Promise<Post[]> {
   const c = client();
   if (!c) return [];
+  const now = new Date().toISOString();
   const { data, error } = await c
     .from("posts")
     .select("*")
     .eq("status", "approved")
     .not("boost_until", "is", null)
-    .gt("boost_until", new Date().toISOString())
+    .gt("boost_until", now)
     .lt("reports", 3)
+    .or(`expires_at.is.null,expires_at.gt.${now}`)
     .order("boost_until", { ascending: false })
     .limit(limit);
   if (error || !data) return [];

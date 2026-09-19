@@ -17,9 +17,9 @@ const NAV_LINKS = [
   { label: "Map", href: "/map" },
   { label: "Businesses", href: "/business" },
   { label: "Classifieds", href: "/classifieds" },
+  { label: "Jobs", href: "/jobs" },
   { label: "Visit", href: "/visit" },
   { label: "Community", href: "/news" },
-  { label: "About", href: "/about" },
 ];
 
 export function Navbar() {

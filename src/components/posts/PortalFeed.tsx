@@ -191,6 +191,17 @@ export function PortalFeed() {
         ))}
       </div>
 
+      {tab === "job" && (
+        <div className="text-right mb-4 -mt-1">
+          <Link
+            href="/jobs"
+            className="inline-flex items-center gap-1 text-xs font-bold text-navy hover:text-blue transition-colors"
+          >
+            Open the full jobs board →
+          </Link>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <form
           className="flex flex-1 gap-2"
