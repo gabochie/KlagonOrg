@@ -103,6 +103,10 @@ export function VolunteerSection() {
               </button>
             ))}
           </div>
+          <div className="mb-6 text-xs text-gray bg-pale rounded-lg px-4 py-3">
+            These are the roles we&apos;re building for the Klagon pilot — sign up and we&apos;ll
+            confirm as each program goes live.
+          </div>
           {notice && (
             <div className="mb-6 text-xs font-semibold bg-amber/10 text-navy rounded-lg px-4 py-3">
               {notice}
@@ -126,19 +130,9 @@ export function VolunteerSection() {
                     {v.category}
                   </span>
                   <h2 className="text-sm font-bold text-navy mb-1">{v.title}</h2>
-                  <p className="text-xs text-gray leading-relaxed mb-3">{v.description}</p>
-                  <div className="flex items-center gap-2 text-xs text-gray mb-3">
+                  <p className="text-xs text-gray leading-relaxed mb-4">{v.description}</p>
+                  <div className="flex items-center gap-2 text-xs text-gray mb-4">
                     <span className="font-semibold text-navy">{v.commitment}</span>
-                    <span>·</span>
-                    <span>
-                      {v.spotsLeft} of {v.spots} spots left
-                    </span>
-                  </div>
-                  <div className="h-1.5 bg-light rounded-full overflow-hidden mb-3">
-                    <div
-                      className="h-full rounded-full bg-amber"
-                      style={{ width: `${((v.spots - v.spotsLeft) / v.spots) * 100}%` }}
-                    />
                   </div>
                   <button
                     onClick={() => void toggleJoin(v)}

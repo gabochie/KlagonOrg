@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { PROJECTS } from "@/lib/constants";
 import {
   fetchPublicProjects,
   fetchMyVolunteerProjectIds,
@@ -14,14 +13,16 @@ import type { Project } from "@/types";
 
 export function ProjectsSection() {
   const { profile } = useAuth();
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [joined, setJoined] = useState<Set<string>>(new Set());
   const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchPublicProjects();
-      if (live.length > 0) setProjects(live);
+      setProjects(live);
+      setLoaded(true);
     })();
   }, []);
 
@@ -72,6 +73,20 @@ export function ProjectsSection() {
               {notice}{" "}
               <Link href="/auth/login" className="font-bold text-blue hover:underline">
                 Sign in →
+              </Link>
+            </div>
+          )}
+          {loaded && projects.length === 0 && (
+            <div className="bg-white rounded-xl border border-border p-8 sm:p-10 text-center max-w-lg mx-auto">
+              <div className="text-sm font-bold text-navy mb-1">Projects are being set up.</div>
+              <p className="text-sm text-gray leading-relaxed mb-4">
+                The first Klagon community build days are being scheduled. Join free and we&apos;ll
+                notify you the moment you can volunteer.
+              </p>
+              <Link href="/auth/register">
+                <span className="inline-block px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors">
+                  Join Free — Get Notified →
+                </span>
               </Link>
             </div>
           )}
