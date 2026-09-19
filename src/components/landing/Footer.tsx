@@ -105,8 +105,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">
-              Preparing Klagon&apos;s youth for the future — through skills, community, and
-              opportunity.
+              The community&apos;s digital platform — where Klagon learns, hosts, maps itself,
+              and does business.
             </p>
             <div className="flex items-center gap-2 mt-4">
               {socials.map((s) => (

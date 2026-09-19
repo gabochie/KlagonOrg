@@ -49,6 +49,16 @@ export default function TermsPage() {
             </p>
           </div>
           <div>
+            <h2 className="text-base font-bold text-navy mb-1.5">Tour bookings</h2>
+            <p>
+              Walk bookings are confirmed by our concierge over WhatsApp before the walk date.
+              Reschedule free of charge up to 48 hours before; cancellations within 48 hours
+              are non-refundable. If we cancel a walk (weather, safety, minimum party of 4
+              not reached), you choose a new date or a full refund via the original MoMo
+              channel.
+            </p>
+          </div>
+          <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Content</h2>
             <p>
               Learning materials on this site are for members&apos; personal use. You may not

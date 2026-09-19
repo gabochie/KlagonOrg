@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | KLAGON.org",
   },
   description:
-    "KLAGON.org empowers Klagon's youth with skills, mentorship, and community. Join free today.",
+    "KLAGON.org is the community's digital platform — where Klagon learns, hosts, maps itself, and does business. Join free today.",
   alternates: { canonical: "/" },
   icons: {
     icon: [
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
     siteName: "KLAGON.org",
     title: "KLAGON.org — Preparing Klagon's Youth for the Future",
     description:
-      "KLAGON.org empowers Klagon's youth with skills, mentorship, and community.",
+      "KLAGON.org is the community's digital platform — youth skills, community tourism, a living map, and a local marketplace.",
     images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "KLAGON.org — Preparing Klagon's Youth for the Future",
     description:
-      "KLAGON.org empowers Klagon's youth with skills, mentorship, and community.",
+      "KLAGON.org is the community's digital platform — youth skills, community tourism, a living map, and a local marketplace.",
     images: ["/brand/og-banner.png"],
   },
 };

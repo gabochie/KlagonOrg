@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { FourDoors } from "@/components/landing/FourDoors";
 import { JourneyPath } from "@/components/landing/JourneyPath";
 import { ValueProps } from "@/components/landing/ValueProps";
 import { EventsSection } from "@/components/landing/EventsSection";
@@ -17,6 +18,7 @@ export default function Home() {
       <Navbar />
       <main className="w-full">
       <Hero />
+      <FourDoors />
       <JourneyPath />
       <ValueProps />
       <EventsSection />

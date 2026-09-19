@@ -57,11 +57,11 @@ export default function VisitPage() {
               <div className="text-2xl mb-2">🌊</div>
               <div className="text-sm font-extrabold text-navy mb-1">See & Do</div>
               <p className="text-xs text-gray leading-relaxed mb-3">
-                Beach road, lagoon, markets, and community events. Guides land with the next
-                update.
+                Beach road, lagoon, markets — including our community-narrated Wetland & Market
+                Walk, bookable now.
               </p>
-              <Link href="/events" className="text-xs font-bold text-navy underline">
-                See events →
+              <Link href="/visit/walk" className="text-xs font-bold text-navy underline">
+                Book the walk →
               </Link>
             </div>
           </div>

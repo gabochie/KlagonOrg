@@ -86,6 +86,9 @@ export default function ContactPage() {
                     <a href="mailto:hello@klagon.org" suppressHydrationWarning className="text-xs text-gray hover:text-amber transition-colors">
                       hello@klagon.org
                     </a>
+                    <div className="text-xs text-gray mt-1">
+                      Tourism stories: editorial@klagon.org
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
