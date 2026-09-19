@@ -35,6 +35,7 @@ export async function fetchPublicEvents(): Promise<Event[]> {
   const { data, error } = await c
     .from("events_public")
     .select("*")
+    .gte("date", new Date().toISOString().slice(0, 10))
     .order("date", { ascending: true });
   if (error || !data || data.length === 0) return [];
   return data.map((r) => ({

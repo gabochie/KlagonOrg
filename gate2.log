@@ -1,0 +1,31 @@
+﻿node.exe : npm notice run klagonorg@0.1.0 build
+At C:\nvm4w\nodejs\npm.ps1:16 char:5
++     & "$basedir/node$exe"  "$basedir/node_modules/npm/bin/npm-cli.js" ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm notice run klagonorg@0.1.0 build:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm notice run node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build
+Cleared .next/cache
+rss.xml written with 0 items
+   Γû▓ Next.js 15.5.19
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 25.6s
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/components/landing/CommunityStrip.tsx:11:63
+Type error: Cannot find name 'nullipse'.
+
+[0m [90m  9 |[39m   [36mconst[39m [index[33m,[39m setIndex] [33m=[39m useState([35m0[39m)[33m;[39m
+ [90m 10 |[39m   [36mconst[39m [paused[33m,[39m setPaused] [33m=[39m useState([36mfalse[39m)[33m;[39m
+[31m[1m>[22m[39m[90m 11 |[39m   [36mconst[39m timer [33m=[39m 
+useRef[33m<[39m[33mReturnType[39m[33m<[39m[36mtypeof[39m setInterval[33m>[39m [33m|[39m 
+[36mnull[39m[33m>[39m(nullipse)[33m;[39m
+ [90m    |[39m                                                               [31m[1m^[22m[39m
+ [90m 12 |[39m   [36mconst[39m count [33m=[39m [33mCOMMUNITY_SHOTS[39m[33m.[39mlength[33m;[39m
+ [90m 13 |[39m   [36mconst[39m slide [33m=[39m [33mCOMMUNITY_SHOTS[39m[index [33m%[39m count][33m;[39m
+ [90m 14 |[39m[0m
+Next.js build worker exited with code: 1 and signal: null

@@ -8,7 +8,7 @@ const AUTOPLAY_MS = 5600;
 export function CommunityStrip() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const timer = useRef<ReturnType<typeof setInterval> | null>(nullipse);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const count = COMMUNITY_SHOTS.length;
   const slide = COMMUNITY_SHOTS[index % count];
 

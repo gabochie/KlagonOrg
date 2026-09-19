@@ -12,8 +12,6 @@ import { DashboardPreview } from "@/components/landing/DashboardPreview";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { RegistrationForm } from "@/components/landing/RegistrationForm";
 import { SponsorDonate } from "@/components/landing/SponsorDonate";
-import { CommunityStrip } from "@/components/landing/CommunityStrip";
-import { BusinessHighlights } from "@/components/landing/BusinessHighlights";
 import { Footer } from "@/components/landing/Footer";
 
 export default function Home() {
@@ -21,20 +19,19 @@ export default function Home() {
     <div className="w-full overflow-hidden">
       <Navbar />
       <main className="w-full">
-      <Hero />
-      <CommunityStrip />
-      <BusinessHighlights />
-      <FourDoors />
-      <JourneyPath />
-      <JourneyPath />
-      <ValueProps />
-      <EventsSection />
-      <LearningHub />
-      <CommunityProjects />
-      <DashboardPreview />
-      <Testimonials />
-      <RegistrationForm />
-      <SponsorDonate />
+        <Hero />
+        <CommunityStrip />
+        <BusinessHighlights />
+        <FourDoors />
+        <JourneyPath />
+        <ValueProps />
+        <EventsSection />
+        <LearningHub />
+        <CommunityProjects />
+        <DashboardPreview />
+        <Testimonials />
+        <RegistrationForm />
+        <SponsorDonate />
       </main>
       <Footer />
     </div>

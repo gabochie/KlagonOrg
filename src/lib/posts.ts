@@ -164,6 +164,7 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
     .from("posts")
     .select("*")
     .eq("status", "approved")
+    .lte("published_at", new Date().toISOString())
     .lt("reports", 3);
 
   if (filters.type && filters.type !== "all") query = query.eq("type", filters.type);

@@ -1,4 +1,4 @@
-import type { SponsorRow } from "@/lib/sponsors";
+import { parseContact, parseLocation, type SponsorRow } from "@/lib/sponsors";
 
 export interface SponsorScore {
   total: number;
@@ -37,7 +37,7 @@ export function sponsorScore(s: SponsorRow): SponsorScore {
   const claimed = !!s.claimed_by;
   const brand = !!s.logo_url || !!s.cover_url;
   const story = !!s.about;
-  const located = !!s.address || (s.latitude != null && s.longitude != null);
+  const located = !!parseLocation(s.location).address || (s.latitude != null && s.longitude != null);
 
   const breakdown = [
     { label: "Photos", points: photos ? 20 : 0, max: 20 },
