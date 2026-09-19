@@ -68,9 +68,3 @@ export function waHref(wa: string | null, businessName: string): string {
 export function telHref(tel: string | null): string {
   return tel ? `tel:${tel}` : "#";
 }
-
-export function mapsHref(maps: string | null, name: string): string {
-  if (maps) return maps;
-  if (!maps) return "#";
-  return "#";
-}
