@@ -29,6 +29,7 @@ export default function Home() {
         <EventsSection />
         <LearningHub />
         <CommunityProjects />
+        <KlagonTodayTabs />
         <DashboardPreview />
         <Testimonials />
         <RegistrationForm />
