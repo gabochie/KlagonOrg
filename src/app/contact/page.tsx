@@ -97,8 +97,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-navy">Phone</div>
-                    <a href="tel:+233243262019" className="text-xs text-gray hover:text-amber transition-colors">
-                      024 326 2019
+                    <a href="tel:+233268708895" suppressHydrationWarning className="text-xs text-gray hover:text-amber transition-colors">
+                      026 870 8895
+                    </a>
+                    <a href="tel:+233243262019" suppressHydrationWarning className="text-xs text-gray hover:text-amber transition-colors block mt-1">
+                      Support: 024 326 2019
                     </a>
                   </div>
                 </div>
