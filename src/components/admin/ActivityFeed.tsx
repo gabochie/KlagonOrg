@@ -3,15 +3,20 @@
 import { useEffect, useState } from "react";
 import { ACTIVITIES } from "@/lib/constants";
 import { fetchActivityFeed } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Activity } from "@/types";
 
 export function ActivityFeed() {
   const [activities, setActivities] = useState<Activity[]>(ACTIVITIES);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchActivityFeed();
-      if (live.length > 0) setActivities(live);
+      if (live.length > 0) {
+        setActivities(live);
+        setDemo(false);
+      }
     })();
   }, []);
 
@@ -19,7 +24,7 @@ export function ActivityFeed() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm font-bold text-navy">Recent Activity</div>
-        <span className="text-[10px] text-gray">Live</span>
+        {demo ? <DemoTag /> : <span className="text-[10px] text-gray">Live</span>}
       </div>
       {activities.map((a) => (
         <div

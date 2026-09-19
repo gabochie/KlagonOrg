@@ -19,11 +19,15 @@ export function UpcomingEvents() {
   const { profile } = useAuth();
   const [events, setEvents] = useState<Event[]>(MEMBER_EVENTS);
   const [rsvps, setRsvps] = useState<Set<string>>(new Set(["1"]));
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchPublicEvents();
-      if (live.length > 0) setEvents(live.slice(0, 3));
+      if (live.length > 0) {
+        setEvents(live.slice(0, 3));
+        setDemo(false);
+      }
       if (profile?.id) {
         const ids = await fetchMyRsvpIds(profile.id);
         setRsvps(new Set(ids));
@@ -47,7 +51,9 @@ export function UpcomingEvents() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div className="text-sm font-bold text-navy">Upcoming Events</div>
+          <div className="text-sm font-bold text-navy flex items-center gap-2">
+            Upcoming Events {demo && <DemoTag />}
+          </div>
           <div className="text-[11px] text-gray mt-0.5">
             {rsvps.size} RSVP{rsvps.size === 1 ? "" : "s"} confirmed
           </div>

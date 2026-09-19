@@ -3,21 +3,32 @@
 import { useEffect, useState } from "react";
 import { ADMIN_METRICS } from "@/lib/constants";
 import { fetchAdminMetrics } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Metric } from "@/types";
 
 export function MetricCards() {
   const [metrics, setMetrics] = useState<Metric[]>(ADMIN_METRICS);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchAdminMetrics();
-      if (live.cards.length > 0) setMetrics(live.cards);
+      if (live.cards.length > 0) {
+        setMetrics(live.cards);
+        setDemo(false);
+      }
     })();
   }, []);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-      {metrics.map((m) => (
+    <div>
+      {demo && (
+        <div className="mb-1.5">
+          <DemoTag />
+        </div>
+      )}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        {metrics.map((m) => (
         <div
           key={m.label}
           className="bg-white rounded-xl border border-border p-3.5 relative overflow-hidden"
@@ -39,7 +50,8 @@ export function MetricCards() {
           )}
           <div className="text-[11px] text-gray mt-0.5">{m.sub}</div>
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import { ANNOUNCEMENTS } from "@/lib/constants";
+import { DemoTag } from "@/components/ui";
 
 interface Announcement {
   id: string | number;
@@ -21,6 +22,7 @@ const MOCK = ANNOUNCEMENTS.map((a) => ({
 
 export function Announcements() {
   const [items, setItems] = useState<Announcement[]>(MOCK);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     const client = getBrowserClient();
@@ -33,6 +35,7 @@ export function Announcements() {
         .limit(4);
       if (!error && data && data.length > 0) {
         setItems(data);
+        setDemo(false);
       }
     })();
   }, []);
@@ -40,7 +43,9 @@ export function Announcements() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-bold text-navy">Announcements</div>
+        <div className="text-sm font-bold text-navy flex items-center gap-2">
+          Announcements {demo && <DemoTag />}
+        </div>
         <Link href="/news" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
           View All →
         </Link>

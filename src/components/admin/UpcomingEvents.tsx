@@ -3,23 +3,29 @@
 import { useEffect, useState } from "react";
 import { ADMIN_EVENTS } from "@/lib/constants";
 import { fetchAdminEvents } from "@/lib/queries";
-import { Button } from "@/components/ui";
+import { Button, DemoTag } from "@/components/ui";
 import type { Event } from "@/types";
 
 export function UpcomingEvents() {
   const [events, setEvents] = useState<Event[]>(ADMIN_EVENTS);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchAdminEvents();
-      if (live.length > 0) setEvents(live);
+      if (live.length > 0) {
+        setEvents(live);
+        setDemo(false);
+      }
     })();
   }, []);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-bold text-navy">Upcoming Events</div>
+        <div className="text-sm font-bold text-navy flex items-center gap-2">
+          Upcoming Events {demo && <DemoTag />}
+        </div>
         <Button size="sm" variant="secondary">Manage</Button>
       </div>
       {events.map((e) => {

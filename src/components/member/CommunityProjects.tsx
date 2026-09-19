@@ -5,17 +5,22 @@ import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_PROJECTS } from "@/lib/constants";
 import { fetchPublicProjects, fetchMyVolunteerProjectIds, toggleVolunteer } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Project } from "@/types";
 
 export function CommunityProjects() {
   const { profile } = useAuth();
   const [projects, setProjects] = useState<Project[]>(MEMBER_PROJECTS);
   const [joined, setJoined] = useState<Set<string>>(new Set(["1"]));
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchPublicProjects();
-      if (live.length > 0) setProjects(live.slice(0, 2));
+      if (live.length > 0) {
+        setProjects(live.slice(0, 2));
+        setDemo(false);
+      }
       if (profile?.id) {
         const ids = await fetchMyVolunteerProjectIds(profile.id);
         setJoined(new Set(ids));
@@ -38,7 +43,9 @@ export function CommunityProjects() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-bold text-navy">Community Projects</div>
+        <div className="text-sm font-bold text-navy flex items-center gap-2">
+          Community Projects {demo && <DemoTag />}
+        </div>
           <Link href="/projects" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
             All Projects →
           </Link>

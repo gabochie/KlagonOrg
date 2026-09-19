@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchAdminMetrics } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 
 interface Bar {
   label: string;
@@ -23,11 +24,15 @@ const FALLBACK: Bar[] = [
 
 export function BarChart() {
   const [data, setData] = useState<Bar[]>(FALLBACK);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchAdminMetrics();
-      if (live.registrationTrend.length > 0) setData(live.registrationTrend);
+      if (live.registrationTrend.length > 0) {
+        setData(live.registrationTrend);
+        setDemo(false);
+      }
     })();
   }, []);
 
@@ -43,7 +48,9 @@ export function BarChart() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div className="text-sm font-bold text-navy">Member Registrations</div>
+          <div className="text-sm font-bold text-navy flex items-center gap-2">
+            Member Registrations {demo && <DemoTag />}
+          </div>
           <div className="text-[11px] text-gray mt-0.5">Weekly growth toward 100-member goal</div>
         </div>
         <select className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-navy bg-white font-sans cursor-pointer">

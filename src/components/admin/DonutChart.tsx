@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchInterestDistribution, type InterestSlice } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 
 const FALLBACK: InterestSlice[] = [
   { label: "Technology", value: 37, color: "#0F1B5C" },
@@ -15,11 +16,15 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function DonutChart() {
   const [data, setData] = useState<InterestSlice[]>(FALLBACK);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
       const live = await fetchInterestDistribution();
-      if (live.length > 0) setData(live);
+      if (live.length > 0) {
+        setData(live);
+        setDemo(false);
+      }
     })();
   }, []);
 
@@ -44,7 +49,9 @@ export function DonutChart() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div className="text-sm font-bold text-navy">Member Interests</div>
+          <div className="text-sm font-bold text-navy flex items-center gap-2">
+            Member Interests {demo && <DemoTag />}
+          </div>
           <div className="text-[11px] text-gray mt-0.5">Top categories on signup</div>
         </div>
       </div>
