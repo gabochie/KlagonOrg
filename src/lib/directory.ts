@@ -4,6 +4,7 @@
 
 export interface DirectoryBusiness {
   id: string;
+  slug: string;
   name: string;
   category: string;
   title: string;

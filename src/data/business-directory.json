@@ -1,5 +1,5 @@
 {
- "builtAt": "2026-09-19T11:36:45.868Z",
+ "builtAt": "2026-09-19T14:19:50.817Z",
  "note": "Snapshot from klagon_businesses.csv (registry) enriched with klagon_maps_census.csv (Google Maps). Refresh with scripts/build-directory.cjs.",
  "stats": {
   "total": 740,
@@ -639,6 +639,7 @@
  "businesses": [
   {
    "id": "KGB0001",
+   "slug": "agenda-concrete-ghana-limited",
    "name": "Agenda Concrete (GHANA) Limited",
    "category": "Construction Readymix",
    "title": "Premix concrete supplier",
@@ -660,6 +661,7 @@
   },
   {
    "id": "KGB0002",
+   "slug": "apog-klagon",
    "name": "APOG Klagon",
    "category": "Auto Repair",
    "title": "Auto repair & mechanical services",
@@ -681,6 +683,7 @@
   },
   {
    "id": "KGB0003",
+   "slug": "klagon-maternity-home-and-clinic",
    "name": "Klagon Maternity Home and Clinic",
    "category": "Health Clinic",
    "title": "Maternity home & clinic",
@@ -702,6 +705,7 @@
   },
   {
    "id": "KGB0004",
+   "slug": "klagon-medical-center",
    "name": "Klagon Medical Center",
    "category": "Health Clinic",
    "title": "Medical center",
@@ -723,6 +727,7 @@
   },
   {
    "id": "KGB0005",
+   "slug": "agastone-block-factory",
    "name": "Agastone Block Factory",
    "category": "Construction Blocks",
    "title": "Block factory",
@@ -744,6 +749,7 @@
   },
   {
    "id": "KGB0006",
+   "slug": "big-ghana-homes-klagon",
    "name": "Big Ghana Homes Klagon",
    "category": "Real Estate Development",
    "title": "Building & estate development",
@@ -765,6 +771,7 @@
   },
   {
    "id": "KGB0007",
+   "slug": "youngman-singbord-klagon",
    "name": "Youngman Singbord Klagon",
    "category": "Construction Signboard",
    "title": "Signboard construction",
@@ -786,6 +793,7 @@
   },
   {
    "id": "KGB0008",
+   "slug": "aspedra-ltd",
    "name": "Aspedra Ltd",
    "category": "Woodwork Joinery",
    "title": "Joinery, timber furniture & outdoor structures",
@@ -807,6 +815,7 @@
   },
   {
    "id": "KGB0009",
+   "slug": "vererified-bakes-and-food",
    "name": "Vererified Bakes and Food",
    "category": "Bakery",
    "title": "Bakeries & pastry shop",
@@ -828,6 +837,7 @@
   },
   {
    "id": "KGB0010",
+   "slug": "klintaps-college-of-health-and-allied-sciences",
    "name": "Klintaps College of Health and Allied Sciences",
    "category": "Education Health",
    "title": "Private college of health & allied sciences",
@@ -849,6 +859,7 @@
   },
   {
    "id": "KGB0011",
+   "slug": "gibson-s-pub",
    "name": "Gibson's Pub",
    "category": "Bar Entertainment",
    "title": "Bar & entertainment venue",
@@ -870,6 +881,7 @@
   },
   {
    "id": "KGB0012",
+   "slug": "meridian-gardens-klagon",
    "name": "Meridian Gardens Klagon",
    "category": "Real Estate Development",
    "title": "Residential development (81 buildings)",
@@ -891,6 +903,7 @@
   },
   {
    "id": "KGB0013",
+   "slug": "klagon-housing-project-5-star-engineering-regimanuel-gray",
    "name": "Klagon Housing Project (5 Star Engineering / Regimanuel Gray)",
    "category": "Construction Engineering",
    "title": "LP gas piping installation contractor",
@@ -912,6 +925,7 @@
   },
   {
    "id": "KGB0014",
+   "slug": "rentchamber-klagon-listings",
    "name": "Rentchamber (Klagon listings)",
    "category": "Real Estate Rentals",
    "title": "Apartment rentals & real estate",
@@ -933,6 +947,7 @@
   },
   {
    "id": "KGB0015",
+   "slug": "klagon-market",
    "name": "Klagon Market",
    "category": "Market Retail",
    "title": "Local market",
@@ -954,6 +969,7 @@
   },
   {
    "id": "KGB0016",
+   "slug": "magil-enterprise",
    "name": "Magil Enterprise",
    "category": "Plumbing Supplies",
    "title": "Plumbing supplies & hardware",
@@ -975,6 +991,7 @@
   },
   {
    "id": "KGB0017",
+   "slug": "klagon-water-works",
    "name": "Klagon Water Works",
    "category": "Water Supply",
    "title": "Water supply & treatment",
@@ -996,6 +1013,7 @@
   },
   {
    "id": "KGB0018",
+   "slug": "sosome",
    "name": "Sosome",
    "category": "Fashion Tailoring",
    "title": "Fashion & tailoring",
@@ -1017,6 +1035,7 @@
   },
   {
    "id": "KGB0019",
+   "slug": "excell-supermart",
    "name": "Excell Supermart",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -1038,6 +1057,7 @@
   },
   {
    "id": "KGB0020",
+   "slug": "derrick-supermarket",
    "name": "Derrick Supermarket",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -1059,6 +1079,7 @@
   },
   {
    "id": "KGB0021",
+   "slug": "lenak-supermarket",
    "name": "Lenak Supermarket",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -1080,6 +1101,7 @@
   },
   {
    "id": "KGB0022",
+   "slug": "mulove-enterprise",
    "name": "Mulove Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -1101,6 +1123,7 @@
   },
   {
    "id": "KGB0023",
+   "slug": "adlon-mart-gh",
    "name": "Adlon Mart Gh",
    "category": "Retail",
    "title": "Retail mart",
@@ -1122,6 +1145,7 @@
   },
   {
    "id": "KGB0024",
+   "slug": "obaapa-supermarket",
    "name": "Obaapa Supermarket",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -1143,6 +1167,7 @@
   },
   {
    "id": "KGB0025",
+   "slug": "obaapa-frozen-and-mart",
    "name": "Obaapa Frozen and Mart",
    "category": "Food Frozen",
    "title": "Frozen food & mart",
@@ -1164,6 +1189,7 @@
   },
   {
    "id": "KGB0026",
+   "slug": "aseda-supermarket",
    "name": "Aseda Supermarket",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -1185,6 +1211,7 @@
   },
   {
    "id": "KGB0027",
+   "slug": "icespark-pure-water-factory",
    "name": "Icespark Pure Water Factory",
    "category": "Water Production",
    "title": "Pure sachet water factory",
@@ -1206,6 +1233,7 @@
   },
   {
    "id": "KGB0028",
+   "slug": "frontq1-enterprise",
    "name": "FrontQ1 Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -1227,6 +1255,7 @@
   },
   {
    "id": "KGB0029",
+   "slug": "honex-farms-ghana-limited",
    "name": "Honex Farms Ghana Limited",
    "category": "Food Farm",
    "title": "Poultry/farm produce",
@@ -1248,6 +1277,7 @@
   },
   {
    "id": "KGB0030",
+   "slug": "nutrifoods-ghana-ltd",
    "name": "Nutrifoods Ghana Ltd",
    "category": "Food Processing",
    "title": "Food processing",
@@ -1269,6 +1299,7 @@
   },
   {
    "id": "KGB0031",
+   "slug": "bloomfoods-wholesale",
    "name": "Bloomfoods Wholesale",
    "category": "Retail Wholesale",
    "title": "Wholesale foods",
@@ -1290,6 +1321,7 @@
   },
   {
    "id": "KGB0032",
+   "slug": "shallom-meat-cold-store",
    "name": "Shallom Meat & Cold Store",
    "category": "Food Meat",
    "title": "Meat & cold store",
@@ -1311,6 +1343,7 @@
   },
   {
    "id": "KGB0033",
+   "slug": "nas-frozen",
    "name": "Nas Frozen",
    "category": "Food Frozen",
    "title": "Frozen foods",
@@ -1332,6 +1365,7 @@
   },
   {
    "id": "KGB0034",
+   "slug": "nimzy-frozen-food-trading",
    "name": "Nimzy Frozen Food & Trading",
    "category": "Food Frozen",
    "title": "Frozen foods & trading",
@@ -1353,6 +1387,7 @@
   },
   {
    "id": "KGB0035",
+   "slug": "backtoeden-healthy-foods-gh",
    "name": "BackToEden Healthy Foods Gh",
    "category": "Food Healthy",
    "title": "Healthy foods",
@@ -1374,6 +1409,7 @@
   },
   {
    "id": "KGB0036",
+   "slug": "easy-snails",
    "name": "Easy Snails",
    "category": "Food Snails",
    "title": "Snail farm & restaurant",
@@ -1395,6 +1431,7 @@
   },
   {
    "id": "KGB0037",
+   "slug": "carly-s-healthy-foods",
    "name": "Carly's Healthy Foods",
    "category": "Food Healthy",
    "title": "Healthy foods",
@@ -1416,6 +1453,7 @@
   },
   {
    "id": "KGB0038",
+   "slug": "inside-lashibi-shell-filing-station",
    "name": "Inside Lashibi Shell Filing Station",
    "category": "Fuel Station",
    "title": "Fuel station",
@@ -1437,6 +1475,7 @@
   },
   {
    "id": "KGB0039",
+   "slug": "vans-concepts-limited",
    "name": "Vans Concepts Limited",
    "category": "Retail",
    "title": "General store",
@@ -1458,6 +1497,7 @@
   },
   {
    "id": "KGB0040",
+   "slug": "zaktech-computer-systems",
    "name": "ZAKTECH Computer Systems",
    "category": "It Computers",
    "title": "Computers & IT services",
@@ -1479,6 +1519,7 @@
   },
   {
    "id": "KGB0041",
+   "slug": "one-stop-ventures",
    "name": "One Stop Ventures",
    "category": "Retail",
    "title": "General store",
@@ -1500,6 +1541,7 @@
   },
   {
    "id": "KGB0042",
+   "slug": "carok-limited",
    "name": "Carok Limited",
    "category": "Retail",
    "title": "General store",
@@ -1521,6 +1563,7 @@
   },
   {
    "id": "KGB0043",
+   "slug": "maris-electricals",
    "name": "Maris Electricals",
    "category": "Electrical",
    "title": "Electrical goods & services",
@@ -1542,6 +1585,7 @@
   },
   {
    "id": "KGB0044",
+   "slug": "labister-auto-electrical-services",
    "name": "Labister Auto Electrical Services",
    "category": "Auto Electrical",
    "title": "Auto electrical & diagnostics",
@@ -1563,6 +1607,7 @@
   },
   {
    "id": "KGB0045",
+   "slug": "divine-auto-mechanic",
    "name": "Divine Auto Mechanic",
    "category": "Auto Repair",
    "title": "Auto repair garage",
@@ -1584,6 +1629,7 @@
   },
   {
    "id": "KGB0046",
+   "slug": "god-is-great-auto-electrician",
    "name": "God is Great Auto Electrician",
    "category": "Auto Electrical",
    "title": "Auto electrician",
@@ -1605,6 +1651,7 @@
   },
   {
    "id": "KGB0047",
+   "slug": "heritage-gold-car-renting",
    "name": "Heritage Gold Car Renting",
    "category": "Car Hire",
    "title": "Car rental",
@@ -1626,6 +1673,7 @@
   },
   {
    "id": "KGB0048",
+   "slug": "sharp-corner-food-joint",
    "name": "Sharp Corner Food Joint",
    "category": "Food Joint",
    "title": "Food joint",
@@ -1647,6 +1695,7 @@
   },
   {
    "id": "KGB0049",
+   "slug": "de-solid-kitchen",
    "name": "De Solid Kitchen",
    "category": "Food Kitchen",
    "title": "Kitchen & catering",
@@ -1668,6 +1717,7 @@
   },
   {
    "id": "KGB0050",
+   "slug": "shemmat-s-diner",
    "name": "Shemmat's Diner",
    "category": "Restaurant",
    "title": "Diner / restaurant",
@@ -1689,6 +1739,7 @@
   },
   {
    "id": "KGB0051",
+   "slug": "keto-club-bakes-and-bites",
    "name": "Keto Club Bakes and Bites",
    "category": "Bakery",
    "title": "Bakery & bites",
@@ -1710,6 +1761,7 @@
   },
   {
    "id": "KGB0052",
+   "slug": "mama-vee-fruit-of-israel",
    "name": "Mama Vee Fruit of Israel",
    "category": "Food Fruit",
    "title": "Fruit produce",
@@ -1731,6 +1783,7 @@
   },
   {
    "id": "KGB0053",
+   "slug": "kindea-s-beauty-hub",
    "name": "Kindea's Beauty Hub",
    "category": "Beauty",
    "title": "Beauty hub",
@@ -1752,6 +1805,7 @@
   },
   {
    "id": "KGB0054",
+   "slug": "t-nash-beauty-look",
    "name": "T' Nash Beauty Look",
    "category": "Beauty Salon",
    "title": "Beauty salon",
@@ -1773,6 +1827,7 @@
   },
   {
    "id": "KGB0055",
+   "slug": "naa-s-beauty-salon",
    "name": "Naa's Beauty Salon",
    "category": "Beauty Salon",
    "title": "Beauty salon",
@@ -1794,6 +1849,7 @@
   },
   {
    "id": "KGB0056",
+   "slug": "kadi-style",
    "name": "Kadi Style",
    "category": "Fashion",
    "title": "Fashion boutique",
@@ -1815,6 +1871,7 @@
   },
   {
    "id": "KGB0057",
+   "slug": "abisam-clothing",
    "name": "Abisam Clothing",
    "category": "Fashion Clothing",
    "title": "Clothing store",
@@ -1836,6 +1893,7 @@
   },
   {
    "id": "KGB0058",
+   "slug": "abaya-vogue",
    "name": "Abaya Vogue",
    "category": "Fashion",
    "title": "Abaya & modest fashion",
@@ -1857,6 +1915,7 @@
   },
   {
    "id": "KGB0059",
+   "slug": "gobal-fashion-home",
    "name": "Gobal Fashion Home",
    "category": "Fashion Home",
    "title": "Home fashion store",
@@ -1878,6 +1937,7 @@
   },
   {
    "id": "KGB0060",
+   "slug": "luger-cosmetics",
    "name": "Luger Cosmetics",
    "category": "Cosmetics",
    "title": "Cosmetics store",
@@ -1899,6 +1959,7 @@
   },
   {
    "id": "KGB0061",
+   "slug": "mystical-rose-plaza",
    "name": "Mystical Rose Plaza",
    "category": "Retail Plaza",
    "title": "Retail plaza",
@@ -1920,6 +1981,7 @@
   },
   {
    "id": "KGB0062",
+   "slug": "betplanet",
    "name": "Betplanet",
    "category": "Betting",
    "title": "Betting shop",
@@ -1941,6 +2003,7 @@
   },
   {
    "id": "KGB0063",
+   "slug": "vc-hair-cut",
    "name": "Vc Hair Cut",
    "category": "Barber",
    "title": "Barbershop",
@@ -1962,6 +2025,7 @@
   },
   {
    "id": "KGB0064",
+   "slug": "cinderella-preparatory-school",
    "name": "Cinderella Preparatory School",
    "category": "Education School",
    "title": "Preparatory school",
@@ -1983,6 +2047,7 @@
   },
   {
    "id": "KGB0065",
+   "slug": "montessori-junction",
    "name": "Montessori Junction",
    "category": "Education Kindergarten",
    "title": "Montessori school",
@@ -2004,6 +2069,7 @@
   },
   {
    "id": "KGB0066",
+   "slug": "global-institute-of-finance-and-management-studies",
    "name": "Global Institute of Finance and Management Studies",
    "category": "Education",
    "title": "Finance & management studies",
@@ -2025,6 +2091,7 @@
   },
   {
    "id": "KGB0067",
+   "slug": "mcf-creative-center",
    "name": "Mcf Creative Center",
    "category": "Services Creative",
    "title": "Creative services center",
@@ -2046,6 +2113,7 @@
   },
   {
    "id": "KGB0068",
+   "slug": "decy-world",
    "name": "Decy World",
    "category": "Retail",
    "title": "Variety store",
@@ -2067,6 +2135,7 @@
   },
   {
    "id": "KGB0069",
+   "slug": "sunshield-apartment-gh",
    "name": "Sunshield Apartment Gh",
    "category": "Real Estate Apartments",
    "title": "Apartment rentals",
@@ -2088,6 +2157,7 @@
   },
   {
    "id": "KGB0070",
+   "slug": "lord-apartment-lashibi",
    "name": "Lord Apartment Lashibi",
    "category": "Real Estate Apartments",
    "title": "Apartment rentals",
@@ -2109,6 +2179,7 @@
   },
   {
    "id": "KGB0071",
+   "slug": "walter-s-crib",
    "name": "Walter's Crib",
    "category": "Real Estate Apartments",
    "title": "Apartment rentals",
@@ -2130,6 +2201,7 @@
   },
   {
    "id": "KGB0072",
+   "slug": "e-y-kakraba-licensed-over-the-counter",
    "name": "E. Y. Kakraba Licensed Over the Counter",
    "category": "Pharmacy Otc",
    "title": "Licensed OTC pharmacy",
@@ -2151,6 +2223,7 @@
   },
   {
    "id": "KGB0073",
+   "slug": "abbey-s-link",
    "name": "Abbey's Link",
    "category": "Retail",
    "title": "General store",
@@ -2172,6 +2245,7 @@
   },
   {
    "id": "KGB0074",
+   "slug": "m-adjetey-s",
    "name": "M. Adjetey's",
    "category": "Retail",
    "title": "General store",
@@ -2193,6 +2267,7 @@
   },
   {
    "id": "KGB0075",
+   "slug": "club-37",
    "name": "Club 37",
    "category": "Retail",
    "title": "General store",
@@ -2214,6 +2289,7 @@
   },
   {
    "id": "KGB0076",
+   "slug": "road-side-joint",
    "name": "Road Side Joint",
    "category": "Bar Pub",
    "title": "Bar & pub",
@@ -2235,6 +2311,7 @@
   },
   {
    "id": "KGB0077",
+   "slug": "viralink-gh",
    "name": "Viralink Gh",
    "category": "Cybercafe It",
    "title": "Internet café",
@@ -2256,6 +2333,7 @@
   },
   {
    "id": "KGB0078",
+   "slug": "home-installed-solutions",
    "name": "Home Installed Solutions",
    "category": "Coatings Surface",
    "title": "Coatings & surface finishes",
@@ -2277,6 +2355,7 @@
   },
   {
    "id": "KGB0079",
+   "slug": "possiblex-creative-services",
    "name": "PossibleX Creative Services",
    "category": "Services Creative",
    "title": "Creative services",
@@ -2298,6 +2377,7 @@
   },
   {
    "id": "KGB0080",
+   "slug": "sport-academy-s",
    "name": "Sport Academy's",
    "category": "Education Sports",
    "title": "Sports academy",
@@ -2319,6 +2399,7 @@
   },
   {
    "id": "KGB0081",
+   "slug": "the-builders-house",
    "name": "The Builders House",
    "category": "Construction Services",
    "title": "Building services",
@@ -2340,6 +2421,7 @@
   },
   {
    "id": "KGB0082",
+   "slug": "neigbor-trade",
    "name": "Neigbor Trade",
    "category": "Retail",
    "title": "General store",
@@ -2361,6 +2443,7 @@
   },
   {
    "id": "KGB0083",
+   "slug": "amoasi-ventures",
    "name": "Amoasi Ventures",
    "category": "Retail",
    "title": "General store",
@@ -2382,6 +2465,7 @@
   },
   {
    "id": "KGB0084",
+   "slug": "nyolassi-disposable-shop",
    "name": "Nyolassi Disposable Shop",
    "category": "Retail Disposables",
    "title": "Disposables & sundries",
@@ -2403,6 +2487,7 @@
   },
   {
    "id": "KGB0085",
+   "slug": "maa-lizzy-s-shop",
    "name": "Maa Lizzy's Shop",
    "category": "Retail",
    "title": "General store",
@@ -2424,6 +2509,7 @@
   },
   {
    "id": "KGB0086",
+   "slug": "rash-unique-business-enterprise",
    "name": "Rash Unique Business Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -2445,6 +2531,7 @@
   },
   {
    "id": "KGB0087",
+   "slug": "all-his-grace",
    "name": "All His Grace",
    "category": "Retail",
    "title": "General store",
@@ -2466,6 +2553,7 @@
   },
   {
    "id": "KGB0088",
+   "slug": "kharis-mart",
    "name": "Kharis Mart",
    "category": "Retail Minimart",
    "title": "Mini mart",
@@ -2487,6 +2575,7 @@
   },
   {
    "id": "KGB0089",
+   "slug": "jolee",
    "name": "Jolee",
    "category": "Retail",
    "title": "General store",
@@ -2508,6 +2597,7 @@
   },
   {
    "id": "KGB0090",
+   "slug": "godsway-ventures",
    "name": "Godsway Ventures",
    "category": "Retail",
    "title": "General store",
@@ -2529,6 +2619,7 @@
   },
   {
    "id": "KGB0091",
+   "slug": "the-minis-shop",
    "name": "The Minis Shop",
    "category": "Retail",
    "title": "General store",
@@ -2550,6 +2641,7 @@
   },
   {
    "id": "KGB0092",
+   "slug": "pjf-mess",
    "name": "Pjf Mess",
    "category": "Food Mess",
    "title": "Local food mess",
@@ -2571,6 +2663,7 @@
   },
   {
    "id": "KGB0093",
+   "slug": "mave-s-emporium",
    "name": "Mave's Emporium",
    "category": "Retail",
    "title": "General store",
@@ -2592,6 +2685,7 @@
   },
   {
    "id": "KGB0094",
+   "slug": "jumia-warehouse",
    "name": "Jumia Warehouse",
    "category": "Logistics Warehouse",
    "title": "E-commerce warehouse",
@@ -2613,6 +2707,7 @@
   },
   {
    "id": "KGB0095",
+   "slug": "trust-god-enterprise",
    "name": "Trust God Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -2634,6 +2729,7 @@
   },
   {
    "id": "KGB0096",
+   "slug": "manful-s-plaza",
    "name": "MANFUL's Plaza",
    "category": "Retail Plaza",
    "title": "Retail plaza",
@@ -2655,6 +2751,7 @@
   },
   {
    "id": "KGB0097",
+   "slug": "sibana-store",
    "name": "Sibana Store",
    "category": "Retail",
    "title": "General store",
@@ -2676,6 +2773,7 @@
   },
   {
    "id": "KGB0098",
+   "slug": "by-grace-enterprise",
    "name": "By Grace Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -2697,6 +2795,7 @@
   },
   {
    "id": "KGB0099",
+   "slug": "kafkess-mini-mart",
    "name": "Kafkess Mini Mart",
    "category": "Retail Minimart",
    "title": "Mini mart",
@@ -2718,6 +2817,7 @@
   },
   {
    "id": "KGB0100",
+   "slug": "central-market-place",
    "name": "Central Market Place",
    "category": "Retail Market",
    "title": "Market place",
@@ -2739,6 +2839,7 @@
   },
   {
    "id": "KGB0101",
+   "slug": "the-sackey-s-secrets",
    "name": "The Sackey's Secrets",
    "category": "Retail",
    "title": "General store",
@@ -2760,6 +2861,7 @@
   },
   {
    "id": "KGB0102",
+   "slug": "havillah-stores",
    "name": "Havillah Stores",
    "category": "Retail",
    "title": "General store",
@@ -2781,6 +2883,7 @@
   },
   {
    "id": "KGB0103",
+   "slug": "bripong-coldstore",
    "name": "Bripong Coldstore",
    "category": "Food Coldstore",
    "title": "Cold store",
@@ -2802,6 +2905,7 @@
   },
   {
    "id": "KGB0104",
+   "slug": "we-trade-supermarket",
    "name": "We Trade Supermarket",
    "category": "Retail Supermarket",
    "title": "Supermarket",
@@ -2823,6 +2927,7 @@
   },
   {
    "id": "KGB0105",
+   "slug": "dee-ric-fast-solution",
    "name": "Dee - Ric Fast Solution",
    "category": "Services Business",
    "title": "Business solutions",
@@ -2844,6 +2949,7 @@
   },
   {
    "id": "KGB0106",
+   "slug": "ayefro-store",
    "name": "Ayefro Store",
    "category": "Retail",
    "title": "General store",
@@ -2865,6 +2971,7 @@
   },
   {
    "id": "KGB0107",
+   "slug": "vad-s-ent",
    "name": "Vad's Ent",
    "category": "Retail",
    "title": "General store",
@@ -2886,6 +2993,7 @@
   },
   {
    "id": "KGB0108",
+   "slug": "stepmas-ventures",
    "name": "Stepmas Ventures",
    "category": "Retail",
    "title": "General store",
@@ -2907,6 +3015,7 @@
   },
   {
    "id": "KGB0109",
+   "slug": "elamawusi-cold-store",
    "name": "Elamawusi Cold Store",
    "category": "Food Coldstore",
    "title": "Cold store",
@@ -2928,6 +3037,7 @@
   },
   {
    "id": "KGB0110",
+   "slug": "compoactible-skills-recruitment-services",
    "name": "Compoactible Skills Recruitment Services",
    "category": "Hr Recruitment",
    "title": "HR & recruitment services",
@@ -2949,6 +3059,7 @@
   },
   {
    "id": "KGB0111",
+   "slug": "derl-it-solutions",
    "name": "DERL IT Solutions",
    "category": "It Repair Services",
    "title": "Computer repair, maintenance & software",
@@ -2970,6 +3081,7 @@
   },
   {
    "id": "KGB0112",
+   "slug": "visionary-books-and-stationery-ltd",
    "name": "Visionary Books and Stationery Ltd",
    "category": "Stationery Books",
    "title": "Books & stationery",
@@ -2991,6 +3103,7 @@
   },
   {
    "id": "KGB0113",
+   "slug": "ices-consolidated",
    "name": "Ices Consolidated",
    "category": "Talent Branding",
    "title": "Talent & brand management",
@@ -3012,6 +3125,7 @@
   },
   {
    "id": "KGB0114",
+   "slug": "cob-a-industries-ltd",
    "name": "Cob-A Industries Ltd",
    "category": "Water Production",
    "title": "Standard pure sachet water",
@@ -3033,6 +3147,7 @@
   },
   {
    "id": "KGB0115",
+   "slug": "shiloh-travel-services",
    "name": "Shiloh Travel Services",
    "category": "Travel Tours",
    "title": "Travel & tours",
@@ -3054,6 +3169,7 @@
   },
   {
    "id": "KGB0116",
+   "slug": "tour-afrik",
    "name": "Tour Afrik",
    "category": "Travel Tours",
    "title": "Travel & tours",
@@ -3075,6 +3191,7 @@
   },
   {
    "id": "KGB0117",
+   "slug": "west-gate-travels-ghana-ltd",
    "name": "West Gate Travels Ghana Ltd",
    "category": "Travel Tours",
    "title": "Travel & tours",
@@ -3096,6 +3213,7 @@
   },
   {
    "id": "KGB0118",
+   "slug": "embolden-ltd",
    "name": "Embolden Ltd",
    "category": "Services Business",
    "title": "Business services",
@@ -3117,6 +3235,7 @@
   },
   {
    "id": "KGB0119",
+   "slug": "electricity-company-of-ghana-ecg-lashibi",
    "name": "Electricity Company of Ghana (ECG) Lashibi",
    "category": "Utility Power",
    "title": "Power utility office",
@@ -3138,6 +3257,7 @@
   },
   {
    "id": "KGB0120",
+   "slug": "franerix-solutions-ltd",
    "name": "Franerix Solutions Ltd",
    "category": "It Solutions",
    "title": "IT & business solutions",
@@ -3159,6 +3279,7 @@
   },
   {
    "id": "KGB0121",
+   "slug": "jex-travel-tours",
    "name": "Jex Travel & Tours",
    "category": "Travel Tours",
    "title": "Travel, tickets, hotels & car rentals",
@@ -3180,6 +3301,7 @@
   },
   {
    "id": "KGB0122",
+   "slug": "target-100-destinations",
    "name": "Target 100 Destinations",
    "category": "Travel Tours",
    "title": "Travel & tours",
@@ -3201,6 +3323,7 @@
   },
   {
    "id": "KGB0123",
+   "slug": "emed-enterprise",
    "name": "Emed Enterprise",
    "category": "Services Business",
    "title": "General enterprise",
@@ -3222,6 +3345,7 @@
   },
   {
    "id": "KGB0124",
+   "slug": "judan-smart-shopping",
    "name": "Judan Smart Shopping",
    "category": "Retail",
    "title": "Retail shopping",
@@ -3243,6 +3367,7 @@
   },
   {
    "id": "KGB0125",
+   "slug": "best-minds-initiative",
    "name": "Best Minds Initiative",
    "category": "Education Training",
    "title": "Training & development",
@@ -3264,6 +3389,7 @@
   },
   {
    "id": "KGB0126",
+   "slug": "catholic-youth-formation-centre",
    "name": "Catholic Youth Formation Centre",
    "category": "Services Youth",
    "title": "Youth formation centre",
@@ -3285,6 +3411,7 @@
   },
   {
    "id": "KGB0127",
+   "slug": "child-research-resource-centre-crrecent",
    "name": "Child Research & Resource Centre (CRRECENT)",
    "category": "Services Research",
    "title": "Child research & resources",
@@ -3306,6 +3433,7 @@
   },
   {
    "id": "KGB0128",
+   "slug": "everimages-career-consult",
    "name": "Everimages Career Consult",
    "category": "Career Consulting",
    "title": "Career consulting",
@@ -3327,6 +3455,7 @@
   },
   {
    "id": "KGB0129",
+   "slug": "scancom-gh-ltd-mtn",
    "name": "Scancom Gh Ltd (MTN)",
    "category": "Telecom",
    "title": "Telecom dealer office",
@@ -3348,6 +3477,7 @@
   },
   {
    "id": "KGB0130",
+   "slug": "fnet-services-limited",
    "name": "Fnet Services Limited",
    "category": "Services Entertainment",
    "title": "Services",
@@ -3369,6 +3499,7 @@
   },
   {
    "id": "KGB0131",
+   "slug": "winner-s-kitchen",
    "name": "Winner's Kitchen",
    "category": "Food Kitchen",
    "title": "Kitchen & meals",
@@ -3390,6 +3521,7 @@
   },
   {
    "id": "KGB0132",
+   "slug": "access-bank-ubi-lashibi",
    "name": "Access Bank (UBI, Lashibi)",
    "category": "Bank",
    "title": "Bank branch",
@@ -3411,6 +3543,7 @@
   },
   {
    "id": "KGB0133",
+   "slug": "cashflow-s-guest-house",
    "name": "Cashflow's Guest House",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -3432,6 +3565,7 @@
   },
   {
    "id": "KGB0134",
+   "slug": "janus-hotel",
    "name": "Janus Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -3453,6 +3587,7 @@
   },
   {
    "id": "KGB0135",
+   "slug": "rhoesanty-hotel-ltd",
    "name": "Rhoesanty Hotel Ltd",
    "category": "Hotel",
    "title": "Hotel",
@@ -3474,6 +3609,7 @@
   },
   {
    "id": "KGB0136",
+   "slug": "gratias-lodge",
    "name": "Gratias Lodge",
    "category": "Lodge",
    "title": "Lodge",
@@ -3495,6 +3631,7 @@
   },
   {
    "id": "KGB0137",
+   "slug": "ossah-lodge",
    "name": "Ossah Lodge",
    "category": "Lodge",
    "title": "Lodge",
@@ -3516,6 +3653,7 @@
   },
   {
    "id": "KGB0138",
+   "slug": "advert-international-marketing-a-i-m",
    "name": "Advert International Marketing (A.I.M)",
    "category": "Advertising Signage",
    "title": "Signboards & advertising media",
@@ -3537,6 +3675,7 @@
   },
   {
    "id": "KGB0139",
+   "slug": "vobea-spa",
    "name": "Vobea Spa",
    "category": "Spa Beauty",
    "title": "Spa, beauty training & skincare",
@@ -3558,6 +3697,7 @@
   },
   {
    "id": "KGB0140",
+   "slug": "boldmarkup-ventures",
    "name": "BoldMarkup Ventures",
    "category": "Web Design",
    "title": "Graphic design & web development",
@@ -3579,6 +3719,7 @@
   },
   {
    "id": "KGB0141",
+   "slug": "terra-scaffold-and-construction",
    "name": "Terra Scaffold and Construction",
    "category": "Construction Scaffold",
    "title": "Scaffolding, formwork & concrete",
@@ -3600,6 +3741,7 @@
   },
   {
    "id": "KGB0142",
+   "slug": "bling-body-gym",
    "name": "Bling Body Gym",
    "category": "Fitness Gym",
    "title": "Gym & training",
@@ -3621,6 +3763,7 @@
   },
   {
    "id": "KGB0143",
+   "slug": "gabochie-design",
    "name": "Gabochie Design",
    "category": "Design Build",
    "title": "Home building & design",
@@ -3642,6 +3785,7 @@
   },
   {
    "id": "KGB0144",
+   "slug": "lumen-analytics",
    "name": "Lumen Analytics",
    "category": "Data Analytics",
    "title": "Data & analytics insights",
@@ -3663,6 +3807,7 @@
   },
   {
    "id": "KGB0145",
+   "slug": "edric-group",
    "name": "EDRIC Group",
    "category": "Technology Solutions",
    "title": "Technology solutions",
@@ -3684,6 +3829,7 @@
   },
   {
    "id": "KGB0146",
+   "slug": "occupational-management-limited-oml-africa",
    "name": "Occupational Management Limited (OML Africa)",
    "category": "Hr Services",
    "title": "HR & organizational services",
@@ -3705,6 +3851,7 @@
   },
   {
    "id": "KGB0147",
+   "slug": "aromahaus-enterprise",
    "name": "Aromahaus Enterprise",
    "category": "It Multimedia",
    "title": "Multimedia & IT services",
@@ -3726,6 +3873,7 @@
   },
   {
    "id": "KGB0148",
+   "slug": "danaksa-services",
    "name": "Danaksa Services",
    "category": "Services",
    "title": "General services",
@@ -3747,6 +3895,7 @@
   },
   {
    "id": "KGB0149",
+   "slug": "hatua-solutions-ltd",
    "name": "Hatua Solutions Ltd",
    "category": "It Solutions",
    "title": "Solutions & consulting",
@@ -3768,6 +3917,7 @@
   },
   {
    "id": "KGB0150",
+   "slug": "attuabea-realty-co-ltd",
    "name": "Attuabea Realty Co. Ltd",
    "category": "Realty Rentals",
    "title": "Affordable monthly rentals",
@@ -3789,6 +3939,7 @@
   },
   {
    "id": "KGB0151",
+   "slug": "kay-s-smoothies",
    "name": "Kay's Smoothies",
    "category": "Food Juices",
    "title": "Natural fruit smoothies & local drinks",
@@ -3810,6 +3961,7 @@
   },
   {
    "id": "KGB0152",
+   "slug": "4-seasons-restaurant-lounge-ghana",
    "name": "4 Seasons Restaurant & Lounge Ghana",
    "category": "Restaurant",
    "title": "African & continental dishes",
@@ -3831,6 +3983,7 @@
   },
   {
    "id": "KGB0153",
+   "slug": "goldis-beauty-world-more",
    "name": "Goldis Beauty World & More",
    "category": "Cosmetics Beauty",
    "title": "Cosmetology & beauty",
@@ -3852,6 +4005,7 @@
   },
   {
    "id": "KGB0154",
+   "slug": "menom-ghana",
    "name": "Menom Ghana",
    "category": "Food Nutrition",
    "title": "Supplements & fresh fruit juices",
@@ -3873,6 +4027,7 @@
   },
   {
    "id": "KGB0155",
+   "slug": "deg-clothing",
    "name": "DEG CLOTHING",
    "category": "Fashion Clothing",
    "title": "Fashion & tailoring",
@@ -3894,6 +4049,7 @@
   },
   {
    "id": "KGB0156",
+   "slug": "capa-chemist-ltd",
    "name": "Capa Chemist Ltd",
    "category": "Pharmacy",
    "title": "Licensed chemist & registered medicines",
@@ -3915,6 +4071,7 @@
   },
   {
    "id": "KGB0157",
+   "slug": "gaso-petroleum-klagon-lpg-station",
    "name": "GASO Petroleum Klagon LPG Station",
    "category": "Fuel Lpg",
    "title": "LPG filling station",
@@ -3936,6 +4093,7 @@
   },
   {
    "id": "KGB0158",
+   "slug": "the-last-stop-over-garden-bar-restaurant",
    "name": "The Last Stop Over Garden Bar & Restaurant",
    "category": "Bar Restaurant",
    "title": "Bar & restaurant",
@@ -3957,6 +4115,7 @@
   },
   {
    "id": "KGB0159",
+   "slug": "pizza-inn-community-19",
    "name": "Pizza Inn (Community 19)",
    "category": "Food Pizza",
    "title": "Pizza restaurant",
@@ -3978,6 +4137,7 @@
   },
   {
    "id": "KGB0160",
+   "slug": "cam-i-t-consult",
    "name": "CAM I.T Consult",
    "category": "It Consulting",
    "title": "Information technology consultancy",
@@ -3999,6 +4159,7 @@
   },
   {
    "id": "KGB0161",
+   "slug": "spinal-clinic-ltd",
    "name": "Spinal Clinic Ltd",
    "category": "Health Clinic",
    "title": "Spinal & rehabilitation clinic",
@@ -4020,6 +4181,7 @@
   },
   {
    "id": "KGB0162",
+   "slug": "nelmax-clinic",
    "name": "Nelmax Clinic",
    "category": "Health Clinic",
    "title": "Clinic",
@@ -4041,6 +4203,7 @@
   },
   {
    "id": "KGB0163",
+   "slug": "ephya-s-fashion",
    "name": "Ephya's Fashion",
    "category": "Footwear Fashion",
    "title": "Footwear store",
@@ -4062,6 +4225,7 @@
   },
   {
    "id": "KGB0164",
+   "slug": "duena-fashion-house",
    "name": "Duena Fashion House",
    "category": "Fashion Design",
    "title": "Design & fashion",
@@ -4083,6 +4247,7 @@
   },
   {
    "id": "KGB0165",
+   "slug": "dbrandsultant",
    "name": "dBrandSultant",
    "category": "Marketing Agency",
    "title": "Online marketing agency",
@@ -4104,6 +4269,7 @@
   },
   {
    "id": "KGB0166",
+   "slug": "executive-business-network",
    "name": "Executive Business Network",
    "category": "Business Network",
    "title": "Business network services",
@@ -4125,6 +4291,7 @@
   },
   {
    "id": "KGB0167",
+   "slug": "masculine-touch",
    "name": "Masculine Touch",
    "category": "Barber Salon",
    "title": "Barbershop",
@@ -4146,6 +4313,7 @@
   },
   {
    "id": "KGB0168",
+   "slug": "makton-multimedia",
    "name": "Makton Multimedia",
    "category": "Multimedia",
    "title": "Multimedia production",
@@ -4167,6 +4335,7 @@
   },
   {
    "id": "KGB0169",
+   "slug": "glass-and-more-ltd",
    "name": "Glass and More Ltd",
    "category": "Glass Advertising",
    "title": "Glass & advertising",
@@ -4188,6 +4357,7 @@
   },
   {
    "id": "KGB0170",
+   "slug": "action-washing-bay",
    "name": "Action Washing Bay",
    "category": "Car Wash",
    "title": "Vehicle washing bay",
@@ -4209,6 +4379,7 @@
   },
   {
    "id": "KGB0171",
+   "slug": "hillburi-restaurant",
    "name": "Hillburi Restaurant",
    "category": "Restaurant",
    "title": "Restaurant",
@@ -4230,6 +4401,7 @@
   },
   {
    "id": "KGB0172",
+   "slug": "lucia-suites",
    "name": "Lucia Suites",
    "category": "Guesthouse",
    "title": "Suites & guesthouse",
@@ -4251,6 +4423,7 @@
   },
   {
    "id": "KGB0173",
+   "slug": "kalis-lodge-guesthouse",
    "name": "Kalis Lodge Guesthouse",
    "category": "Lodge",
    "title": "Guesthouse",
@@ -4272,6 +4445,7 @@
   },
   {
    "id": "KGB0174",
+   "slug": "the-farmer-s-market-whyte-bage",
    "name": "The Farmer's Market (Whyte Bage)",
    "category": "Food Produce",
    "title": "Fruits & vegetable retail outlet",
@@ -4293,6 +4467,7 @@
   },
   {
    "id": "KGB0175",
+   "slug": "tdc-stores-lashibi",
    "name": "TDC Stores (Lashibi)",
    "category": "Retail Department",
    "title": "Department store",
@@ -4314,6 +4489,7 @@
   },
   {
    "id": "KGB0176",
+   "slug": "thumbs-of-glory-unisex-salon",
    "name": "Thumbs Of Glory Unisex Salon",
    "category": "Barber Salon",
    "title": "Barbering & unisex salon",
@@ -4335,6 +4511,7 @@
   },
   {
    "id": "KGB0177",
+   "slug": "red-bulb-guest-house",
    "name": "Red Bulb Guest House",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -4356,6 +4533,7 @@
   },
   {
    "id": "KGB0178",
+   "slug": "blaqbone-media",
    "name": "Blaqbone Media",
    "category": "Media Advertising",
    "title": "Media & advertising",
@@ -4377,6 +4555,7 @@
   },
   {
    "id": "KGB0179",
+   "slug": "equity-multi-media-consult",
    "name": "Equity Multi-media Consult",
    "category": "Media Consultancy",
    "title": "Advertising consultancy",
@@ -4398,6 +4577,7 @@
   },
   {
    "id": "KGB0180",
+   "slug": "fosba-media-ltd",
    "name": "Fosba Media Ltd",
    "category": "Media",
    "title": "Media agency",
@@ -4419,6 +4599,7 @@
   },
   {
    "id": "KGB0181",
+   "slug": "findersghana",
    "name": "Findersghana",
    "category": "Real Estate Development",
    "title": "Real estate development",
@@ -4440,6 +4621,7 @@
   },
   {
    "id": "KGB0182",
+   "slug": "design-matrix",
    "name": "Design Matrix",
    "category": "Building Consultancy",
    "title": "Building consultancy",
@@ -4461,6 +4643,7 @@
   },
   {
    "id": "KGB0183",
+   "slug": "colmax-d-ltd",
    "name": "Colmax-d Ltd",
    "category": "Construction Contractor",
    "title": "Building contractor",
@@ -4482,6 +4665,7 @@
   },
   {
    "id": "KGB0184",
+   "slug": "saepong-construction-co-ltd",
    "name": "Saepong Construction & Co. Ltd",
    "category": "Construction Contractor",
    "title": "Building contractor",
@@ -4503,6 +4687,7 @@
   },
   {
    "id": "KGB0185",
+   "slug": "richcon-ltd",
    "name": "Richcon Ltd",
    "category": "Construction Contractor",
    "title": "Building contractor",
@@ -4524,6 +4709,7 @@
   },
   {
    "id": "KGB0186",
+   "slug": "real-people-concept",
    "name": "Real People Concept",
    "category": "Agro Chemicals",
    "title": "Agricultural chemicals",
@@ -4545,6 +4731,7 @@
   },
   {
    "id": "KGB0187",
+   "slug": "alliance-three-ltd",
    "name": "Alliance Three Ltd",
    "category": "Services Business",
    "title": "Business services",
@@ -4566,6 +4753,7 @@
   },
   {
    "id": "KGB0188",
+   "slug": "icon-studios",
    "name": "Icon Studios",
    "category": "Audio Visual",
    "title": "Audio & visual services",
@@ -4587,6 +4775,7 @@
   },
   {
    "id": "KGB0189",
+   "slug": "mids-kraft",
    "name": "Mids Kraft",
    "category": "Conference Services",
    "title": "Conference facilities & services",
@@ -4608,6 +4797,7 @@
   },
   {
    "id": "KGB0190",
+   "slug": "delata-ghana-ltd",
    "name": "Delata Ghana Ltd",
    "category": "Gifts Retail",
    "title": "Gifts & retail",
@@ -4629,6 +4819,7 @@
   },
   {
    "id": "KGB0191",
+   "slug": "sunset-dreams",
    "name": "Sunset & Dreams",
    "category": "Bakery Confectionery",
    "title": "Bakery & confectionery",
@@ -4650,6 +4841,7 @@
   },
   {
    "id": "KGB0192",
+   "slug": "alive-solution-agency",
    "name": "Alive Solution Agency",
    "category": "Services Agency",
    "title": "Solutions agency",
@@ -4671,6 +4863,7 @@
   },
   {
    "id": "KGB0193",
+   "slug": "f-koranteng-consulting",
    "name": "F. Koranteng Consulting",
    "category": "Accounting",
    "title": "Accountants & auditors",
@@ -4692,6 +4885,7 @@
   },
   {
    "id": "KGB0194",
+   "slug": "care-first-health-services",
    "name": "Care First Health Services",
    "category": "Health Services",
    "title": "Health services",
@@ -4713,6 +4907,7 @@
   },
   {
    "id": "KGB0195",
+   "slug": "beacon-college-international",
    "name": "Beacon College International",
    "category": "Education School",
    "title": "Primary school",
@@ -4734,6 +4929,7 @@
   },
   {
    "id": "KGB0196",
+   "slug": "everytech-solutions",
    "name": "EveryTech Solutions",
    "category": "Computer Software",
    "title": "Computer software",
@@ -4755,6 +4951,7 @@
   },
   {
    "id": "KGB0197",
+   "slug": "vicaas-ghana-ltd",
    "name": "Vicaas Ghana Ltd",
    "category": "Freight Forwarding",
    "title": "Freight forwarding",
@@ -4776,6 +4973,7 @@
   },
   {
    "id": "KGB0198",
+   "slug": "ontario-guests-house",
    "name": "Ontario Guests House",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -4797,6 +4995,7 @@
   },
   {
    "id": "KGB0199",
+   "slug": "hotel-royales",
    "name": "Hotel Royales",
    "category": "Hotel",
    "title": "Hotel",
@@ -4818,6 +5017,7 @@
   },
   {
    "id": "KGB0200",
+   "slug": "dream-big-guest-house",
    "name": "Dream Big Guest House",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -4839,6 +5039,7 @@
   },
   {
    "id": "KGB0201",
+   "slug": "blessed-home-klagon",
    "name": "Blessed Home Klagon",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -4860,6 +5061,7 @@
   },
   {
    "id": "KGB0202",
+   "slug": "oceanwave-guest-house",
    "name": "Oceanwave Guest House",
    "category": "Guesthouse",
    "title": "Guest house",
@@ -4881,6 +5083,7 @@
   },
   {
    "id": "KGB0203",
+   "slug": "jewima-hotel",
    "name": "Jewima Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -4902,6 +5105,7 @@
   },
   {
    "id": "KGB0204",
+   "slug": "chesterfield-hotel",
    "name": "Chesterfield Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -4923,6 +5127,7 @@
   },
   {
    "id": "KGB0205",
+   "slug": "hensap-hotel",
    "name": "Hensap Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -4944,6 +5149,7 @@
   },
   {
    "id": "KGB0206",
+   "slug": "seoul-grill-restaurant-hotel",
    "name": "Seoul Grill Restaurant & Hotel",
    "category": "Hotel",
    "title": "Restaurant & hotel",
@@ -4965,6 +5171,7 @@
   },
   {
    "id": "KGB0207",
+   "slug": "chrisman-pharmacy",
    "name": "Chrisman Pharmacy",
    "category": "Pharmacy",
    "title": "Licensed pharmacy",
@@ -4986,6 +5193,7 @@
   },
   {
    "id": "KGB0208",
+   "slug": "klagon-tma-primary-school",
    "name": "Klagon TMA Primary School",
    "category": "Education School",
    "title": "Primary school",
@@ -5007,6 +5215,7 @@
   },
   {
    "id": "KGB0209",
+   "slug": "amaks-international-school",
    "name": "Amaks International School",
    "category": "Education School",
    "title": "International school",
@@ -5028,6 +5237,7 @@
   },
   {
    "id": "KGB0210",
+   "slug": "old-lashibi-junior-high-school",
    "name": "Old Lashibi Junior High School",
    "category": "Education School",
    "title": "Junior high school",
@@ -5049,6 +5259,7 @@
   },
   {
    "id": "KGB0211",
+   "slug": "old-lashibi-basic-school",
    "name": "Old Lashibi Basic School",
    "category": "Education School",
    "title": "Basic school",
@@ -5070,6 +5281,7 @@
   },
   {
    "id": "KGB0212",
+   "slug": "triple-a-gas",
    "name": "Triple 'a' Gas",
    "category": "Fuel Gas",
    "title": "Gas refill point",
@@ -5091,6 +5303,7 @@
   },
   {
    "id": "KGB0213",
+   "slug": "jr-automobile",
    "name": "Jr Automobile",
    "category": "Auto Repair",
    "title": "Auto repair",
@@ -5112,6 +5325,7 @@
   },
   {
    "id": "KGB0214",
+   "slug": "bonfaya-bbq",
    "name": "Bonfaya BBQ",
    "category": "Restaurant",
    "title": "BBQ restaurant",
@@ -5133,6 +5347,7 @@
   },
   {
    "id": "KGB0215",
+   "slug": "somen-cuisine",
    "name": "SomeN Cuisine",
    "category": "Restaurant",
    "title": "Cuisine restaurant",
@@ -5154,6 +5369,7 @@
   },
   {
    "id": "KGB0216",
+   "slug": "sweet-pot-cuisine",
    "name": "Sweet Pot Cuisine",
    "category": "Restaurant",
    "title": "Cuisine restaurant",
@@ -5175,6 +5391,7 @@
   },
   {
    "id": "KGB0217",
+   "slug": "akolgo-simon-kebab",
    "name": "Akolgo Simon Kebab",
    "category": "Food Vendor",
    "title": "Kebab vendor",
@@ -5196,6 +5413,7 @@
   },
   {
    "id": "KGB0218",
+   "slug": "roselove-yummy-cake",
    "name": "Roselove Yummy Cake",
    "category": "Bakery",
    "title": "Cake shop",
@@ -5217,6 +5435,7 @@
   },
   {
    "id": "KGB0219",
+   "slug": "rose-bakery",
    "name": "Rose Bakery",
    "category": "Bakery",
    "title": "Bakery",
@@ -5238,6 +5457,7 @@
   },
   {
    "id": "KGB0220",
+   "slug": "work-of-faith-fan-milk-agent",
    "name": "Work of Faith Fan Milk Agent",
    "category": "Food Dairy",
    "title": "Fan Milk dairy agent",
@@ -5259,6 +5479,7 @@
   },
   {
    "id": "KGB0221",
+   "slug": "farmerfolk",
    "name": "Farmerfolk",
    "category": "Food Farm",
    "title": "Farm produce",
@@ -5280,6 +5501,7 @@
   },
   {
    "id": "KGB0222",
+   "slug": "organic-beauty-and-glow",
    "name": "Organic Beauty and Glow",
    "category": "Beauty",
    "title": "Beauty products",
@@ -5301,6 +5523,7 @@
   },
   {
    "id": "KGB0223",
+   "slug": "joevina-express-ventures",
    "name": "Joevina Express Ventures",
    "category": "Retail",
    "title": "General store",
@@ -5322,6 +5545,7 @@
   },
   {
    "id": "KGB0224",
+   "slug": "m-j-enterprise",
    "name": "M & J Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -5343,6 +5567,7 @@
   },
   {
    "id": "KGB0225",
+   "slug": "lifetime-happiness-ventures",
    "name": "Lifetime Happiness Ventures",
    "category": "Retail",
    "title": "General store",
@@ -5364,6 +5589,7 @@
   },
   {
    "id": "KGB0226",
+   "slug": "essentials-plus",
    "name": "Essentials Plus",
    "category": "Retail",
    "title": "Essentials store",
@@ -5385,6 +5611,7 @@
   },
   {
    "id": "KGB0227",
+   "slug": "bernice-provisions",
    "name": "Bernice Provisions",
    "category": "Retail Provisions",
    "title": "Provisions store",
@@ -5406,6 +5633,7 @@
   },
   {
    "id": "KGB0228",
+   "slug": "vossi-variety-enterprise",
    "name": "Vossi Variety Enterprise",
    "category": "Retail Variety",
    "title": "Variety store",
@@ -5427,6 +5655,7 @@
   },
   {
    "id": "KGB0229",
+   "slug": "dopat-springs-enterprise",
    "name": "Dopat Springs Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -5448,6 +5677,7 @@
   },
   {
    "id": "KGB0230",
+   "slug": "myalbert",
    "name": "Myalbert",
    "category": "Retail",
    "title": "General store",
@@ -5469,6 +5699,7 @@
   },
   {
    "id": "KGB0231",
+   "slug": "the-favour-of-god-plaza",
    "name": "The Favour of God Plaza",
    "category": "Retail Plaza",
    "title": "Retail plaza",
@@ -5490,6 +5721,7 @@
   },
   {
    "id": "KGB0232",
+   "slug": "vision-shopping-center",
    "name": "Vision Shopping Center",
    "category": "Retail Shopping",
    "title": "Shopping center",
@@ -5511,6 +5743,7 @@
   },
   {
    "id": "KGB0233",
+   "slug": "yesu-adom",
    "name": "Yesu Adom",
    "category": "Retail",
    "title": "General store",
@@ -5532,6 +5765,7 @@
   },
   {
    "id": "KGB0234",
+   "slug": "tsae-s",
    "name": "Tsae's",
    "category": "Retail",
    "title": "General store",
@@ -5553,6 +5787,7 @@
   },
   {
    "id": "KGB0235",
+   "slug": "elipat",
    "name": "Elipat",
    "category": "Services Business",
    "title": "Business center",
@@ -5574,6 +5809,7 @@
   },
   {
    "id": "KGB0236",
+   "slug": "lefam-business-solutions",
    "name": "Lefam Business Solutions",
    "category": "Services Business",
    "title": "Business solutions",
@@ -5595,6 +5831,7 @@
   },
   {
    "id": "KGB0237",
+   "slug": "miracle-business-center",
    "name": "Miracle Business Center",
    "category": "Services Business",
    "title": "Business center",
@@ -5616,6 +5853,7 @@
   },
   {
    "id": "KGB0238",
+   "slug": "c2-business-centre",
    "name": "C2 Business Centre",
    "category": "Services Business",
    "title": "Business center",
@@ -5637,6 +5875,7 @@
   },
   {
    "id": "KGB0239",
+   "slug": "tnc-biz-centre",
    "name": "TNC Biz Centre",
    "category": "Services Business",
    "title": "Business center",
@@ -5658,6 +5897,7 @@
   },
   {
    "id": "KGB0240",
+   "slug": "divine-professional-writing-services",
    "name": "Divine Professional Writing Services",
    "category": "Services Writing",
    "title": "Writing services",
@@ -5679,6 +5919,7 @@
   },
   {
    "id": "KGB0241",
+   "slug": "psalm-23-consult-agency",
    "name": "Psalm 23 Consult Agency",
    "category": "Services Consulting",
    "title": "Consulting agency",
@@ -5700,6 +5941,7 @@
   },
   {
    "id": "KGB0242",
+   "slug": "samtrust-microcredit-services",
    "name": "Samtrust Microcredit Services",
    "category": "Finance Microcredit",
    "title": "Microcredit services",
@@ -5721,6 +5963,7 @@
   },
   {
    "id": "KGB0243",
+   "slug": "we-care-investment-ltd",
    "name": "We Care Investment Ltd",
    "category": "Finance Investment",
    "title": "Investment services",
@@ -5742,6 +5985,7 @@
   },
   {
    "id": "KGB0244",
+   "slug": "forever-trust-travel-and-tour",
    "name": "Forever Trust Travel and Tour",
    "category": "Travel Tours",
    "title": "Travel & tours",
@@ -5763,6 +6007,7 @@
   },
   {
    "id": "KGB0245",
+   "slug": "city-unisex-salon",
    "name": "City Unisex Salon",
    "category": "Beauty Salon",
    "title": "Unisex salon",
@@ -5784,6 +6029,7 @@
   },
   {
    "id": "KGB0246",
+   "slug": "mary-gee-beauty-salon",
    "name": "Mary Gee Beauty Salon",
    "category": "Beauty Salon",
    "title": "Beauty salon",
@@ -5805,6 +6051,7 @@
   },
   {
    "id": "KGB0247",
+   "slug": "happiness-hair-care",
    "name": "Happiness Hair Care",
    "category": "Beauty Hair",
    "title": "Hair care",
@@ -5826,6 +6073,7 @@
   },
   {
    "id": "KGB0248",
+   "slug": "vidash-beauty-clinic",
    "name": "Vidash Beauty Clinic",
    "category": "Beauty Clinic",
    "title": "Beauty clinic",
@@ -5847,6 +6095,7 @@
   },
   {
    "id": "KGB0249",
+   "slug": "kings-and-queens-unisex-boutique",
    "name": "Kings and Queens Unisex Boutique",
    "category": "Fashion Boutique",
    "title": "Unisex boutique",
@@ -5868,6 +6117,7 @@
   },
   {
    "id": "KGB0250",
+   "slug": "bensey-beauty-couture",
    "name": "Bensey Beauty Couture",
    "category": "Beauty Fashion",
    "title": "Beauty & fashion couture",
@@ -5889,6 +6139,7 @@
   },
   {
    "id": "KGB0251",
+   "slug": "frenzy-collection",
    "name": "Frenzy Collection",
    "category": "Fashion",
    "title": "Fashion store",
@@ -5910,6 +6161,7 @@
   },
   {
    "id": "KGB0252",
+   "slug": "foundation-clothing",
    "name": "Foundation Clothing",
    "category": "Fashion Clothing",
    "title": "Clothing store",
@@ -5931,6 +6183,7 @@
   },
   {
    "id": "KGB0253",
+   "slug": "prestodea-barbering-salon",
    "name": "Prestodea Barbering Salon",
    "category": "Barber Salon",
    "title": "Barbershop",
@@ -5952,6 +6205,7 @@
   },
   {
    "id": "KGB0254",
+   "slug": "dekings-barbershop",
    "name": "Dekings Barbershop",
    "category": "Barber",
    "title": "Barbershop",
@@ -5973,6 +6227,7 @@
   },
   {
    "id": "KGB0255",
+   "slug": "unisex-kollektion",
    "name": "UniseX KolleKtion",
    "category": "Fashion",
    "title": "Fashion store",
@@ -5994,6 +6249,7 @@
   },
   {
    "id": "KGB0256",
+   "slug": "glowwithdiamond-cosmetics",
    "name": "Glowwithdiamond Cosmetics",
    "category": "Cosmetics",
    "title": "Cosmetics store",
@@ -6015,6 +6271,7 @@
   },
   {
    "id": "KGB0257",
+   "slug": "armstrong-computer-systems",
    "name": "Armstrong Computer Systems",
    "category": "It Computers",
    "title": "Computers & IT services",
@@ -6036,6 +6293,7 @@
   },
   {
    "id": "KGB0258",
+   "slug": "exsimsoft-limited",
    "name": "Exsimsoft Limited",
    "category": "It Software",
    "title": "Software & IT services",
@@ -6057,6 +6315,7 @@
   },
   {
    "id": "KGB0259",
+   "slug": "perfect-point-solutions",
    "name": "Perfect Point Solutions",
    "category": "It Solutions",
    "title": "IT solutions",
@@ -6078,6 +6337,7 @@
   },
   {
    "id": "KGB0260",
+   "slug": "freddies-graphix",
    "name": "Freddies Graphix",
    "category": "Printing Graphics",
    "title": "Graphics & printing",
@@ -6099,6 +6359,7 @@
   },
   {
    "id": "KGB0261",
+   "slug": "emvics-graphics",
    "name": "Emvics Graphics",
    "category": "Printing Graphics",
    "title": "Graphics & printing",
@@ -6120,6 +6381,7 @@
   },
   {
    "id": "KGB0262",
+   "slug": "afetor-blessed-prints",
    "name": "Afetor Blessed Prints",
    "category": "Printing",
    "title": "Printing services",
@@ -6141,6 +6403,7 @@
   },
   {
    "id": "KGB0263",
+   "slug": "kojoson-media",
    "name": "Kojoson Media",
    "category": "Media",
    "title": "Media services",
@@ -6162,6 +6425,7 @@
   },
   {
    "id": "KGB0264",
+   "slug": "myco-recording-studios",
    "name": "Myco Recording Studios",
    "category": "Media Recording",
    "title": "Recording studio",
@@ -6183,6 +6447,7 @@
   },
   {
    "id": "KGB0265",
+   "slug": "victory-block-factory",
    "name": "Victory Block Factory",
    "category": "Construction Blocks",
    "title": "Block factory",
@@ -6204,6 +6469,7 @@
   },
   {
    "id": "KGB0266",
+   "slug": "d-a-electricals-and-hardware",
    "name": "D. A Electricals and Hardware",
    "category": "Electrical Hardware",
    "title": "Electrical & hardware",
@@ -6225,6 +6491,7 @@
   },
   {
    "id": "KGB0267",
+   "slug": "gamma-power-distribution-limited",
    "name": "Gamma Power Distribution Limited",
    "category": "Utility Power",
    "title": "Power distribution",
@@ -6246,6 +6513,7 @@
   },
   {
    "id": "KGB0268",
+   "slug": "forte-residences-by-devtraco-plus",
    "name": "Forte Residences by Devtraco Plus",
    "category": "Real Estate Development",
    "title": "Estate development",
@@ -6267,6 +6535,7 @@
   },
   {
    "id": "KGB0269",
+   "slug": "olive-gardens-by-inocon-realty-ltd",
    "name": "Olive Gardens by Inocon Realty Ltd",
    "category": "Real Estate Development",
    "title": "Estate development",
@@ -6288,6 +6557,7 @@
   },
   {
    "id": "KGB0270",
+   "slug": "kejoe-s-real-estate-and-agency",
    "name": "Kejoe's Real Estate and Agency",
    "category": "Real Estate Agency",
    "title": "Real estate agency",
@@ -6309,6 +6579,7 @@
   },
   {
    "id": "KGB0271",
+   "slug": "national-investment-bank-lashibi",
    "name": "National Investment Bank (Lashibi)",
    "category": "Bank",
    "title": "Bank branch",
@@ -6330,6 +6601,7 @@
   },
   {
    "id": "KGB0272",
+   "slug": "dwomoh-properties",
    "name": "Dwomoh Properties",
    "category": "Real Estate",
    "title": "Property services",
@@ -6351,6 +6623,7 @@
   },
   {
    "id": "KGB0273",
+   "slug": "trassaco-springs",
    "name": "Trassaco Springs",
    "category": "Real Estate Development",
    "title": "Estate development",
@@ -6372,6 +6645,7 @@
   },
   {
    "id": "KGB0274",
+   "slug": "fit-folks-gh",
    "name": "Fit Folks Gh",
    "category": "Fitness Gym",
    "title": "Gym & fitness",
@@ -6393,6 +6667,7 @@
   },
   {
    "id": "KGB0275",
+   "slug": "al-basit-one-fitness-center",
    "name": "Al Basit One Fitness Center",
    "category": "Fitness Gym",
    "title": "Gym & fitness",
@@ -6414,6 +6689,7 @@
   },
   {
    "id": "KGB0276",
+   "slug": "deon-recreational-centre",
    "name": "Deon Recreational Centre",
    "category": "Recreation",
    "title": "Recreation center",
@@ -6435,6 +6711,7 @@
   },
   {
    "id": "KGB0277",
+   "slug": "ace-game-station-gh",
    "name": "Ace Game Station Gh",
    "category": "Entertainment Gaming",
    "title": "Gaming station",
@@ -6456,6 +6733,7 @@
   },
   {
    "id": "KGB0278",
+   "slug": "alfabet-sport-betting",
    "name": "Alfabet Sport Betting",
    "category": "Betting",
    "title": "Sports betting shop",
@@ -6477,6 +6755,7 @@
   },
   {
    "id": "KGB0279",
+   "slug": "gh-laundry",
    "name": "GH Laundry",
    "category": "Laundry",
    "title": "Laundry services",
@@ -6498,6 +6777,7 @@
   },
   {
    "id": "KGB0280",
+   "slug": "pristine-bedding-enterprise",
    "name": "Pristine Bedding Enterprise",
    "category": "Retail Bedding",
    "title": "Bedding store",
@@ -6519,6 +6799,7 @@
   },
   {
    "id": "KGB0281",
+   "slug": "emmanuel-bookshop",
    "name": "Emmanuel Bookshop",
    "category": "Books Stationery",
    "title": "Books & stationery",
@@ -6540,6 +6821,7 @@
   },
   {
    "id": "KGB0282",
+   "slug": "vision-home-office-essentials",
    "name": "Vision Home, Office Essentials",
    "category": "Retail Office",
    "title": "Home & office essentials",
@@ -6561,6 +6843,7 @@
   },
   {
    "id": "KGB0283",
+   "slug": "hammer-remote-store",
    "name": "Hammer Remote Store",
    "category": "Retail",
    "title": "General store",
@@ -6582,6 +6865,7 @@
   },
   {
    "id": "KGB0284",
+   "slug": "real-logistcs-ghana",
    "name": "Real Logistcs Ghana",
    "category": "Logistics",
    "title": "Logistics services",
@@ -6603,6 +6887,7 @@
   },
   {
    "id": "KGB0285",
+   "slug": "jabe-industries-limited",
    "name": "Jabe Industries Limited",
    "category": "Industrial",
    "title": "Industrial services",
@@ -6624,6 +6909,7 @@
   },
   {
    "id": "KGB0286",
+   "slug": "bodzi-enterprise-limited",
    "name": "Bodzi Enterprise Limited",
    "category": "Retail",
    "title": "General store",
@@ -6645,6 +6931,7 @@
   },
   {
    "id": "KGB0287",
+   "slug": "hajia-lisway-enterprise",
    "name": "Hajia Lisway Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -6666,6 +6953,7 @@
   },
   {
    "id": "KGB0288",
+   "slug": "maalyz-ventures",
    "name": "Maalyz Ventures",
    "category": "Retail",
    "title": "General store",
@@ -6687,6 +6975,7 @@
   },
   {
    "id": "KGB0289",
+   "slug": "livinrich-enterprise-2",
    "name": "Livinrich Enterprise 2",
    "category": "Retail",
    "title": "General store",
@@ -6708,6 +6997,7 @@
   },
   {
    "id": "KGB0290",
+   "slug": "comzane-plaza",
    "name": "Comzane Plaza",
    "category": "Retail Plaza",
    "title": "Retail plaza",
@@ -6729,6 +7019,7 @@
   },
   {
    "id": "KGB0291",
+   "slug": "arthur-enterprise",
    "name": "Arthur Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -6750,6 +7041,7 @@
   },
   {
    "id": "KGB0292",
+   "slug": "godswill-enterprise",
    "name": "Godswill Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -6771,6 +7063,7 @@
   },
   {
    "id": "KGB0293",
+   "slug": "selly-s-pub-and-store",
    "name": "Selly's Pub and Store",
    "category": "Bar Stores",
    "title": "Pub & store",
@@ -6792,6 +7085,7 @@
   },
   {
    "id": "KGB0294",
+   "slug": "goshen-excel-business",
    "name": "Goshen Excel Business",
    "category": "Services Business",
    "title": "Business services",
@@ -6813,6 +7107,7 @@
   },
   {
    "id": "KGB0295",
+   "slug": "paradise-enterprise",
    "name": "Paradise Enterprise",
    "category": "Retail",
    "title": "General store",
@@ -6834,6 +7129,7 @@
   },
   {
    "id": "KGB0296",
+   "slug": "ab-paradise-herbal-centre",
    "name": "Ab Paradise Herbal Centre",
    "category": "Herbal Health",
    "title": "Herbal health center",
@@ -6855,6 +7151,7 @@
   },
   {
    "id": "KGB0297",
+   "slug": "3hives-learning",
    "name": "3hives Learning",
    "category": "Education School",
    "title": "School",
@@ -6876,6 +7173,7 @@
   },
   {
    "id": "KGB0298",
+   "slug": "a-of-the-as-school-ltd",
    "name": "A Of The As School Ltd",
    "category": "Education School",
    "title": "School",
@@ -6897,6 +7195,7 @@
   },
   {
    "id": "KGB0299",
+   "slug": "a-shine-ventures",
    "name": "A-shine ventures",
    "category": "Services Business",
    "title": "Business Services",
@@ -6918,6 +7217,7 @@
   },
   {
    "id": "KGB0300",
+   "slug": "ababio-s-villa",
    "name": "Ababio's villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -6939,6 +7239,7 @@
   },
   {
    "id": "KGB0301",
+   "slug": "africa-advance-school-park",
    "name": "Africa Advance School Park",
    "category": "Education School",
    "title": "School",
@@ -6960,6 +7261,7 @@
   },
   {
    "id": "KGB0302",
+   "slug": "africa-eleven-football-park",
    "name": "Africa Eleven Football Park",
    "category": "Education Sports",
    "title": "Sports Academy",
@@ -6981,6 +7283,7 @@
   },
   {
    "id": "KGB0303",
+   "slug": "african-american-islamic-institute",
    "name": "African American Islamic Institute",
    "category": "Education School",
    "title": "School",
@@ -7002,6 +7305,7 @@
   },
   {
    "id": "KGB0304",
+   "slug": "afrique-homes",
    "name": "Afrique Homes",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -7023,6 +7327,7 @@
   },
   {
    "id": "KGB0305",
+   "slug": "agape-redeemed-school",
    "name": "Agape Redeemed School",
    "category": "Education School",
    "title": "School",
@@ -7044,6 +7349,7 @@
   },
   {
    "id": "KGB0306",
+   "slug": "agyapa-ventures",
    "name": "Agyapa ventures",
    "category": "Services Business",
    "title": "Business Services",
@@ -7065,6 +7371,7 @@
   },
   {
    "id": "KGB0307",
+   "slug": "al-haq-islamic-school",
    "name": "Al-Haq Islamic School",
    "category": "Education School",
    "title": "School",
@@ -7086,6 +7393,7 @@
   },
   {
    "id": "KGB0308",
+   "slug": "alhaji-kumuzu-enterprise",
    "name": "Alhaji Kumuzu Enterprise",
    "category": "Services Business",
    "title": "Business Services",
@@ -7107,6 +7415,7 @@
   },
   {
    "id": "KGB0309",
+   "slug": "almighty-golden-academy",
    "name": "Almighty Golden Academy",
    "category": "Education School",
    "title": "School",
@@ -7128,6 +7437,7 @@
   },
   {
    "id": "KGB0310",
+   "slug": "alys-court",
    "name": "ALYS COURT",
    "category": "Services Business",
    "title": "Business Services",
@@ -7149,6 +7459,7 @@
   },
   {
    "id": "KGB0311",
+   "slug": "amaks-int-school",
    "name": "Amaks Int. School",
    "category": "Education School",
    "title": "School",
@@ -7170,6 +7481,7 @@
   },
   {
    "id": "KGB0312",
+   "slug": "anchor-of-hope-community-school",
    "name": "Anchor of hope community school",
    "category": "Education School",
    "title": "School",
@@ -7191,6 +7503,7 @@
   },
   {
    "id": "KGB0313",
+   "slug": "angel-s-specialist-school-international",
    "name": "Angel's Specialist School International",
    "category": "Education School",
    "title": "School",
@@ -7212,6 +7525,7 @@
   },
   {
    "id": "KGB0314",
+   "slug": "angels-ridge-school",
    "name": "Angels' Ridge School",
    "category": "Education School",
    "title": "School",
@@ -7233,6 +7547,7 @@
   },
   {
    "id": "KGB0315",
+   "slug": "apartment-7",
    "name": "Apartment 7",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -7254,6 +7569,7 @@
   },
   {
    "id": "KGB0316",
+   "slug": "arise-international-school",
    "name": "Arise International School",
    "category": "Education School",
    "title": "School",
@@ -7275,6 +7591,7 @@
   },
   {
    "id": "KGB0317",
+   "slug": "arms-of-god-international-school",
    "name": "Arms of God international school",
    "category": "Education School",
    "title": "School",
@@ -7296,6 +7613,7 @@
   },
   {
    "id": "KGB0318",
+   "slug": "armstrong-computers",
    "name": "Armstrong Computers",
    "category": "It Solutions",
    "title": "IT / Tech",
@@ -7317,6 +7635,7 @@
   },
   {
    "id": "KGB0319",
+   "slug": "arrow-preparatory-school",
    "name": "Arrow Preparatory School",
    "category": "Education School",
    "title": "School",
@@ -7338,6 +7657,7 @@
   },
   {
    "id": "KGB0320",
+   "slug": "asco-villa",
    "name": "Asco Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -7359,6 +7679,7 @@
   },
   {
    "id": "KGB0321",
+   "slug": "ashaley-mem-school",
    "name": "Ashaley mem. School",
    "category": "Education School",
    "title": "School",
@@ -7380,6 +7701,7 @@
   },
   {
    "id": "KGB0322",
+   "slug": "ashaley-memorial-school-complex",
    "name": "Ashaley Memorial School Complex",
    "category": "Education School",
    "title": "School",
@@ -7401,6 +7723,7 @@
   },
   {
    "id": "KGB0323",
+   "slug": "ashmole-international-academy-primary-and-pre-school",
    "name": "Ashmole International Academy Primary And Pre - School",
    "category": "Education School",
    "title": "School",
@@ -7422,6 +7745,7 @@
   },
   {
    "id": "KGB0324",
+   "slug": "at-tarbiyya-islamic-school-ghana",
    "name": "At - Tarbiyya Islamic School, Ghana",
    "category": "Education School",
    "title": "School",
@@ -7443,6 +7767,7 @@
   },
   {
    "id": "KGB0325",
+   "slug": "azures-international-school",
    "name": "Azures International School",
    "category": "Education School",
    "title": "School",
@@ -7464,6 +7789,7 @@
   },
   {
    "id": "KGB0326",
+   "slug": "barbie-s-learning-centre",
    "name": "Barbie’s Learning Centre",
    "category": "Education School",
    "title": "School",
@@ -7485,6 +7811,7 @@
   },
   {
    "id": "KGB0327",
+   "slug": "beacon-college-international-regina-campus",
    "name": "Beacon College International - Regina Campus",
    "category": "Education School",
    "title": "School",
@@ -7506,6 +7833,7 @@
   },
   {
    "id": "KGB0328",
+   "slug": "bebe-bilingue-bilingual-daycare-and-preschool",
    "name": "Bebe Bilingue - Bilingual Daycare And Preschool",
    "category": "Education School",
    "title": "School",
@@ -7527,6 +7855,7 @@
   },
   {
    "id": "KGB0329",
+   "slug": "bell-s-international-school",
    "name": "Bell's international school",
    "category": "Education School",
    "title": "School",
@@ -7548,6 +7877,7 @@
   },
   {
    "id": "KGB0330",
+   "slug": "best-start-academy",
    "name": "Best Start Academy",
    "category": "Education School",
    "title": "School",
@@ -7569,6 +7899,7 @@
   },
   {
    "id": "KGB0331",
+   "slug": "bethel-methodist-school-complex",
    "name": "Bethel methodist school complex",
    "category": "Education School",
    "title": "School",
@@ -7590,6 +7921,7 @@
   },
   {
    "id": "KGB0332",
+   "slug": "bethel-rock-international-school",
    "name": "Bethel Rock International School",
    "category": "Education School",
    "title": "School",
@@ -7611,6 +7943,7 @@
   },
   {
    "id": "KGB0333",
+   "slug": "bettysven-mini-mart",
    "name": "BETTYSVEN MINI MART",
    "category": "Retail",
    "title": "Retail Shop",
@@ -7632,6 +7965,7 @@
   },
   {
    "id": "KGB0334",
+   "slug": "big-dreams-p-a-academy",
    "name": "Big Dreams P. A Academy",
    "category": "Education School",
    "title": "School",
@@ -7653,6 +7987,7 @@
   },
   {
    "id": "KGB0335",
+   "slug": "bishop-asabee-residence",
    "name": "Bishop Asabee Residence",
    "category": "Services Business",
    "title": "Business Services",
@@ -7674,6 +8009,7 @@
   },
   {
    "id": "KGB0336",
+   "slug": "blessed-kickers-fc-negas-academy",
    "name": "Blessed Kickers Fc Negas Academy",
    "category": "Education Sports",
    "title": "Sports Academy",
@@ -7695,6 +8031,7 @@
   },
   {
    "id": "KGB0337",
+   "slug": "blessing-s-studio",
    "name": "Blessing’s Studio",
    "category": "Services Creative",
    "title": "Creative / Media",
@@ -7716,6 +8053,7 @@
   },
   {
    "id": "KGB0338",
+   "slug": "boatina-homes",
    "name": "Boatina Homes",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -7737,6 +8075,7 @@
   },
   {
    "id": "KGB0339",
+   "slug": "borte-apparel-academy",
    "name": "Borte apparel academy",
    "category": "Education School",
    "title": "School",
@@ -7758,6 +8097,7 @@
   },
   {
    "id": "KGB0340",
+   "slug": "brainy-academy",
    "name": "Brainy academy",
    "category": "Education School",
    "title": "School",
@@ -7779,6 +8119,7 @@
   },
   {
    "id": "KGB0341",
+   "slug": "bridge-hills-international-school",
    "name": "Bridge Hills International School",
    "category": "Education School",
    "title": "School",
@@ -7800,6 +8141,7 @@
   },
   {
    "id": "KGB0342",
+   "slug": "brighter-horizon-school",
    "name": "Brighter horizon school",
    "category": "Education School",
    "title": "School",
@@ -7821,6 +8163,7 @@
   },
   {
    "id": "KGB0343",
+   "slug": "bugain-int-school",
    "name": "Bugain Int School",
    "category": "Education School",
    "title": "School",
@@ -7842,6 +8185,7 @@
   },
   {
    "id": "KGB0344",
+   "slug": "busyinternet-bts-tema",
    "name": "BusyInternet Bts Tema",
    "category": "It Solutions",
    "title": "IT / Tech",
@@ -7863,6 +8207,7 @@
   },
   {
    "id": "KGB0345",
+   "slug": "canadaian-international-school-new-campus",
    "name": "Canadaian International School - New Campus",
    "category": "Education School",
    "title": "School",
@@ -7884,6 +8229,7 @@
   },
   {
    "id": "KGB0346",
+   "slug": "canadian-international-school-new-campus",
    "name": "Canadian International School - New Campus",
    "category": "Education School",
    "title": "School",
@@ -7905,6 +8251,7 @@
   },
   {
    "id": "KGB0347",
+   "slug": "captains-academy",
    "name": "Captains Academy",
    "category": "Education School",
    "title": "School",
@@ -7926,6 +8273,7 @@
   },
   {
    "id": "KGB0348",
+   "slug": "cedar-hills-international-school",
    "name": "Cedar Hills International School",
    "category": "Education School",
    "title": "School",
@@ -7947,6 +8295,7 @@
   },
   {
    "id": "KGB0349",
+   "slug": "celebrations-cakes-and-more",
    "name": "Celebrations Cakes and More",
    "category": "Bakery",
    "title": "Bakery",
@@ -7968,6 +8317,7 @@
   },
   {
    "id": "KGB0350",
+   "slug": "celebrity-tennis-court",
    "name": "Celebrity Tennis Court",
    "category": "Fitness Gym",
    "title": "Gym / Fitness",
@@ -7989,6 +8339,7 @@
   },
   {
    "id": "KGB0351",
+   "slug": "central-presby-preparatory-school",
    "name": "Central Presby Preparatory School",
    "category": "Education School",
    "title": "School",
@@ -8010,6 +8361,7 @@
   },
   {
    "id": "KGB0352",
+   "slug": "central-university",
    "name": "Central University",
    "category": "Education School",
    "title": "School",
@@ -8031,6 +8383,7 @@
   },
   {
    "id": "KGB0353",
+   "slug": "childcare-network-academy-ghana",
    "name": "Childcare Network Academy Ghana",
    "category": "Education School",
    "title": "School",
@@ -8052,6 +8405,7 @@
   },
   {
    "id": "KGB0354",
+   "slug": "children-s-future-international-school",
    "name": "Children's Future International School",
    "category": "Education School",
    "title": "School",
@@ -8073,6 +8427,7 @@
   },
   {
    "id": "KGB0355",
+   "slug": "chris-fahrenholz-royal-academy",
    "name": "Chris fahrenholz royal academy",
    "category": "Education School",
    "title": "School",
@@ -8094,6 +8449,7 @@
   },
   {
    "id": "KGB0356",
+   "slug": "chrisals-apartments",
    "name": "Chrisals Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -8115,6 +8471,7 @@
   },
   {
    "id": "KGB0357",
+   "slug": "chrisdan-paradise-school",
    "name": "Chrisdan paradise school",
    "category": "Education School",
    "title": "School",
@@ -8136,6 +8493,7 @@
   },
   {
    "id": "KGB0358",
+   "slug": "chrisdanm-international-school",
    "name": "Chrisdanm International School",
    "category": "Education School",
    "title": "School",
@@ -8157,6 +8515,7 @@
   },
   {
    "id": "KGB0359",
+   "slug": "chrisdof-international-school",
    "name": "Chrisdof International School",
    "category": "Education School",
    "title": "School",
@@ -8178,6 +8537,7 @@
   },
   {
    "id": "KGB0360",
+   "slug": "chrispal-international-school",
    "name": "Chrispal International School",
    "category": "Education School",
    "title": "School",
@@ -8199,6 +8559,7 @@
   },
   {
    "id": "KGB0361",
+   "slug": "christ-heritage-experimental-school",
    "name": "Christ Heritage Experimental School",
    "category": "Education School",
    "title": "School",
@@ -8220,6 +8581,7 @@
   },
   {
    "id": "KGB0362",
+   "slug": "christ-s-presence-int-school",
    "name": "Christ's presence int. School",
    "category": "Education School",
    "title": "School",
@@ -8241,6 +8603,7 @@
   },
   {
    "id": "KGB0363",
+   "slug": "classic-educational-complex",
    "name": "Classic Educational Complex",
    "category": "Education School",
    "title": "School",
@@ -8262,6 +8625,7 @@
   },
   {
    "id": "KGB0364",
+   "slug": "colindale-court",
    "name": "Colindale Court",
    "category": "Services Business",
    "title": "Business Services",
@@ -8283,6 +8647,7 @@
   },
   {
    "id": "KGB0365",
+   "slug": "college-of-beacons-practical-talents-development-studies",
    "name": "College Of Beacons Practical-talents Development Studies",
    "category": "Education School",
    "title": "School",
@@ -8304,6 +8669,7 @@
   },
   {
    "id": "KGB0366",
+   "slug": "corpus-christi-catholic-school",
    "name": "Corpus Christi Catholic School",
    "category": "Education School",
    "title": "School",
@@ -8325,6 +8691,7 @@
   },
   {
    "id": "KGB0367",
+   "slug": "corpus-christi-school",
    "name": "Corpus Christi school",
    "category": "Education School",
    "title": "School",
@@ -8346,6 +8713,7 @@
   },
   {
    "id": "KGB0368",
+   "slug": "covenant-christian-leadership-college",
    "name": "Covenant Christian Leadership College",
    "category": "Education School",
    "title": "School",
@@ -8367,6 +8735,7 @@
   },
   {
    "id": "KGB0369",
+   "slug": "cradle-kids-pre-school",
    "name": "Cradle & Kids Pre-School",
    "category": "Education School",
    "title": "School",
@@ -8388,6 +8757,7 @@
   },
   {
    "id": "KGB0370",
+   "slug": "crosshill-international-school",
    "name": "Crosshill International School",
    "category": "Education School",
    "title": "School",
@@ -8409,6 +8779,7 @@
   },
   {
    "id": "KGB0371",
+   "slug": "cuddly-pet-shop",
    "name": "CUDDLY PET SHOP",
    "category": "Retail",
    "title": "Retail Shop",
@@ -8430,6 +8801,7 @@
   },
   {
    "id": "KGB0372",
+   "slug": "cya-studios",
    "name": "Cya studios",
    "category": "Services Creative",
    "title": "Creative / Media",
@@ -8451,6 +8823,7 @@
   },
   {
    "id": "KGB0373",
+   "slug": "cynthia-ann-gourley-import-and-export-construction-vehicles-and-heavy-",
    "name": "Cynthia Ann Gourley Import and export construction vehicles and heavy duties",
    "category": "Industrial",
    "title": "Industrial",
@@ -8472,6 +8845,7 @@
   },
   {
    "id": "KGB0374",
+   "slug": "d-a-ventures",
    "name": "D. A ventures",
    "category": "Services Business",
    "title": "Business Services",
@@ -8493,6 +8867,7 @@
   },
   {
    "id": "KGB0375",
+   "slug": "da-avenue-apartments",
    "name": "Da Avenue Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -8514,6 +8889,7 @@
   },
   {
    "id": "KGB0376",
+   "slug": "dafsynn-s-villa",
    "name": "Dafsynn’s Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -8535,6 +8911,7 @@
   },
   {
    "id": "KGB0377",
+   "slug": "de-brooch-montessori-school",
    "name": "De-BROOCH montessori school",
    "category": "Education School",
    "title": "School",
@@ -8556,6 +8933,7 @@
   },
   {
    "id": "KGB0378",
+   "slug": "delovely-apartment",
    "name": "Delovely Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -8577,6 +8955,7 @@
   },
   {
    "id": "KGB0379",
+   "slug": "desvy-international-school",
    "name": "Desvy International School",
    "category": "Education School",
    "title": "School",
@@ -8598,6 +8977,7 @@
   },
   {
    "id": "KGB0380",
+   "slug": "devtraco-villas-estate",
    "name": "Devtraco Villas Estate",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -8619,6 +8999,7 @@
   },
   {
    "id": "KGB0381",
+   "slug": "divine-prep-school",
    "name": "Divine prep school",
    "category": "Education School",
    "title": "School",
@@ -8640,6 +9021,7 @@
   },
   {
    "id": "KGB0382",
+   "slug": "easylynk-ventures",
    "name": "Easylynk ventures",
    "category": "Services Business",
    "title": "Business Services",
@@ -8661,6 +9043,7 @@
   },
   {
    "id": "KGB0383",
+   "slug": "edella-community-school",
    "name": "Edella community school",
    "category": "Education School",
    "title": "School",
@@ -8682,6 +9065,7 @@
   },
   {
    "id": "KGB0384",
+   "slug": "educational-center",
    "name": "Educational center",
    "category": "Education School",
    "title": "School",
@@ -8703,6 +9087,7 @@
   },
   {
    "id": "KGB0385",
+   "slug": "ekissi-apartments",
    "name": "Ekissi Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -8724,6 +9109,7 @@
   },
   {
    "id": "KGB0386",
+   "slug": "el-chris-international-school",
    "name": "El Chris International School",
    "category": "Education School",
    "title": "School",
@@ -8745,6 +9131,7 @@
   },
   {
    "id": "KGB0387",
+   "slug": "el-vicky-school-complex",
    "name": "El-vicky school complex",
    "category": "Education School",
    "title": "School",
@@ -8766,6 +9153,7 @@
   },
   {
    "id": "KGB0388",
+   "slug": "elite-brands-services",
    "name": "Elite Brands Services",
    "category": "Services Business",
    "title": "Business Services",
@@ -8787,6 +9175,7 @@
   },
   {
    "id": "KGB0389",
+   "slug": "emerald-educational-consult",
    "name": "Emerald Educational Consult",
    "category": "Education School",
    "title": "School",
@@ -8808,6 +9197,7 @@
   },
   {
    "id": "KGB0390",
+   "slug": "emirate-hills-school",
    "name": "Emirate Hills School",
    "category": "Education School",
    "title": "School",
@@ -8829,6 +9219,7 @@
   },
   {
    "id": "KGB0391",
+   "slug": "emma-s-plaza",
    "name": "Emma's Plaza",
    "category": "Retail Plaza",
    "title": "Plaza / Mall",
@@ -8850,6 +9241,7 @@
   },
   {
    "id": "KGB0392",
+   "slug": "espalexy-house",
    "name": "Espalexy House",
    "category": "Beauty Salon",
    "title": "Beauty Salon",
@@ -8871,6 +9263,7 @@
   },
   {
    "id": "KGB0393",
+   "slug": "euma-montessori-school",
    "name": "Euma Montessori School",
    "category": "Education School",
    "title": "School",
@@ -8892,6 +9285,7 @@
   },
   {
    "id": "KGB0394",
+   "slug": "exceles-community-school",
    "name": "Exceles community school",
    "category": "Education School",
    "title": "School",
@@ -8913,6 +9307,7 @@
   },
   {
    "id": "KGB0395",
+   "slug": "faith-academy-school",
    "name": "Faith academy school",
    "category": "Education School",
    "title": "School",
@@ -8934,6 +9329,7 @@
   },
   {
    "id": "KGB0396",
+   "slug": "faith-spring-school",
    "name": "Faith spring school",
    "category": "Education School",
    "title": "School",
@@ -8955,6 +9351,7 @@
   },
   {
    "id": "KGB0397",
+   "slug": "falcon-apartments",
    "name": "Falcon Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -8976,6 +9373,7 @@
   },
   {
    "id": "KGB0398",
+   "slug": "feesbel-ghana-ltd",
    "name": "Feesbel ghana Ltd",
    "category": "Services Business",
    "title": "Business Services",
@@ -8997,6 +9395,7 @@
   },
   {
    "id": "KGB0399",
+   "slug": "first-step-glory-school-complex",
    "name": "First Step Glory School Complex",
    "category": "Education School",
    "title": "School",
@@ -9018,6 +9417,7 @@
   },
   {
    "id": "KGB0400",
+   "slug": "food-for-all-africa",
    "name": "Food for all Africa",
    "category": "Services Business",
    "title": "Business Services",
@@ -9039,6 +9439,7 @@
   },
   {
    "id": "KGB0401",
+   "slug": "franblez-montessori-school",
    "name": "Franblez Montessori School",
    "category": "Education School",
    "title": "School",
@@ -9060,6 +9461,7 @@
   },
   {
    "id": "KGB0402",
+   "slug": "frema-s-villa",
    "name": "Frema's Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9081,6 +9483,7 @@
   },
   {
    "id": "KGB0403",
+   "slug": "g-feel-apartment",
    "name": "G-feel Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -9102,6 +9505,7 @@
   },
   {
    "id": "KGB0404",
+   "slug": "ged-appartements",
    "name": "Ged Appartements",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -9123,6 +9527,7 @@
   },
   {
    "id": "KGB0405",
+   "slug": "ged-courts",
    "name": "Ged Courts",
    "category": "Services Business",
    "title": "Business Services",
@@ -9144,6 +9549,7 @@
   },
   {
    "id": "KGB0406",
+   "slug": "gemsprings-learning-academy",
    "name": "Gemsprings Learning Academy",
    "category": "Education School",
    "title": "School",
@@ -9165,6 +9571,7 @@
   },
   {
    "id": "KGB0407",
+   "slug": "george-gunn-international-christian-academy",
    "name": "George Gunn International Christian Academy",
    "category": "Education School",
    "title": "School",
@@ -9186,6 +9593,7 @@
   },
   {
    "id": "KGB0408",
+   "slug": "gjb-apartments",
    "name": "Gjb Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -9207,6 +9615,7 @@
   },
   {
    "id": "KGB0409",
+   "slug": "global-alliance-of-montessori-educators",
    "name": "Global Alliance of Montessori Educators",
    "category": "Education School",
    "title": "School",
@@ -9228,6 +9637,7 @@
   },
   {
    "id": "KGB0410",
+   "slug": "god-s-garden-montessori-school",
    "name": "God's Garden Montessori School",
    "category": "Education School",
    "title": "School",
@@ -9249,6 +9659,7 @@
   },
   {
    "id": "KGB0411",
+   "slug": "golda-garden-international-school",
    "name": "Golda Garden International School",
    "category": "Education School",
    "title": "School",
@@ -9270,6 +9681,7 @@
   },
   {
    "id": "KGB0412",
+   "slug": "grace-court-annex",
    "name": "Grace court annex",
    "category": "Services Business",
    "title": "Business Services",
@@ -9291,6 +9703,7 @@
   },
   {
    "id": "KGB0413",
+   "slug": "grace-court-nkum-adepa",
    "name": "Grace Court-Nkum Adepa",
    "category": "Services Business",
    "title": "Business Services",
@@ -9312,6 +9725,7 @@
   },
   {
    "id": "KGB0414",
+   "slug": "grace-villa",
    "name": "Grace Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9333,6 +9747,7 @@
   },
   {
    "id": "KGB0415",
+   "slug": "great-counsellor-jhs",
    "name": "Great Counsellor Jhs",
    "category": "Education School",
    "title": "School",
@@ -9354,6 +9769,7 @@
   },
   {
    "id": "KGB0416",
+   "slug": "great-counsellor-school",
    "name": "Great Counsellor School",
    "category": "Education School",
    "title": "School",
@@ -9375,6 +9791,7 @@
   },
   {
    "id": "KGB0417",
+   "slug": "greenhouse-apartments",
    "name": "Greenhouse Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -9396,6 +9813,7 @@
   },
   {
    "id": "KGB0418",
+   "slug": "greenland-international-school",
    "name": "Greenland International School",
    "category": "Education School",
    "title": "School",
@@ -9417,6 +9835,7 @@
   },
   {
    "id": "KGB0419",
+   "slug": "happy-academy-and-assessment-centre",
    "name": "Happy Academy and Assessment Centre",
    "category": "Education School",
    "title": "School",
@@ -9438,6 +9857,7 @@
   },
   {
    "id": "KGB0420",
+   "slug": "happy-faces-grace-international-school",
    "name": "Happy faces grace international school",
    "category": "Education School",
    "title": "School",
@@ -9459,6 +9879,7 @@
   },
   {
    "id": "KGB0421",
+   "slug": "harbour-city-college",
    "name": "Harbour city college",
    "category": "Education School",
    "title": "School",
@@ -9480,6 +9901,7 @@
   },
   {
    "id": "KGB0422",
+   "slug": "hephzibah-villa",
    "name": "Hephzibah Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9501,6 +9923,7 @@
   },
   {
    "id": "KGB0423",
+   "slug": "hill-scholars-school",
    "name": "Hill scholars school",
    "category": "Education School",
    "title": "School",
@@ -9522,6 +9945,7 @@
   },
   {
    "id": "KGB0424",
+   "slug": "hogis-montessori-school",
    "name": "Hogis Montessori School",
    "category": "Education School",
    "title": "School",
@@ -9543,6 +9967,7 @@
   },
   {
    "id": "KGB0425",
+   "slug": "holy-shalom-academy",
    "name": "Holy Shalom Academy",
    "category": "Education School",
    "title": "School",
@@ -9564,6 +9989,7 @@
   },
   {
    "id": "KGB0426",
+   "slug": "i-am-future-leaders-school-complex",
    "name": "I Am Future Leaders School Complex",
    "category": "Education School",
    "title": "School",
@@ -9585,6 +10011,7 @@
   },
   {
    "id": "KGB0427",
+   "slug": "in-thee-villa",
    "name": "In Thee Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9606,6 +10033,7 @@
   },
   {
    "id": "KGB0428",
+   "slug": "intertech-ghana",
    "name": "Intertech GHANA",
    "category": "It Solutions",
    "title": "IT / Tech",
@@ -9627,6 +10055,7 @@
   },
   {
    "id": "KGB0429",
+   "slug": "isco-training",
    "name": "Isco training",
    "category": "Education School",
    "title": "School",
@@ -9648,6 +10077,7 @@
   },
   {
    "id": "KGB0430",
+   "slug": "italian-city-estate",
    "name": "Italian city estate",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9669,6 +10099,7 @@
   },
   {
    "id": "KGB0431",
+   "slug": "jaboks-green-heights-academy",
    "name": "Jaboks Green Heights Academy",
    "category": "Education School",
    "title": "School",
@@ -9690,6 +10121,7 @@
   },
   {
    "id": "KGB0432",
+   "slug": "janet-s-villa",
    "name": "Janet's Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -9711,6 +10143,7 @@
   },
   {
    "id": "KGB0433",
+   "slug": "jay-swim-fitness-club",
    "name": "Jay Swim & Fitness Club",
    "category": "Fitness Gym",
    "title": "Gym / Fitness",
@@ -9732,6 +10165,7 @@
   },
   {
    "id": "KGB0434",
+   "slug": "jek-international-school",
    "name": "Jek International School",
    "category": "Education School",
    "title": "School",
@@ -9753,6 +10187,7 @@
   },
   {
    "id": "KGB0435",
+   "slug": "jesus-cares-educational-complex",
    "name": "Jesus Cares Educational Complex",
    "category": "Education School",
    "title": "School",
@@ -9774,6 +10209,7 @@
   },
   {
    "id": "KGB0436",
+   "slug": "jesus-cares-international-school",
    "name": "Jesus Cares International School",
    "category": "Education School",
    "title": "School",
@@ -9795,6 +10231,7 @@
   },
   {
    "id": "KGB0437",
+   "slug": "jesus-life-international-school",
    "name": "Jesus Life International School",
    "category": "Education School",
    "title": "School",
@@ -9816,6 +10253,7 @@
   },
   {
    "id": "KGB0438",
+   "slug": "jfk-school-of-excellence",
    "name": "Jfk School of Excellence",
    "category": "Education School",
    "title": "School",
@@ -9837,6 +10275,7 @@
   },
   {
    "id": "KGB0439",
+   "slug": "jioe-international-school",
    "name": "Jioe International School",
    "category": "Education School",
    "title": "School",
@@ -9858,6 +10297,7 @@
   },
   {
    "id": "KGB0440",
+   "slug": "john-s-school",
    "name": "John's School",
    "category": "Education School",
    "title": "School",
@@ -9879,6 +10319,7 @@
   },
   {
    "id": "KGB0441",
+   "slug": "joy-pre-school-and-nursery",
    "name": "Joy Pre-school And Nursery",
    "category": "Education School",
    "title": "School",
@@ -9900,6 +10341,7 @@
   },
   {
    "id": "KGB0442",
+   "slug": "jubilee-academy-and-computer-school",
    "name": "Jubilee Academy and Computer School",
    "category": "Education School",
    "title": "School",
@@ -9921,6 +10363,7 @@
   },
   {
    "id": "KGB0443",
+   "slug": "juz-factory",
    "name": "Juz Factory",
    "category": "Industrial",
    "title": "Industrial",
@@ -9942,6 +10385,7 @@
   },
   {
    "id": "KGB0444",
+   "slug": "kedland-international-school",
    "name": "Kedland International School",
    "category": "Education School",
    "title": "School",
@@ -9963,6 +10407,7 @@
   },
   {
    "id": "KGB0445",
+   "slug": "kekeli-store",
    "name": "Kekeli Store",
    "category": "Retail",
    "title": "Retail Shop",
@@ -9984,6 +10429,7 @@
   },
   {
    "id": "KGB0446",
+   "slug": "kid-s-angel-school-complex",
    "name": "Kid's Angel School Complex",
    "category": "Education School",
    "title": "School",
@@ -10005,6 +10451,7 @@
   },
   {
    "id": "KGB0447",
+   "slug": "kings-smart-city",
    "name": "Kings Smart City",
    "category": "Services Business",
    "title": "Business Services",
@@ -10026,6 +10473,7 @@
   },
   {
    "id": "KGB0448",
+   "slug": "kojo-house-apartment",
    "name": "Kojo House Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -10047,6 +10495,7 @@
   },
   {
    "id": "KGB0449",
+   "slug": "konadu-homes",
    "name": "Konadu Homes",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10068,6 +10517,7 @@
   },
   {
    "id": "KGB0450",
+   "slug": "kpodovia-villa",
    "name": "Kpodovia Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10089,6 +10539,7 @@
   },
   {
    "id": "KGB0451",
+   "slug": "lashibi-appartment-complex",
    "name": "Lashibi Appartment Complex",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -10110,6 +10561,7 @@
   },
   {
    "id": "KGB0452",
+   "slug": "lashibi-estate-no-1",
    "name": "Lashibi estate № 1",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10131,6 +10583,7 @@
   },
   {
    "id": "KGB0453",
+   "slug": "leaders-garden-school",
    "name": "Leaders garden school",
    "category": "Education School",
    "title": "School",
@@ -10152,6 +10605,7 @@
   },
   {
    "id": "KGB0454",
+   "slug": "leaders-international-school",
    "name": "Leaders International School",
    "category": "Education School",
    "title": "School",
@@ -10173,6 +10627,7 @@
   },
   {
    "id": "KGB0455",
+   "slug": "learned-hills-school",
    "name": "Learned hills school",
    "category": "Education School",
    "title": "School",
@@ -10194,6 +10649,7 @@
   },
   {
    "id": "KGB0456",
+   "slug": "levi-music",
    "name": "Levi Music",
    "category": "Services Creative",
    "title": "Creative / Media",
@@ -10215,6 +10671,7 @@
   },
   {
    "id": "KGB0457",
+   "slug": "limelight-academy",
    "name": "Limelight Academy",
    "category": "Education School",
    "title": "School",
@@ -10236,6 +10693,7 @@
   },
   {
    "id": "KGB0458",
+   "slug": "liths-school-complex",
    "name": "Liths School Complex",
    "category": "Education School",
    "title": "School",
@@ -10257,6 +10715,7 @@
   },
   {
    "id": "KGB0459",
+   "slug": "little-crystals-montessori-school",
    "name": "Little Crystals Montessori School",
    "category": "Education School",
    "title": "School",
@@ -10278,6 +10737,7 @@
   },
   {
    "id": "KGB0460",
+   "slug": "mabel-s-apartment-and-shop-s",
    "name": "Mabel’s Apartment and shop’s",
    "category": "Retail",
    "title": "Retail Shop",
@@ -10299,6 +10759,7 @@
   },
   {
    "id": "KGB0461",
+   "slug": "mag-ven-ventures",
    "name": "Mag ven ventures",
    "category": "Services Business",
    "title": "Business Services",
@@ -10320,6 +10781,7 @@
   },
   {
    "id": "KGB0462",
+   "slug": "mangrove-apartments",
    "name": "Mangrove Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -10341,6 +10803,7 @@
   },
   {
    "id": "KGB0463",
+   "slug": "marado-company-limited",
    "name": "Marado Company Limited",
    "category": "Services Business",
    "title": "Business Services",
@@ -10362,6 +10825,7 @@
   },
   {
    "id": "KGB0464",
+   "slug": "mariejose-educational-complex",
    "name": "Mariejose Educational Complex",
    "category": "Education School",
    "title": "School",
@@ -10383,6 +10847,7 @@
   },
   {
    "id": "KGB0465",
+   "slug": "marrich-educational-institute",
    "name": "MarRich Educational Institute",
    "category": "Education School",
    "title": "School",
@@ -10404,6 +10869,7 @@
   },
   {
    "id": "KGB0466",
+   "slug": "mercyland-kids-international",
    "name": "Mercyland kids international",
    "category": "Education School",
    "title": "School",
@@ -10425,6 +10891,7 @@
   },
   {
    "id": "KGB0467",
+   "slug": "methodist-school",
    "name": "Methodist school",
    "category": "Education School",
    "title": "School",
@@ -10446,6 +10913,7 @@
   },
   {
    "id": "KGB0468",
+   "slug": "middleton-international-school",
    "name": "Middleton International School",
    "category": "Education School",
    "title": "School",
@@ -10467,6 +10935,7 @@
   },
   {
    "id": "KGB0469",
+   "slug": "milagyei-events-training",
    "name": "Milagyei Events Training",
    "category": "Education School",
    "title": "School",
@@ -10488,6 +10957,7 @@
   },
   {
    "id": "KGB0470",
+   "slug": "modern-innovation-school",
    "name": "Modern Innovation School",
    "category": "Education School",
    "title": "School",
@@ -10509,6 +10979,7 @@
   },
   {
    "id": "KGB0471",
+   "slug": "mother-of-hope-international-school",
    "name": "Mother Of Hope International School",
    "category": "Education School",
    "title": "School",
@@ -10530,6 +11001,7 @@
   },
   {
    "id": "KGB0472",
+   "slug": "mother-theresa-school",
    "name": "Mother Theresa School",
    "category": "Education School",
    "title": "School",
@@ -10551,6 +11023,7 @@
   },
   {
    "id": "KGB0473",
+   "slug": "mount-eye-international-school",
    "name": "Mount Eye International School",
    "category": "Education School",
    "title": "School",
@@ -10572,6 +11045,7 @@
   },
   {
    "id": "KGB0474",
+   "slug": "mr-atror-s-apartment",
    "name": "Mr. Atror's Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -10593,6 +11067,7 @@
   },
   {
    "id": "KGB0475",
+   "slug": "multi-smart-kids-home-care",
    "name": "Multi smart kids home care",
    "category": "Education School",
    "title": "School",
@@ -10614,6 +11089,7 @@
   },
   {
    "id": "KGB0476",
+   "slug": "my-stories-academy",
    "name": "My Stories Academy",
    "category": "Education School",
    "title": "School",
@@ -10635,6 +11111,7 @@
   },
   {
    "id": "KGB0477",
+   "slug": "naa-odootso-villa",
    "name": "Naa Odootso Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10656,6 +11133,7 @@
   },
   {
    "id": "KGB0478",
+   "slug": "nadels-academy",
    "name": "Nadels Academy",
    "category": "Education School",
    "title": "School",
@@ -10677,6 +11155,7 @@
   },
   {
    "id": "KGB0479",
+   "slug": "narrow-s-pub",
    "name": "Narrow's Pub",
    "category": "Restaurant",
    "title": "Restaurant",
@@ -10698,6 +11177,7 @@
   },
   {
    "id": "KGB0480",
+   "slug": "nashel-academy",
    "name": "Nashel Academy",
    "category": "Education School",
    "title": "School",
@@ -10719,6 +11199,7 @@
   },
   {
    "id": "KGB0481",
+   "slug": "nathaniel-school-complex",
    "name": "Nathaniel School Complex",
    "category": "Education School",
    "title": "School",
@@ -10740,6 +11221,7 @@
   },
   {
    "id": "KGB0482",
+   "slug": "nazareth-presby-school",
    "name": "Nazareth Presby School",
    "category": "Education School",
    "title": "School",
@@ -10761,6 +11243,7 @@
   },
   {
    "id": "KGB0483",
+   "slug": "nes-technology",
    "name": "Nes Technology",
    "category": "It Solutions",
    "title": "IT / Tech",
@@ -10782,6 +11265,7 @@
   },
   {
    "id": "KGB0484",
+   "slug": "new-crystal-health-care-trn-inst",
    "name": "New Crystal Health Care Trn. InSt",
    "category": "Services Business",
    "title": "Business Services",
@@ -10803,6 +11287,7 @@
   },
   {
    "id": "KGB0485",
+   "slug": "new-nation-international-school",
    "name": "New Nation International School",
    "category": "Education School",
    "title": "School",
@@ -10824,6 +11309,7 @@
   },
   {
    "id": "KGB0486",
+   "slug": "nii-bortey-villa",
    "name": "Nii Bortey Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10845,6 +11331,7 @@
   },
   {
    "id": "KGB0487",
+   "slug": "nii-bortey-s-villa",
    "name": "Nii Bortey's Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -10866,6 +11353,7 @@
   },
   {
    "id": "KGB0488",
+   "slug": "nipe-international-school",
    "name": "Nipe International School",
    "category": "Education School",
    "title": "School",
@@ -10887,6 +11375,7 @@
   },
   {
    "id": "KGB0489",
+   "slug": "noble-sparkles-montessori",
    "name": "Noble Sparkles Montessori",
    "category": "Education School",
    "title": "School",
@@ -10908,6 +11397,7 @@
   },
   {
    "id": "KGB0490",
+   "slug": "noski-restaurant",
    "name": "Noski Restaurant",
    "category": "Restaurant",
    "title": "Restaurant",
@@ -10929,6 +11419,7 @@
   },
   {
    "id": "KGB0491",
+   "slug": "nouvel-community-academy",
    "name": "Nouvel Community Academy",
    "category": "Education School",
    "title": "School",
@@ -10950,6 +11441,7 @@
   },
   {
    "id": "KGB0492",
+   "slug": "novous-golden-heritage-school",
    "name": "Novous Golden Heritage School",
    "category": "Education School",
    "title": "School",
@@ -10971,6 +11463,7 @@
   },
   {
    "id": "KGB0493",
+   "slug": "oak-apartment",
    "name": "Oak apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -10992,6 +11485,7 @@
   },
   {
    "id": "KGB0494",
+   "slug": "obaatan-school-complex",
    "name": "Obaatan School Complex",
    "category": "Education School",
    "title": "School",
@@ -11013,6 +11507,7 @@
   },
   {
    "id": "KGB0495",
+   "slug": "origin-college-tema-campus",
    "name": "Origin College, Tema Campus",
    "category": "Education School",
    "title": "School",
@@ -11034,6 +11529,7 @@
   },
   {
    "id": "KGB0496",
+   "slug": "osworld-s-apartment",
    "name": "Osworld's Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -11055,6 +11551,7 @@
   },
   {
    "id": "KGB0497",
+   "slug": "overseas-educational-services",
    "name": "Overseas Educational Services",
    "category": "Education School",
    "title": "School",
@@ -11076,6 +11573,7 @@
   },
   {
    "id": "KGB0498",
+   "slug": "paraclete-christian-international-school",
    "name": "Paraclete Christian International School",
    "category": "Education School",
    "title": "School",
@@ -11097,6 +11595,7 @@
   },
   {
    "id": "KGB0499",
+   "slug": "parent-s-nest-international-school",
    "name": "Parent's Nest International School",
    "category": "Education School",
    "title": "School",
@@ -11118,6 +11617,7 @@
   },
   {
    "id": "KGB0500",
+   "slug": "parkview-plaza",
    "name": "Parkview Plaza",
    "category": "Retail Plaza",
    "title": "Plaza / Mall",
@@ -11139,6 +11639,7 @@
   },
   {
    "id": "KGB0501",
+   "slug": "paul-ayiglo-villa-lashibi",
    "name": "Paul Ayiglo Villa Lashibi",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11160,6 +11661,7 @@
   },
   {
    "id": "KGB0502",
+   "slug": "paulinn-school-complex",
    "name": "Paulinn School Complex",
    "category": "Education School",
    "title": "School",
@@ -11181,6 +11683,7 @@
   },
   {
    "id": "KGB0503",
+   "slug": "peadico-international-school",
    "name": "Peadico International School",
    "category": "Education School",
    "title": "School",
@@ -11202,6 +11705,7 @@
   },
   {
    "id": "KGB0504",
+   "slug": "pearson-christian-school",
    "name": "Pearson Christian school",
    "category": "Education School",
    "title": "School",
@@ -11223,6 +11727,7 @@
   },
   {
    "id": "KGB0505",
+   "slug": "peniel-academy",
    "name": "Peniel academy",
    "category": "Education School",
    "title": "School",
@@ -11244,6 +11749,7 @@
   },
   {
    "id": "KGB0506",
+   "slug": "perfect-peace-educational-centre",
    "name": "Perfect Peace Educational Centre",
    "category": "Education School",
    "title": "School",
@@ -11265,6 +11771,7 @@
   },
   {
    "id": "KGB0507",
+   "slug": "pillz-apartments",
    "name": "Pillz apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -11286,6 +11793,7 @@
   },
   {
    "id": "KGB0508",
+   "slug": "pils-apartment",
    "name": "Pils Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -11307,6 +11815,7 @@
   },
   {
    "id": "KGB0509",
+   "slug": "potters-court-international",
    "name": "Potters Court International",
    "category": "Services Business",
    "title": "Business Services",
@@ -11328,6 +11837,7 @@
   },
   {
    "id": "KGB0510",
+   "slug": "power-hour-international-school",
    "name": "Power Hour International School",
    "category": "Education School",
    "title": "School",
@@ -11349,6 +11859,7 @@
   },
   {
    "id": "KGB0511",
+   "slug": "prems-l-academy",
    "name": "Prems’l academy",
    "category": "Education School",
    "title": "School",
@@ -11370,6 +11881,7 @@
   },
   {
    "id": "KGB0512",
+   "slug": "presby-government-primary-jss",
    "name": "Presby Government Primary & Jss",
    "category": "Education School",
    "title": "School",
@@ -11391,6 +11903,7 @@
   },
   {
    "id": "KGB0513",
+   "slug": "prestigious-heritage-international-school",
    "name": "Prestigious Heritage International School",
    "category": "Education School",
    "title": "School",
@@ -11412,6 +11925,7 @@
   },
   {
    "id": "KGB0514",
+   "slug": "prihill-school-complex",
    "name": "Prihill School Complex",
    "category": "Education School",
    "title": "School",
@@ -11433,6 +11947,7 @@
   },
   {
    "id": "KGB0515",
+   "slug": "prince-el-international-community-school-complex",
    "name": "Prince El- International Community School Complex",
    "category": "Education School",
    "title": "School",
@@ -11454,6 +11969,7 @@
   },
   {
    "id": "KGB0516",
+   "slug": "prince-kendrick-school-complex",
    "name": "Prince Kendrick School Complex",
    "category": "Education School",
    "title": "School",
@@ -11475,6 +11991,7 @@
   },
   {
    "id": "KGB0517",
+   "slug": "princebell-s-academy-school",
    "name": "Princebell's Academy School",
    "category": "Education School",
    "title": "School",
@@ -11496,6 +12013,7 @@
   },
   {
    "id": "KGB0518",
+   "slug": "princess-royal-school",
    "name": "Princess Royal School",
    "category": "Education School",
    "title": "School",
@@ -11517,6 +12035,7 @@
   },
   {
    "id": "KGB0519",
+   "slug": "professors-college",
    "name": "Professors College",
    "category": "Education School",
    "title": "School",
@@ -11538,6 +12057,7 @@
   },
   {
    "id": "KGB0520",
+   "slug": "puallin-school-complex",
    "name": "Puallin School Complex",
    "category": "Education School",
    "title": "School",
@@ -11559,6 +12079,7 @@
   },
   {
    "id": "KGB0521",
+   "slug": "queen-s-pride-international-school",
    "name": "Queen's Pride International School",
    "category": "Education School",
    "title": "School",
@@ -11580,6 +12101,7 @@
   },
   {
    "id": "KGB0522",
+   "slug": "queens-court-school",
    "name": "Queens Court School",
    "category": "Education School",
    "title": "School",
@@ -11601,6 +12123,7 @@
   },
   {
    "id": "KGB0523",
+   "slug": "radiant-villa",
    "name": "Radiant villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11622,6 +12145,7 @@
   },
   {
    "id": "KGB0524",
+   "slug": "rampy-montessori",
    "name": "Rampy Montessori",
    "category": "Education School",
    "title": "School",
@@ -11643,6 +12167,7 @@
   },
   {
    "id": "KGB0525",
+   "slug": "redtop-apartments",
    "name": "Redtop apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -11664,6 +12189,7 @@
   },
   {
    "id": "KGB0526",
+   "slug": "regimanuel-estates-lashibi-c18",
    "name": "Regimanuel Estates, Lashibi C18",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11685,6 +12211,7 @@
   },
   {
    "id": "KGB0527",
+   "slug": "regimmanuelgray-estate-community-19",
    "name": "Regimmanuelgray Estate, Community 19",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11706,6 +12233,7 @@
   },
   {
    "id": "KGB0528",
+   "slug": "reina-int-school",
    "name": "Reina int school",
    "category": "Education School",
    "title": "School",
@@ -11727,6 +12255,7 @@
   },
   {
    "id": "KGB0529",
+   "slug": "rev-solomon-estates",
    "name": "Rev Solomon Estates",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11748,6 +12277,7 @@
   },
   {
    "id": "KGB0530",
+   "slug": "richkwam-enterprise",
    "name": "Richkwam Enterprise",
    "category": "Services Business",
    "title": "Business Services",
@@ -11769,6 +12299,7 @@
   },
   {
    "id": "KGB0531",
+   "slug": "rightway-international-school",
    "name": "Rightway International School",
    "category": "Education School",
    "title": "School",
@@ -11790,6 +12321,7 @@
   },
   {
    "id": "KGB0532",
+   "slug": "roberts-apartment",
    "name": "Roberts Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -11811,6 +12343,7 @@
   },
   {
    "id": "KGB0533",
+   "slug": "robsa-cosmetics-more",
    "name": "Robsa Cosmetics & More",
    "category": "Beauty Salon",
    "title": "Beauty Salon",
@@ -11832,6 +12365,7 @@
   },
   {
    "id": "KGB0534",
+   "slug": "rock-foundation-preparatory-school",
    "name": "Rock foundation Preparatory School",
    "category": "Education School",
    "title": "School",
@@ -11853,6 +12387,7 @@
   },
   {
    "id": "KGB0535",
+   "slug": "roman-catholic-primary-school",
    "name": "Roman Catholic Primary School",
    "category": "Education School",
    "title": "School",
@@ -11874,6 +12409,7 @@
   },
   {
    "id": "KGB0536",
+   "slug": "roman-chatolic-jhs",
    "name": "Roman Chatolic Jhs",
    "category": "Education School",
    "title": "School",
@@ -11895,6 +12431,7 @@
   },
   {
    "id": "KGB0537",
+   "slug": "root-of-glory-international-school",
    "name": "Root Of Glory International School",
    "category": "Education School",
    "title": "School",
@@ -11916,6 +12453,7 @@
   },
   {
    "id": "KGB0538",
+   "slug": "rose-villa",
    "name": "Rose Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -11937,6 +12475,7 @@
   },
   {
    "id": "KGB0539",
+   "slug": "rosehan-childcare",
    "name": "Rosehan childcare",
    "category": "Education School",
    "title": "School",
@@ -11958,6 +12497,7 @@
   },
   {
    "id": "KGB0540",
+   "slug": "rosehan-educare-international-school",
    "name": "Rosehan Educare International School",
    "category": "Education School",
    "title": "School",
@@ -11979,6 +12519,7 @@
   },
   {
    "id": "KGB0541",
+   "slug": "royal-enclave-estates",
    "name": "Royal Enclave Estates",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -12000,6 +12541,7 @@
   },
   {
    "id": "KGB0542",
+   "slug": "royal-prince-academy",
    "name": "Royal Prince Academy",
    "category": "Education School",
    "title": "School",
@@ -12021,6 +12563,7 @@
   },
   {
    "id": "KGB0543",
+   "slug": "saint-micah-s-school",
    "name": "Saint micah’s school",
    "category": "Education School",
    "title": "School",
@@ -12042,6 +12585,7 @@
   },
   {
    "id": "KGB0544",
+   "slug": "samsme-academy-school",
    "name": "Samsme Academy School",
    "category": "Education School",
    "title": "School",
@@ -12063,6 +12607,7 @@
   },
   {
    "id": "KGB0545",
+   "slug": "secure-gym-and-fitness-centres",
    "name": "Secure Gym and Fitness Centres",
    "category": "Fitness Gym",
    "title": "Gym / Fitness",
@@ -12084,6 +12629,7 @@
   },
   {
    "id": "KGB0546",
+   "slug": "seven-showers-of-blessings-school",
    "name": "Seven showers of blessings school",
    "category": "Education School",
    "title": "School",
@@ -12105,6 +12651,7 @@
   },
   {
    "id": "KGB0547",
+   "slug": "shield-international-school",
    "name": "Shield International School",
    "category": "Education School",
    "title": "School",
@@ -12126,6 +12673,7 @@
   },
   {
    "id": "KGB0548",
+   "slug": "sir-george-apartments",
    "name": "Sir George Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -12147,6 +12695,7 @@
   },
   {
    "id": "KGB0549",
+   "slug": "sky-trading-enterprise",
    "name": "Sky trading enterprise",
    "category": "Retail",
    "title": "Retail Shop",
@@ -12168,6 +12717,7 @@
   },
   {
    "id": "KGB0550",
+   "slug": "sm-boss-apartment",
    "name": "SM Boss Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -12189,6 +12739,7 @@
   },
   {
    "id": "KGB0551",
+   "slug": "small-poles",
    "name": "Small Poles",
    "category": "Services Business",
    "title": "Business Services",
@@ -12210,6 +12761,7 @@
   },
   {
    "id": "KGB0552",
+   "slug": "smart-kids-school",
    "name": "Smart kids school",
    "category": "Education School",
    "title": "School",
@@ -12231,6 +12783,7 @@
   },
   {
    "id": "KGB0553",
+   "slug": "smart-minds-vacation-classes",
    "name": "Smart Minds Vacation Classes",
    "category": "Education School",
    "title": "School",
@@ -12252,6 +12805,7 @@
   },
   {
    "id": "KGB0554",
+   "slug": "soaring-eagles-foundation-school",
    "name": "Soaring Eagles Foundation School",
    "category": "Education School",
    "title": "School",
@@ -12273,6 +12827,7 @@
   },
   {
    "id": "KGB0555",
+   "slug": "solidarity-international-school",
    "name": "Solidarity International School",
    "category": "Education School",
    "title": "School",
@@ -12294,6 +12849,7 @@
   },
   {
    "id": "KGB0556",
+   "slug": "solidarity-nursery-school",
    "name": "Solidarity Nursery School",
    "category": "Education School",
    "title": "School",
@@ -12315,6 +12871,7 @@
   },
   {
    "id": "KGB0557",
+   "slug": "solidarity-primary-school",
    "name": "Solidarity Primary School",
    "category": "Education School",
    "title": "School",
@@ -12336,6 +12893,7 @@
   },
   {
    "id": "KGB0558",
+   "slug": "solidarity-primary-school-no-2",
    "name": "Solidarity Primary School No 2",
    "category": "Education School",
    "title": "School",
@@ -12357,6 +12915,7 @@
   },
   {
    "id": "KGB0559",
+   "slug": "solofaith-aluminium-system",
    "name": "Solofaith Aluminium System",
    "category": "Industrial",
    "title": "Industrial",
@@ -12378,6 +12937,7 @@
   },
   {
    "id": "KGB0560",
+   "slug": "solomon-apartment-1",
    "name": "Solomon Apartment 1",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -12399,6 +12959,7 @@
   },
   {
    "id": "KGB0561",
+   "slug": "sos-herman-gmeiner-college",
    "name": "Sos Herman Gmeiner College",
    "category": "Education School",
    "title": "School",
@@ -12420,6 +12981,7 @@
   },
   {
    "id": "KGB0562",
+   "slug": "sparkles-and-smile-school",
    "name": "Sparkles and smile school",
    "category": "Education School",
    "title": "School",
@@ -12441,6 +13003,7 @@
   },
   {
    "id": "KGB0563",
+   "slug": "springland-international-school",
    "name": "Springland International School",
    "category": "Education School",
    "title": "School",
@@ -12462,6 +13025,7 @@
   },
   {
    "id": "KGB0564",
+   "slug": "st-francis-international-school",
    "name": "St. Francis International School",
    "category": "Education School",
    "title": "School",
@@ -12483,6 +13047,7 @@
   },
   {
    "id": "KGB0565",
+   "slug": "st-janet-international-school",
    "name": "St. Janet International School",
    "category": "Education School",
    "title": "School",
@@ -12504,6 +13069,7 @@
   },
   {
    "id": "KGB0566",
+   "slug": "st-manasseh-royal-school",
    "name": "St. Manasseh Royal School",
    "category": "Education School",
    "title": "School",
@@ -12525,6 +13091,7 @@
   },
   {
    "id": "KGB0567",
+   "slug": "st-marco-international-school",
    "name": "St. Marco International School",
    "category": "Education School",
    "title": "School",
@@ -12546,6 +13113,7 @@
   },
   {
    "id": "KGB0568",
+   "slug": "st-marks-educational-complex",
    "name": "St. Marks Educational Complex",
    "category": "Education School",
    "title": "School",
@@ -12567,6 +13135,7 @@
   },
   {
    "id": "KGB0569",
+   "slug": "star-reachers-school",
    "name": "Star reachers school",
    "category": "Education School",
    "title": "School",
@@ -12588,6 +13157,7 @@
   },
   {
    "id": "KGB0570",
+   "slug": "star-vie-international-school",
    "name": "Star-vie International School",
    "category": "Education School",
    "title": "School",
@@ -12609,6 +13179,7 @@
   },
   {
    "id": "KGB0571",
+   "slug": "state-school-for-the-deaf",
    "name": "State School. for the Deaf",
    "category": "Education School",
    "title": "School",
@@ -12630,6 +13201,7 @@
   },
   {
    "id": "KGB0572",
+   "slug": "swiss-management-center-university",
    "name": "Swiss Management Center University",
    "category": "Services Business",
    "title": "Business Services",
@@ -12651,6 +13223,7 @@
   },
   {
    "id": "KGB0573",
+   "slug": "tac-comm-11-district-mission-house",
    "name": "Tac Comm. 11 District Mission House",
    "category": "Services Business",
    "title": "Business Services",
@@ -12672,6 +13245,7 @@
   },
   {
    "id": "KGB0574",
+   "slug": "tangani-court",
    "name": "Tangani Court",
    "category": "Services Business",
    "title": "Business Services",
@@ -12693,6 +13267,7 @@
   },
   {
    "id": "KGB0575",
+   "slug": "technological-science-knowledge",
    "name": "Technological Science Knowledge",
    "category": "It Solutions",
    "title": "IT / Tech",
@@ -12714,6 +13289,7 @@
   },
   {
    "id": "KGB0576",
+   "slug": "tema-development-corporation-estate",
    "name": "Tema Development Corporation Estate",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -12735,6 +13311,7 @@
   },
   {
    "id": "KGB0577",
+   "slug": "teps-park-turf",
    "name": "TEPS Park Turf",
    "category": "Fitness Gym",
    "title": "Gym / Fitness",
@@ -12756,6 +13333,7 @@
   },
   {
    "id": "KGB0578",
+   "slug": "teresa-memorial-school",
    "name": "Teresa Memorial School",
    "category": "Education School",
    "title": "School",
@@ -12777,6 +13355,7 @@
   },
   {
    "id": "KGB0579",
+   "slug": "the-falcon-apartments",
    "name": "The Falcon Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -12798,6 +13377,7 @@
   },
   {
    "id": "KGB0580",
+   "slug": "the-skylar-apartments",
    "name": "The Skylar Apartments",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -12819,6 +13399,7 @@
   },
   {
    "id": "KGB0581",
+   "slug": "tonilove-school",
    "name": "Tonilove School",
    "category": "Education School",
    "title": "School",
@@ -12840,6 +13421,7 @@
   },
   {
    "id": "KGB0582",
+   "slug": "tt-s-villa",
    "name": "TT's Villa",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -12861,6 +13443,7 @@
   },
   {
    "id": "KGB0583",
+   "slug": "twinkle-sprout-montessori-school",
    "name": "Twinkle Sprout Montessori School",
    "category": "Education School",
    "title": "School",
@@ -12882,6 +13465,7 @@
   },
   {
    "id": "KGB0584",
+   "slug": "unique-care-school",
    "name": "Unique Care School",
    "category": "Education School",
    "title": "School",
@@ -12903,6 +13487,7 @@
   },
   {
    "id": "KGB0585",
+   "slug": "unique-knowledge-institute",
    "name": "Unique Knowledge Institute",
    "category": "Education School",
    "title": "School",
@@ -12924,6 +13509,7 @@
   },
   {
    "id": "KGB0586",
+   "slug": "united-international-school",
    "name": "United International School",
    "category": "Education School",
    "title": "School",
@@ -12945,6 +13531,7 @@
   },
   {
    "id": "KGB0587",
+   "slug": "verified-bakes-and-foods",
    "name": "Verified bakes and foods",
    "category": "Services Business",
    "title": "Business Services",
@@ -12966,6 +13553,7 @@
   },
   {
    "id": "KGB0588",
+   "slug": "villa-hectoria",
    "name": "Villa Hectoria",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -12987,6 +13575,7 @@
   },
   {
    "id": "KGB0589",
+   "slug": "virtuous-kids-academy",
    "name": "Virtuous kids academy",
    "category": "Education School",
    "title": "School",
@@ -13008,6 +13597,7 @@
   },
   {
    "id": "KGB0590",
+   "slug": "wajub-global-limited",
    "name": "Wajub global limited",
    "category": "Services Business",
    "title": "Business Services",
@@ -13029,6 +13619,7 @@
   },
   {
    "id": "KGB0591",
+   "slug": "wealth-s-apartment",
    "name": "Wealth’s Apartment",
    "category": "Real Estate Apartments",
    "title": "Apartment / Flats",
@@ -13050,6 +13641,7 @@
   },
   {
    "id": "KGB0592",
+   "slug": "westfield-international-school",
    "name": "Westfield International School",
    "category": "Education School",
    "title": "School",
@@ -13071,6 +13663,7 @@
   },
   {
    "id": "KGB0593",
+   "slug": "witsands-international-school",
    "name": "Witsands International School",
    "category": "Education School",
    "title": "School",
@@ -13092,6 +13685,7 @@
   },
   {
    "id": "KGB0594",
+   "slug": "xolutionstech-school-siren",
    "name": "Xolutionstech School Siren",
    "category": "Education School",
    "title": "School",
@@ -13113,6 +13707,7 @@
   },
   {
    "id": "KGB0595",
+   "slug": "yesu-mo-int-school",
    "name": "Yesu mo int. School",
    "category": "Education School",
    "title": "School",
@@ -13134,6 +13729,7 @@
   },
   {
    "id": "KGB0596",
+   "slug": "zion-grace-preparatory-school",
    "name": "Zion Grace Preparatory School",
    "category": "Education School",
    "title": "School",
@@ -13155,6 +13751,7 @@
   },
   {
    "id": "KGB0605",
+   "slug": "prisawuku-scaffold",
    "name": "Prisawuku Scaffold",
    "category": "Industrial",
    "title": "Scaffold Services",
@@ -13176,6 +13773,7 @@
   },
   {
    "id": "KGB0606",
+   "slug": "kiddie-skills-montessori",
    "name": "Kiddie Skills Montessori",
    "category": "Education School",
    "title": "School",
@@ -13197,6 +13795,7 @@
   },
   {
    "id": "KGB0607",
+   "slug": "perfect-finishing-stainless-steels",
    "name": "Perfect Finishing Stainless Steels",
    "category": "Industrial",
    "title": "Stainless Steel Supplier",
@@ -13218,6 +13817,7 @@
   },
   {
    "id": "KGB0608",
+   "slug": "star-oil-fuel-station-klagon",
    "name": "Star Oil Fuel Station Klagon",
    "category": "Utility Power",
    "title": "Fuel Station",
@@ -13239,6 +13839,7 @@
   },
   {
    "id": "KGB0609",
+   "slug": "kadi-homefoods",
    "name": "Kadi Homefoods",
    "category": "Restaurant",
    "title": "Homefoods / Eatery",
@@ -13260,6 +13861,7 @@
   },
   {
    "id": "KGB0610",
+   "slug": "papi-s-mother-babycare",
    "name": "Papi's Mother & Babycare",
    "category": "Retail",
    "title": "Babycare Store",
@@ -13281,6 +13883,7 @@
   },
   {
    "id": "KGB0611",
+   "slug": "alldrugs-pharmacy-klagon",
    "name": "AllDrugs Pharmacy KLAGON",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13302,6 +13905,7 @@
   },
   {
    "id": "KGB0612",
+   "slug": "sakumono-community-hospital",
    "name": "Sakumono Community Hospital",
    "category": "Health Clinic",
    "title": "Hospital",
@@ -13323,6 +13927,7 @@
   },
   {
    "id": "KGB0613",
+   "slug": "sakumono-health-centre",
    "name": "Sakumono Health Centre",
    "category": "Health Clinic",
    "title": "Health Centre",
@@ -13344,6 +13949,7 @@
   },
   {
    "id": "KGB0614",
+   "slug": "reliance-pharmacy-sakumono",
    "name": "Reliance Pharmacy Sakumono",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13365,6 +13971,7 @@
   },
   {
    "id": "KGB0615",
+   "slug": "coconut-groove-sakumono-hotel",
    "name": "Coconut Groove Sakumono Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -13386,6 +13993,7 @@
   },
   {
    "id": "KGB0616",
+   "slug": "plus-33-hotel",
    "name": "Plus 33 Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -13407,6 +14015,7 @@
   },
   {
    "id": "KGB0617",
+   "slug": "canwin-hotel",
    "name": "Canwin Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -13428,6 +14037,7 @@
   },
   {
    "id": "KGB0618",
+   "slug": "fresh-air-lodge",
    "name": "Fresh Air Lodge",
    "category": "Guesthouse",
    "title": "Guesthouse",
@@ -13449,6 +14059,7 @@
   },
   {
    "id": "KGB0619",
+   "slug": "hobort-shipping-and-logistics",
    "name": "Hobort Shipping and Logistics",
    "category": "Logistics",
    "title": "Shipping & Logistics",
@@ -13470,6 +14081,7 @@
   },
   {
    "id": "KGB0620",
+   "slug": "emefs-hill-view-gardens-guest-house",
    "name": "Emefs Hill View Gardens Guest House",
    "category": "Guesthouse",
    "title": "Guesthouse",
@@ -13491,6 +14103,7 @@
   },
   {
    "id": "KGB0621",
+   "slug": "kayward-pharmacy",
    "name": "kayward Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13512,6 +14125,7 @@
   },
   {
    "id": "KGB0622",
+   "slug": "unique-flavours-and-fragrances",
    "name": "Unique Flavours and Fragrances",
    "category": "Retail",
    "title": "Fragrance & Accessory Shop",
@@ -13533,6 +14147,7 @@
   },
   {
    "id": "KGB0623",
+   "slug": "websoft-ltd",
    "name": "Websoft Ltd",
    "category": "It Solutions",
    "title": "IT / Web Services",
@@ -13554,6 +14169,7 @@
   },
   {
    "id": "KGB0624",
+   "slug": "hercules-scale-services",
    "name": "Hercules Scale Services",
    "category": "Services Business",
    "title": "Business Services",
@@ -13575,6 +14191,7 @@
   },
   {
    "id": "KGB0625",
+   "slug": "legal-assistance-network-ghana",
    "name": "Legal Assistance Network - Ghana",
    "category": "Services Business",
    "title": "Legal Services",
@@ -13596,6 +14213,7 @@
   },
   {
    "id": "KGB0626",
+   "slug": "cima-pharmaceutical-ltd-pill-point-pharmacy",
    "name": "Cima Pharmaceutical Ltd (Pill Point Pharmacy)",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13617,6 +14235,7 @@
   },
   {
    "id": "KGB0627",
+   "slug": "de-georges-pharmacy-ltd",
    "name": "De Georges Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13638,6 +14257,7 @@
   },
   {
    "id": "KGB0628",
+   "slug": "deccon-pharmacy",
    "name": "Deccon Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13659,6 +14279,7 @@
   },
   {
    "id": "KGB0629",
+   "slug": "eleomax-pharmacy-limited",
    "name": "Eleomax Pharmacy Limited",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13680,6 +14301,7 @@
   },
   {
    "id": "KGB0630",
+   "slug": "elenark-pharmacy",
    "name": "Elenark Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13701,6 +14323,7 @@
   },
   {
    "id": "KGB0631",
+   "slug": "fairgold-co-ltd",
    "name": "Fairgold Co. Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13722,6 +14345,7 @@
   },
   {
    "id": "KGB0632",
+   "slug": "felcham-pharmacy",
    "name": "Felcham Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13743,6 +14367,7 @@
   },
   {
    "id": "KGB0633",
+   "slug": "hutch-pharmacy-ltd-hutch-pharma",
    "name": "Hutch Pharmacy Ltd (Hutch Pharma)",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13764,6 +14389,7 @@
   },
   {
    "id": "KGB0634",
+   "slug": "jasie-pharmacy",
    "name": "Jasie Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13785,6 +14411,7 @@
   },
   {
    "id": "KGB0635",
+   "slug": "jotafa-company-ltd",
    "name": "Jotafa Company Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13806,6 +14433,7 @@
   },
   {
    "id": "KGB0636",
+   "slug": "krest-pharmacy-ltd",
    "name": "Krest Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13827,6 +14455,7 @@
   },
   {
    "id": "KGB0637",
+   "slug": "lashibi-chemist-ltd",
    "name": "Lashibi Chemist Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13848,6 +14477,7 @@
   },
   {
    "id": "KGB0638",
+   "slug": "link-12-pharmacy",
    "name": "Link 12 Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13869,6 +14499,7 @@
   },
   {
    "id": "KGB0639",
+   "slug": "lloylan-pharmacy-ltd",
    "name": "Lloylan Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13890,6 +14521,7 @@
   },
   {
    "id": "KGB0640",
+   "slug": "mabandra-pharmacy-ltd",
    "name": "Mabandra Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13911,6 +14543,7 @@
   },
   {
    "id": "KGB0641",
+   "slug": "matell-chemists-ltd",
    "name": "Matell Chemists Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13932,6 +14565,7 @@
   },
   {
    "id": "KGB0642",
+   "slug": "peru-pharmacy-ltd",
    "name": "Peru Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13953,6 +14587,7 @@
   },
   {
    "id": "KGB0643",
+   "slug": "pill-pack-pharmacy-ltd",
    "name": "Pill Pack Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13974,6 +14609,7 @@
   },
   {
    "id": "KGB0644",
+   "slug": "raphacare-pharmacy-ltd",
    "name": "Raphacare Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -13995,6 +14631,7 @@
   },
   {
    "id": "KGB0645",
+   "slug": "top-in-town-pharmacy-ltd",
    "name": "Top in Town Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14016,6 +14653,7 @@
   },
   {
    "id": "KGB0646",
+   "slug": "top-up-pharmacy-ltd",
    "name": "Top-Up Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14037,6 +14675,7 @@
   },
   {
    "id": "KGB0647",
+   "slug": "aide-chemist-pharmacy",
    "name": "Aide Chemist Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14058,6 +14697,7 @@
   },
   {
    "id": "KGB0648",
+   "slug": "alaska-pharmacy",
    "name": "Alaska Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14079,6 +14719,7 @@
   },
   {
    "id": "KGB0649",
+   "slug": "american-pharmacy",
    "name": "American Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14100,6 +14741,7 @@
   },
   {
    "id": "KGB0650",
+   "slug": "arlin-pharmacy",
    "name": "Arlin Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14121,6 +14763,7 @@
   },
   {
    "id": "KGB0651",
+   "slug": "azater-health-services-ltd",
    "name": "Azater Health Services Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14142,6 +14785,7 @@
   },
   {
    "id": "KGB0652",
+   "slug": "charis-pharma",
    "name": "Charis Pharma",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14163,6 +14807,7 @@
   },
   {
    "id": "KGB0653",
+   "slug": "jewjef-pharmacy",
    "name": "Jewjef Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14184,6 +14829,7 @@
   },
   {
    "id": "KGB0654",
+   "slug": "lemonlife-aid-pharmacy",
    "name": "LemonLife aid Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14205,6 +14851,7 @@
   },
   {
    "id": "KGB0655",
+   "slug": "makay-pharmacy-ltd",
    "name": "Makay Pharmacy Ltd",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14226,6 +14873,7 @@
   },
   {
    "id": "KGB0656",
+   "slug": "matcare-pharmacy",
    "name": "Matcare Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14247,6 +14895,7 @@
   },
   {
    "id": "KGB0657",
+   "slug": "nolan-group-pharmacy",
    "name": "Nolan Group Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14268,6 +14917,7 @@
   },
   {
    "id": "KGB0658",
+   "slug": "power-shower-pharmacy",
    "name": "Power Shower Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14289,6 +14939,7 @@
   },
   {
    "id": "KGB0659",
+   "slug": "retina-pharmacy",
    "name": "Retina Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14310,6 +14961,7 @@
   },
   {
    "id": "KGB0660",
+   "slug": "rhino-pharmacy",
    "name": "Rhino Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14331,6 +14983,7 @@
   },
   {
    "id": "KGB0661",
+   "slug": "santa-theres-pharmacy",
    "name": "Santa Theres Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14352,6 +15005,7 @@
   },
   {
    "id": "KGB0662",
+   "slug": "senes-pharmacy",
    "name": "Senes Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14373,6 +15027,7 @@
   },
   {
    "id": "KGB0663",
+   "slug": "strong-pharmacy",
    "name": "Strong Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14394,6 +15049,7 @@
   },
   {
    "id": "KGB0664",
+   "slug": "x-perts-pharmacy",
    "name": "X-Perts Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14415,6 +15071,7 @@
   },
   {
    "id": "KGB0665",
+   "slug": "kofikrom-pharmacy",
    "name": "Kofikrom Pharmacy",
    "category": "Pharmacy",
    "title": "Pharmacy",
@@ -14436,6 +15093,7 @@
   },
   {
    "id": "KGB0666",
+   "slug": "vic-dank-health-centre",
    "name": "Vic Dank Health Centre",
    "category": "Health Clinic",
    "title": "Health Centre",
@@ -14457,6 +15115,7 @@
   },
   {
    "id": "KGB0667",
+   "slug": "c-j-medicare-hospital-and-diagnostic-center",
    "name": "C&J Medicare Hospital and Diagnostic Center",
    "category": "Health Clinic",
    "title": "Hospital",
@@ -14478,6 +15137,7 @@
   },
   {
    "id": "KGB0668",
+   "slug": "city-of-hope-hospital",
    "name": "City of Hope Hospital",
    "category": "Health Clinic",
    "title": "Hospital",
@@ -14499,6 +15159,7 @@
   },
   {
    "id": "KGB0669",
+   "slug": "jubail-specialist-hospital",
    "name": "Jubail Specialist Hospital",
    "category": "Health Clinic",
    "title": "Hospital",
@@ -14520,6 +15181,7 @@
   },
   {
    "id": "KGB0670",
+   "slug": "landmark-medical-center",
    "name": "Landmark Medical Center",
    "category": "Health Clinic",
    "title": "Medical Center",
@@ -14541,6 +15203,7 @@
   },
   {
    "id": "KGB0671",
+   "slug": "neptune-medical-centre",
    "name": "Neptune Medical Centre",
    "category": "Health Clinic",
    "title": "Medical Centre",
@@ -14562,6 +15225,7 @@
   },
   {
    "id": "KGB0672",
+   "slug": "resolve-medical-hospital",
    "name": "Resolve Medical Hospital",
    "category": "Health Clinic",
    "title": "Hospital",
@@ -14583,6 +15247,7 @@
   },
   {
    "id": "KGB0673",
+   "slug": "estate-clinic-lab",
    "name": "Estate Clinic & Lab",
    "category": "Health Clinic",
    "title": "Clinic",
@@ -14604,6 +15269,7 @@
   },
   {
    "id": "KGB0674",
+   "slug": "voice-of-the-lord-maternity-home-clinic",
    "name": "Voice of the Lord Maternity Home & Clinic",
    "category": "Health Clinic",
    "title": "Maternity Home & Clinic",
@@ -14625,6 +15291,7 @@
   },
   {
    "id": "KGB0675",
+   "slug": "robinson-dental-clinic",
    "name": "Robinson Dental Clinic",
    "category": "Dental",
    "title": "Dental Clinic",
@@ -14646,6 +15313,7 @@
   },
   {
    "id": "KGB0676",
+   "slug": "ebus-dental-clinic",
    "name": "Ebus Dental Clinic",
    "category": "Dental",
    "title": "Dental Clinic",
@@ -14667,6 +15335,7 @@
   },
   {
    "id": "KGB0677",
+   "slug": "alpha-and-omega-chiropractic-clinic",
    "name": "Alpha and Omega Chiropractic Clinic",
    "category": "Health Clinic",
    "title": "Chiropractic Clinic",
@@ -14688,6 +15357,7 @@
   },
   {
    "id": "KGB0678",
+   "slug": "jireh-clinic-optical-services",
    "name": "Jireh Clinic & Optical Services",
    "category": "Health Clinic",
    "title": "Clinic & Optical Services",
@@ -14709,6 +15379,7 @@
   },
   {
    "id": "KGB0679",
+   "slug": "enya-klothing",
    "name": "Enya Klothing",
    "category": "Fashion Clothing",
    "title": "Fashion / Clothing",
@@ -14730,6 +15401,7 @@
   },
   {
    "id": "KGB0680",
+   "slug": "dan-t-travel-tours",
    "name": "Dan-T Travel Tours",
    "category": "Travel Tours",
    "title": "Travel & Tours",
@@ -14751,6 +15423,7 @@
   },
   {
    "id": "KGB0681",
+   "slug": "broadcast-solutions",
    "name": "Broadcast Solutions",
    "category": "Printing Graphics",
    "title": "Printing Services",
@@ -14772,6 +15445,7 @@
   },
   {
    "id": "KGB0682",
+   "slug": "edzeani-clothing",
    "name": "Edzeani Clothing",
    "category": "Fashion Clothing",
    "title": "Fashion / Clothing",
@@ -14793,6 +15467,7 @@
   },
   {
    "id": "KGB0683",
+   "slug": "evergreen-designs",
    "name": "Evergreen Designs",
    "category": "Fashion Design",
    "title": "Fashion Design",
@@ -14814,6 +15489,7 @@
   },
   {
    "id": "KGB0684",
+   "slug": "beauty-beyond",
    "name": "Beauty & Beyond",
    "category": "Beauty Salon",
    "title": "Beauty Salon",
@@ -14835,6 +15511,7 @@
   },
   {
    "id": "KGB0685",
+   "slug": "angel-s-vogue-design-clothes",
    "name": "Angel's Vogue Design Clothes",
    "category": "Fashion Clothing",
    "title": "Fashion / Clothing",
@@ -14856,6 +15533,7 @@
   },
   {
    "id": "KGB0686",
+   "slug": "anthoniafesu",
    "name": "AnthoniaFesu",
    "category": "Fashion Design",
    "title": "Fashion Design",
@@ -14877,6 +15555,7 @@
   },
   {
    "id": "KGB0687",
+   "slug": "first-choice-hair-nails",
    "name": "First Choice Hair & Nails",
    "category": "Barber Salon",
    "title": "Barbering / Hair Salon",
@@ -14898,6 +15577,7 @@
   },
   {
    "id": "KGB0688",
+   "slug": "brierick-minerals-precious-stones-ltd",
    "name": "Brierick Minerals & Precious Stones Ltd.",
    "category": "Industrial",
    "title": "Mining & Precious Stones",
@@ -14919,6 +15599,7 @@
   },
   {
    "id": "KGB0689",
+   "slug": "clearzone-gh-ltd",
    "name": "Clearzone Gh. Ltd.",
    "category": "Logistics",
    "title": "Shipping & Logistics",
@@ -14940,6 +15621,7 @@
   },
   {
    "id": "KGB0690",
+   "slug": "gams-ltd",
    "name": "GAMS Ltd.",
    "category": "Services Business",
    "title": "Security Service",
@@ -14961,6 +15643,7 @@
   },
   {
    "id": "KGB0691",
+   "slug": "ps-global-ltd",
    "name": "Ps Global Ltd",
    "category": "Real Estate Development",
    "title": "Real Estate Developer",
@@ -14982,6 +15665,7 @@
   },
   {
    "id": "KGB0692",
+   "slug": "friday-s-bar-restaurant",
    "name": "Friday's Bar Restaurant",
    "category": "Restaurant",
    "title": "Pub & Restaurant",
@@ -15003,6 +15687,7 @@
   },
   {
    "id": "KGB0693",
+   "slug": "satraas-company-limited",
    "name": "Satraas Company Limited",
    "category": "Logistics",
    "title": "Logistics Management",
@@ -15024,6 +15709,7 @@
   },
   {
    "id": "KGB0694",
+   "slug": "worldview-travel-and-tours",
    "name": "Worldview Travel And Tours",
    "category": "Travel Tours",
    "title": "Travel & Tours",
@@ -15045,6 +15731,7 @@
   },
   {
    "id": "KGB0695",
+   "slug": "paloma-hotel",
    "name": "Paloma Hotel",
    "category": "Hotel",
    "title": "Hotel",
@@ -15066,6 +15753,7 @@
   },
   {
    "id": "KGB0696",
+   "slug": "seadel-guest-hse",
    "name": "Seadel Guest Hse.",
    "category": "Guesthouse",
    "title": "Guest House",
@@ -15087,6 +15775,7 @@
   },
   {
    "id": "KGB0697",
+   "slug": "sakumono-executive-guest-house",
    "name": "Sakumono Executive Guest House",
    "category": "Guesthouse",
    "title": "Guest House",
@@ -15108,6 +15797,7 @@
   },
   {
    "id": "KGB0698",
+   "slug": "animationzhub-studio",
    "name": "Animationzhub Studio",
    "category": "Media Advertising",
    "title": "Advertising Agency",
@@ -15129,6 +15819,7 @@
   },
   {
    "id": "KGB0699",
+   "slug": "deftmedia",
    "name": "Deftmedia",
    "category": "Media Advertising",
    "title": "Advertising Agency",
@@ -15150,6 +15841,7 @@
   },
   {
    "id": "KGB0700",
+   "slug": "digital-xclusive-ltd",
    "name": "Digital Xclusive Ltd.",
    "category": "Media Advertising",
    "title": "Advertising Agency",
@@ -15171,6 +15863,7 @@
   },
   {
    "id": "KGB0701",
+   "slug": "liberal-touch-co-ltd",
    "name": "Liberal Touch Co. Ltd.",
    "category": "Media Advertising",
    "title": "Advertising Agency",
@@ -15192,6 +15885,7 @@
   },
   {
    "id": "KGB0702",
+   "slug": "planit-ghana-ltd",
    "name": "Planit Ghana Ltd",
    "category": "Services Entertainment",
    "title": "Brand Management / Party Planning",
@@ -15213,6 +15907,7 @@
   },
   {
    "id": "KGB0703",
+   "slug": "can-entertainment-house",
    "name": "Can Entertainment House",
    "category": "Media",
    "title": "Media House",
@@ -15234,6 +15929,7 @@
   },
   {
    "id": "KGB0704",
+   "slug": "slide-mobile-link-trading-ent",
    "name": "Slide Mobile Link & Trading Ent.",
    "category": "Services Business",
    "title": "Marketing Services",
@@ -15255,6 +15951,7 @@
   },
   {
    "id": "KGB0705",
+   "slug": "equity-brokers-ltd",
    "name": "Equity Brokers Ltd",
    "category": "Real Estate Agency",
    "title": "Estate Agents",
@@ -15276,6 +15973,7 @@
   },
   {
    "id": "KGB0706",
+   "slug": "the-peoples-house-ltd",
    "name": "The Peoples House Ltd.",
    "category": "Real Estate Agency",
    "title": "Estate Agents",
@@ -15297,6 +15995,7 @@
   },
   {
    "id": "KGB0707",
+   "slug": "turkson-turkson-ltd",
    "name": "Turkson & Turkson Ltd.",
    "category": "Real Estate Agency",
    "title": "Estate Agents",
@@ -15318,6 +16017,7 @@
   },
   {
    "id": "KGB0708",
+   "slug": "klean-solutions",
    "name": "Klean Solutions",
    "category": "Services Business",
    "title": "Cleaning Material Supplies",
@@ -15339,6 +16039,7 @@
   },
   {
    "id": "KGB0709",
+   "slug": "vital-bin-bags-ltd",
    "name": "Vital Bin Bags Ltd.",
    "category": "Retail Wholesale",
    "title": "Bin Bags / Cleaning Supplies",
@@ -15360,6 +16061,7 @@
   },
   {
    "id": "KGB0710",
+   "slug": "paradigm-build-ltd",
    "name": "Paradigm Build Ltd.",
    "category": "Construction Contractor",
    "title": "Building Contractor",
@@ -15381,6 +16083,7 @@
   },
   {
    "id": "KGB0711",
+   "slug": "svani-group-ltd",
    "name": "Svani Group Ltd.",
    "category": "Auto Electrical",
    "title": "Car Batteries",
@@ -15402,6 +16105,7 @@
   },
   {
    "id": "KGB0712",
+   "slug": "quik-ef-pest-fumigation-services",
    "name": "Quik-ef Pest, Fumigation & Services",
    "category": "Services Business",
    "title": "Pest Control / Fumigation",
@@ -15423,6 +16127,7 @@
   },
   {
    "id": "KGB0713",
+   "slug": "broken-eyes-entertainment",
    "name": "Broken Eyes Entertainment",
    "category": "Services Entertainment",
    "title": "Entertainment Agency",
@@ -15444,6 +16149,7 @@
   },
   {
    "id": "KGB0714",
+   "slug": "e30-entertainment",
    "name": "E30 Entertainment",
    "category": "Services Entertainment",
    "title": "Entertainment / Advertising",
@@ -15465,6 +16171,7 @@
   },
   {
    "id": "KGB0715",
+   "slug": "celebrity-golf-club-holiday-resort",
    "name": "Celebrity Golf Club & Holiday Resort",
    "category": "Recreation",
    "title": "Golf Club & Holiday Resort",
@@ -15486,6 +16193,7 @@
   },
   {
    "id": "KGB0716",
+   "slug": "prontoserve-rentals",
    "name": "Prontoserve Rentals",
    "category": "Services Entertainment",
    "title": "Event / Catering Rentals",
@@ -15507,6 +16215,7 @@
   },
   {
    "id": "KGB0717",
+   "slug": "khameen-professional-institute",
    "name": "Khameen Professional Institute",
    "category": "Education Training",
    "title": "Bakery / Cake Training",
@@ -15528,6 +16237,7 @@
   },
   {
    "id": "KGB0718",
+   "slug": "ezy-tyz-ltd",
    "name": "Ezy-tyz Ltd",
    "category": "Services Entertainment",
    "title": "Marquee / Tent Hire",
@@ -15549,6 +16259,7 @@
   },
   {
    "id": "KGB0719",
+   "slug": "asfam-catering-services",
    "name": "Asfam Catering Services",
    "category": "Food Kitchen",
    "title": "Catering / Fast Food",
@@ -15570,6 +16281,7 @@
   },
   {
    "id": "KGB0720",
+   "slug": "larry-fenn-s-catering-services",
    "name": "Larry Fenn's Catering Services",
    "category": "Food Kitchen",
    "title": "Catering / Food & Drinks",
@@ -15591,6 +16303,7 @@
   },
   {
    "id": "KGB0721",
+   "slug": "ecobank-gh-ltd-sakumono-branch",
    "name": "Ecobank Gh. Ltd (Sakumono Branch)",
    "category": "Bank",
    "title": "Bank",
@@ -15612,6 +16325,7 @@
   },
   {
    "id": "KGB0722",
+   "slug": "power-intel-consulting",
    "name": "Power Intel Consulting",
    "category": "Services Consulting",
    "title": "Investment Consulting",
@@ -15633,6 +16347,7 @@
   },
   {
    "id": "KGB0723",
+   "slug": "auditel-international-gh-ltd",
    "name": "Auditel International Gh. Ltd",
    "category": "Services Business",
    "title": "Business Services",
@@ -15654,6 +16369,7 @@
   },
   {
    "id": "KGB0724",
+   "slug": "citi-consult",
    "name": "Citi Consult",
    "category": "Services Consulting",
    "title": "Business Consultancy",
@@ -15675,6 +16391,7 @@
   },
   {
    "id": "KGB0725",
+   "slug": "gm-rascoine-consultancy",
    "name": "Gm Rascoine Consultancy",
    "category": "Services Consulting",
    "title": "Business Consultancy",
@@ -15696,6 +16413,7 @@
   },
   {
    "id": "KGB0726",
+   "slug": "drik-multimedia",
    "name": "Drik Multimedia",
    "category": "It Multimedia",
    "title": "Computer & Multimedia",
@@ -15717,6 +16435,7 @@
   },
   {
    "id": "KGB0727",
+   "slug": "gala-impex-co",
    "name": "Gala Impex Co",
    "category": "It Computers",
    "title": "Computer Accessories",
@@ -15738,6 +16457,7 @@
   },
   {
    "id": "KGB0728",
+   "slug": "e-toys-more",
    "name": "E-toys & More",
    "category": "Retail",
    "title": "Toys & Accessories",
@@ -15759,6 +16479,7 @@
   },
   {
    "id": "KGB0729",
+   "slug": "mr-notebook-computers-gh-ltd",
    "name": "Mr. Notebook Computers Gh. Ltd",
    "category": "It Computers",
    "title": "Computer Hardware",
@@ -15780,6 +16501,7 @@
   },
   {
    "id": "KGB0730",
+   "slug": "kobadem-image-grooming-etiquette-consultants",
    "name": "Kobadem Image, Grooming & Etiquette Consultants",
    "category": "Education Training",
    "title": "Image & Etiquette Training",
@@ -15801,6 +16523,7 @@
   },
   {
    "id": "KGB0731",
+   "slug": "national-paralegal-institute",
    "name": "National Paralegal Institute",
    "category": "Education Training",
    "title": "Paralegal Training Institute",
@@ -15822,6 +16545,7 @@
   },
   {
    "id": "KGB0732",
+   "slug": "teledata-ict-ltd",
    "name": "Teledata ICT Ltd.",
    "category": "It Solutions",
    "title": "ICT / Telecom Equipment",
@@ -15843,6 +16567,7 @@
   },
   {
    "id": "KGB0733",
+   "slug": "nads-logistics-services-ltd",
    "name": "Nads Logistics & Services Ltd.",
    "category": "Logistics",
    "title": "Freight Forwarding / Logistics",
@@ -15864,6 +16589,7 @@
   },
   {
    "id": "KGB0734",
+   "slug": "movpillar",
    "name": "Movpillar",
    "category": "It Software",
    "title": "Computer Software",
@@ -15885,6 +16611,7 @@
   },
   {
    "id": "KGB0735",
+   "slug": "qubis-group",
    "name": "Qubis Group",
    "category": "It Software",
    "title": "Computer Software",
@@ -15906,6 +16633,7 @@
   },
   {
    "id": "KGB0736",
+   "slug": "pakad-couture",
    "name": "Pakad Couture",
    "category": "Fashion",
    "title": "Fashion / Couture",
@@ -15927,6 +16655,7 @@
   },
   {
    "id": "KGB0737",
+   "slug": "dominion-technologies-limited",
    "name": "Dominion Technologies Limited",
    "category": "It Solutions",
    "title": "Web Hosting / IT Solutions / Computer Sales",
@@ -15948,6 +16677,7 @@
   },
   {
    "id": "KGB0738",
+   "slug": "dominion-hair-and-nail-klinic",
    "name": "Dominion Hair And Nail Klinic",
    "category": "Beauty Salon",
    "title": "Hair & Nail Salon",
@@ -15969,6 +16699,7 @@
   },
   {
    "id": "KGB0739",
+   "slug": "adom-hair-beauty-saloon",
    "name": "Adom Hair & Beauty Saloon",
    "category": "Beauty Salon",
    "title": "Hair & Beauty Salon",
@@ -15990,6 +16721,7 @@
   },
   {
    "id": "KGB0740",
+   "slug": "shell-tema-community-18",
    "name": "Shell Tema Community 18",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16011,6 +16743,7 @@
   },
   {
    "id": "KGB0741",
+   "slug": "goil-filling-station-community-18",
    "name": "GOIL Filling Station - Community 18",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16032,6 +16765,7 @@
   },
   {
    "id": "KGB0742",
+   "slug": "shell-sakumono",
    "name": "Shell Sakumono",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16053,6 +16787,7 @@
   },
   {
    "id": "KGB0743",
+   "slug": "lashibi-service-station-comm-17",
    "name": "Lashibi Service Station (Comm 17)",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16074,6 +16809,7 @@
   },
   {
    "id": "KGB0744",
+   "slug": "ev-oil-filling-station-sakumono",
    "name": "EV Oil Filling Station - Sakumono",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16095,6 +16831,7 @@
   },
   {
    "id": "KGB0745",
+   "slug": "klagon-total-service-station",
    "name": "Klagon Total Service Station",
    "category": "Fuel Station",
    "title": "Fuel Station",
@@ -16116,6 +16853,7 @@
   },
   {
    "id": "KGB0746",
+   "slug": "ideas-update",
    "name": "Ideas & Update",
    "category": "Services Consulting",
    "title": "Engineering Consulting",
@@ -16137,6 +16875,7 @@
   },
   {
    "id": "KGB0747",
+   "slug": "whatsapp-market-and-courier-services",
    "name": "Whatsapp Market and Courier Services",
    "category": "Media Advertising",
    "title": "Advertising & Courier Services",
@@ -16158,6 +16897,7 @@
   },
   {
    "id": "KGB0748",
+   "slug": "the-food-ministration",
    "name": "The Food Ministration",
    "category": "Food Joint",
    "title": "Fast Food",

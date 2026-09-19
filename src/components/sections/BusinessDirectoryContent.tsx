@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X } from "lucide-react";
+import Link from "next/link";
+import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X, ChevronRight } from "lucide-react";
 import type { DirectoryBusiness, DirectorySnapshot } from "@/lib/directory";
 import { initialsOf, waHref, telHref } from "@/lib/directory";
 
@@ -52,7 +53,11 @@ function BusinessCard({ b, onClaim }: { b: DirectoryBusiness; onClaim: (b: Direc
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-sm font-extrabold text-navy leading-snug">{b.name}</h3>
+            <h3 className="text-sm font-extrabold text-navy leading-snug">
+              <Link href={`/directory/${b.slug}`} className="hover:text-blue transition-colors">
+                {b.name}
+              </Link>
+            </h3>
             {b.rating != null && <Stars rating={b.rating} />}
           </div>
           <div className="flex flex-wrap items-center gap-1.5 mt-1">
@@ -100,6 +105,13 @@ function BusinessCard({ b, onClaim }: { b: DirectoryBusiness; onClaim: (b: Direc
           <ShieldCheck size="13" /> Claim
         </button>
       </div>
+
+      <Link
+        href={`/directory/${b.slug}`}
+        className="inline-flex items-center gap-1 text-[11px] font-bold text-navy hover:text-blue transition-colors mt-0.5"
+      >
+        View full profile <ChevronRight size="12" />
+      </Link>
     </article>
   );
 }

@@ -76,6 +76,16 @@ function formatGhanaPhone(raw) {
   return `+233 ${national}`;
 }
 
+function slugify(raw) {
+  return (raw || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 70) || "business";
+}
+
 function normKey(name) {
   return (name || "")
     .toLowerCase()
@@ -119,11 +129,21 @@ function main() {
     }
   }
 
+  const usedSlugs = new Set();
   const businesses = registry
     .map((r) => {
       const id = r.id || "";
       const name = (r.company || r.firm_name || "").trim();
       const censusRow = byId.get(id) || byName.get(normKey(name) || "") || null;
+
+      let slug = slugify(name);
+      if (usedSlugs.has(slug)) slug = `${slug}-${id.toLowerCase()}`;
+      if (usedSlugs.has(slug)) {
+        let n = 2;
+        while (usedSlugs.has(`${slug}-${n}`)) n++;
+        slug = `${slug}-${n}`;
+      }
+      usedSlugs.add(slug);
 
       const rawPhone = r.phone || (censusRow ? censusRow.phone_normalized || censusRow.phone_raw : "") || "";
       const display = formatGhanaPhone(rawPhone);
@@ -138,6 +158,7 @@ function main() {
 
       return {
         id,
+        slug,
         name,
         category,
         title,

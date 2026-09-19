@@ -3,6 +3,8 @@ import { getAllPosts, getCategories } from "@/lib/blog";
 import { getAllAuthors } from "@/lib/blogAuthors";
 import { COURSES } from "@/lib/constants";
 import { getSupabase } from "@/lib/supabase";
+import type { DirectorySnapshot } from "@/lib/directory";
+import snapshotData from "@/data/business-directory.json";
 
 export const dynamic = "force-static";
 
@@ -32,6 +34,7 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/sponsor", changeFrequency: "monthly", priority: 0.7 },
   { path: "/donate", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/business", changeFrequency: "weekly", priority: 0.9 },
   { path: "/tools/health-score", changeFrequency: "weekly", priority: 0.9 },
   { path: "/map", changeFrequency: "weekly", priority: 0.9 },
   { path: "/classifieds", changeFrequency: "daily", priority: 0.9 },
@@ -86,5 +89,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...base, ...courses, ...posts, ...categories, ...authors];
+  const directory = (snapshotData as unknown as DirectorySnapshot).businesses.map((b) => ({
+    url: `${BASE}/directory/${b.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: b.verified ? 0.7 : 0.5,
+  }));
+
+  return [...base, ...courses, ...posts, ...categories, ...authors, ...directory];
 }
