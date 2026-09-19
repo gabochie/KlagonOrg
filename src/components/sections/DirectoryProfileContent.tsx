@@ -7,7 +7,6 @@ import {
   Globe,
   Star,
   BadgeCheck,
-  ShieldCheck,
   Clock,
   Tag,
   Navigation,
@@ -15,8 +14,7 @@ import {
 } from "lucide-react";
 import type { DirectoryBusiness } from "@/lib/directory";
 import { initialsOf, waHref, telHref } from "@/lib/directory";
-
-const CLAIM_WA = "233268708895";
+import { DirectoryClaimPanel } from "@/components/sections/DirectoryClaimPanel";
 
 function Stars({ rating, reviews }: { rating: number; reviews: number | null }) {
   return (
@@ -59,8 +57,6 @@ export function DirectoryProfileContent({
   business: DirectoryBusiness;
   related: DirectoryBusiness[];
 }) {
-  const claimText = `Hi KlagonOrg! I want to claim my business listing: ${b.name} (${b.id} · ${b.area}).`;
-
   return (
     <main className="w-full">
       <section className="bg-navy relative overflow-hidden">
@@ -210,27 +206,7 @@ export function DirectoryProfileContent({
         </div>
 
         <aside className="lg:col-span-1">
-          <div className="bg-navy rounded-2xl px-6 py-6">
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase text-amber mb-2">
-              <ShieldCheck size="14" /> Owner?
-            </div>
-            <h2 className="text-lg font-extrabold text-white tracking-tight mb-2">Claim this listing — free.</h2>
-            <p className="text-white/70 text-sm mb-5">
-              Claimed listings get the verified badge, hours, photos and priority placement. Unclaimed pages stay
-              visible but basic.
-            </p>
-            <a
-              href={`https://wa.me/${CLAIM_WA}?text=${encodeURIComponent(claimText)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${btn} w-full bg-amber text-navy hover:bg-amber-strong hover:text-white`}
-            >
-              <MessageCircle size="16" /> Claim on WhatsApp
-            </a>
-            <p className="mt-4 text-[11px] text-white/50">
-              Listing ID {b.id}. We verify ownership within 24 hours.
-            </p>
-          </div>
+          <DirectoryClaimPanel business={b} />
         </aside>
       </section>
 

@@ -1,14 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X, ChevronRight } from "lucide-react";
+import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X, ChevronRight, Send } from "lucide-react";
 import type { DirectoryBusiness, DirectorySnapshot } from "@/lib/directory";
 import { initialsOf, waHref, telHref } from "@/lib/directory";
+import {
+  ORG_WA,
+  type DirectoryClaimState,
+  buildClaimMessage,
+  buildInviteMessage,
+  buildInviteFallbackMessage,
+  waLink,
+  fetchDirectoryClaimMap,
+  fileDirectoryClaim,
+} from "@/lib/directoryClaims";
 
 type SortKey = "featured" | "rating" | "reviews" | "name";
-
-const CLAIM_WA = "233268708895";
 
 const btn =
   "inline-flex items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors cursor-pointer font-sans";
@@ -27,7 +35,17 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function BusinessCard({ b, onClaim }: { b: DirectoryBusiness; onClaim: (b: DirectoryBusiness) => void }) {
+const btnInvite = "bg-pale text-navy border border-navy/15 hover:bg-amber/15";
+
+function BusinessCard({
+  b,
+  claimState,
+  onClaim,
+}: {
+  b: DirectoryBusiness;
+  claimState: DirectoryClaimState;
+  onClaim: (b: DirectoryBusiness) => void;
+}) {
   const contact = b.wa || b.tel ? (
     b.wa ? (
       <a href={waHref(b.wa, b.name)} target="_blank" rel="noopener noreferrer" className={`${btn} ${btnNavy} flex-1`}>
@@ -44,6 +62,10 @@ function BusinessCard({ b, onClaim }: { b: DirectoryBusiness; onClaim: (b: Direc
       <button onClick={() => onClaim(b)} className="underline font-bold text-navy cursor-pointer">tell us</button>
     </span>
   );
+
+  const inviteHref = b.wa
+    ? waLink(b.wa, buildInviteMessage({ name: b.name }))
+    : waLink(ORG_WA, buildInviteFallbackMessage({ name: b.name, area: b.area }));
 
   return (
     <article className="flex flex-col gap-2.5 bg-white rounded-2xl border border-border p-5 hover:border-navy/30 hover:shadow-sm transition-all">
@@ -101,10 +123,32 @@ function BusinessCard({ b, onClaim }: { b: DirectoryBusiness; onClaim: (b: Direc
             <Globe size="13" /> Site
           </a>
         )}
-        <button onClick={() => onClaim(b)} className={`${btn} ${btnGhost} flex-1`}>
-          <ShieldCheck size="13" /> Claim
-        </button>
+        {claimState === "approved" ? (
+          <span className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-green px-3 py-2 text-xs font-bold text-white whitespace-nowrap">
+            <BadgeCheck size="13" /> Claimed
+          </span>
+        ) : claimState === "pending" ? (
+          <span className="flex-1 inline-flex items-center justify-center rounded-lg bg-amber/20 px-3 py-2 text-[11px] font-bold text-amber-800 whitespace-nowrap">
+            Claim pending
+          </span>
+        ) : (
+          <button onClick={() => onClaim(b)} className={`${btn} ${btnGhost} flex-1`}>
+            <ShieldCheck size="13" /> Claim
+          </button>
+        )}
       </div>
+
+      {claimState === "unclaimed" && (
+        <a
+          href={inviteHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${btn} ${btnInvite} w-full`}
+          title={b.wa ? "Opens WhatsApp to this business with a claim + group invite" : "Pings KlagonOrg to reach this business"}
+        >
+          <Send size="13" /> Invite owner to claim + join our business group
+        </a>
+      )}
 
       <Link
         href={`/directory/${b.slug}`}
@@ -120,6 +164,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
+  const [claims, setClaims] = useState<Record<string, DirectoryClaimState>>({});
   const [claim, setClaim] = useState<DirectoryBusiness | null>(null);
   const [claimName, setClaimName] = useState("");
   const [claimPhone, setClaimPhone] = useState("");
@@ -156,14 +201,44 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
     return ranked;
   }, [snapshot.businesses, query, activeCategory, sort]);
 
+  // Pull the live claim state for whatever businesses are currently shown.
+  useEffect(() => {
+    let cancelled = false;
+    fetchDirectoryClaimMap(visible.map((b) => b.id)).then((map) => {
+      if (!cancelled) setClaims((prev) => ({ ...prev, ...map }));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [visible]);
+
   function sendClaim() {
     if (!claim) return;
     if (!claimName.trim() || !claimPhone.trim()) {
       alert("Please add your name and WhatsApp number.");
       return;
     }
-    const text = `Hi KlagonOrg! I want to claim my business listing: ${claim.name} (${claim.id} · ${claim.area}). My name is ${claimName.trim()}, WhatsApp ${claimPhone.trim()}.`;
-    window.open(`https://wa.me/${CLAIM_WA}?text=${encodeURIComponent(text)}`, "_blank");
+    const text = buildClaimMessage({
+      name: claim.name,
+      id: claim.id,
+      area: claim.area,
+      claimantName: claimName.trim(),
+      claimantPhone: claimPhone.trim(),
+    });
+    window.open(waLink(ORG_WA, text), "_blank");
+    void fileDirectoryClaim({
+      businessId: claim.id,
+      businessName: claim.name,
+      area: claim.area,
+      claimantName: claimName.trim(),
+      claimantPhone: claimPhone.trim(),
+    }).then((res) => {
+      // Lock the listing as pending on any reviewed outcome; a missing table
+      // (migration not yet applied) reports error === null and we stay unclaimed.
+      if (res.ok || res.error === null || (res.error && /already/i.test(res.error))) {
+        setClaims((prev) => ({ ...prev, [claim.id]: "pending" }));
+      }
+    });
     setClaimOk(true);
   }
 
@@ -252,7 +327,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {visible.map((b) => (
-              <BusinessCard key={b.id} b={b} onClaim={setClaim} />
+              <BusinessCard key={b.id} b={b} claimState={claims[b.id] ?? "unclaimed"} onClaim={setClaim} />
             ))}
           </div>
         )}
@@ -276,7 +351,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
             </p>
           </div>
           <a
-            href={`https://wa.me/${CLAIM_WA}?text=${encodeURIComponent("Hi KlagonOrg! I want to claim my business listing.")}`}
+            href={waLink(ORG_WA, "Hi KlagonOrg! I want to claim my business listing. Please also add me to the Klagon business owners group for connections and networking.")}
             target="_blank"
             rel="noopener noreferrer"
             className={`${btn} ${btnAmber} px-6 py-3.5 text-sm whitespace-nowrap`}
@@ -325,7 +400,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
                     Send claim
                   </button>
                 </div>
-                <p className="mt-3 text-[11px] text-gray">We&apos;ll open WhatsApp with your claim pre-filled — we verify within 24 hours.</p>
+                <p className="mt-3 text-[11px] text-gray">We&apos;ll open WhatsApp with your claim pre-filled — we verify within 24 hours and add you to the Klagon business owners group for connections and networking.</p>
               </>
             ) : (
               <div className="text-center py-6">
@@ -333,7 +408,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
                 <h3 className="text-lg font-extrabold text-navy mb-1">Claim almost sent!</h3>
                 <p className="text-sm text-gray">
                   Tap send in WhatsApp to confirm you own <span className="font-bold text-navy">{claim.name}</span>.
-                  We verify within 24 hours.
+                  We verify within 24 hours — you&apos;ll also be added to the Klagon business owners group.
                 </p>
                 <button
                   onClick={() => { setClaim(null); setClaimOk(false); setClaimName(""); setClaimPhone(""); }}

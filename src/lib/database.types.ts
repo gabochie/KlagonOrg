@@ -592,6 +592,34 @@ export interface Database {
           },
         ];
       };
+      directory_claims: {
+        Row: {
+          id: string;
+          business_id: string;
+          business_name: string | null;
+          area: string | null;
+          claimant_name: string | null;
+          claimant_phone: string | null;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          business_name?: string | null;
+          area?: string | null;
+          claimant_name?: string | null;
+          claimant_phone?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["directory_claims"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [];
+      };
       template_downloads: {
         Row: {
           id: string;
