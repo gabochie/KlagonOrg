@@ -56,7 +56,7 @@ export function SalesAgent() {
     {
       id: nid(),
       role: "assistant",
-      text: "Hey there! 👋 I'm Ama, KlagonOrg's AI assistant. I can tell you about joining, events, courses, and volunteering — just ask, or tap the mic to talk to me.",
+      text: "Hey there! 👋 I'm Ama, KLAGON.org's AI assistant. I can tell you about joining, events, courses, and volunteering — just ask, or tap the mic to talk to me.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -288,7 +288,7 @@ export function SalesAgent() {
     }).catch(() => ({ reply: undefined, error: "Could not save your details. Please try again." }) as TurnResult);
     if (res?.saved) {
       const who = pendingLead.name ?? "your";
-      setSavedNote(`Saved — ${who} details are with the KlagonOrg team.`);
+      setSavedNote(`Saved — ${who} details are with the KLAGON.org team.`);
       setPendingLead(null);
     } else {
       setLeadError(res?.error ?? "Could not save your details.");
@@ -308,7 +308,7 @@ export function SalesAgent() {
                 🎙️
               </div>
               <div>
-                <div className="text-sm font-bold text-white">Ama · KlagonOrg AI Assistant</div>
+                <div className="text-sm font-bold text-white">Ama · KLAGON.org AI Assistant</div>
                 <div className="text-[10px] text-white/50 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green inline-block" />
                   {voiceOn ? "Voice ready · tap mic to talk" : "Online · typically replies instantly"}
@@ -368,7 +368,7 @@ export function SalesAgent() {
 
             {pendingLead && (
               <div className="rounded-2xl border border-amber/30 bg-amber/10 px-4 py-3">
-                <div className="text-xs font-extrabold text-navy mb-1">Save your details with KlagonOrg?</div>
+                <div className="text-xs font-extrabold text-navy mb-1">Save your details with KLAGON.org?</div>
                 <div className="text-[11px] text-gray leading-relaxed mb-2">
                   Ama can pass {pendingLead.name ? `“${pendingLead.name}”` : "your name"}
                   {pendingLead.email ? ` · ${pendingLead.email}` : ""}

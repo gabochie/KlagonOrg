@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 import { ClassifiedsFeed } from "@/components/classifieds/ClassifiedsFeed";
 
 export const metadata: Metadata = {
-  title: "Property for Rent & Sale in Klagon — KlagonOrg Classifieds",
+  title: "Property for Rent & Sale in Klagon — KLAGON.org Classifieds",
   description:
     "Houses, flats, land, shops, and short-stays for rent and sale in Klagon and Tema West, posted by the community.",
   alternates: { canonical: "/classifieds/properties" },

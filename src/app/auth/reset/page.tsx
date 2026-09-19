@@ -44,7 +44,7 @@ export default function ResetPasswordPage() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-xs font-extrabold">
             KO
           </div>
-          <span className="text-sm font-extrabold text-navy">KlagonOrg</span>
+          <span className="text-sm font-extrabold text-navy">KLAGON.org</span>
         </Link>
 
         {loading ? (

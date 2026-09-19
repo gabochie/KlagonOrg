@@ -71,7 +71,7 @@ export function WelcomeOnboarding() {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <div className="text-base font-extrabold text-navy">
-              Welcome to KlagonOrg, {firstName}! 🎉
+              Welcome to KLAGON.org, {firstName}! 🎉
             </div>
             <p className="text-xs text-gray mt-1 max-w-md">
               Here are the fastest ways to earn XP and become part of the community.

@@ -6,9 +6,9 @@ import { getAllAuthors } from "@/lib/blogAuthors";
 import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Authors — Meet the People Behind the KlagonOrg Blog",
+  title: "Authors — Meet the People Behind the KLAGON.org Blog",
   description:
-    "Meet the mentors, coaches, and coordinators writing for the KlagonOrg blog — real people with first-hand experience in Klagon, Ghana.",
+    "Meet the mentors, coaches, and coordinators writing for the KLAGON.org blog — real people with first-hand experience in Klagon, Ghana.",
   alternates: { canonical: "/blog/authors" },
 };
 

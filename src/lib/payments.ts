@@ -1,4 +1,4 @@
-// KlagonOrg donations — talks to the klagon-payments Worker, never to Moolre directly.
+// KLAGON.org donations — talks to the klagon-payments Worker, never to Moolre directly.
 // No secrets live here; the Worker holds all Moolre keys server-side.
 
 const WORKER_URL = "https://klagon-payments.gideonabochie.workers.dev";

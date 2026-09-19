@@ -3,7 +3,7 @@ import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 export const metadata: Metadata = {
   title: "Settings",
-  description: "Manage your KlagonOrg profile and password.",
+  description: "Manage your KLAGON.org profile and password.",
   alternates: { canonical: "/dashboard/settings" },
 };
 

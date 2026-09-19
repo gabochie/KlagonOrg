@@ -34,14 +34,14 @@ export async function generateMetadata({
       .eq("slug", slug)
       .eq("status", "active")
       .maybeSingle();
-    if (!data) return { title: "Business — KlagonOrg" };
+    if (!data) return { title: "Business — KLAGON.org" };
     return {
       title: `${data.name} — KLAGON Partner`,
       description: data.tagline ?? `${data.name} is a verified KLAGON business partner.`,
       alternates: { canonical: `/business/${slug}` },
     };
   } catch {
-    return { title: "Business — KlagonOrg" };
+    return { title: "Business — KLAGON.org" };
   }
 }
 

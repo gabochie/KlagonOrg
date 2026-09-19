@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 import { ClassifiedsFeed } from "@/components/classifieds/ClassifiedsFeed";
 
 export const metadata: Metadata = {
-  title: "Vehicles for Sale & Hire in Klagon — KlagonOrg Classifieds",
+  title: "Vehicles for Sale & Hire in Klagon — KLAGON.org Classifieds",
   description:
     "Cars, SUVs, pickups, and motorcycles for sale or hire in Klagon and Tema West, posted by the community.",
   alternates: { canonical: "/classifieds/vehicles" },

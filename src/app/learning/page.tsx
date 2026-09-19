@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 import { LearningHubContent } from "@/components/sections/LearningHubContent";
 
 export const metadata: Metadata = {
-  title: "Learning Hub — KlagonOrg",
+  title: "Learning Hub — KLAGON.org",
   description:
     "Free learning tracks in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning.",
   alternates: { canonical: "/learning" },

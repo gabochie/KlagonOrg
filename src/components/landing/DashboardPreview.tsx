@@ -1,4 +1,4 @@
-﻿import { BadgeCheck, Building2, Megaphone, BarChart3, GraduationCap, Handshake } from "lucide-react";
+import { BadgeCheck, Building2, Megaphone, BarChart3, GraduationCap, Handshake } from "lucide-react";
 
 const BENEFITS_FOR_BUSINESS = [
   {
@@ -14,7 +14,7 @@ const BENEFITS_FOR_BUSINESS = [
   {
     icon: <Handshake size="16" />,
     title: "Hire trained local talent",
-    body: "Recruit directly from KlagonOrg's workshops and accelerated learning talent pool. Join the wall of businesses that give Klagon youth their first real opportunity.",
+    body: "Recruit directly from KLAGON.org's workshops and accelerated learning talent pool. Join the wall of businesses that give Klagon youth their first real opportunity.",
   },
   {
     icon: <Building2 size="16" />,
@@ -32,7 +32,7 @@ const BENEFITS_FOR_SPONSORS = [
   {
     icon: <BarChart3 size="16" />,
     title: "Sponsor wall presence",
-    body: "Featured placement on the public sponsor wall by tier — the founding, strategic, and innovation groups are front and centre with KlagonOrg.",
+    body: "Featured placement on the public sponsor wall by tier — the founding, strategic, and innovation groups are front and centre with KLAGON.org.",
   },
 ];
 
@@ -47,7 +47,7 @@ export function DashboardPreview() {
           Benefits that build real partnership.
         </h2>
         <p className="text-sm text-gray leading-relaxed max-w-[500px] mb-8">
-          KlagonOrg partnerships are built for local businesses and sponsors who want more than a logo —
+          KLAGON.org partnerships are built for local businesses and sponsors who want more than a logo —
           they want customers, talent, and a workforce for tomorrow.
         </p>
 

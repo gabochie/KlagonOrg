@@ -3,9 +3,9 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-  title: "About KlagonOrg",
+  title: "About KLAGON.org",
   description:
-    "KlagonOrg is a youth community in Klagon, Ghana building skills for the future — through learning tracks, mentorship, community projects, and events.",
+    "KLAGON.org is a youth community in Klagon, Ghana building skills for the future — through learning tracks, mentorship, community projects, and events.",
   alternates: { canonical: "/about" },
 };
 
@@ -32,7 +32,7 @@ export default function AboutPage() {
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
-            About KlagonOrg
+            About KLAGON.org
           </div>
           <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
             Preparing Klagon&apos;s youth for the future.
@@ -67,7 +67,7 @@ export default function AboutPage() {
               href="/auth/register"
               className="inline-block px-6 py-2.5 rounded-lg bg-amber text-navy text-xs font-bold hover:opacity-90 transition-opacity"
             >
-              Join KlagonOrg
+              Join KLAGON.org
             </a>
           </div>
         </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Set New Password",
-  description: "Choose a new password for your KlagonOrg account.",
+  description: "Choose a new password for your KLAGON.org account.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/auth/reset" },
 };

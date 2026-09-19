@@ -28,21 +28,21 @@ export async function generateMetadata({
       .select("sponsor_id")
       .eq("slug", slug)
       .maybeSingle();
-    if (!data) return { title: "Business Card — KlagonOrg" };
+    if (!data) return { title: "Business Card — KLAGON.org" };
     const { data: s } = await sb
       .from("sponsors")
       .select("name,tagline")
       .eq("id", data.sponsor_id)
       .eq("status", "active")
       .maybeSingle();
-    if (!s) return { title: "Business Card — KlagonOrg" };
+    if (!s) return { title: "Business Card — KLAGON.org" };
     return {
       title: `${s.name} — Digital Business Card`,
       description: `Contact ${s.name} in one tap. ${s.tagline ?? ""}`.trim(),
       alternates: { canonical: `/b/${slug}` },
     };
   } catch {
-    return { title: "Business Card — KlagonOrg" };
+    return { title: "Business Card — KLAGON.org" };
   }
 }
 

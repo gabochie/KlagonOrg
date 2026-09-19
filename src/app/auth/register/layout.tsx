@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Join KlagonOrg",
+  title: "Join KLAGON.org",
   description: "Create a free member account and join Klagon's youth community today.",
   alternates: { canonical: "/auth/register" },
 };

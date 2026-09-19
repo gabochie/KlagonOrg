@@ -16,7 +16,7 @@ export default function NotFound() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white text-sm font-extrabold shadow-md">
             KO
           </div>
-          <span className="text-sm font-bold text-navy">KlagonOrg</span>
+          <span className="text-sm font-bold text-navy">KLAGON.org</span>
         </div>
         <div className="text-[92px] leading-none font-extrabold bg-gradient-to-br from-navy via-blue to-amber bg-clip-text text-transparent drop-shadow-sm mb-3">
           404

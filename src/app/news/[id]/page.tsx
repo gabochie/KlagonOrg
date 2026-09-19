@@ -35,7 +35,7 @@ export async function generateMetadata({
       .select("title,excerpt,cover_url")
       .eq("id", id)
       .maybeSingle();
-    if (!data) return { title: "Post not found — KlagonOrg" };
+    if (!data) return { title: "Post not found — KLAGON.org" };
     return {
       title: `${data.title} — Klagon Community`,
       description: data.excerpt ?? "A community post from the Klagon hyperlocal portal.",
@@ -44,7 +44,7 @@ export async function generateMetadata({
         title: data.title,
         description: data.excerpt ?? undefined,
         url: `https://klagon.org/news/${id}`,
-        siteName: "KlagonOrg",
+        siteName: "KLAGON.org",
         type: "article",
         locale: "en_GH",
         images: [{ url: data.cover_url ?? "/brand/og-banner.png" }],
@@ -57,7 +57,7 @@ export async function generateMetadata({
       },
     };
   } catch {
-    return { title: "Community post — KlagonOrg" };
+    return { title: "Community post — KLAGON.org" };
   }
 }
 

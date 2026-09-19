@@ -15,11 +15,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://klagon.org"),
   title: {
-    default: "KlagonOrg — Preparing Klagon's Youth for the Future",
-    template: "%s | KlagonOrg",
+    default: "KLAGON.org — Preparing Klagon's Youth for the Future",
+    template: "%s | KLAGON.org",
   },
   description:
-    "KlagonOrg empowers Klagon's youth with skills, mentorship, and community. Join free today.",
+    "KLAGON.org empowers Klagon's youth with skills, mentorship, and community. Join free today.",
   alternates: { canonical: "/" },
   icons: {
     icon: [
@@ -32,17 +32,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://klagon.org",
-    siteName: "KlagonOrg",
-    title: "KlagonOrg — Preparing Klagon's Youth for the Future",
+    siteName: "KLAGON.org",
+    title: "KLAGON.org — Preparing Klagon's Youth for the Future",
     description:
-      "KlagonOrg empowers Klagon's youth with skills, mentorship, and community.",
-    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KlagonOrg" }],
+      "KLAGON.org empowers Klagon's youth with skills, mentorship, and community.",
+    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KlagonOrg — Preparing Klagon's Youth for the Future",
+    title: "KLAGON.org — Preparing Klagon's Youth for the Future",
     description:
-      "KlagonOrg empowers Klagon's youth with skills, mentorship, and community.",
+      "KLAGON.org empowers Klagon's youth with skills, mentorship, and community.",
     images: ["/brand/og-banner.png"],
   },
 };

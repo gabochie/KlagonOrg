@@ -28,14 +28,14 @@ export async function generateMetadata({
       .eq("slug", slug)
       .eq("status", "active")
       .maybeSingle();
-    if (!data) return { title: "Badge — KlagonOrg" };
+    if (!data) return { title: "Badge — KLAGON.org" };
     return {
       title: `${data.name} — KLAGON Badge & Certificate`,
       description: `Download ${data.name}'s KLAGON Verified Business badge, QR code, embed snippet, and certificate.`,
       alternates: { canonical: `/business/${slug}/badge` },
     };
   } catch {
-    return { title: "Badge — KlagonOrg" };
+    return { title: "Badge — KLAGON.org" };
   }
 }
 

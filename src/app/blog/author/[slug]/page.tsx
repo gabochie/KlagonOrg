@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: author.bio,
     alternates: { canonical: `/blog/author/${author.slug}` },
     openGraph: {
-      title: `${author.name} — KlagonOrg Blog Author`,
+      title: `${author.name} — KLAGON.org Blog Author`,
       description: author.bio,
       url: `https://klagon.org/blog/author/${author.slug}`,
-      siteName: "KlagonOrg",
+      siteName: "KLAGON.org",
       type: "profile",
       images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: author.name }],
     },
@@ -65,7 +65,7 @@ export default async function AuthorPage({ params }: Props) {
       name: author.name,
       jobTitle: author.role,
       description: author.bio,
-      worksFor: { "@type": "Organization", name: "KlagonOrg" },
+      worksFor: { "@type": "Organization", name: "KLAGON.org" },
     },
   };
 

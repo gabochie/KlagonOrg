@@ -162,7 +162,7 @@ export function OpsCommandCenter() {
     <iframe
       ref={iframeRef}
       src="/ops/kocc.html"
-      title="KlagonOrg Command Center"
+      title="KLAGON.org Command Center"
       className="absolute inset-0 h-full w-full border-0 bg-white"
       sandbox="allow-scripts allow-same-origin"
       allow="microphone; clipboard-write"

@@ -13,7 +13,7 @@ const joinLinks = [
   { label: "Log in", href: "/auth/login" },
   { label: "Register Now", href: "/auth/register" },
   { label: "Become a Mentor", href: "/mentor" },
-  { label: "Sponsor KlagonOrg", href: "/sponsor" },
+  { label: "Sponsor KLAGON.org", href: "/sponsor" },
   { label: "Donate", href: "/donate" },
 ];
 
@@ -99,7 +99,7 @@ export function Footer() {
                 className="h-11 w-auto rounded-lg"
               />
               <span className="text-base font-extrabold tracking-tight text-white">
-                KLAGON<span className="text-amber">org</span>
+                KLAGON<span className="text-amber">.org</span>
               </span>
             </Link>
             <p className="text-xs text-white/50 leading-relaxed max-w-[200px]">
@@ -181,7 +181,7 @@ export function Footer() {
         </div>
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-white/55">
-            © {new Date().getFullYear()} KlagonOrg. All rights reserved.
+            © {new Date().getFullYear()} KLAGON.org. All rights reserved.
             <span className="block mt-0.5 text-white/40">
               A Gabochie Design community initiative — currently in pilot · P.O. Box SK 2125,
               Sakumono, Tema — Ghana

@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     "Practical guides on lifelong learning, digital transformation mastery, thinking skills, building visions, and making things happen — written for young people in Ghana.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "KlagonOrg Blog — Mastery of Change in the Digital Age",
+    title: "KLAGON.org Blog — Mastery of Change in the Digital Age",
     description:
       "Practical guides on lifelong learning, digital transformation, thinking skills, and building visions — free for Ghana's youth.",
     url: "https://klagon.org/blog",
-    siteName: "KlagonOrg",
+    siteName: "KLAGON.org",
     type: "website",
-    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KlagonOrg Blog" }],
+    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org Blog" }],
   },
 };
 
@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
       {
         "@type": "CollectionPage",
         "@id": "https://klagon.org/blog#collection",
-        name: "KlagonOrg Blog",
+        name: "KLAGON.org Blog",
         description:
           "Practical guides on lifelong learning, digital transformation mastery, thinking skills, building visions, and making things happen — written for young people in Ghana.",
         url: "https://klagon.org/blog",
@@ -74,7 +74,7 @@ export default function BlogIndexPage() {
       <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
-            The KlagonOrg Blog
+            The KLAGON.org Blog
           </div>
           <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
             Mastery of Change in the Digital Age
@@ -181,7 +181,7 @@ export default function BlogIndexPage() {
               Reading is step one. Learning is step two.
             </h3>
             <p className="text-white/60 text-sm max-w-md mx-auto mb-5">
-              Turn these ideas into real skills with free, short courses on the KlagonOrg Learning
+              Turn these ideas into real skills with free, short courses on the KLAGON.org Learning
               Hub — automatic progress, rewards, and XP included.
             </p>
             <Link

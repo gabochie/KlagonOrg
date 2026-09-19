@@ -21,17 +21,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPostBySlug(slug);
   if (!post) return { title: "Article not found" };
 
-  const title = `${post.title} | KlagonOrg Blog`;
+  const title = `${post.title} | KLAGON.org Blog`;
   return {
     title: post.title,
     description: post.description,
-    keywords: [...post.tags, post.category, "KlagonOrg", "Ghana", "digital skills"],
+    keywords: [...post.tags, post.category, "KLAGON.org", "Ghana", "digital skills"],
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title,
       description: post.description,
       url: `https://klagon.org/blog/${post.slug}`,
-      siteName: "KlagonOrg",
+      siteName: "KLAGON.org",
       type: "article",
       locale: "en_GH",
       authors: [post.author],
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: Props) {
         },
         publisher: {
           "@type": "Organization",
-          name: "KlagonOrg",
+          name: "KLAGON.org",
           logo: { "@type": "ImageObject", url: "https://klagon.org/brand/klagon-logo.png" },
         },
         image: "https://klagon.org/brand/og-banner.png",
@@ -214,7 +214,7 @@ export default async function BlogPostPage({ params }: Props) {
               </Link>
               <div className="text-[11px] text-gray mb-1">{post.authorRole}</div>
               <p className="text-xs text-gray leading-relaxed">
-                Written for KlagonOrg — where Ghana&apos;s youth learn real-world skills, free.{" "}
+                Written for KLAGON.org — where Ghana&apos;s youth learn real-world skills, free.{" "}
                 <Link
                   href="/blog/authors"
                   className="text-blue underline"

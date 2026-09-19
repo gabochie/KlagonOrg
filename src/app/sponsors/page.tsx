@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 import { SponsorWallContent } from "@/components/sponsor/SponsorWallContent";
 
 export const metadata: Metadata = {
-  title: "Sponsor Wall — KlagonOrg",
+  title: "Sponsor Wall — KLAGON.org",
   description:
     "Meet the verified businesses partnering with KLAGON to support youth, jobs, and innovation in Klagon.",
   alternates: { canonical: "/sponsors" },

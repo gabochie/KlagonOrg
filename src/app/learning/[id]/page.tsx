@@ -28,7 +28,7 @@ export async function generateMetadata({
     if (!data) return { title: "Course" };
     return {
       title: data.title,
-      description: `Take the ${data.title} course free with KlagonOrg.`,
+      description: `Take the ${data.title} course free with KLAGON.org.`,
       alternates: { canonical: `/learning/${id}` },
     };
   } catch {

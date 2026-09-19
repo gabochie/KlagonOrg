@@ -31,7 +31,7 @@ export function Topbar() {
             KO
           </div>
           <span className="text-xs font-bold text-white">
-            {isAdmin ? "KlagonOrg Admin" : "KlagonOrg"}
+            {isAdmin ? "KLAGON.org Admin" : "KLAGON.org"}
           </span>
         </Link>
         {isAdmin && (

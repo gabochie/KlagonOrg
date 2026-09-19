@@ -47,14 +47,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     CATEGORY_META[category] ??
     CATEGORY_META["lifelong-learning"];
   return {
-    title: `${meta.title} | KlagonOrg Blog`,
+    title: `${meta.title} | KLAGON.org Blog`,
     description: meta.description,
     alternates: { canonical: `/blog/category/${category}` },
     openGraph: {
-      title: `${meta.title} | KlagonOrg Blog`,
+      title: `${meta.title} | KLAGON.org Blog`,
       description: meta.description,
       url: `https://klagon.org/blog/category/${category}`,
-      siteName: "KlagonOrg",
+      siteName: "KLAGON.org",
       type: "website",
       locale: "en_GH",
       images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: meta.title }],

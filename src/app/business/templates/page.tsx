@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 import { TemplatesContent } from "@/components/sponsor/TemplatesContent";
 
 export const metadata: Metadata = {
-  title: "Business Templates — KlagonOrg",
+  title: "Business Templates — KLAGON.org",
   description:
     "Free downloadable business templates for finance, sales, operations, people, and marketing — brought to you by KLAGON's partners.",
   alternates: { canonical: "/business/templates" },

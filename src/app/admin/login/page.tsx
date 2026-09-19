@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
           </div>
           <div className="px-6 py-6">
             <p className="text-sm text-gray mb-5">
-              Sign in with an administrator account to manage KlagonOrg operations.
+              Sign in with an administrator account to manage KLAGON.org operations.
             </p>
             {user && !isAdmin && (
               <div className="mb-4 rounded-lg border border-amber/40 bg-amber/10 px-3.5 py-2.5 text-xs text-amber-strong font-semibold">

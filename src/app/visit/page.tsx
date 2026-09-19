@@ -76,7 +76,7 @@ export default function VisitPage() {
               Coming home? Stay with people who know your name.
             </h2>
             <p className="text-sm text-gray leading-relaxed mb-5">
-              Every stay supports the community that hosts you — KlagonOrg&apos;s youth programs
+              Every stay supports the community that hosts you — KLAGON.org&apos;s youth programs
               run on the same streets you&apos;ll sleep on.{" "}
               <Link href="/about" className="font-bold text-navy underline">
                 Our youth mission →

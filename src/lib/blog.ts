@@ -79,7 +79,7 @@ function readMarkdownFile(filePath: string): BlogPost {
     updated: data.updated,
     category: data.category || "Lifelong Learning",
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-    author: data.author || "KlagonOrg Team",
+    author: data.author || "KLAGON.org Team",
     authorRole: data.authorRole || "",
     readTime: Number(data.readTime || 3),
     icon: data.icon || "📄",

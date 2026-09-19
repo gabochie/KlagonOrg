@@ -100,7 +100,7 @@ export async function fetchPublicNews(): Promise<NewsArticle[]> {
     title: r.title,
     excerpt: r.excerpt ?? "",
     category: r.category,
-    author: r.author_name ?? r.author ?? "KlagonOrg Team",
+    author: r.author_name ?? r.author ?? "KLAGON.org Team",
     date: new Date(r.published_at).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
