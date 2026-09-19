@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_COURSES } from "@/lib/constants";
 import { fetchPublicCourses, fetchMyLessonProgress, isUuid } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import { CheckCircle } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
@@ -22,6 +23,7 @@ export function LearningProgress() {
   const router = useRouter();
   const [courses, setCourses] = useState(MEMBER_COURSES);
   const [subtitle, setSubtitle] = useState("2 active courses · 1 completed");
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     void (async () => {
@@ -60,6 +62,7 @@ export function LearningProgress() {
         `${active} active course${active === 1 ? "" : "s"} · ${completed} completed`
       );
       setCourses(merged);
+      setDemo(false);
     })();
   }, [profile?.id]);
 
@@ -67,7 +70,9 @@ export function LearningProgress() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div className="text-sm font-bold text-navy">Learning Progress</div>
+          <div className="text-sm font-bold text-navy flex items-center gap-2">
+            Learning Progress {demo && <DemoTag />}
+          </div>
           <div className="text-[11px] text-gray mt-0.5">{subtitle}</div>
         </div>
           <Link href="/dashboard/learning" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">

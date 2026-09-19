@@ -4,23 +4,34 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_METRICS } from "@/lib/constants";
 import { fetchMyMetrics } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Metric } from "@/types";
 
 export function MetricsRow() {
   const { profile } = useAuth();
   const [metrics, setMetrics] = useState<Metric[]>(MEMBER_METRICS);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     if (!profile?.id) return;
     void (async () => {
       const live = await fetchMyMetrics(profile, profile.id);
-      if (live.length > 0) setMetrics(live);
+      if (live.length > 0) {
+        setMetrics(live);
+        setDemo(false);
+      }
     })();
   }, [profile?.id, profile]);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-      {metrics.map((m) => (
+    <div>
+      {demo && (
+        <div className="mb-1.5">
+          <DemoTag />
+        </div>
+      )}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        {metrics.map((m) => (
         <div
           key={m.label}
           className="bg-white rounded-xl border border-border p-3 sm:p-3.5 relative overflow-hidden"
@@ -37,7 +48,8 @@ export function MetricsRow() {
           </div>
           <div className="text-[10px] text-gray mt-1">{m.sub}</div>
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
