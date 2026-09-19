@@ -3,9 +3,11 @@ import {
   normalizePhone,
   detectArea,
   gateRecord,
+  gateClaimRecord,
   dedupeByPhone,
   buildDailyQueue,
   pickTemplate,
+  pickClaimTemplate,
   buildWaLink,
   isStopReply,
   parseShopCsv,
@@ -78,6 +80,23 @@ describe("outreach kernel", () => {
     expect(q.map((s) => s.records.length)).toEqual([2, 2, 2]);
     const q2 = buildDailyQueue(sendable, { perDay: 6, staffCount: 3, dayIndex: 1 });
     expect(q2[0].records[0].record.id).not.toBe(q[0].records[0].record.id);
+  });
+
+  it("gates claim-drive rows without requiring VERIFIED", () => {
+    const pending = shop({ verified_status: "PENDING" });
+    const v = gateClaimRecord(pending, new Set());
+    expect(v.sendable).toBe(true);
+    expect(v.waPhone).toBe("233241234567");
+    expect(gateClaimRecord(shop({ phone: "" }), new Set()).reasons).toContain("no-phone");
+    expect(gateClaimRecord(shop({ consent_status: "NONE" }), new Set()).reasons[0]).toMatch(/bad-consent/);
+    expect(gateClaimRecord(shop({ company: "  " }), new Set()).reasons).toContain("no-company");
+    expect(gateClaimRecord(shop({ opt_out_date: "2026-09-01" }), new Set()).reasons).toContain("opted-out");
+  });
+
+  it("personalizes the claim template with the shop name and opt-out", () => {
+    expect(pickClaimTemplate("klagon", "APOG Klagon")).toContain("APOG Klagon");
+    expect(pickClaimTemplate("klagon", "APOG Klagon")).toContain("founding rate");
+    expect(pickClaimTemplate("standard", "Foo")).toContain("STOP");
   });
 
   it("picks Klagon discount vs standard templates with opt-out", () => {

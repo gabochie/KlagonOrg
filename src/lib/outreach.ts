@@ -78,6 +78,40 @@ export function gateBatch(records: RawShopRecord[], stops: Set<string>): GateVer
   return records.map((r) => gateRecord(r, stops));
 }
 
+/**
+ * Claim-drive gate. Unlike the sales gate it does NOT require VERIFIED —
+ * its whole job is reaching unverified registry shops (pending + phone)
+ * to verify and claim them in one motion. Consent + opt-out rules are
+ * identical: B2B published contacts with a working opt-out only.
+ */
+export function gateClaimRecord(r: RawShopRecord, stops: Set<string>): GateVerdict {
+  const reasons: string[] = [];
+  const area = detectArea(r);
+  const waPhone = normalizePhone(r.phone ?? "");
+  if (!waPhone) reasons.push("no-phone");
+  const consent = (r.consent_status ?? "").trim().toUpperCase();
+  if (!ALLOWED_CONSENT.has(consent)) reasons.push(`bad-consent:${r.consent_status || "blank"}`);
+  if ((r.opt_out_date ?? "").trim() !== "") reasons.push("opted-out");
+  if (waPhone && stops.has(waPhone)) reasons.push("stopped");
+  if (!(r.company ?? "").trim()) reasons.push("no-company");
+  return { record: r, sendable: reasons.length === 0, waPhone: reasons.length === 0 ? waPhone : null, area, reasons };
+}
+
+export function gateClaimBatch(records: RawShopRecord[], stops: Set<string>): GateVerdict[] {
+  return records.map((r) => gateClaimRecord(r, stops));
+}
+
+/** Claim-drive message: names the shop, offers the free profile + claim path. */
+export function pickClaimTemplate(area: OutreachArea, company: string): string {
+  const head = "Hello, this is KLAGON (Klagon, Tema) — the community platform for local business.";
+  const shop = (company ?? "").trim() || "your shop";
+  const perk = area === "klagon"
+    ? "Klagon shops get a founding rate on everything"
+    : "free to join";
+  const tail = "Reply STOP to opt out.";
+  return `${head} ${shop} can have a free verified profile, customer reviews, and a spot on our map — ${perk}. Reply CLAIM and we will set it up with you this week. ${tail}`;
+}
+
 export interface DedupeResult {
   /** One verdict per phone number (first record id wins, deterministic). */
   unique: GateVerdict[];

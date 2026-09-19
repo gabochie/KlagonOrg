@@ -30,6 +30,18 @@ const STEPS = [
     desc: "Get guidance from someone who's been there.",
     href: "/mentor",
   },
+  {
+    icon: "📝",
+    title: "Share with the community",
+    desc: "Post news, events, or something you're selling.",
+    href: "/submit",
+  },
+  {
+    icon: "⭐",
+    title: "Review a place",
+    desc: "Rate somewhere you've been — your word guides visitors.",
+    href: "/visit/stays",
+  },
 ];
 
 export function WelcomeOnboarding() {

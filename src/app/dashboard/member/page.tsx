@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WelcomeBanner } from "@/components/member/WelcomeBanner";
+import { ContributorProgress } from "@/components/member/ContributorProgress";
 import { WelcomeOnboarding } from "@/components/member/WelcomeOnboarding";
 import { MetricsRow } from "@/components/member/MetricsRow";
 import { JourneyTracker } from "@/components/member/JourneyTracker";
@@ -14,6 +15,7 @@ export default function MemberDashboard() {
     <>
       <WelcomeBanner />
       <WelcomeOnboarding />
+      <ContributorProgress />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <Link
           href="/submit"

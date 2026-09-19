@@ -15,9 +15,11 @@ import { useEffect, useMemo, useState } from "react";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import {
   gateBatch,
+  gateClaimBatch,
   dedupeByPhone,
   buildDailyQueue,
   pickTemplate,
+  pickClaimTemplate,
   buildWaLink,
   parseShopCsv,
   type GateVerdict,
@@ -61,6 +63,7 @@ export function OutreachQueue() {
   const [staffCount, setStaffCount] = useState(3);
   const [mySlot, setMySlot] = useState(0);
   const [offer, setOffer] = useState<OutreachOffer>("both");
+  const [mode, setMode] = useState<"sales" | "claim">("sales");
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -75,7 +78,11 @@ export function OutreachQueue() {
     })();
   }, []);
 
-  const verdicts = useMemo(() => gateBatch(records, stops), [records, stops]);
+  const templateName = mode === "claim" ? "claim" : offer;
+  const verdicts = useMemo(
+    () => (mode === "claim" ? gateClaimBatch(records, stops) : gateBatch(records, stops)),
+    [records, stops, mode]
+  );
   const deduped = useMemo(
     () => dedupeByPhone(verdicts.filter((v) => v.sendable)),
     [verdicts]
@@ -130,7 +137,7 @@ export function OutreachQueue() {
         company: v.record.company || null,
         wa_phone: v.waPhone,
         staff_slot: mySlot,
-        template: offer,
+        template: templateName,
         area: v.area,
         outcome,
       });
@@ -162,7 +169,7 @@ export function OutreachQueue() {
       name,
       phone: v.record.phone || null,
       source: "whatsapp-outreach",
-      intent: `${offer} interest via WhatsApp (${v.record.company || v.record.id})`,
+      intent: `${templateName} interest via WhatsApp (${v.record.company || v.record.id})`,
       status: "working",
       area: v.area,
       source_record_id: id,
@@ -199,7 +206,7 @@ export function OutreachQueue() {
         <div>
           <div className="text-sm font-extrabold text-navy">WhatsApp Outreach</div>
           <div className="text-[11px] text-gray mt-0.5">
-            Semi-auto queue · verified records only · zero-cost tap-to-send
+            Semi-auto queue · {mode === "claim" ? "claim drive (pending registry)" : "verified records only"} · zero-cost tap-to-send
           </div>
         </div>
         <div className="flex gap-1.5">
@@ -259,7 +266,7 @@ export function OutreachQueue() {
 
           {tab === "queue" && (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3">
                 <label className="text-[11px] font-bold text-navy">
                   Per day
                   <input
@@ -291,11 +298,23 @@ export function OutreachQueue() {
                   </select>
                 </label>
                 <label className="text-[11px] font-bold text-navy">
+                  Mode
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as "sales" | "claim")}
+                    className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-xs"
+                  >
+                    <option value="sales">Sales (verified)</option>
+                    <option value="claim">Claim drive (pending)</option>
+                  </select>
+                </label>
+                <label className="text-[11px] font-bold text-navy">
                   Offer
                   <select
                     value={offer}
                     onChange={(e) => setOffer(e.target.value as OutreachOffer)}
-                    className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-xs"
+                    disabled={mode === "claim"}
+                    className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-xs disabled:opacity-50"
                   >
                     <option value="both">Health + Setup</option>
                     <option value="health">Health Check</option>
@@ -316,7 +335,10 @@ export function OutreachQueue() {
                   </div>
                 )}
                 {pending.slice(0, 60).map((v) => {
-                  const text = pickTemplate(v.area, offer);
+                  const text =
+                    mode === "claim"
+                      ? pickClaimTemplate(v.area, v.record.company)
+                      : pickTemplate(v.area, offer);
                   const id = v.record.id;
                   return (
                     <div key={id} className="rounded-xl border border-border p-3">
