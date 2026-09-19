@@ -9,6 +9,7 @@ import {
   POST_TYPE_LABELS,
   fetchPortalPosts,
   fetchPostById,
+  isPostExpired,
   recordPostView,
   reportPost,
   sendContactMessage,
@@ -93,6 +94,8 @@ export function PostDetailContent({ id }: { id: string }) {
   const pageUrl =
     typeof window !== "undefined" ? `${window.location.origin}/news/${post.id}` : "";
   const shareText = encodeURIComponent(post.title);
+
+  const expired = isPostExpired(post);
 
   const detailEntries = Object.entries(post.details).filter(
     ([, v]) => typeof v === "string" || typeof v === "number"
@@ -202,6 +205,14 @@ export function PostDetailContent({ id }: { id: string }) {
 
       <div className="bg-light py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
+          {expired && post.type === "job" && (
+            <div className="bg-amber/15 border border-amber-strong/40 text-amber-strong rounded-xl p-4 mb-8">
+              <div className="text-xs font-extrabold">This listing is closed</div>
+              <div className="text-[11px] mt-0.5">
+                It expired on {fmtDate(post.expiresAt)} and is no longer accepting applications.
+              </div>
+            </div>
+          )}
           {post.coverUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img

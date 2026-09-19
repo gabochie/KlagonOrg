@@ -34,10 +34,7 @@ const btn =
 function JobCard({ post }: { post: Post }) {
   const expired = isPostExpired(post);
   return (
-    <Link
-      href={`/news/${post.id}`}
-      className="group bg-white rounded-2xl border border-border p-5 flex flex-col gap-3 hover:border-navy/30 hover:shadow-sm transition-all"
-    >
+    <article className="group bg-white rounded-2xl border border-border p-5 flex flex-col gap-3 hover:border-navy/30 hover:shadow-sm transition-all">
       <div className="flex items-start gap-3">
         <div className="w-11 h-11 rounded-xl bg-pale border border-border flex items-center justify-center text-xl flex-shrink-0">
           💼
@@ -53,8 +50,10 @@ function JobCard({ post }: { post: Post }) {
               </span>
             )}
           </div>
-          <h2 className="text-sm font-extrabold text-navy leading-snug group-hover:text-blue transition-colors">
-            {post.title}
+          <h2 className="text-sm font-extrabold text-navy leading-snug">
+            <Link href={`/news/${post.id}`} className="group-hover:text-blue transition-colors">
+              {post.title}
+            </Link>
           </h2>
         </div>
       </div>
@@ -86,7 +85,9 @@ function JobCard({ post }: { post: Post }) {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${btn} ${expired ? "pointer-events-none opacity-40" : ""} bg-navy text-white hover:bg-blue flex-1`}
+              className={`${btn} ${
+                expired ? "pointer-events-none opacity-40" : ""
+              } bg-navy text-white hover:bg-blue flex-1`}
             >
               <MessageCircle size="13" /> Apply on WhatsApp
             </a>
@@ -99,12 +100,24 @@ function JobCard({ post }: { post: Post }) {
           </>
         )}
         {!post.contactPhone && (
-          <span className="flex-1 text-[11px] text-gray font-semibold px-1 py-2">
+          <Link
+            href={`/news/${post.id}`}
+            className="flex-1 text-[11px] text-gray font-semibold px-1 py-2 hover:text-navy transition-colors"
+          >
             Open the listing for contact details.
-          </span>
+          </Link>
         )}
       </div>
-    </Link>
+
+      {post.contactPhone && (
+        <Link
+          href={`/news/${post.id}`}
+          className="inline-flex items-center gap-1 text-[11px] font-bold text-navy hover:text-blue transition-colors"
+        >
+          View full listing <ChevronRight size="12" />
+        </Link>
+      )}
+    </article>
   );
 }
 

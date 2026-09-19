@@ -168,29 +168,32 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
 
   const now = new Date().toISOString();
 
-  let query = c
-    .from("posts")
-    .select("*")
-    .eq("status", "approved")
-    .lte("published_at", now)
-    .lt("reports", 3)
-    .or(`expires_at.is.null,expires_at.gt.${now}`);
+  const base = () => {
+    let q = c
+      .from("posts")
+      .select("*")
+      .eq("status", "approved")
+      .lte("published_at", now)
+      .lt("reports", 3);
+    if (filters.type && filters.type !== "all") q = q.eq("type", filters.type);
+    if (filters.area && filters.area !== "all") q = q.eq("area", filters.area);
+    if (filters.category) q = q.eq("category", filters.category);
+    if (filters.subcategory) q = q.eq("subcategory", filters.subcategory);
+    if (filters.search) {
+      const q2 = filters.search.replace(/[%,()]/g, "").trim();
+      if (q2) q = q.or(`title.ilike.%${q2}%,excerpt.ilike.%${q2}%,category.ilike.%${q2}%`);
+    }
+    return q
+      .order("boost_until", { ascending: false, nullsFirst: false })
+      .order("published_at", { ascending: false })
+      .limit(filters.limit ?? 60);
+  };
 
-  if (filters.type && filters.type !== "all") query = query.eq("type", filters.type);
-  if (filters.area && filters.area !== "all") query = query.eq("area", filters.area);
-  if (filters.category) query = query.eq("category", filters.category);
-  if (filters.subcategory) query = query.eq("subcategory", filters.subcategory);
-  if (filters.search) {
-    const q = filters.search.replace(/[%,()]/g, "").trim();
-    if (q) query = query.or(`title.ilike.%${q}%,excerpt.ilike.%${q}%,category.ilike.%${q}%`);
+  let { data, error } = await base().or(`expires_at.is.null,expires_at.gt.${now}`);
+  // Fall back gracefully before the expiry migration is applied (column missing).
+  if (error && /expires_at/i.test(error.message)) {
+    ({ data, error } = await base());
   }
-
-  query = query
-    .order("boost_until", { ascending: false, nullsFirst: false })
-    .order("published_at", { ascending: false })
-    .limit(filters.limit ?? 60);
-
-  const { data, error } = await query;
   if (error || !data) return [];
   return data.map(mapPost);
 }
@@ -199,16 +202,23 @@ export async function fetchFeaturedPosts(limit = 3): Promise<Post[]> {
   const c = client();
   if (!c) return [];
   const now = new Date().toISOString();
-  const { data, error } = await c
-    .from("posts")
-    .select("*")
-    .eq("status", "approved")
-    .not("boost_until", "is", null)
-    .gt("boost_until", now)
-    .lt("reports", 3)
-    .or(`expires_at.is.null,expires_at.gt.${now}`)
-    .order("boost_until", { ascending: false })
-    .limit(limit);
+
+  const base = () =>
+    c
+      .from("posts")
+      .select("*")
+      .eq("status", "approved")
+      .not("boost_until", "is", null)
+      .gt("boost_until", now)
+      .lt("reports", 3)
+      .order("boost_until", { ascending: false })
+      .limit(limit);
+
+  let { data, error } = await base().or(`expires_at.is.null,expires_at.gt.${now}`);
+  // Fall back gracefully before the expiry migration is applied (column missing).
+  if (error && /expires_at/i.test(error.message)) {
+    ({ data, error } = await base());
+  }
   if (error || !data) return [];
   return data.map(mapPost);
 }
