@@ -14,6 +14,9 @@ Current roster (all brand-owned, in this repo, photography we took or commission
 | ------------------------- | -------------------------------------------------- | ---------------------- |
 | `/brand/youth-hero.png`   | Klagon youth in a skills workshop                  | KLAGON.org field team  |
 | `/brand/og-banner.png`    | The four doors of Klagon                           | KLAGON.org brand       |
+| `/brand/community/banner-2.jpg` | One community, countless stories             | KLAGON.org (owned)     |
+| `/brand/community/chief.jpg`    | Leadership rooted in the community           | KLAGON.org (owned)     |
+| `/brand/community/lady.jpg`     | A face of Klagon                              | KLAGON.org (owned)     |
 
 Nothing here claims to show a named individual. Portraits of named people are only
 added with a signed release (see the FAQ below) and are captioned with that consent.

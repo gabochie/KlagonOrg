@@ -26,9 +26,9 @@ export interface CommunityShot {
  * keeps this honest. Join the KLAGON.org Telegram and send us a photo you took
  * of Klagon to add a slide; images here are replaced as consent is collected.
  *
- * Today: two owned brand assets (youth-hero, og-banner). Everything else is
- * illustrated/owned — we do NOT fake faces. As real, consented photos come in,
- * append them here with a credit.
+ * Today: five owned brand assets (youth-hero, og-banner, plus the three brand-face
+ * photos in /brand/community). Everything else is illustrated/owned — we do NOT
+ * fake faces. As real, consented photos come in, append them here with a credit.
  */
 export const COMMUNITY_SHOTS: CommunityShot[] = [
   {
@@ -41,6 +41,24 @@ export const COMMUNITY_SHOTS: CommunityShot[] = [
     src: "/brand/og-banner.png",
     alt: "The four doors of Klagon — learn, host, map, and trade",
     caption: "Four doors into one community: learn, visit, see, trade",
+    credit: "KLAGON.org (owned)",
+  },
+  {
+    src: "/brand/community/banner-2.jpg",
+    alt: "A wide banner shot from the community of Klagon",
+    caption: "One community, countless stories",
+    credit: "KLAGON.org (owned)",
+  },
+  {
+    src: "/brand/community/chief.jpg",
+    alt: "A traditional leader of Klagon",
+    caption: "Leadership rooted in the community",
+    credit: "KLAGON.org (owned)",
+  },
+  {
+    src: "/brand/community/lady.jpg",
+    alt: "A woman of the Klagon community",
+    caption: "A face of Klagon",
     credit: "KLAGON.org (owned)",
   },
 ];
