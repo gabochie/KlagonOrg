@@ -37,10 +37,10 @@ export async function BusinessHighlights() {
             </p>
           </div>
           <Link
-            href="/sponsor/wall"
+            href="/business"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-navy underline"
           >
-            All partners <ArrowRight size="13" />
+            All businesses <ArrowRight size="13" />
           </Link>
         </div>
 
