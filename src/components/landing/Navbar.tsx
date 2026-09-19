@@ -48,7 +48,7 @@ export function Navbar() {
     <nav className="bg-white border-b border-border h-14 sticky top-0 z-50 flex items-center px-4 sm:px-6 dark:bg-ink-2">
       <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <img src="/brand/klagon-logo.png" alt="KLAGON.org" className="h-9 w-auto" />
+          <img src="/brand/klagon-logo.png" alt="KLAGON.org" className="h-9 w-auto rounded-lg" />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
             KLAGON<span className="text-amber-strong dark:text-amber">.org</span>
           </span>
