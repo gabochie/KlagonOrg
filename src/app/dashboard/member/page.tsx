@@ -35,6 +35,15 @@ export default function MemberDashboard() {
             Track reviews, edit while pending, see admin notes
           </div>
         </Link>
+        <Link
+          href="/field"
+          className="block bg-white rounded-xl border border-border p-4 hover:border-amber transition-colors"
+        >
+          <div className="text-sm font-extrabold text-navy">Field Kit →</div>
+          <div className="text-[11px] text-gray mt-0.5">
+            Visiting shops? Capture listings on the spot
+          </div>
+        </Link>
       </div>
       <MetricsRow />
       <JourneyTracker />

@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard/", "/auth/", "/submit", "/my/"],
+        disallow: ["/dashboard/", "/auth/", "/submit", "/my/", "/field"],
       },
     ],
     sitemap: "https://klagon.org/sitemap.xml",
