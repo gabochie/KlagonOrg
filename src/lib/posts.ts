@@ -147,6 +147,7 @@ export function mapPost(row: PostRow): Post {
     reports: row.reports,
     views: row.views,
     publishedAt: row.published_at,
+    expiresAt: row.expires_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -160,12 +161,15 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
   const c = client();
   if (!c) return [];
 
+  const now = new Date().toISOString();
+
   let query = c
     .from("posts")
     .select("*")
     .eq("status", "approved")
-    .lte("published_at", new Date().toISOString())
-    .lt("reports", 3);
+    .lte("published_at", now)
+    .lte("reports", 2)
+    .or(`expires_at.is.null,expires_at.gt.${now}`);
 
   if (filters.type && filters.type !== "all") query = query.eq("type", filters.type);
   if (filters.area && filters.area !== "all") query = query.eq("area", filters.area);

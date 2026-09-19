@@ -784,6 +784,7 @@ export interface Database {
           reports: number;
           views: number;
           published_at: string | null;
+          expires_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -816,6 +817,7 @@ export interface Database {
           reports?: number;
           views?: number;
           published_at?: string | null;
+          expires_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["posts"]["Insert"]> & {
           id?: string;

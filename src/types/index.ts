@@ -214,6 +214,7 @@ export interface Post {
   reports: number;
   views: number;
   publishedAt: string | null;
+  expiresAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
