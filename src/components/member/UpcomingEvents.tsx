@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_EVENTS } from "@/lib/constants";
 import { fetchPublicEvents, fetchMyRsvpIds, toggleRsvp } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Event } from "@/types";
 
 const typeStyles: Record<string, string> = {

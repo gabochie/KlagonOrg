@@ -5,24 +5,31 @@ import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_BADGES } from "@/lib/constants";
 import { fetchMyBadges } from "@/lib/queries";
+import { DemoTag } from "@/components/ui";
 import type { Badge } from "@/types";
 
 export function Achievements() {
   const { profile } = useAuth();
   const [badges, setBadges] = useState<Badge[]>(MEMBER_BADGES);
+  const [demo, setDemo] = useState(true);
 
   useEffect(() => {
     if (!profile?.id) return;
     void (async () => {
       const live = await fetchMyBadges(profile.id);
-      if (live.length > 0) setBadges(live);
+      if (live.length > 0) {
+        setBadges(live);
+        setDemo(false);
+      }
     })();
   }, [profile?.id]);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-bold text-navy">Achievements</div>
+        <div className="text-sm font-bold text-navy flex items-center gap-2">
+          Achievements {demo && <DemoTag />}
+        </div>
           <Link href="/learning" className="text-[11px] font-bold text-blue cursor-pointer hover:underline">
             See All →
           </Link>
