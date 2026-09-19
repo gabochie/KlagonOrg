@@ -59,6 +59,7 @@ export interface EventSubmission {
 
 export interface ModerateResult {
   ok: boolean;
+  id?: string;
   error?: string;
 }
 
@@ -118,10 +119,10 @@ export async function updateMyEvent(
   const patch: Database["public"]["Tables"]["events"]["Update"] = {
     ...(input.title !== undefined ? { title: input.title.trim() } : {}),
     ...(input.type !== undefined ? { type: input.type } : {}),
-    ...(input.description !== undefined ? { description: input.description.trim() || null } : {}),
+    ...(input.description !== undefined ? { description: input.description?.trim() || null } : {}),
     ...(input.date !== undefined ? { date: input.date } : {}),
     ...(input.time !== undefined ? { time: input.time } : {}),
-    ...(input.location !== undefined ? { location: input.location.trim() || null } : {}),
+    ...(input.location !== undefined ? { location: input.location?.trim() || null } : {}),
     ...(input.spots !== undefined ? { spots: input.spots } : {}),
     ...(input.spots !== undefined || input.date !== undefined
       ? { status: "pending", rejected_reason: null }
