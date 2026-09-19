@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchPublicPosts } from "@/lib/queries";
+import { fetchPortalPosts } from "@/lib/posts";
 import { fetchPublicEvents } from "@/lib/queries";
 import { COMMUNITY_SHOTS } from "@/lib/community";
-import type { PostSummary, Event } from "@/types";
+import type { Post, Event } from "@/types";
 
 type Tab = "All" | "News" | "Jobs" | "Businesses" | "Events" | "Community" | "Opportunities";
 
@@ -42,11 +42,11 @@ function demoJobs(): FeedItem[] {
 
 export function KlagonTodayTabs() {
   const [tab, setTab] = useState<Tab>("All");
-  const [posts, setPosts] = useState<PostSummary[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    void fetchPublicPosts().then(setPosts);
+    void fetchPortalPosts().then(setPosts);
     void fetchPublicEvents().then(setEvents);
   }, []);
 
