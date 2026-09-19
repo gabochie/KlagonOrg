@@ -5,3 +5,4 @@ export { Avatar } from "./Avatar";
 export { Input } from "./Input";
 export { Select } from "./Select";
 export { ProgressBar } from "./ProgressBar";
+export { DemoTag } from "./DemoTag";
