@@ -144,6 +144,9 @@ export interface Database {
           location: string | null;
           spots: number;
           published: boolean;
+          status: MemberStatus;
+          rejected_reason: string | null;
+          moderated_by: string | null;
           created_by: string | null;
           created_at: string;
         };
@@ -157,10 +160,20 @@ export interface Database {
           location?: string | null;
           spots?: number;
           published?: boolean;
+          status?: MemberStatus;
+          rejected_reason?: string | null;
+          moderated_by?: string | null;
           created_by?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["events"]["Insert"]>;
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey";
+            columns: ["created_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       event_rsvps: {
         Row: {
@@ -1153,6 +1166,14 @@ export interface Database {
           p_entity: string;
           p_entity_id?: string;
           p_detail?: Json;
+        };
+        Returns: undefined;
+      };
+      moderate_event: {
+        Args: {
+          p_event_id: string;
+          p_status: MemberStatus;
+          p_reason?: string;
         };
         Returns: undefined;
       };
