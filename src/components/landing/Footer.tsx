@@ -4,7 +4,12 @@ const platformLinks = [
   { label: "Events", href: "/events" },
   { label: "Learning Hub", href: "/learning" },
   { label: "Blog", href: "/blog" },
-  { label: "Community Projects", href: "/projects" },
+  { label: "Projects", href: "/projects" },
+  { label: "Map", href: "/map" },
+  { label: "Classifieds", href: "/classifieds" },
+  { label: "Visit Klagon", href: "/visit" },
+  { label: "Sponsors", href: "/sponsors" },
+  { label: "Free Health Score", href: "/tools/health-score" },
   { label: "Volunteer", href: "/volunteer" },
   { label: "News", href: "/news" },
 ];
