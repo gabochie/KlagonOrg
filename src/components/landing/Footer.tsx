@@ -26,13 +26,6 @@ const businessLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 
-const contactLinks = [
-  { label: "Contact Us", href: "/contact", external: false },
-  { label: "hello@klagon.org", href: "mailto:hello@klagon.org", external: false },
-  { label: "WhatsApp", href: "https://wa.me/233268708895", external: true },
-  { label: "Call +233 24 326 2019", href: "tel:+233243262019", external: false },
-];
-
 const socials = [
   {
     label: "WhatsApp",
