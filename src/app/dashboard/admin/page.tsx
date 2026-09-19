@@ -9,6 +9,7 @@ import { MembersTable } from "@/components/admin/MembersTable";
 import { UpcomingEvents } from "@/components/admin/UpcomingEvents";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
 import { LeadsList } from "@/components/admin/LeadsList";
+import { DirectoryImporter } from "@/components/admin/DirectoryImporter";
 import { ClaimsQueue } from "@/components/admin/ClaimsQueue";
 import { OwnerDigests } from "@/components/admin/OwnerDigests";
 import { ListingImporter } from "@/components/admin/ListingImporter";
@@ -69,6 +70,9 @@ export default function AdminDashboard() {
       </div>
 
       <LeadsList />
+      <div className="mt-2.5">
+        <DirectoryImporter />
+      </div>
       <div className="mt-2.5">
         <OwnerDigests />
       </div>
