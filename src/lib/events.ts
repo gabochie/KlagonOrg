@@ -208,15 +208,19 @@ export async function rejectEvent(eventId: string, reason: string): Promise<Mode
 // culture hub
 // ------------------------------------------------------------------
 
-export async function fetchCultureEvents(): Promise<Event[]> {
+export async function fetchCultureEvents(limit = 30): Promise<Event[]> {
   const c = client();
   if (!c) return [];
+  // Local calendar day (not UTC) so near-midnight events aren't wrongly excluded.
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const { data, error } = await c
     .from("events_public")
     .select("*")
     .overlaps("tags", CULTURE_TAGS as unknown as string[])
-    .gte("date", new Date().toISOString().slice(0, 10))
-    .order("date", { ascending: true });
+    .gte("date", today)
+    .order("date", { ascending: true })
+    .limit(limit);
   if (error || !data || data.length === 0) return [];
   return data.map((r) => ({
     id: r.id,

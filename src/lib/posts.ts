@@ -241,17 +241,24 @@ export async function fetchCulturePosts(limit = 20): Promise<Post[]> {
   const c = client();
   if (!c) return [];
   const now = new Date().toISOString();
-  const { data, error } = await c
-    .from("posts")
-    .select("*")
-    .eq("status", "approved")
-    .eq("type", "news")
-    .in("category", CULTURE_CATEGORIES)
-    .lte("published_at", now)
-    .lt("reports", 3)
-    .or(`expires_at.is.null,expires_at.gt.${now}`)
-    .order("published_at", { ascending: false })
-    .limit(limit);
+
+  const base = () =>
+    c
+      .from("posts")
+      .select("*")
+      .eq("status", "approved")
+      .eq("type", "news")
+      .in("category", CULTURE_CATEGORIES)
+      .lte("published_at", now)
+      .lt("reports", 3)
+      .order("published_at", { ascending: false })
+      .limit(limit);
+
+  let { data, error } = await base().or(`expires_at.is.null,expires_at.gt.${now}`);
+  // Fall back gracefully before the expiry migration is applied (column missing).
+  if (error && /expires_at/i.test(error.message)) {
+    ({ data, error } = await base());
+  }
   if (error || !data || data.length === 0) return [];
   return data.map(mapPost);
 }

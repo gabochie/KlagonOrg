@@ -92,14 +92,33 @@ export function CultureHub() {
       else next.delete(id);
       return next;
     });
-    await toggleRsvp(profile.id, id, going);
-    const ids = await fetchMyRsvpIds(profile.id);
-    setRsvps(new Set(ids));
-    setNotice(null);
+    try {
+      await toggleRsvp(profile.id, id, going);
+      const ids = await fetchMyRsvpIds(profile.id);
+      setRsvps(new Set(ids));
+      // toggleRsvp swallows DB errors, so confirm the refetched state
+      // matches what the user asked for — otherwise revert + inform.
+      if (ids.includes(id) !== going) {
+        setNotice("Couldn't save your RSVP — please try again.");
+      } else {
+        setNotice(null);
+      }
+    } catch {
+      // Revert the optimistic update so the button reflects reality.
+      setRsvps((prev) => {
+        const next = new Set(prev);
+        if (going) next.delete(id);
+        else next.add(id);
+        return next;
+      });
+      setNotice("Couldn't save your RSVP — please try again.");
+    }
   };
 
   const featuredEvent = events[0];
   const featuredPost = posts[0];
+  // The featured event already has its own card above — keep it out of the grid.
+  const restEvents = featuredEvent ? events.slice(1) : events;
   const hasContent = events.length > 0 || posts.length > 0 || creators.length > 0;
 
   return (
@@ -173,7 +192,7 @@ export function CultureHub() {
                         <span className="text-[10px] font-bold tracking-widest uppercase text-amber-strong">
                           Featured event
                         </span>
-                        <Badge variant={typeBadge[featuredEvent.type]}>
+                        <Badge variant={typeBadge[featuredEvent.type] ?? "service"}>
                           {featuredEvent.type}
                         </Badge>
                       </div>
@@ -234,7 +253,7 @@ export function CultureHub() {
                 </div>
               )}
 
-              {events.length > 0 && (
+              {restEvents.length > 0 && (
                 <div className="mb-12">
                   <div className="flex items-end justify-between gap-3 mb-5">
                     <div>
@@ -253,7 +272,7 @@ export function CultureHub() {
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {events.map((e) => {
+                    {restEvents.map((e) => {
                       const d = new Date(e.date);
                       return (
                         <div
@@ -262,7 +281,7 @@ export function CultureHub() {
                         >
                           <div className="p-5">
                             <div className="flex items-start justify-between gap-2 mb-2">
-                              <Badge variant={typeBadge[e.type]}>{e.type}</Badge>
+                              <Badge variant={typeBadge[e.type] ?? "service"}>{e.type}</Badge>
                               {e.tags && e.tags.length > 0 && (
                                 <span className="text-[10px] font-bold text-amber-strong uppercase tracking-wide shrink-0">
                                   {e.tags.slice(0, 2).join(" · ")}
