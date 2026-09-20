@@ -42,7 +42,83 @@
 .klagon-map-search {
   top: 0.75rem;
   left: 0.75rem;
-  right: 4.5rem;
+  right: 7rem;
+}
+
+.klagon-map-toggles {
+  position: absolute;
+  z-index: 6;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.klagon-map-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e8ecf0;
+  color: #16224a;
+  box-shadow: 0 8px 24px rgba(10, 17, 40, 0.12);
+  cursor: pointer;
+}
+
+.klagon-map-toggle-btn.active {
+  color: #1a73e8;
+}
+
+.klagon-map-toggle-btn .klagon-map-toggle-label {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .klagon-map-search {
+    right: 12rem;
+  }
+  .klagon-map-toggle-btn .klagon-map-toggle-label {
+    display: inline;
+  }
+}
+
+.klagon-map-list {
+  position: absolute;
+  z-index: 5;
+  top: 7.75rem;
+  left: 0.75rem;
+  width: 17rem;
+  max-height: calc(100% - 8.75rem);
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #e8ecf0;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(10, 17, 40, 0.12);
+}
+
+.klagon-map-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.klagon-map-list-item:hover {
+  background: #f4f6fb;
+}
+
+.klagon-map-list-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .klagon-map-layers-toggle {

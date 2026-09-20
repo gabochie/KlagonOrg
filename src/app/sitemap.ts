@@ -5,6 +5,7 @@ import { COURSES } from "@/lib/constants";
 import { getSupabase } from "@/lib/supabase";
 import type { DirectorySnapshot } from "@/lib/directory";
 import snapshotData from "@/data/business-directory.json";
+import { getMapPages } from "@/lib/map/data";
 
 export const dynamic = "force-static";
 
@@ -97,5 +98,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: b.verified ? 0.7 : 0.5,
   }));
 
-  return [...base, ...courses, ...posts, ...categories, ...authors, ...directory];
+  const mapPages = [...(await getMapPages()).slugById.values()].map((slug) => ({
+    url: `${BASE}/map/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  return [...base, ...courses, ...posts, ...categories, ...authors, ...directory, ...mapPages];
 }

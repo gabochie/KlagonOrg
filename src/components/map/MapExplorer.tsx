@@ -15,14 +15,17 @@
 // ------------------------------------------------------------------
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import type { Feature, Point } from "geojson";
-import { Loader2, Search, SlidersHorizontal, X, MapPin } from "lucide-react";
+import { List, Loader2, Search, SlidersHorizontal, X, MapPin } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./map.css";
 
 import { fetchMapPoints } from "@/lib/map/queries";
 import { isSupabaseConfigured } from "@/lib/supabase-browser";
 import { MAP_LAYERS } from "@/lib/map/layers";
+import { buildSlugMap } from "@/lib/map/slugs";
+import { ORG_WA, waLink } from "@/lib/directoryClaims";
 import {
   KLAGON_CENTER,
   KLAGON_ZOOM,
@@ -98,6 +101,7 @@ export function MapExplorer() {
     Object.fromEntries(MAP_LAYERS.map((l) => [l.key, l.defaultOn]))
   );
   const [showLayers, setShowLayers] = useState(false);
+  const [showList, setShowList] = useState(false);
   const [selected, setSelected] = useState<MapPoint | null>(null);
 
   const pointsByIdNow = pointsById;
@@ -311,6 +315,18 @@ export function MapExplorer() {
   }, [mapReady, pointsByIdNow]);
 
   // ---- derived -----------------------------------------------------
+  const slugsById = useMemo(() => buildSlugMap(points), [points]);
+
+  const visiblePoints = useMemo(
+    () =>
+      points.filter((p) => {
+        const l = MAP_LAYERS.find((x) => x.entityTypes.includes(p.entity_type));
+        const on = l ? enabled[l.key] ?? l.defaultOn : true;
+        return on && layerIn(l?.entityTypes ?? [], p) && matchesQuery(p, query);
+      }),
+    [points, enabled, query]
+  );
+
   const counts = useMemo(() => {
     const total: Record<string, number> = {};
     points.forEach((p) => {
@@ -369,18 +385,25 @@ export function MapExplorer() {
         )}
       </div>
 
-      {/* layers toggle */}
-      <div className="klagon-map-panel klagon-map-layers-toggle">
+      {/* toggles: list + layers */}
+      <div className="klagon-map-toggles">
+        <button
+          onClick={() => setShowList((s) => !s)}
+          className={`klagon-map-toggle-btn ${showList ? "active" : ""}`}
+          aria-expanded={showList}
+          aria-label="Toggle the places and needs list"
+        >
+          <List size={14} />
+          <span className="klagon-map-toggle-label">List</span>
+        </button>
         <button
           onClick={() => setShowLayers((s) => !s)}
-          className={`flex items-center gap-1.5 text-xs font-semibold ${
-            showLayers ? "text-blue" : "text-navy"
-          }`}
+          className={`klagon-map-toggle-btn ${showLayers ? "active" : ""}`}
           aria-expanded={showLayers}
           aria-label="Toggle map layers"
         >
           <SlidersHorizontal size={14} />
-          Layers
+          <span className="klagon-map-toggle-label">Layers</span>
         </button>
       </div>
 
@@ -414,7 +437,67 @@ export function MapExplorer() {
         </div>
       )}
 
-      {/* quick chips */}
+      {/* places & needs list */}
+      {showList && (
+        <div className="klagon-map-list" aria-label="Places and needs on the map">
+          <div className="flex items-center justify-between px-3 py-2.5 border-b border-border">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-gray">
+              Places &amp; Needs
+            </span>
+            <span className="text-[10px] font-semibold text-gray">
+              {visiblePoints.length}
+            </span>
+          </div>
+          <div className="flex flex-col gap-0.5 p-1.5">
+            {visiblePoints.length === 0 ? (
+              <p className="px-3 py-3 text-xs text-gray">
+                {points.length === 0 ? "No map data yet." : "Nothing matches here yet."}
+              </p>
+            ) : (
+              visiblePoints.map((p) => {
+                const l = MAP_LAYERS.find((x) =>
+                  x.entityTypes.includes(p.entity_type)
+                );
+                const slug = slugsById.get(p.id);
+                return (
+                  <Link
+                    key={p.id}
+                    href={slug ? `/map/${slug}` : `/map?point=${p.id}`}
+                    className="klagon-map-list-item"
+                  >
+                    <span
+                      className="klagon-map-list-dot"
+                      style={{ backgroundColor: l?.color ?? "#64748B" }}
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-semibold text-navy">
+                        {p.name}
+                      </span>
+                      <span className="block truncate text-[10px] text-gray">
+                        {l?.icon} {l?.label}
+                        {p.community_area ? ` · ${p.community_area}` : ""}
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+          <div className="border-t border-border px-3 py-2">
+            <a
+              href={waLink(
+                ORG_WA,
+                "Hi KlagonOrg! I'd like to report a community need or add a place to the Klagon map."
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] font-bold text-blue hover:underline"
+            >
+              Report a need or add a place →
+            </a>
+          </div>
+        </div>
+      )}
       <div className="klagon-map-chip-row">
         {MAP_LAYERS.filter((l) => enabled[l.key] ?? l.defaultOn).map((l) => (
           <button
@@ -467,6 +550,14 @@ export function MapExplorer() {
                 </p>
               )}
               <div className="mt-3 flex items-center gap-2">
+                {slugsById.get(selected.id) && (
+                  <Link
+                    href={`/map/${slugsById.get(selected.id)}`}
+                    className="rounded-lg bg-amber px-3 py-1.5 text-[11px] font-bold text-navy hover:bg-amber-strong hover:text-white"
+                  >
+                    View page →
+                  </Link>
+                )}
                 {layerHref(selected) && (
                   <a
                     href={layerHref(selected)!}
