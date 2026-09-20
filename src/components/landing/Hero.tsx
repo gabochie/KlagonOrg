@@ -8,7 +8,7 @@ export function Hero() {
       <div className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-amber/8 pointer-events-none" />
       <div className="absolute -bottom-30 left-[40%] w-[300px] h-[300px] rounded-full bg-green/6 pointer-events-none" />
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-16 sm:py-20">
-        <div className="grid md:grid-cols-[1fr_auto] gap-10 md:gap-8 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_minmax(300px,440px)] gap-10 md:gap-8 items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-amber/15 border border-amber/30 text-amber px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-amber" />
@@ -31,7 +31,7 @@ export function Hero() {
               </Link>
             </div>
           </div>
-          <div className="w-full max-w-[440px] mx-auto md:mx-0 md:justify-self-end">
+          <div className="w-full max-w-[440px] mx-auto md:mx-0">
             <CommunityCarousel />
           </div>
         </div>
