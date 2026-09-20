@@ -147,7 +147,3 @@ export function buildInviteFallbackMessage(b: { name: string; area: string }): s
 export function buildGroupJoinMessage(): string {
   return "Hi! Please add me to the Klagon business owners group for connections and networking. Thank you.";
 }
-
-export function waLink(number: string, message: string): string {
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-}

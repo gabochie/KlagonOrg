@@ -3,7 +3,7 @@ import { ArrowLeft, MapPin, MessageCircle, Navigation, Map as MapIcon, BadgeChec
 import type { MapPoint } from "@/lib/map/types";
 import { SEVERITY_META } from "@/lib/map/types";
 import { entityTypeLabel, layerForType } from "@/lib/map/layers";
-import { ORG_WA, waLink } from "@/lib/directoryClaims";
+import { ORG_WA, waLink } from "@/lib/wa";
 
 const btn =
   "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-colors cursor-pointer font-sans";
