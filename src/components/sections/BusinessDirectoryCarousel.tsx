@@ -1,21 +1,42 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { COMMUNITY_SHOTS } from "@/lib/community";
 import { Pause, Play } from "lucide-react";
+
+export interface BusinessShot {
+  src: string;
+  alt: string;
+}
+
+/**
+ * The hero pool for the Klagon business directory: all local business photos,
+ * shown as an autoplay slideshow. Sources are real owned files under
+ * /public/brand/business (see folder listing). Alt text stays descriptive of
+ * the scene, never a claim about who someone is.
+ */
+export const BIZ_SHOTS: BusinessShot[] = [
+  { src: "/brand/business/biz-01.jpeg", alt: "Local business and services in the community" },
+  { src: "/brand/business/biz-02.jpg", alt: "A neighbourhood grocery store" },
+  { src: "/brand/business/biz-03.jpg", alt: "A street scene of local trade" },
+  { src: "/brand/business/biz-04.jpeg", alt: "Local business activity" },
+  { src: "/brand/business/biz-05.jpg", alt: "A small community business" },
+  { src: "/brand/business/biz-06.jpg", alt: "A local shop and its wares" },
+  { src: "/brand/business/biz-07.webp", alt: "A market with food and goods stalls" },
+  { src: "/brand/business/biz-08.jpg", alt: "A health clinic and pharmacy" },
+  { src: "/brand/business/biz-09.jpg", alt: "A woman entrepreneur" },
+  { src: "/brand/business/biz-10.jpg", alt: "A business scene photograph" },
+  { src: "/brand/business/biz-11.jpg", alt: "A fashion studio and its garments" },
+  { src: "/brand/business/biz-12.jpg", alt: "A pharmacy counter" },
+  { src: "/brand/business/biz-13.jpg", alt: "A fabric supplier reviewing textiles" },
+];
 
 const AUTOPLAY_MS = 5600;
 
-/**
- * CommunityCarousel — the "faces of Klagon" slideshow, rendered inside the
- * homepage hero (client island; the hero itself stays a server component).
- * Reuses the real owned photos in src/lib/community.ts. Pauses on hover.
- */
-export function CommunityCarousel() {
+export function BusinessDirectoryCarousel() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const count = COMMUNITY_SHOTS.length;
+  const count = BIZ_SHOTS.length;
 
   useEffect(() => {
     if (paused || count <= 1) return;
@@ -33,7 +54,7 @@ export function CommunityCarousel() {
     <div
       role="region"
       aria-roledescription="carousel"
-      aria-label="Faces of Klagon"
+      aria-label="Businesses of Klagon"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       className="relative overflow-hidden rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-black/40"
@@ -42,10 +63,9 @@ export function CommunityCarousel() {
         className="flex transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
-        {COMMUNITY_SHOTS.map((s, i) => (
+        {BIZ_SHOTS.map((s, i) => (
           <figure key={s.src} className="w-full flex-shrink-0">
             <div className="relative aspect-[16/10] md:aspect-[3/2]">
-              {/* Keep <img> honest: real owned files under /brand; credits in lib/community.ts */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={s.src}
@@ -53,14 +73,6 @@ export function CommunityCarousel() {
                 loading={i === 0 ? "eager" : "lazy"}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <figcaption className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent px-4 py-3">
-                <div className="text-sm font-extrabold text-white tracking-tight">
-                  {s.caption}
-                </div>
-                <div className="text-[10px] text-white/70 font-semibold mt-0.5">
-                  Photo: {s.credit}
-                </div>
-              </figcaption>
             </div>
           </figure>
         ))}
@@ -77,7 +89,7 @@ export function CommunityCarousel() {
             {paused ? <Play size={12} /> : <Pause size={12} />}
           </button>
           <div className="absolute bottom-2.5 right-3 flex gap-1.5">
-            {COMMUNITY_SHOTS.map((s, i) => (
+            {BIZ_SHOTS.map((s, i) => (
               <button
                 key={s.src}
                 type="button"

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X, ChevronRight, Send } from "lucide-react";
 import type { DirectoryBusiness, DirectorySnapshot } from "@/lib/directory";
 import { initialsOf, waHref, telHref } from "@/lib/directory";
+import { BusinessDirectoryCarousel } from "@/components/sections/BusinessDirectoryCarousel";
 import {
   ORG_WA,
   type DirectoryClaimState,
@@ -247,28 +248,35 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
       <section className="bg-navy relative overflow-hidden">
         <div className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-amber/8 pointer-events-none" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
-          <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Klagon Business Directory</div>
-          <h1 className="text-[clamp(1.9rem,4vw,2.9rem)] font-extrabold text-white tracking-tight leading-tight mb-3 max-w-2xl">
-            Every business in Klagon, findable in one place.
-          </h1>
-          <p className="text-white/60 text-sm max-w-lg mb-8">
-            Search shops, clinics, schools, chop bars and services across Klagon, Lashibi and Tema. Own one?
-            Claim your listing free and get the verified badge.
-          </p>
-          <div className="flex flex-wrap gap-8 sm:gap-10 mb-8">
-            <div><div className="text-2xl font-extrabold text-amber">{stats.total}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">businesses</div></div>
-            <div><div className="text-2xl font-extrabold text-amber">{stats.categories}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">categories</div></div>
-            <div><div className="text-2xl font-extrabold text-amber">{stats.withPhone}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">with phone</div></div>
-            <div><div className="text-2xl font-extrabold text-amber">{stats.verified}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">verified</div></div>
-          </div>
-          <div className="relative max-w-xl">
-            <Search size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search name, category or area… e.g. pharmacy, clinic, Lashibi"
-              className="w-full rounded-xl border border-white/20 bg-white/8 text-white placeholder:text-white/45 px-4 py-3 pl-11 text-sm outline-none focus:border-amber transition-colors font-sans"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_minmax(300px,440px)] gap-10 md:gap-12 items-center">
+            <div>
+              <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">Klagon Business Directory</div>
+              <h1 className="text-[clamp(1.9rem,4vw,2.9rem)] font-extrabold text-white tracking-tight leading-tight mb-3 max-w-2xl">
+                Every business in Klagon, findable in one place.
+              </h1>
+              <p className="text-white/60 text-sm max-w-lg mb-8">
+                Search shops, clinics, schools, chop bars and services across Klagon, Lashibi and Tema. Own one?
+                Claim your listing free and get the verified badge.
+              </p>
+              <div className="flex flex-wrap gap-8 sm:gap-10 mb-8">
+                <div><div className="text-2xl font-extrabold text-amber">{stats.total}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">businesses</div></div>
+                <div><div className="text-2xl font-extrabold text-amber">{stats.categories}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">categories</div></div>
+                <div><div className="text-2xl font-extrabold text-amber">{stats.withPhone}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">with phone</div></div>
+                <div><div className="text-2xl font-extrabold text-amber">{stats.verified}</div><div className="text-[11px] font-bold uppercase tracking-widest text-white/50">verified</div></div>
+              </div>
+              <div className="relative max-w-xl">
+                <Search size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search name, category or area… e.g. pharmacy, clinic, Lashibi"
+                  className="w-full rounded-xl border border-white/20 bg-white/8 text-white placeholder:text-white/45 px-4 py-3 pl-11 text-sm outline-none focus:border-amber transition-colors font-sans"
+                />
+              </div>
+            </div>
+            <div className="w-full max-w-[440px] mx-auto md:mx-0">
+              <BusinessDirectoryCarousel />
+            </div>
           </div>
         </div>
       </section>
