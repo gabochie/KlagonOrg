@@ -173,7 +173,7 @@ export function Sidebar() {
         year: "numeric",
       })
     : "";
-  const roleLabel = profile?.role === "super_admin" ? "Super Admin" : "Admin";
+  const roleLabel = "Admin";
 
   return (
     <aside className="bg-white border-r border-border overflow-y-auto flex flex-col">

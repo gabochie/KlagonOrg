@@ -9,6 +9,7 @@ import { Achievements } from "@/components/member/Achievements";
 import { UpcomingEvents } from "@/components/member/UpcomingEvents";
 import { CommunityProjects } from "@/components/member/CommunityProjects";
 import { Announcements } from "@/components/member/Announcements";
+import { PublicProfileLink } from "@/components/member/PublicProfileLink";
 
 export default function MemberDashboard() {
   return (
@@ -35,15 +36,16 @@ export default function MemberDashboard() {
             Track reviews, edit while pending, see admin notes
           </div>
         </Link>
-        <Link
+<Link
           href="/field"
           className="block bg-white rounded-xl border border-border p-4 hover:border-amber transition-colors"
         >
-          <div className="text-sm font-extrabold text-navy">Field Kit →</div>
+          <div className="text-sm font-extrabold text-navy">Field Kit &rarr;</div>
           <div className="text-[11px] text-gray mt-0.5">
             Visiting shops? Capture listings on the spot
           </div>
-        </Link>
+</Link>
+        <PublicProfileLink />
       </div>
       <MetricsRow />
       <JourneyTracker />

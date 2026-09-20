@@ -1087,6 +1087,25 @@ export interface Database {
       };
     };
     Views: {
+      profiles_public: {
+        Row: {
+          id: string;
+          full_name: string;
+          role: UserRole;
+          occupation: string | null;
+          interests: string[];
+          career_goal: string | null;
+          xp: number;
+          avatar_url: string | null;
+          verified_contributor: boolean;
+          approved_posts: number;
+          created_at: string;
+          updated_at: string;
+          events_attended: number;
+          lessons_completed: number;
+        };
+        Relationships: [];
+      };
       events_public: {
         Row: {
           id: string;
