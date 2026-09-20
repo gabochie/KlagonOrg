@@ -15,11 +15,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://klagon.org"),
   title: {
-    default: "KLAGON.org — Preparing Klagon's Youth for the Future",
+    default: "KLAGON.org — The Digital Home of Klagon",
     template: "%s | KLAGON.org",
   },
   description:
-    "KLAGON.org is the community's digital platform — where Klagon learns, hosts, maps itself, and does business. Join free today.",
+    "KLAGON.org is the digital home of Klagon — where the community learns, hosts, maps itself, and does business. Join free today.",
   alternates: { canonical: "/" },
   icons: {
     icon: [
@@ -33,16 +33,16 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://klagon.org",
     siteName: "KLAGON.org",
-    title: "KLAGON.org — Preparing Klagon's Youth for the Future",
+    title: "KLAGON.org — The Digital Home of Klagon",
     description:
-      "KLAGON.org is the community's digital platform — youth skills, community tourism, a living map, and a local marketplace.",
+      "The digital home of Klagon — discover what's happening, find local businesses, learn new skills, and help build the community.",
     images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KLAGON.org — Preparing Klagon's Youth for the Future",
+    title: "KLAGON.org — The Digital Home of Klagon",
     description:
-      "KLAGON.org is the community's digital platform — youth skills, community tourism, a living map, and a local marketplace.",
+      "The digital home of Klagon — discover what's happening, find local businesses, learn new skills, and help build the community.",
     images: ["/brand/og-banner.png"],
   },
 };

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui";
 export const metadata: Metadata = {
   title: "About KLAGON.org",
   description:
-    "KLAGON.org is the community's digital platform — where Klagon learns, hosts, maps itself, and does business. Youth skills, community tourism, a living map, and a local marketplace.",
+    "KLAGON.org is the digital home of Klagon — where the community learns, hosts, maps itself, and does business.",
   alternates: { canonical: "/about" },
 };
 
@@ -82,9 +82,9 @@ export default function AboutPage() {
               One platform. Four doors into Klagon.
             </h1>
             <p className="text-white/60 text-sm max-w-lg mx-auto mb-6">
-              KLAGON.org is the community&apos;s digital platform — where Klagon learns, hosts,
-              maps itself, and does business. Youth skills, community tourism, a living map, and
-              a local marketplace, built together, free to join.
+              KLAGON.org is the digital home of Klagon — a community platform where residents,
+              businesses, visitors and young people discover what&apos;s happening, learn new
+              skills, trade locally, and help build the community. Free to join.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <Link href="/auth/register">
