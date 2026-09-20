@@ -36,11 +36,6 @@ export interface ClaimResult {
   error?: string;
 }
 
-/** KlagonOrg's own WhatsApp line — claims, group joins and fallback invites all land here. */
-export const ORG_WA = "233268708895";
-/** Display form of the org line used inside WhatsApp messages sent to third parties. */
-export const ORG_PHONE_DISPLAY = "026 870 8895";
-
 const client = () => {
   if (!isSupabaseConfigured()) return null;
   return getBrowserClient();
