@@ -121,6 +121,19 @@ Commitment: internship-style, 3–5 hours a week.
 How to apply: WhatsApp 026 870 8895 with the role name, your name, age, neighbourhood, and one lesson you would love to teach Klagon.',
     'Internship',
     '{"company":"KLAGON.org","salary_range_ghs":"Internship: stipend GH₵200/mo as funds allow","deadline":"2026-10-31","position_type":"Internship"}'::jsonb
+  ),
+  (
+    'Content Creator — "Klagon Today" (Video & Social)',
+    'Turn Klagon''s real stories and opportunities into short videos and social content the community shares.',
+    'Shoot and edit short videos, reels and social posts for the "Klagon Today" feed: turn field walks, business stories, events and job openings into scroll-stopping clips people actually watch. Work with the Community Journalist and Field Walkers so every face has consent and every clip is honest.
+
+Skills we look for: a phone with a decent camera, editing instinct (CapCut/InShot fine), creativity, and respect for the consent rule — never post a person without their yes.
+
+Commitment: piece-rate, 4–8 finished pieces a month.
+
+How to apply: WhatsApp 026 870 8895 with the role name, your name, age, neighbourhood, and one Klagon story you would love to turn into a 30-second clip.',
+    'Gig/Freelance',
+    '{"company":"KLAGON.org","salary_range_ghs":"Per-piece stipend as funds allow (volunteer-first)","deadline":"2026-10-31","position_type":"Gig/Freelance"}'::jsonb
   )
 ) as t(title, excerpt, body, category, details)
 where not exists (
