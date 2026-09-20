@@ -12,6 +12,9 @@
 
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import type { Database } from "@/lib/database.types";
+import { ORG_WA, ORG_PHONE_DISPLAY, waLink } from "@/lib/wa";
+
+export { ORG_WA, ORG_PHONE_DISPLAY, waLink };
 
 export type DirectoryClaimState = "unclaimed" | "pending" | "approved";
 
