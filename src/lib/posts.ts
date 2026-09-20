@@ -10,6 +10,7 @@
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import type { Database, Json } from "@/lib/database.types";
 import type {
+  AuthorBadge,
   Post,
   PostArea,
   PostFilters,
@@ -60,6 +61,7 @@ export const CATEGORY_SEEDS: Record<PostType, string[]> = {
     "Crime & Safety",
     "Local Market",
     "Chieftaincy & Culture",
+    "Arts & Music",
   ],
   event: ["Workshop", "Social", "Sports", "Fundraiser", "Religious", "Other"],
   business: ["Retail", "Food & Drink", "Services", "Transportation", "Tech", "Other"],
@@ -67,6 +69,9 @@ export const CATEGORY_SEEDS: Record<PostType, string[]> = {
   job: ["Full-time", "Part-time", "Gig/Freelance", "Internship", "Volunteer"],
   announcement: ["General", "Safety", "Utilities", "Community"],
 };
+
+/** News categories that make up the Arts & Culture hub feed. */
+export const CULTURE_CATEGORIES = ["Arts & Music", "Chieftaincy & Culture"] as const;
 
 export const PROPERTY_SUBCATEGORIES = [
   "House",
@@ -229,6 +234,53 @@ export async function fetchPostById(id: string): Promise<Post | null> {
   const { data, error } = await c.from("posts").select("*").eq("id", id).maybeSingle();
   if (error || !data) return null;
   return mapPost(data);
+}
+
+/** Approved news posts within the culture categories (culture hub feed). */
+export async function fetchCulturePosts(limit = 20): Promise<Post[]> {
+  const c = client();
+  if (!c) return [];
+  const now = new Date().toISOString();
+  const { data, error } = await c
+    .from("posts")
+    .select("*")
+    .eq("status", "approved")
+    .eq("type", "news")
+    .in("category", CULTURE_CATEGORIES)
+    .lte("published_at", now)
+    .lt("reports", 3)
+    .or(`expires_at.is.null,expires_at.gt.${now}`)
+    .order("published_at", { ascending: false })
+    .limit(limit);
+  if (error || !data || data.length === 0) return [];
+  return data.map(mapPost);
+}
+
+export interface CultureCreator {
+  id: string;
+  name: string;
+  badge: AuthorBadge;
+  postCount: number;
+}
+
+/** People behind approved culture posts — surfaced as local creatives. */
+export async function fetchCultureCreators(): Promise<CultureCreator[]> {
+  const posts = await fetchCulturePosts(200);
+  const byMember = new Map<string, { name: string; badge: AuthorBadge }>();
+  const count = new Map<string, number>();
+  for (const p of posts) {
+    if (!p.submittedBy) continue;
+    count.set(p.submittedBy, (count.get(p.submittedBy) ?? 0) + 1);
+    if (!byMember.has(p.submittedBy)) {
+      byMember.set(p.submittedBy, {
+        name: p.authorName.replace(/^Community Member$/, "Unnamed contributor"),
+        badge: p.authorBadge,
+      });
+    }
+  }
+  return [...count.entries()]
+    .map(([id, postCount]) => ({ id, ...(byMember.get(id) as { name: string; badge: AuthorBadge }), postCount }))
+    .sort((a, b) => b.postCount - a.postCount);
 }
 
 // ------------------------------------------------------------------

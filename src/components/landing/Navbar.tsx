@@ -20,6 +20,7 @@ const NAV_LINKS = [
 
 const MORE_LINKS = [
   { label: "Events", href: "/events" },
+  { label: "Arts & Culture", href: "/culture" },
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/news" },

@@ -48,6 +48,7 @@ export async function fetchPublicEvents(): Promise<Event[]> {
     spots: r.spots,
     spotsLeft: r.spots_left,
     rsvpCount: r.rsvp_count,
+    tags: r.tags ?? [],
   }));
 }
 

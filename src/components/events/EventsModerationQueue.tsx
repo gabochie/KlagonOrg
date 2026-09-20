@@ -133,6 +133,18 @@ export function EventsModerationQueue() {
                     Proposed by <span className="font-bold text-navy">{e.authorName}</span> ·{" "}
                     {new Date(e.createdAt).toLocaleString()}
                   </div>
+                  {e.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {e.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="px-2 py-0.5 rounded-full bg-amber/15 text-navy text-[10px] font-bold uppercase tracking-wide"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   {e.description && (
                     <div className="text-[11px] text-gray mt-1.5 line-clamp-2">{e.description}</div>
                   )}

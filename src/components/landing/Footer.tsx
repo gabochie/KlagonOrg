@@ -8,6 +8,7 @@ const exploreLinks = [
   { label: "Jobs & Opportunities", href: "/jobs" },
   { label: "Visit Klagon", href: "/visit" },
   { label: "Events", href: "/events" },
+  { label: "Arts & Culture", href: "/culture" },
   { label: "News", href: "/news" },
 ];
 

@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { Calendar, Clock, MapPin, Users, Send } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { EVENT_TYPE_LABELS, submitEvent } from "@/lib/events";
+import { EVENT_TYPE_LABELS, EVENT_TAG_OPTIONS, submitEvent } from "@/lib/events";
 import type { EventType } from "@/lib/database.types";
 
 const input =
@@ -18,6 +18,7 @@ export function EventSubmitForm({ onSubmitted }: { onSubmitted?: () => void }) {
   const [location, setLocation] = useState("");
   const [spots, setSpots] = useState("");
   const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -42,6 +43,7 @@ export function EventSubmitForm({ onSubmitted }: { onSubmitted?: () => void }) {
         location: location.trim() || null,
         spots: spots ? Math.max(1, parseInt(spots, 10)) : 0,
         description: description.trim() || null,
+        tags,
       },
       memberId,
     );
@@ -118,6 +120,35 @@ export function EventSubmitForm({ onSubmitted }: { onSubmitted?: () => void }) {
             className={input}
           />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold text-navy mb-1.5">Themes (optional)</label>
+        <div className="flex flex-wrap gap-1.5">
+          {EVENT_TAG_OPTIONS.map((tag) => {
+            const active = tags.includes(tag);
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() =>
+                  setTags((prev) => (active ? prev.filter((t) => t !== tag) : [...prev, tag]))
+                }
+                aria-pressed={active}
+                className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide transition-colors cursor-pointer ${
+                  active
+                    ? "bg-amber text-navy"
+                    : "bg-light border border-border text-gray hover:border-amber"
+                }`}
+              >
+                {tag}
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-[11px] text-gray mt-1.5">
+          Tagging a cultural or music event lets it appear on the Arts &amp; Culture hub.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">

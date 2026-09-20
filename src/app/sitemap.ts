@@ -26,6 +26,7 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/blog", changeFrequency: "daily", priority: 0.9 },
   { path: "/events", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/culture", changeFrequency: "weekly", priority: 0.8 },
   { path: "/learning", changeFrequency: "weekly", priority: 0.9 },
   { path: "/projects", changeFrequency: "weekly", priority: 0.9 },
   { path: "/news", changeFrequency: "daily", priority: 0.8 },

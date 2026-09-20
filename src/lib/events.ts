@@ -10,6 +10,7 @@
 
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import type { Database, EventType, MemberStatus } from "@/lib/database.types";
+import type { Event } from "@/types";
 
 type EventRow = Database["public"]["Tables"]["events"]["Row"];
 
@@ -31,6 +32,12 @@ export const EVENT_STATUS_LABELS: Record<MemberStatus, string> = {
   rejected: "Needs changes",
 };
 
+/** Tickboxes available when proposing an event — horizontal themes. */
+export const EVENT_TAG_OPTIONS = ["cultural", "music", "festival", "heritage"] as const;
+
+/** Culture-hub filter: an event counts as culture when any tag overlaps. */
+export const CULTURE_TAGS = ["cultural", "music", "festival", "heritage"] as const;
+
 export interface EventInput {
   title: string;
   type: EventType;
@@ -39,6 +46,7 @@ export interface EventInput {
   time: string;
   location?: string | null;
   spots?: number;
+  tags?: string[];
 }
 
 export interface EventSubmission {
@@ -55,6 +63,7 @@ export interface EventSubmission {
   published: boolean;
   authorName: string;
   createdAt: string;
+  tags: string[];
 }
 
 export interface ModerateResult {
@@ -78,6 +87,7 @@ function mapEvent(row: EventRow, authorName = "Member"): EventSubmission {
     published: row.published,
     authorName,
     createdAt: row.created_at,
+    tags: row.tags ?? [],
   };
 }
 
@@ -98,6 +108,7 @@ export async function submitEvent(input: EventInput, memberId: string): Promise<
       time: input.time,
       location: input.location?.trim() || null,
       spots: input.spots ?? 0,
+      tags: input.tags ?? [],
       published: false,
       status: "pending",
       created_by: memberId,
@@ -124,6 +135,7 @@ export async function updateMyEvent(
     ...(input.time !== undefined ? { time: input.time } : {}),
     ...(input.location !== undefined ? { location: input.location?.trim() || null } : {}),
     ...(input.spots !== undefined ? { spots: input.spots } : {}),
+    ...(input.tags !== undefined ? { tags: input.tags } : {}),
     ...(input.spots !== undefined || input.date !== undefined
       ? { status: "pending", rejected_reason: null }
       : {}),
@@ -190,4 +202,32 @@ export async function rejectEvent(eventId: string, reason: string): Promise<Mode
   });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
+}
+
+// ------------------------------------------------------------------
+// culture hub
+// ------------------------------------------------------------------
+
+export async function fetchCultureEvents(): Promise<Event[]> {
+  const c = client();
+  if (!c) return [];
+  const { data, error } = await c
+    .from("events_public")
+    .select("*")
+    .overlaps("tags", CULTURE_TAGS as unknown as string[])
+    .gte("date", new Date().toISOString().slice(0, 10))
+    .order("date", { ascending: true });
+  if (error || !data || data.length === 0) return [];
+  return data.map((r) => ({
+    id: r.id,
+    title: r.title,
+    type: r.type,
+    date: r.date,
+    time: r.time,
+    location: r.location ?? "TBD",
+    spots: r.spots,
+    spotsLeft: r.spots_left,
+    rsvpCount: r.rsvp_count,
+    tags: r.tags ?? [],
+  }));
 }

@@ -24,6 +24,7 @@ export interface Event {
   spots: number;
   spotsLeft: number;
   rsvpCount: number;
+  tags?: string[];
 }
 
 export interface Course {

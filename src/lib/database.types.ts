@@ -149,6 +149,7 @@ export interface Database {
           moderated_by: string | null;
           created_by: string | null;
           created_at: string;
+          tags: string[];
         };
         Insert: {
           id?: string;
@@ -164,6 +165,7 @@ export interface Database {
           rejected_reason?: string | null;
           moderated_by?: string | null;
           created_by?: string | null;
+          tags?: string[];
         };
         Update: Partial<Database["public"]["Tables"]["events"]["Insert"]>;
         Relationships: [
@@ -1111,6 +1113,7 @@ export interface Database {
           id: string;
           title: string;
           type: EventType;
+          tags: string[];
           description: string | null;
           date: string;
           time: string;
