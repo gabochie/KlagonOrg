@@ -88,10 +88,6 @@ export default function ForgotPasswordPage() {
           Remembered it?{" "}
           <Link href="/auth/login" className="text-blue font-bold hover:underline">
             Sign in
-          </Link>{" "}
-          ·{" "}
-          <Link href="/admin/login" className="text-amber-strong font-bold hover:underline">
-            Admin
           </Link>
         </p>
         <Link href="/" className="inline-flex items-center gap-1 justify-center w-full text-[11px] text-gray/70 font-semibold hover:text-navy mt-3">
