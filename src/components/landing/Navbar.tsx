@@ -1,42 +1,68 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Events", href: "/events" },
+  { label: "Explore", href: "/map" },
   { label: "Learn", href: "/learning" },
+  { label: "Businesses", href: "/business" },
+  { label: "Jobs", href: "/jobs" },
+  { label: "Classifieds", href: "/classifieds" },
+  { label: "Visit", href: "/visit" },
+];
+
+const MORE_LINKS = [
+  { label: "Events", href: "/events" },
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
-  { label: "Map", href: "/map" },
-  { label: "Businesses", href: "/business" },
-  { label: "Classifieds", href: "/classifieds" },
-  { label: "Jobs", href: "/jobs" },
-  { label: "Visit", href: "/visit" },
   { label: "Community", href: "/news" },
+  { label: "Sponsor", href: "/sponsor" },
+  { label: "Donate", href: "/donate" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { user, profile, loading } = useAuth();
   const closeMenu = () => setOpen(false);
 
-  // Close the mobile menu on Escape.
+  const moreActive = MORE_LINKS.some(
+    (l) => pathname === l.href || pathname.startsWith(`${l.href}/`)
+  );
+
+  // Close the mobile menu / More dropdown on Escape.
   useEffect(() => {
-    if (!open) return;
+    if (!open && !moreOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        setMoreOpen(false);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, moreOpen]);
+
+  // Close the More dropdown on outside click.
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [moreOpen]);
 
   const dashboardHref =
     profile?.role === "admin" || profile?.role === "super_admin"
@@ -73,6 +99,53 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          <div ref={moreRef} className="relative">
+            <button
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-expanded={moreOpen}
+              aria-haspopup="menu"
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer",
+                moreActive
+                  ? "bg-pale text-navy font-bold dark:bg-white/10 dark:text-white"
+                  : "text-gray hover:bg-light hover:text-navy dark:text-white/70 dark:hover:bg-white/8 dark:hover:text-white",
+              )}
+            >
+              More
+              <ChevronDown
+                size={12}
+                className={`transition-transform ${moreOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {moreOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 top-full mt-1 min-w-[190px] bg-white border border-border rounded-xl shadow-lg p-1.5 z-50 dark:bg-ink-2 dark:border-white/10"
+              >
+                {MORE_LINKS.map((link) => {
+                  const active =
+                    pathname === link.href || pathname.startsWith(`${link.href}/`);
+                  return (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      role="menuitem"
+                      onClick={() => setMoreOpen(false)}
+                      className={cn(
+                        "block px-3 py-2 rounded-lg text-xs font-medium transition-colors",
+                        active
+                          ? "bg-pale text-navy font-bold dark:bg-white/10 dark:text-white"
+                          : "text-gray hover:bg-light hover:text-navy dark:text-white/70 dark:hover:bg-white/8 dark:hover:text-white",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -138,6 +211,30 @@ export function Navbar() {
                 </Link>
               );
             })}
+            <div className="mt-3 border-t border-border pt-3 dark:border-white/10">
+              <div className="px-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray dark:text-white/40">
+                More
+              </div>
+              {MORE_LINKS.map((link) => {
+                const active =
+                  pathname === link.href || pathname.startsWith(`${link.href}/`);
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={closeMenu}
+                    className={cn(
+                      "px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                      active
+                        ? "bg-pale text-navy font-bold dark:bg-white/10 dark:text-white"
+                        : "text-gray hover:bg-light hover:text-navy dark:text-white/70 dark:hover:bg-white/8 dark:hover:text-white",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 dark:border-white/10">
               {signedIn ? (
                 <Link href={dashboardHref} onClick={closeMenu}>

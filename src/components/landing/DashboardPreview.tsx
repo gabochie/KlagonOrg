@@ -51,7 +51,7 @@ export function DashboardPreview() {
           they want customers, talent, and a workforce for tomorrow.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb- pretends-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
           <div className="lg:col-span-3">
             <div className="text-xs font-bold text-navy mb-3">For local businesses</div>
             <div className="grid sm:grid-cols-2 gap-3">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import { CommunityCarousel } from "@/components/landing/CommunityCarousel";
 
 export function Hero() {
   return (
@@ -30,13 +31,8 @@ export function Hero() {
               </Link>
             </div>
           </div>
-          <div className="hidden md:block md:justify-self-end">
-            <img
-              src="/brand/youth-hero.png"
-              alt="Klagon community learning and building together"
-              className="w-[440px] h-auto rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-black/40 object-cover"
-              loading="eager"
-            />
+          <div className="w-full max-w-[440px] mx-auto md:mx-0 md:justify-self-end">
+            <CommunityCarousel />
           </div>
         </div>
         <div className="flex gap-8 sm:gap-10 pt-6 border-t border-white/10 flex-wrap mt-10">
