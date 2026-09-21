@@ -18,6 +18,8 @@ import {
   gateClaimBatch,
   dedupeByPhone,
   buildDailyQueue,
+  buildAutoBatch,
+  parseSenderLog,
   pickTemplate,
   pickClaimTemplate,
   buildWaLink,
@@ -200,6 +202,69 @@ export function OutreachQueue() {
     rd.readAsText(f);
   }
 
+  /** Download the pending slot as an auto-batch for the browser extension. */
+  function exportBatch() {
+    if (pending.length === 0) {
+      setNotice("Nothing pending in this slot — nothing to export.");
+      return;
+    }
+    const pickText = (v: GateVerdict) =>
+      mode === "claim" ? pickClaimTemplate(v.area, v.record.company) : pickTemplate(v.area, offer);
+    const batch = buildAutoBatch(pending, pickText, templateName);
+    const blob = new Blob([JSON.stringify(batch, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `klagon-outreach-batch-slot${mySlot + 1}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setNotice(
+      `Exported ${batch.items.length} gated messages. Load the file in the sender extension (tools/wa-auto-sender), then import its sender log here.`
+    );
+  }
+
+  /** Reconcile a sender log exported by the browser extension. */
+  function importSenderLog(f: File | undefined) {
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const entries = parseSenderLog(JSON.parse(String(rd.result ?? "")));
+        if (entries.length === 0) {
+          setNotice("No usable entries in that sender log — did the extension finish a run?");
+          return;
+        }
+        const byId = new Map(myQueue.map((v) => [v.record.id, v]));
+        let applied = 0;
+        let unknown = 0;
+        let previewed = 0;
+        void (async () => {
+          for (const e of entries) {
+            // Dry-run previews stay pending — they cost nothing and sent nothing.
+            if (e.status === "skipped") {
+              previewed++;
+              continue;
+            }
+            const v = byId.get(e.id);
+            if (!v || log[v.record.id]) {
+              unknown++;
+              continue;
+            }
+            await recordOutcome(v, e.status);
+            applied++;
+          }
+          setNotice(
+            `Sender log reconciled: ${applied} outcomes recorded` +
+              `${previewed > 0 ? `, ${previewed} dry-run previews still pending` : ""}` +
+              `${unknown > 0 ? `, ${unknown} already handled or outside this slot` : ""}.`
+          );
+        })();
+      } catch {
+        setNotice("Could not read that sender log — export it again from the extension.");
+      }
+    };
+    rd.readAsText(f);
+  }
+
   return (
     <div className="bg-white rounded-xl border border-border p-4">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
@@ -325,7 +390,28 @@ export function OutreachQueue() {
 
               <div className="text-[11px] text-gray mb-2">
                 Slot #{mySlot + 1}: {doneToday}/{myQueue.length} handled today. Keep to ~20–30 sends/hour,
-                business hours only.
+                business hours only. One sending number: keep the whole day under ~60 sends.
+              </div>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <button
+                  onClick={exportBatch}
+                  disabled={pending.length === 0}
+                  className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold cursor-pointer hover:opacity-90 disabled:opacity-50"
+                >
+                  Export auto-batch ({pending.length})
+                </button>
+                <label className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale">
+                  Import sender log
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    className="hidden"
+                    onChange={(e) => {
+                      importSenderLog(e.target.files?.[0]);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
               </div>
 
               <div className="flex flex-col gap-2 max-h-[420px] overflow-y-auto">

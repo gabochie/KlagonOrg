@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "KLAGON WA Auto-Sender (private staff tool)",
+  "version": "1.0.0",
+  "description": "Hands-free sending of KLAGON outreach batches on WhatsApp Web. Private — never publish to any store.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://web.whatsapp.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "KLAGON WA Auto-Sender"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

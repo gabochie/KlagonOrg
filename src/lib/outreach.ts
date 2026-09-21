@@ -10,6 +10,9 @@
  *              business-hours friendly, round-robin rotation per day.
  *   3. SEND  — zero-cost `wa.me` tap-to-send links. Staff taps Send in the
  *              browser / WhatsApp Business app. No API, no ban wave.
+ *              For hands-free runs, export an auto-batch (step 3b) for the
+ *              private browser extension in tools/wa-auto-sender, then
+ *              import its sender log to reconcile outcomes.
  *   4. CRM   — replies that convert become `lead_captures` rows
  *              (source 'whatsapp-outreach') on the admin side.
  *
@@ -152,6 +155,79 @@ export function pickTemplate(area: OutreachArea, offer: OutreachOffer): string {
 
 export function buildWaLink(waPhone: string, text: string): string {
   return `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`;
+}
+
+// ------------------------------------------------------------------
+// 3b. browser auto-batch (private extension in tools/wa-auto-sender)
+// ------------------------------------------------------------------
+
+export interface AutoBatchItem {
+  /** Source record id — the join key for reconciling the sender log. */
+  id: string;
+  waPhone: string;
+  text: string;
+  company: string;
+}
+
+export interface AutoBatch {
+  version: 1;
+  exportedAt: string;
+  template: string;
+  items: AutoBatchItem[];
+}
+
+export type SenderStatus = "sent" | "failed" | "skipped";
+
+export interface SenderLogEntry {
+  id: string;
+  status: SenderStatus;
+  at: string;
+}
+
+/**
+ * Export gated, sendable verdicts as an auto-batch for the browser
+ * extension. Only verdicts with a waPhone are included — the gate is
+ * the consent boundary, never the extension.
+ */
+export function buildAutoBatch(
+  verdicts: GateVerdict[],
+  pickText: (v: GateVerdict) => string,
+  template: string
+): AutoBatch {
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    template,
+    items: verdicts
+      .filter((v) => v.sendable && v.waPhone)
+      .map((v) => ({
+        id: v.record.id,
+        waPhone: v.waPhone as string,
+        text: pickText(v),
+        company: v.record.company || "",
+      })),
+  };
+}
+
+const SENDER_STATUSES: ReadonlySet<string> = new Set(["sent", "failed", "skipped"]);
+
+/**
+ * Parse + validate a sender log produced by the browser extension.
+ * Malformed entries are dropped, never trusted blindly.
+ */
+export function parseSenderLog(raw: unknown): SenderLogEntry[] {
+  if (!raw || typeof raw !== "object") return [];
+  const items = (raw as { items?: unknown }).items;
+  if (!Array.isArray(items)) return [];
+  const out: SenderLogEntry[] = [];
+  for (const it of items) {
+    if (!it || typeof it !== "object") continue;
+    const { id, status, at } = it as Record<string, unknown>;
+    if (typeof id !== "string" || id.trim() === "") continue;
+    if (typeof status !== "string" || !SENDER_STATUSES.has(status)) continue;
+    out.push({ id, status: status as SenderStatus, at: typeof at === "string" ? at : "" });
+  }
+  return out;
 }
 
 export interface StaffQueue {

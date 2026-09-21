@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body { width: 320px; font: 12px/1.5 system-ui, sans-serif; margin: 0; padding: 12px; color: #1c2b39; }
+    h1 { font-size: 13px; margin: 0 0 8px; }
+    .row { margin: 8px 0; }
+    label { display: block; font-weight: 700; font-size: 11px; margin-bottom: 2px; }
+    input[type="number"] { width: 70px; }
+    input[type="file"] { font-size: 11px; }
+    button { cursor: pointer; border: 0; border-radius: 8px; padding: 7px 10px; font-weight: 700; font-size: 12px; }
+    .primary { background: #0b3d2e; color: #fff; }
+    .ghost { background: #eef2f5; color: #1c2b39; }
+    .danger { background: #fdecec; color: #a00; }
+    .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    #status { background: #f4f7f9; border-radius: 8px; padding: 8px; min-height: 44px; white-space: pre-wrap; }
+    .warn { background: #fff7e6; border-radius: 8px; padding: 8px; }
+    .dryrun { color: #8a5a00; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>KLAGON WA Auto-Sender</h1>
+  <div class="warn">Private staff tool. Sending number: <b>026 870 8895</b> must be logged into WhatsApp Web. Gated/consented batches only.</div>
+  <div class="row">
+    <label>1. Batch file (exported from Outreach Queue)</label>
+    <input type="file" id="batchFile" accept=".json,application/json" />
+  </div>
+  <div class="row">
+    <label>2. Pace (seconds between sends, randomised)</label>
+    min <input type="number" id="minDelay" value="60" min="20" />&nbsp;
+    max <input type="number" id="maxDelay" value="150" min="30" />&nbsp;
+    cap <input type="number" id="maxPerRun" value="60" min="1" max="200" title="max sends this run" />
+  </div>
+  <div class="row">
+    <label><input type="checkbox" id="dryRun" checked /> <span class="dryrun">Dry run (open chats, do NOT send)</span> — leave ON for the first test.</label>
+  </div>
+  <div class="row btns">
+    <button class="primary" id="start">Start run</button>
+    <button class="ghost" id="pause">Pause</button>
+    <button class="ghost" id="resume">Resume</button>
+    <button class="danger" id="stop">Stop</button>
+    <button class="ghost" id="exportLog">Export sender log</button>
+  </div>
+  <div class="row"><div id="status">Idle. Load a batch file to begin.</div></div>
+  <script src="popup.js"></script>
+</body>
+</html>

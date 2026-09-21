@@ -4,11 +4,14 @@ import {
   detectArea,
   gateRecord,
   gateClaimRecord,
+  gateBatch,
   dedupeByPhone,
   buildDailyQueue,
   pickTemplate,
   pickClaimTemplate,
   buildWaLink,
+  buildAutoBatch,
+  parseSenderLog,
   isStopReply,
   parseShopCsv,
   type RawShopRecord,
@@ -121,5 +124,34 @@ describe("outreach kernel", () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].company).toBe("Agenda Concrete (GHANA), Limited");
     expect(rows[0].location).toBe("Community 18, Klagon");
+  });
+
+  it("exports only sendable verdicts as an auto-batch", () => {
+    const verdicts = gateBatch(
+      [shop({ id: "KGB0001" }), shop({ id: "KGB0002", verified_status: "PENDING" })],
+      new Set()
+    );
+    const batch = buildAutoBatch(verdicts, (v) => pickTemplate(v.area, "both"), "both");
+    expect(batch.version).toBe(1);
+    expect(batch.template).toBe("both");
+    expect(batch.items).toHaveLength(1);
+    expect(batch.items[0]).toMatchObject({ id: "KGB0001", waPhone: "233241234567" });
+    expect(batch.items[0].text).toContain("STOP");
+  });
+
+  it("parses sender logs and drops malformed entries", () => {
+    const entries = parseSenderLog({
+      items: [
+        { id: "KGB0001", status: "sent", at: "2026-09-21T10:00:00Z" },
+        { id: "KGB0002", status: "failed", at: "" },
+        { id: "", status: "sent", at: "" },
+        { id: "KGB0003", status: "bogus", at: "" },
+        "not-an-object",
+      ],
+    });
+    expect(entries).toHaveLength(2);
+    expect(entries[0]).toEqual({ id: "KGB0001", status: "sent", at: "2026-09-21T10:00:00Z" });
+    expect(parseSenderLog(null)).toEqual([]);
+    expect(parseSenderLog({})).toEqual([]);
   });
 });
