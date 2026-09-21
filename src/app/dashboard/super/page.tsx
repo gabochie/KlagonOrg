@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RequireSuperAdmin } from "@/components/auth/RequireSuperAdmin";
 import { RoleManager } from "@/components/super/RoleManager";
 import { AuditFeed } from "@/components/super/AuditFeed";
+import { QualityCenter } from "@/components/super/QualityCenter";
 
 export default function SuperDashboard() {
   const today = new Date().toLocaleDateString(undefined, {
@@ -47,6 +48,9 @@ export default function SuperDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 mt-2.5">
         <RoleManager />
         <AuditFeed />
+      </div>
+      <div className="mt-2.5">
+        <QualityCenter />
       </div>
     </RequireSuperAdmin>
   );
