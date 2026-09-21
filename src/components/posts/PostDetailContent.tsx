@@ -15,6 +15,7 @@ import {
   sendContactMessage,
 } from "@/lib/posts";
 import type { Post } from "@/types";
+import { ORG_WA } from "@/lib/wa";
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "";
@@ -96,6 +97,13 @@ export function PostDetailContent({ id }: { id: string }) {
   const shareText = encodeURIComponent(post.title);
 
   const expired = isPostExpired(post);
+
+  const claimable = post.details?.claimable === true;
+  const claimHref = claimable
+    ? `https://wa.me/${ORG_WA}?text=${encodeURIComponent(
+        `Hi KLAGON! I want to claim this property listing: ${post.title} (${post.id})`
+      )}`
+    : null;
 
   const detailEntries = Object.entries(post.details).filter(
     ([, v]) => typeof v === "string" || typeof v === "number"
@@ -326,9 +334,29 @@ export function PostDetailContent({ id }: { id: string }) {
             </div>
           )}
 
+          {claimable && claimHref && (
+            <div className="bg-amber/10 border border-amber/30 rounded-xl p-5 mb-8">
+              <div className="text-xs font-extrabold text-navy mb-1">
+                Is this your listing?
+              </div>
+              <p className="text-xs text-gray leading-relaxed mb-3">
+                This property was spotted on a public marketplace and posted here unclaimed
+                so Klagon finds it first. If you are the agent or owner, claim it free —
+                we verify on WhatsApp and hand the listing over to you.
+              </p>
+              <a
+                href={claimHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors"
+              >
+                Claim this listing on WhatsApp
+              </a>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center gap-2 mb-8">
-            <span className="text-[11px] font-bold text-gray mr-1">Share:</span>
-            <a
+            <span className="text-[11px] font-bold text-gray mr-1">Share:</span>            <a
               href={`https://wa.me/?text=${shareText}%20${encodeURIComponent(pageUrl)}`}
               target="_blank"
               rel="noreferrer"
