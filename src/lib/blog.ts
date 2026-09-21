@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export interface BlogFaqItem {
   q: string;
@@ -54,7 +55,7 @@ marked.setOptions({
 function renderHtml(markdown: string): string {
   const raw = marked.parse(markdown, { async: false }) as string;
   const body = raw.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>\s*/, "");
-  return body
+  const styled = body
     .replace(/<h2 /g, '<h2 class="blog-h2" ')
     .replace(/<h3 /g, '<h3 class="blog-h3" ')
     .replace(/<p>/g, '<p class="blog-p">')
@@ -65,6 +66,7 @@ function renderHtml(markdown: string): string {
     .replace(/<blockquote>/g, '<blockquote class="blog-quote">')
     .replace(/<table>/g, '<table class="blog-table">')
     .replace(/<strong>/g, "<strong class=\"blog-strong\">");
+  return sanitizeHtml(styled);
 }
 
 function readMarkdownFile(filePath: string): BlogPost {

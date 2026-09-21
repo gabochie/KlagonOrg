@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { marked } from "marked";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { fetchMyLessonProgress } from "@/lib/queries";
@@ -36,7 +37,8 @@ function youtubeId(url: string): string | null {
 marked.setOptions({ gfm: true, breaks: false });
 
 function renderLessonMarkdown(markdown: string): string {
-  return (marked.parse(markdown, { async: false }) as string)
+  return sanitizeHtml(
+    (marked.parse(markdown, { async: false }) as string)
     .replace(/<h2 /g, '<h2 class="blog-h2" ')
     .replace(/<h3 /g, '<h3 class="blog-h3" ')
     .replace(/<p>/g, '<p class="blog-p">')
@@ -46,7 +48,8 @@ function renderLessonMarkdown(markdown: string): string {
     .replace(/<a /g, '<a class="blog-link" ')
     .replace(/<blockquote>/g, '<blockquote class="blog-quote">')
     .replace(/<table>/g, '<table class="blog-table">')
-    .replace(/<strong>/g, "<strong class=\"blog-strong\">");
+    .replace(/<strong>/g, "<strong class=\"blog-strong\">")
+  );
 }
 
 export function CourseViewer({
