@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
         "This account is not an administrator. Admin access requires the admin role — if you're a member, use the member portal instead.",
       );
     }
-    router.replace("/dashboard/admin");
+    router.replace(role === "super_admin" ? "/dashboard/super" : "/dashboard/admin");
   };
 
   return (
