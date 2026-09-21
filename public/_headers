@@ -2,14 +2,15 @@
 # Next.js copies public/_headers into the static export. If the host does
 # not support this file, set the same headers in the host dashboard.
 #
-# CSP notes: scripts are locked to 'self' (theme bootstrap lives in
-# /theme-init.js precisely so no inline script is needed). JSON-LD blocks
-# are exempt (non-executable script types). Styles allow 'unsafe-inline'
-# for framework-injected styles + Google Fonts used by /ops/kocc.html.
+# CSP notes: Next.js static export inlines its flight-data scripts, so
+# script-src must allow 'unsafe-inline' (no nonces in static hosting).
+# XSS backstop is DOMPurify on all innerHTML sinks (see src/lib/sanitize).
+# JSON-LD blocks are exempt (non-executable script types). Styles allow
+# 'unsafe-inline' for framework-injected styles + Google Fonts for kocc.
 
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), geolocation=(), microphone=(self)
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://klagon-sales-agent.gideonabochie.workers.dev; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://klagon-sales-agent.gideonabochie.workers.dev; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
