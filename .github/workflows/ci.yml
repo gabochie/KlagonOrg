@@ -1,0 +1,38 @@
+# KLAGON quality gates — typecheck, lint, unit tests, production build.
+# Runs on every push to main and every pull request. Fails fast in order:
+# nothing lints, tests, or ships if the types don't even check.
+#
+# Zero secrets required. The supabase-migrate workflow stays separate
+# (it only touches the database when migration files change).
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Production build
+        run: npm run build
