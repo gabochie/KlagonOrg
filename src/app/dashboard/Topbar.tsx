@@ -9,7 +9,8 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 export function Topbar() {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
-  const isAdmin = pathname.includes("/admin");
+  const isSuper = pathname.startsWith("/dashboard/super");
+  const isAdmin = pathname.includes("/admin") || isSuper;
   const isMemberArea = isAdmin || pathname.includes("/dashboard");
 
   const firstName = profile?.full_name.trim().split(/\s+/)[0] ?? "";
@@ -36,7 +37,7 @@ export function Topbar() {
         </Link>
         {isAdmin && (
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber/15 text-amber border border-amber/25 tracking-wide">
-            ADMIN
+            {isSuper ? "SUPER" : "ADMIN"}
           </span>
         )}
         {isMemberArea && !isAdmin && profile && (

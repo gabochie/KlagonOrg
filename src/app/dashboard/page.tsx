@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export default function DashboardPage() {
-  const { loading, user, isAdmin } = useAuth();
+  const { loading, user, isAdmin, isSuperAdmin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,8 +14,8 @@ export default function DashboardPage() {
       router.replace("/auth/login");
       return;
     }
-    router.replace(isAdmin ? "/dashboard/admin" : "/dashboard/member");
-  }, [loading, user, isAdmin, router]);
+    router.replace(isSuperAdmin ? "/dashboard/super" : isAdmin ? "/dashboard/admin" : "/dashboard/member");
+  }, [loading, user, isAdmin, isSuperAdmin, router]);
 
   return (
     <div className="h-full flex items-center justify-center">

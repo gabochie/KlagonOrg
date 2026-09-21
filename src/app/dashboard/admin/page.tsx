@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { RequireAdmin } from "@/components/auth/RequireAdmin";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { MetricCards } from "@/components/admin/MetricCards";
 import { BarChart } from "@/components/admin/BarChart";
 import { DonutChart } from "@/components/admin/DonutChart";
@@ -18,6 +20,7 @@ import { ModerationQueue } from "@/components/admin/ModerationQueue";
 import { OutreachQueue } from "@/components/admin/OutreachQueue";
 
 export default function AdminDashboard() {
+  const { isSuperAdmin } = useAuth();
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
     day: "numeric",
@@ -35,6 +38,14 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div className="flex gap-2">
+          {isSuperAdmin && (
+            <Link
+              href="/dashboard/super"
+              className="px-3 py-1.5 rounded-lg bg-navy text-white text-xs font-bold hover:opacity-90 transition-opacity"
+            >
+              Super Admin →
+            </Link>
+          )}
           <button className="px-3 py-1.5 rounded-lg bg-white text-navy border border-border text-xs font-semibold cursor-pointer font-sans hover:bg-light transition-colors">
             Export Report
           </button>

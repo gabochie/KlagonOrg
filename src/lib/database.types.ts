@@ -1249,6 +1249,17 @@ export interface Database {
         };
         Returns: undefined;
       };
+      is_klagon_super_admin: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      set_member_role: {
+        Args: {
+          p_user_id: string;
+          p_role: UserRole;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: UserRole;

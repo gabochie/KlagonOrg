@@ -28,7 +28,8 @@ export default function LoginPage() {
     setBusy(false);
     if (err) return setError(err);
     const role = profile?.role;
-    if (role === "admin" || role === "super_admin") return router.push("/dashboard/admin");
+    if (role === "super_admin") return router.push("/dashboard/super");
+    if (role === "admin") return router.push("/dashboard/admin");
     return router.push("/dashboard/member");
   };
 

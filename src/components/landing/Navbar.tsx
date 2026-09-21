@@ -66,9 +66,11 @@ export function Navbar() {
   }, [moreOpen]);
 
   const dashboardHref =
-    profile?.role === "admin" || profile?.role === "super_admin"
-      ? "/dashboard/admin"
-      : "/dashboard/member";
+    profile?.role === "super_admin"
+      ? "/dashboard/super"
+      : profile?.role === "admin"
+        ? "/dashboard/admin"
+        : "/dashboard/member";
 
   const signedIn = !loading && Boolean(user);
 

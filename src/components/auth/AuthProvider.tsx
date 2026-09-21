@@ -49,6 +49,7 @@ interface AuthContextValue {
   role: UserRole | "anonymous";
   status: MemberStatus | "none";
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   isApproved: boolean;
   signIn: (
     email: string,
@@ -244,6 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role,
       status,
       isAdmin: role === "admin" || role === "super_admin",
+      isSuperAdmin: role === "super_admin",
       isApproved: status === "approved",
       signIn,
       signUp,

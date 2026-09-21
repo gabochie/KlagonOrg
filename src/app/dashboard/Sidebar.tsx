@@ -125,7 +125,7 @@ function initialsOf(name: string): string {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { profile, isAdmin } = useAuth();
+  const { profile, isAdmin, isSuperAdmin } = useAuth();
   const [upcomingCount, setUpcomingCount] = useState(0);
 
   useEffect(() => {
@@ -141,8 +141,12 @@ export function Sidebar() {
     })();
   }, [profile, isAdmin]);
 
-  const isAdminRoute = pathname.includes("/admin");
+  const isAdminRoute = pathname.includes("/admin") || pathname.startsWith("/dashboard/super");
   const showAdminMenu = isAdminRoute && isAdmin;
+
+  const superItem: NavItem[] = isSuperAdmin
+    ? [{ icon: "👑", label: "Super Admin", href: "/dashboard/super" }]
+    : [];
 
   const withBadges = (items: NavItem[]): NavItem[] =>
     items.map((item) => {
@@ -154,7 +158,7 @@ export function Sidebar() {
 
   const navItems = showAdminMenu
     ? [
-        { title: "Main", items: withBadges(adminMain) },
+        { title: "Main", items: [...superItem, ...withBadges(adminMain)] },
         { title: "Engagement", items: adminEngagement },
         { title: "Operations", items: adminOps },
       ]
@@ -173,7 +177,7 @@ export function Sidebar() {
         year: "numeric",
       })
     : "";
-  const roleLabel = "Admin";
+  const roleLabel = profile?.role === "super_admin" ? "Super Admin" : "Admin";
 
   return (
     <aside className="bg-white border-r border-border overflow-y-auto flex flex-col">
