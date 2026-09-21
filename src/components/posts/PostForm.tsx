@@ -12,6 +12,7 @@ import {
   type Vertical,
 } from "@/lib/posts";
 import { uploadPostMedia, validateImage } from "@/lib/storage";
+import { MAX_GALLERY, MAX_IMAGES_TOTAL } from "@/lib/postClaims";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import type { PostArea, PostInput, PostStatus, PostType } from "@/types";
@@ -63,6 +64,8 @@ export function PostForm({ editId }: { editId?: string | null }) {
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [existingCover, setExistingCover] = useState<string | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<{ file: File; preview: string }[]>([]);
+  const [existingGallery, setExistingGallery] = useState<string[]>([]);
 
   const [token, setToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -91,6 +94,7 @@ export function PostForm({ editId }: { editId?: string | null }) {
       setEventTime(p.eventTime ?? "");
       setEventLocation(p.eventLocation ?? "");
       setExistingCover(p.coverUrl);
+      setExistingGallery((p.gallery ?? []).slice(0, 2));
       setLoadedStatus(p.status);
       setStep("edit");
       setLoaded(true);
@@ -109,6 +113,37 @@ export function PostForm({ editId }: { editId?: string | null }) {
     setCoverPreview(f ? URL.createObjectURL(f) : null);
   };
 
+  /** Extra photos: cover counts as one — 3 images total, so at most 2 here. */
+  const gallerySlotsLeft = MAX_GALLERY - (existingGallery.length + galleryFiles.length);
+
+  const handleGallery = (files: FileList | null) => {
+    if (!files) return;
+    const room = Math.max(0, MAX_GALLERY - (existingGallery.length + galleryFiles.length));
+    const accepted = [...files].slice(0, room);
+    const bad = accepted.map(validateImage).find(Boolean);
+    if (bad) {
+      setError(bad);
+      return;
+    }
+    if (files.length > room) {
+      setError(`Only ${MAX_IMAGES_TOTAL} photos total — keeping the first ${room} of these.`);
+    }
+    setGalleryFiles((prev) =>
+      [...prev, ...accepted.map((file) => ({ file, preview: URL.createObjectURL(file) }))].slice(
+        0,
+        Math.max(0, MAX_GALLERY - existingGallery.length)
+      )
+    );
+  };
+
+  const removeGalleryFile = (preview: string) => {
+    setGalleryFiles((prev) => {
+      const target = prev.find((g) => g.preview === preview);
+      if (target) URL.revokeObjectURL(target.preview);
+      return prev.filter((g) => g.preview !== preview);
+    });
+  };
+
   const validate = (): string | null => {
     if (!title.trim()) return "Please add a title.";
     if (!actualCategory) return "Please choose a category.";
@@ -120,6 +155,13 @@ export function PostForm({ editId }: { editId?: string | null }) {
     }
     if (type === "event" && !eventDate) return "Add the event date.";
     if (cover && validateImage(cover)) return validateImage(cover);
+    for (const f of galleryFiles) {
+      const bad = validateImage(f.file);
+      if (bad) return bad;
+    }
+    if (existingGallery.length + galleryFiles.length > MAX_GALLERY) {
+      return `Only ${MAX_IMAGES_TOTAL} photos total — remove some extra photos.`;
+    }
     return null;
   };
 
@@ -138,6 +180,12 @@ export function PostForm({ editId }: { editId?: string | null }) {
         if (!up.ok) return setError(up.error);
         coverUrl = up.url;
       }
+      const galleryUrls: string[] = [...existingGallery];
+      for (const g of galleryFiles.slice(0, Math.max(0, MAX_GALLERY - galleryUrls.length))) {
+        const up = await uploadPostMedia(g.file, user?.id ?? "");
+        if (!up.ok) return setError(up.error);
+        galleryUrls.push(up.url);
+      }
       const input: PostInput = {
         type,
         title: title.trim(),
@@ -148,7 +196,7 @@ export function PostForm({ editId }: { editId?: string | null }) {
         details,
         area,
         cover_url: coverUrl,
-        gallery: undefined,
+        gallery: galleryUrls,
         price_ghs: price ? Number(price) : null,
         contact_phone: phone.trim() || profile?.phone || null,
         contact_email: email.trim() || user?.email || null,
@@ -543,6 +591,65 @@ export function PostForm({ editId }: { editId?: string | null }) {
                 />
               </label>
               <p className="text-[11px] text-gray/70">JPG, PNG, WEBP or GIF · max 5 MB</p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className={labelCls}>
+                More photos ({existingGallery.length + galleryFiles.length}/{MAX_GALLERY} extra ·{" "}
+                {MAX_IMAGES_TOTAL} total max)
+              </label>
+              {(existingGallery.length > 0 || galleryFiles.length > 0) && (
+                <div className="grid grid-cols-3 gap-2">
+                  {existingGallery.map((src) => (
+                    <div key={src} className="relative rounded-xl overflow-hidden border border-border">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt="" className="w-full h-20 object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setExistingGallery((prev) => prev.filter((u) => u !== src))}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-navy/80 text-white text-[10px] font-bold cursor-pointer"
+                        aria-label="Remove photo"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  {galleryFiles.map((g) => (
+                    <div key={g.preview} className="relative rounded-xl overflow-hidden border border-border">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={g.preview} alt="" className="w-full h-20 object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryFile(g.preview)}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-navy/80 text-white text-[10px] font-bold cursor-pointer"
+                        aria-label="Remove photo"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {gallerySlotsLeft > 0 ? (
+                <label className="flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-border text-xs font-semibold text-gray hover:border-navy hover:text-navy cursor-pointer transition-colors">
+                  <UploadCloud size={14} />
+                  Add {gallerySlotsLeft} more photo{gallerySlotsLeft === 1 ? "" : "s"}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      handleGallery(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              ) : (
+                <p className="text-[11px] text-gray/70">
+                  Photo limit reached ({MAX_IMAGES_TOTAL} total) — remove one to add another.
+                </p>
+              )}
             </div>
 
             {error && <p className="text-xs text-red font-semibold">{error}</p>}

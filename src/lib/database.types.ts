@@ -790,6 +790,39 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["qa_signoffs"]["Insert"]>;
         Relationships: [];
       };
+      post_claims: {
+        Row: {
+          id: number;
+          post_id: string;
+          claimant_id: string;
+          phone: string;
+          note: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          post_id: string;
+          claimant_id: string;
+          phone: string;
+          note?: string | null;
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["post_claims"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "post_claims_post_id_fkey";
+            columns: ["post_id"];
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "post_claims_claimant_id_fkey";
+            columns: ["claimant_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       ops_kocc_snapshots: {
         Row: { owner: string; days: number | null; payload: Json; updated_at: string };
         Insert: {

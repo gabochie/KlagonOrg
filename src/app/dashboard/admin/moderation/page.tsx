@@ -2,6 +2,7 @@
 
 import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { ModerationQueue } from "@/components/posts/ModerationQueue";
+import { PostClaimsQueue } from "@/components/posts/PostClaimsQueue";
 
 export default function AdminModerationPage() {
   return (
@@ -15,6 +16,7 @@ export default function AdminModerationPage() {
         </div>
       </div>
       <ModerationQueue />
+      <PostClaimsQueue />
     </RequireAdmin>
   );
 }

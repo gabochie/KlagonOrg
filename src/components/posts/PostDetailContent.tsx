@@ -16,6 +16,11 @@ import {
 } from "@/lib/posts";
 import type { Post } from "@/types";
 import { ORG_WA } from "@/lib/wa";
+import {
+  filePostClaim,
+  fetchMyPostClaim,
+  type PostClaim,
+} from "@/lib/postClaims";
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "";
@@ -49,12 +54,19 @@ export function PostDetailContent({ id }: { id: string }) {
   const [msgState, setMsgState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msgError, setMsgError] = useState("");
 
+  const [claimPhone, setClaimPhone] = useState("");
+  const [claimNote, setClaimNote] = useState("");
+  const [claimState, setClaimState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [claimMsg, setClaimMsg] = useState("");
+  const [myClaim, setMyClaim] = useState<PostClaim | null>(null);
+
   useEffect(() => {
     let active = true;
     void (async () => {
       const data = await fetchPostById(id);
       if (!active) return;
       setPost(data);
+      setMyClaim(null);
       setLoading(false);
       if (data && data.status === "approved") {
         void recordPostView(id);
@@ -66,6 +78,19 @@ export function PostDetailContent({ id }: { id: string }) {
       active = false;
     };
   }, [id]);
+
+  useEffect(() => {
+    if (!post || post.details?.claimable !== true || !user) {
+      return;
+    }
+    let active = true;
+    void fetchMyPostClaim(post.id, user.id).then((c) => {
+      if (active) setMyClaim(c);
+    });
+    return () => {
+      active = false;
+    };
+  }, [post, user]);
 
   if (loading) {
     return (
@@ -99,6 +124,9 @@ export function PostDetailContent({ id }: { id: string }) {
   const expired = isPostExpired(post);
 
   const claimable = post.details?.claimable === true;
+  const images = [post.coverUrl, ...post.gallery]
+    .filter((u): u is string => typeof u === "string" && u.length > 0)
+    .slice(0, 3);
   const claimHref = claimable
     ? `https://wa.me/${ORG_WA}?text=${encodeURIComponent(
         `Hi KLAGON! I want to claim this property listing: ${post.title} (${post.id})`
@@ -137,8 +165,27 @@ export function PostDetailContent({ id }: { id: string }) {
     }
   };
 
-  const onCopy = async () => {
-    try {
+  const onClaim = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user || !post || !claimPhone.trim()) return;
+    setClaimState("sending");
+    setClaimMsg("");
+    const res = await filePostClaim({
+      postId: post.id,
+      claimantId: user.id,
+      phone: claimPhone.trim(),
+      note: claimNote.trim(),
+    });
+    if (res.ok) {
+      setClaimState("done");
+      setMyClaim(await fetchMyPostClaim(post.id, user.id));
+    } else {
+      setClaimState("error");
+      setClaimMsg(res.error ?? "Could not file your claim.");
+    }
+  };
+
+  const onCopy = async () => {    try {
       await navigator.clipboard.writeText(pageUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -221,13 +268,26 @@ export function PostDetailContent({ id }: { id: string }) {
               </div>
             </div>
           )}
-          {post.coverUrl && (
+          {images.length > 0 && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={post.coverUrl}
+              src={images[0]}
               alt={post.title}
               className="w-full max-h-96 object-cover rounded-xl border border-border mb-8"
             />
+          )}
+          {images.length > 1 && (
+            <div className="grid grid-cols-2 gap-2 mb-8 -mt-6">
+              {images.slice(1).map((src) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={src}
+                  src={src}
+                  alt={post.title}
+                  className="w-full h-40 sm:h-48 object-cover rounded-xl border border-border"
+                />
+              ))}
+            </div>
           )}
 
           {post.type === "event" && (post.eventDate || post.eventLocation) && (
@@ -342,16 +402,63 @@ export function PostDetailContent({ id }: { id: string }) {
               <p className="text-xs text-gray leading-relaxed mb-3">
                 This property was spotted on a public marketplace and posted here unclaimed
                 so Klagon finds it first. If you are the agent or owner, claim it free —
-                we verify on WhatsApp and hand the listing over to you.
+                use the number from your original advert so we can verify you on WhatsApp,
+                then the listing (and its enquiries) becomes yours.
               </p>
-              <a
-                href={claimHref}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors"
-              >
-                Claim this listing on WhatsApp
-              </a>
+              {claimState === "done" || myClaim?.status === "pending" ? (
+                <div className="text-xs font-bold text-emerald-700 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5">
+                  Claim under review — we verify on WhatsApp, usually within 24 hours.
+                </div>
+              ) : myClaim?.status === "approved" ? (
+                <div className="text-xs font-bold text-emerald-700 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5">
+                  This listing is yours — manage it from My Posts.
+                </div>
+              ) : user ? (
+                <form onSubmit={(e) => void onClaim(e)} className="space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input
+                      value={claimPhone}
+                      onChange={(e) => setClaimPhone(e.target.value)}
+                      placeholder="Your advert number (e.g. 024…)"
+                      inputMode="tel"
+                      className="px-3 py-2 rounded-xl bg-white border border-border text-xs text-navy placeholder:text-gray/60 focus:outline-none focus:border-navy"
+                    />
+                    <input
+                      value={claimNote}
+                      onChange={(e) => setClaimNote(e.target.value)}
+                      placeholder="Agency or name (optional)"
+                      className="px-3 py-2 rounded-xl bg-white border border-border text-xs text-navy placeholder:text-gray/60 focus:outline-none focus:border-navy"
+                    />
+                  </div>
+                  {claimState === "error" && (
+                    <div className="text-[11px] font-bold text-red-700">{claimMsg}</div>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={claimState === "sending" || !claimPhone.trim()}
+                    className="px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {claimState === "sending" ? "Filing…" : "Claim this listing"}
+                  </button>
+                </form>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/auth/register"
+                    className="px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors"
+                  >
+                    Join free to claim
+                  </Link>
+                  <a
+                    href={claimHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 rounded-xl bg-white border border-border text-navy text-xs font-bold hover:border-navy transition-colors"
+                  >
+                    Claim on WhatsApp
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
