@@ -205,7 +205,7 @@ export async function rejectEvent(eventId: string, reason: string): Promise<Mode
 }
 
 // ------------------------------------------------------------------
-// culture hub
+// The Culture Hub
 // ------------------------------------------------------------------
 
 export async function fetchCultureEvents(limit = 30): Promise<Event[]> {

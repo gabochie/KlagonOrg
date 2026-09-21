@@ -70,7 +70,7 @@ export const CATEGORY_SEEDS: Record<PostType, string[]> = {
   announcement: ["General", "Safety", "Utilities", "Community"],
 };
 
-/** News categories that make up the Arts & Culture hub feed. */
+/** News categories that make up The Culture Hub feed. */
 export const CULTURE_CATEGORIES = ["Arts & Music", "Chieftaincy & Culture"] as const;
 
 export const PROPERTY_SUBCATEGORIES = [
@@ -236,7 +236,7 @@ export async function fetchPostById(id: string): Promise<Post | null> {
   return mapPost(data);
 }
 
-/** Approved news posts within the culture categories (culture hub feed). */
+/** Approved news posts within the culture categories (The Culture Hub feed). */
 export async function fetchCulturePosts(limit = 20): Promise<Post[]> {
   const c = client();
   if (!c) return [];
