@@ -4,6 +4,7 @@
 // layout: navy hero + light body holding the interactive map.
 
 import { MapExplorer } from "@/components/map/MapExplorer";
+import { MapDirectory } from "@/components/map/MapDirectory";
 import { ORG_WA, ORG_PHONE_DISPLAY, waLink } from "@/lib/directoryClaims";
 
 export function MapSection() {
@@ -28,6 +29,7 @@ export function MapSection() {
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <MapExplorer />
+          <MapDirectory />
           <p className="mt-4 text-center text-xs font-medium text-gray">
             Missing a place, or want to report a community need?{" "}
             <a

@@ -7,6 +7,8 @@
 # XSS backstop is DOMPurify on all innerHTML sinks (see src/lib/sanitize).
 # JSON-LD blocks are exempt (non-executable script types). Styles allow
 # 'unsafe-inline' for framework-injected styles + Google Fonts for kocc.
+# tiles.openfreemap.org serves the vector basemap (style JSON, glyphs,
+# sprites, tiles) — blocking it blanks the /map basemap.
 
 /*
   X-Frame-Options: SAMEORIGIN
