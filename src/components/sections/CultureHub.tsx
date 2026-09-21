@@ -29,7 +29,7 @@ const places = [
   {
     icon: BookOpen,
     title: "Heritage & community walks",
-    body: "The Homowo Edition, Klagon by Night and more — guided walks narrated by the community.",
+    body: "Seasonal festival editions, Klagon by Night and more — guided walks narrated by the community.",
     href: "/visit/walk",
     cta: "See the walks",
   },
@@ -39,6 +39,61 @@ const places = [
     body: "Ongoing stories and features from Chieftaincy & Culture and Arts & Music.",
     href: "/news",
     cta: "Read the news",
+  },
+];
+
+/**
+ * Ghana's major home festivals, per the National Commission on Culture.
+ * Many Klagon residents travel home for these — and celebrate them here too.
+ */
+const festivals = [
+  {
+    name: "Homowo",
+    people: "Ga",
+    when: "Aug – Sep",
+    note: "Harvest festival; kpokpoi sharing to hoot at hunger.",
+  },
+  {
+    name: "Asafotufiami",
+    people: "Ada (Dangme)",
+    when: "First week of Aug",
+    note: "Warrior durbar; musketry honours the founders of Ada.",
+  },
+  {
+    name: "Ngmayem",
+    people: "Manya Krobo (Dangme)",
+    when: "Oct – Nov",
+    note: "Millet harvest feast of the Krobo.",
+  },
+  {
+    name: "Hogbetsotso",
+    people: "Anlo Ewe",
+    when: "First Sat of Nov",
+    note: "The exodus from Notsie, re-enacted at Anloga.",
+  },
+  {
+    name: "Damba",
+    people: "Dagomba · Mamprusi · Gonja",
+    when: "Lunar month of Damba",
+    note: "Durbar, horse procession and smock showcase.",
+  },
+  {
+    name: "Adae Kese",
+    people: "Asante (Akan)",
+    when: "Culmination of the Adae cycle",
+    note: "The big Adae; Golden Stool rites at Manhyia.",
+  },
+  {
+    name: "Fetu Afahye",
+    people: "Oguaa Fante",
+    when: "First Sat of Sep",
+    note: "Cape Coast grand durbar; thanks for the harvest.",
+  },
+  {
+    name: "Bakatue",
+    people: "Elmina Fante",
+    when: "First Tue of Jul",
+    note: "Opening of the fishing season on the coast.",
   },
 ];
 
@@ -134,8 +189,10 @@ export function CultureHub() {
             The sounds, stages and stories of Klagon.
           </h1>
           <p className="text-white/60 text-sm max-w-2xl mx-auto">
-            Festivals, performances, music and heritage — one home on klagon.org. Follow what&apos;s on,
-            read the stories behind it, and put your own event or feature on the calendar.
+            Klagon stands on Ga-Dangme land — and its streets carry the cultures of every Ghanaian
+            people who call it home: Ewe, Akan, Mole-Dagbani and all. From Homowo to Hogbetsotso,
+            Damba to Adae Kese — follow what&apos;s on, read the stories behind it, and put your own
+            event or feature on the calendar.
           </p>
         </div>
       </section>
@@ -396,6 +453,29 @@ export function CultureHub() {
                   </div>
                 </div>
               )}
+
+              <div className="mb-12">
+                <div className="mb-5">
+                  <h2 className="text-lg font-extrabold text-navy tracking-tight">
+                    Ghana&apos;s festival year, at home in Klagon
+                  </h2>
+                  <p className="text-xs text-gray mt-0.5">
+                    Dates follow traditional calendars; custodians announce exact days each season.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {festivals.map((f) => (
+                    <div key={f.name} className="bg-white rounded-xl border border-border p-4">
+                      <div className="text-sm font-extrabold text-navy">{f.name}</div>
+                      <div className="text-[11px] font-bold text-amber-strong uppercase tracking-wide mt-0.5">
+                        {f.people}
+                      </div>
+                      <div className="text-[11px] text-gray mt-1">{f.when}</div>
+                      <p className="text-xs text-gray leading-relaxed mt-1.5">{f.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="grid sm:grid-cols-3 gap-4 mb-12">
                 {places.map((p) => (
