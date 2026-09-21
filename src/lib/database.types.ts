@@ -773,6 +773,23 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["outreach_suppressions"]["Insert"]>;
         Relationships: [];
       };
+      qa_signoffs: {
+        Row: {
+          area_id: string;
+          check_index: number;
+          checked: boolean;
+          checked_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          area_id: string;
+          check_index: number;
+          checked?: boolean;
+          checked_by?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["qa_signoffs"]["Insert"]>;
+        Relationships: [];
+      };
       ops_kocc_snapshots: {
         Row: { owner: string; days: number | null; payload: Json; updated_at: string };
         Insert: {
