@@ -28,6 +28,7 @@ const RUNBOOK = [
   { cmd: "npm run typecheck", what: "Types must pass before anything else." },
   { cmd: "npm run lint", what: "0 errors (warnings stay pre-existing only)." },
   { cmd: "npx vitest run", what: "All unit kernels green." },
+  { cmd: "npm run test:e2e", what: "Guards + hub flows green in a real browser." },
   { cmd: "npm run build", what: "923+ pages prerender; new routes listed." },
   { cmd: "SQL probes", what: "Role/RPC negative tests in the SQL Editor (see Roles area)." },
 ];

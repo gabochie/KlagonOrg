@@ -1,20 +1,29 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading, profile } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Staff routes bounce to the staff login; everything else to member login.
+  const loginHref =
+    pathname.startsWith("/dashboard/admin") ||
+    pathname.startsWith("/dashboard/super") ||
+    pathname.startsWith("/admin/")
+      ? "/admin/login"
+      : "/auth/login";
 
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      router.replace("/auth/login");
+      router.replace(loginHref);
       return;
     }
-  }, [loading, user, router]);
+  }, [loading, user, router, loginHref]);
 
   if (loading || !user) {
     return (
