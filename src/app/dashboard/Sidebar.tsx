@@ -36,7 +36,6 @@ const memberAccount: NavItem[] = [
 
 const adminMain: NavItem[] = [
   { icon: "📊", label: "Dashboard", href: "/dashboard/admin" },
-  { icon: "📡", label: "Command Center", href: "/dashboard/admin/ops" },
   { icon: "🛂", label: "Moderation", href: "/dashboard/admin/moderation" },
   { icon: "👥", label: "Members", href: SOON, soon: true },
   { icon: "📅", label: "Events", href: "/dashboard/admin/events" },
@@ -144,8 +143,11 @@ export function Sidebar() {
   const isAdminRoute = pathname.includes("/admin") || pathname.startsWith("/dashboard/super");
   const showAdminMenu = isAdminRoute && isAdmin;
 
-  const superItem: NavItem[] = isSuperAdmin
-    ? [{ icon: "👑", label: "Super Admin", href: "/dashboard/super" }]
+  const superMenu: NavItem[] = isSuperAdmin
+    ? [
+        { icon: "👑", label: "Super Admin", href: "/dashboard/super" },
+        { icon: "📡", label: "Command Center", href: "/dashboard/super/command" },
+      ]
     : [];
 
   const withBadges = (items: NavItem[]): NavItem[] =>
@@ -158,7 +160,10 @@ export function Sidebar() {
 
   const navItems = showAdminMenu
     ? [
-        { title: "Main", items: [...superItem, ...withBadges(adminMain)] },
+        ...(superMenu.length > 0
+          ? [{ title: "Platform", items: superMenu }]
+          : []),
+        { title: "Main", items: withBadges(adminMain) },
         { title: "Engagement", items: adminEngagement },
         { title: "Operations", items: adminOps },
       ]

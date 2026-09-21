@@ -24,6 +24,12 @@ export default function SuperDashboard() {
         </div>
         <div className="flex gap-2">
           <Link
+            href="/dashboard/super/command"
+            className="px-3 py-1.5 rounded-lg bg-navy text-white text-xs font-bold hover:opacity-90 transition-opacity"
+          >
+            📡 Command Center
+          </Link>
+          <Link
             href="/dashboard/admin"
             className="px-3 py-1.5 rounded-lg bg-white text-navy border border-border text-xs font-semibold hover:bg-light transition-colors"
           >

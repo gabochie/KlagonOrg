@@ -20,11 +20,20 @@ interface KoContext {
   anonKey: string | undefined;
   userId: string | null;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
+  role: string;
   configured: boolean;
 }
 
-export function OpsCommandCenter() {
-  const { user, isAdmin } = useAuth();
+export type CommandStatus =
+  | { kind: "ready" }
+  | { kind: "saving" }
+  | { kind: "saved"; at: string }
+  | { kind: "load-error"; message: string }
+  | { kind: "save-error"; message: string };
+
+export function OpsCommandCenter({ onStatus }: { onStatus?: (s: CommandStatus) => void }) {
+  const { user, isAdmin, isSuperAdmin, role } = useAuth();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const ctxRef = useRef<KoContext | null>(null);
 
@@ -36,9 +45,11 @@ export function OpsCommandCenter() {
       anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       userId: user?.id ?? null,
       isAdmin,
+      isSuperAdmin,
+      role,
       configured: isSupabaseConfigured(),
     };
-  }, [user, isAdmin]);
+  }, [user, isAdmin, isSuperAdmin, role]);
 
   const postTo = useCallback((msg: unknown) => {
     const win = iframeRef.current?.contentWindow;
@@ -65,6 +76,7 @@ export function OpsCommandCenter() {
 
       if (msg.type === "ready") {
         postContext();
+        onStatus?.({ kind: "ready" });
         return;
       }
 
@@ -74,6 +86,7 @@ export function OpsCommandCenter() {
       const nonce = msg.nonce;
 
       if (msg.op === "save" && client && userId) {
+        onStatus?.({ kind: "saving" });
         try {
           const pl = (msg.payload ?? {}) as Record<string, unknown>;
           const startDate =
@@ -107,13 +120,16 @@ export function OpsCommandCenter() {
               days: savedDays,
             },
           });
+          onStatus?.({ kind: "saved", at: new Date().toISOString() });
           reply({ nonce, ok: true, op: "save", data: { updatedAt: new Date().toISOString() } });
         } catch (err) {
+          const message = err instanceof Error ? err.message : "Save failed";
+          onStatus?.({ kind: "save-error", message });
           reply({
             nonce,
             ok: false,
             op: "save",
-            error: err instanceof Error ? err.message : "Save failed",
+            error: message,
           });
         }
         return;
@@ -138,11 +154,13 @@ export function OpsCommandCenter() {
             data: { payload: data.payload, updatedAt: data.updated_at },
           });
         } catch (err) {
+          const message = err instanceof Error ? err.message : "Load failed";
+          onStatus?.({ kind: "load-error", message });
           reply({
             nonce,
             ok: false,
             op: "load",
-            error: err instanceof Error ? err.message : "Load failed",
+            error: message,
           });
         }
         return;
@@ -150,7 +168,7 @@ export function OpsCommandCenter() {
 
       reply({ nonce, ok: false, op: msg.op, error: "Unsupported op or not signed in" });
     },
-    [postContext, reply],
+    [postContext, reply, onStatus],
   );
 
   useEffect(() => {
