@@ -1,6 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { isSupabaseConfigured } from "@/lib/supabase-browser";
+import { fetchSignoffs, writeSignoff, clearSignoffs } from "@/lib/qaSignoffs";
 import {
   QUALITY_AREAS,
   QA_STORE_KEY,
@@ -30,20 +33,46 @@ const RUNBOOK = [
 ];
 
 export function QualityCenter() {
+  const { profile } = useAuth();
   const [checked, setChecked] = useState<CheckedMap>(() => loadChecked());
   const [open, setOpen] = useState<string | null>("auth-roles");
   const [notice, setNotice] = useState<string | null>(null);
+  const [shared, setShared] = useState<boolean | null>(null);
+
+  // Shared truth wins on load (union with this browser's offline ticks).
+  useEffect(() => {
+    void fetchSignoffs().then((remote) => {
+      setShared(isSupabaseConfigured());
+      if (!isSupabaseConfigured()) return;
+      setChecked((prev) => {
+        const next = { ...prev, ...remote };
+        try {
+          localStorage.setItem(QA_STORE_KEY, JSON.stringify(next));
+        } catch {
+          /* ignore */
+        }
+        return next;
+      });
+    });
+  }, []);
 
   function toggle(areaId: string, i: number) {
-    setChecked((prev) => {
-      const next = { ...prev, [checkId(areaId, i)]: !prev[checkId(areaId, i)] };
-      try {
-        localStorage.setItem(QA_STORE_KEY, JSON.stringify(next));
-      } catch {
-        /* private mode — progress just won't persist */
-      }
-      return next;
-    });
+    const id = checkId(areaId, i);
+    const nextVal = !checked[id];
+    const next = { ...checked };
+    if (nextVal) next[id] = true;
+    else delete next[id];
+    setChecked(next);
+    try {
+      localStorage.setItem(QA_STORE_KEY, JSON.stringify(next));
+    } catch {
+      /* private mode — progress just won't persist */
+    }
+    if (isSupabaseConfigured()) {
+      void writeSignoff(areaId, i, nextVal, profile?.id ?? null).then((err) => {
+        if (err) setNotice(`Shared record write failed: ${err}`);
+      });
+    }
   }
 
   function reset() {
@@ -53,7 +82,17 @@ export function QualityCenter() {
     } catch {
       /* ignore */
     }
-    setNotice("Checklist reset — fresh release cycle started.");
+    if (isSupabaseConfigured()) {
+      void clearSignoffs().then((err) =>
+        setNotice(
+          err
+            ? `Shared reset failed: ${err}`
+            : "Checklist reset everywhere — fresh release cycle started."
+        )
+      );
+    } else {
+      setNotice("Checklist reset on this browser — fresh release cycle started.");
+    }
   }
 
   const overall = useMemo(() => overallProgress(checked), [checked]);
@@ -63,7 +102,12 @@ export function QualityCenter() {
     <div className="bg-white rounded-xl border border-border p-4">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-1">
         <div>
-          <div className="text-sm font-extrabold text-navy">Quality Center</div>
+          <div className="text-sm font-extrabold text-navy">
+            Quality Center{" "}
+            <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-pale text-navy align-middle">
+              {shared === null ? "…" : shared ? "Shared ✓" : "This browser only"}
+            </span>
+          </div>
           <div className="text-[11px] text-gray mt-0.5">
             Exhaustive suite, worked per release. New features add tests + checklist items here
             in the same commit — coverage can never silently rot.

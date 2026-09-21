@@ -19,8 +19,9 @@ export function rowsToChecked(rows: SignoffRow[]): CheckedMap {
 
 /** Shared truth across staff/devices. Empty map when unconfigured or unreadable. */
 export async function fetchSignoffs(): Promise<CheckedMap> {
-  if (!isSupabaseConfigured()) return {};
-  const { data, error } = await getBrowserClient()
+  const c = isSupabaseConfigured() ? getBrowserClient() : null;
+  if (!c) return {};
+  const { data, error } = await c
     .from("qa_signoffs")
     .select("area_id, check_index, checked");
   if (error || !data) return {};
@@ -34,8 +35,9 @@ export async function writeSignoff(
   checked: boolean,
   by: string | null
 ): Promise<string | null> {
-  if (!isSupabaseConfigured()) return "Supabase is not configured.";
-  const { error } = await getBrowserClient()
+  const c = isSupabaseConfigured() ? getBrowserClient() : null;
+  if (!c) return "Supabase is not configured.";
+  const { error } = await c
     .from("qa_signoffs")
     .upsert(
       {
@@ -43,7 +45,6 @@ export async function writeSignoff(
         check_index: index,
         checked,
         checked_by: by,
-        updated_at: new Date().toISOString(),
       },
       { onConflict: "area_id,check_index" }
     );
@@ -52,8 +53,9 @@ export async function writeSignoff(
 
 /** Wipe the shared record (release reset). Returns an error message or null. */
 export async function clearSignoffs(): Promise<string | null> {
-  if (!isSupabaseConfigured()) return "Supabase is not configured.";
-  const { error } = await getBrowserClient()
+  const c = isSupabaseConfigured() ? getBrowserClient() : null;
+  if (!c) return "Supabase is not configured.";
+  const { error } = await c
     .from("qa_signoffs")
     .delete()
     .gte("check_index", 0);
