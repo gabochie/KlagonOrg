@@ -2,8 +2,14 @@
 # Runs on every push to main and every pull request. Fails fast in order:
 # nothing lints, tests, or ships if the types don't even check.
 #
-# Zero secrets required. The supabase-migrate workflow stays separate
-# (it only touches the database when migration files change).
+# Zero secrets required. The two NEXT_PUBLIC values are public (they ship
+# in the client bundle anyway) — set them as GitHub *Variables* (repo
+# Settings -> Secrets and variables -> Actions -> Variables tab), NOT
+# secrets. Without them the build has no data to prerender and Next
+# misreports dynamic routes as missing generateStaticParams.
+#
+#   NEXT_PUBLIC_SUPABASE_URL      (e.g. https://xyz.supabase.co)
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY (the anon key from .env.local)
 
 name: ci
 
@@ -11,6 +17,10 @@ on:
   push:
     branches: [main]
   pull_request:
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
 jobs:
   gates:
