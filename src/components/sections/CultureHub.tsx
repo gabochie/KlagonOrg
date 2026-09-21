@@ -183,7 +183,7 @@ export function CultureHub() {
         <div className="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-blue/10 pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative">
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-amber mb-3 ring-1 ring-amber/25 rounded-full px-3 py-1">
-            <Sparkles size="13" /> Arts &amp; Culture
+            <Sparkles size="13" /> The Culture Hub
           </div>
           <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
             The sounds, stages and stories of Klagon.
@@ -210,7 +210,7 @@ export function CultureHub() {
 
           {!ready ? (
             <div className="py-16 text-center">
-              <div className="animate-pulse text-xs text-gray font-semibold">Loading Arts &amp; Culture…</div>
+              <div className="animate-pulse text-xs text-gray font-semibold">Loading The Culture Hub…</div>
             </div>
           ) : !hasContent ? (
             <div className="bg-white rounded-2xl border border-border p-10 sm:p-14 text-center max-w-xl mx-auto">

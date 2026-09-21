@@ -147,7 +147,7 @@ export function EventSubmitForm({ onSubmitted }: { onSubmitted?: () => void }) {
           })}
         </div>
         <p className="text-[11px] text-gray mt-1.5">
-          Tagging a cultural or music event lets it appear on the Arts &amp; Culture hub.
+          Tagging a cultural or music event lets it appear on The Culture Hub.
         </p>
       </div>
 
