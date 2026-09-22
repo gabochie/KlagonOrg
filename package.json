@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
-    "@sentry/browser": "^10.75.2",
     "@supabase/supabase-js": "^2.116.0",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",

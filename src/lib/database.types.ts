@@ -394,6 +394,28 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["contact_messages"]["Insert"]>;
         Relationships: [];
       };
+      client_errors: {
+        Row: {
+          id: string;
+          message: string;
+          stack: string | null;
+          url: string | null;
+          user_agent: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          message: string;
+          stack?: string | null;
+          url?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["client_errors"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [];
+      };
       mentor_applications: {
         Row: {
           id: string;
