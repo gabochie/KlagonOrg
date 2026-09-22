@@ -24,6 +24,7 @@ const MORE_LINKS = [
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/news" },
+  { label: "Forum", href: "/forum" },
   { label: "Sponsor", href: "/sponsor" },
   { label: "Donate", href: "/donate" },
 ];

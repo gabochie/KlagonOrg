@@ -29,6 +29,7 @@ const memberAccount: NavItem[] = [
   { icon: "👤", label: "My Profile", href: "/dashboard/settings" },
   { icon: "✍️", label: "Submit Post", href: "/submit" },
   { icon: "📮", label: "My Posts", href: "/my/posts" },
+  { icon: "💬", label: "Forum", href: "/forum" },
   { icon: "🎖️", label: "Achievements", href: SOON, soon: true },
   { icon: "📰", label: "News", href: "/dashboard/news" },
   { icon: "📸", label: "Gallery", href: SOON, soon: true },

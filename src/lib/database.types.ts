@@ -1137,6 +1137,112 @@ export interface Database {
           },
         ];
       };
+      forum_boards: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          icon: string | null;
+          position: number;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          description?: string | null;
+          icon?: string | null;
+          position?: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["forum_boards"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [];
+      };
+      forum_posts: {
+        Row: {
+          id: string;
+          thread_id: string;
+          author_id: string;
+          body: string;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          thread_id: string;
+          author_id: string;
+          body: string;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["forum_posts"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "forum_posts_author_id_fkey";
+            columns: ["author_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "forum_posts_thread_id_fkey";
+            columns: ["thread_id"];
+            referencedRelation: "forum_threads";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      forum_threads: {
+        Row: {
+          id: string;
+          board_id: string;
+          author_id: string;
+          title: string;
+          body: string;
+          pinned: boolean;
+          closed: boolean;
+          status: string;
+          reply_count: number;
+          last_reply_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          author_id: string;
+          title: string;
+          body: string;
+          pinned?: boolean;
+          closed?: boolean;
+          status?: string;
+          reply_count?: number;
+          last_reply_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["forum_threads"]["Insert"]> & {
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "forum_threads_author_id_fkey";
+            columns: ["author_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "forum_threads_board_id_fkey";
+            columns: ["board_id"];
+            referencedRelation: "forum_boards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       profiles_public: {

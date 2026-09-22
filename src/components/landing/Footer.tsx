@@ -10,6 +10,7 @@ const exploreLinks = [
   { label: "Events", href: "/events" },
   { label: "The Culture Hub", href: "/culture" },
   { label: "News", href: "/news" },
+  { label: "Forum", href: "/forum" },
 ];
 
 const learnLinks = [
