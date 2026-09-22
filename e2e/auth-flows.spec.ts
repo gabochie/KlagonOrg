@@ -22,7 +22,10 @@ function env(name: string): string | undefined {
   return v && v.length > 0 ? v : undefined;
 }
 
-function creds(): { member: { email: string; password: string }; admin: { email: string; password: string } } | null {
+function creds(): {
+  member: { email: string; password: string };
+  admin: { email: string; password: string };
+} | null {
   const memberEmail = env("E2E_MEMBER_EMAIL");
   const memberPassword = env("E2E_MEMBER_PASSWORD");
   const adminEmail = env("E2E_ADMIN_EMAIL");
@@ -36,6 +39,19 @@ function creds(): { member: { email: string; password: string }; admin: { email:
     member: { email: memberEmail, password: memberPassword },
     admin: { email: adminEmail, password: adminPassword },
   };
+}
+
+/** Non-null creds or skip. Keeps strict TS happy without `!` assertions. */
+function requireCreds(): {
+  member: { email: string; password: string };
+  admin: { email: string; password: string };
+} {
+  const c = creds();
+  if (!c) {
+    test.skip(true, "needs E2E_MEMBER/PASSWORD + E2E_ADMIN/PASSWORD + Supabase env");
+    throw new Error("unreachable — test skipped");
+  }
+  return c;
 }
 
 function authedClient(email: string, password: string) {
@@ -61,24 +77,21 @@ async function login(page: Page, email: string, password: string) {
 }
 
 test("member login lands on member dashboard", async ({ page }) => {
-  const c = creds();
-  if (!c) test.skip(true, "needs E2E_MEMBER_EMAIL/PASSWORD + Supabase env");
+  const c = requireCreds();
   await login(page, c.member.email, c.member.password);
   await expect(page).toHaveURL(/\/dashboard\/member/, { timeout: 20000 });
   await expect(page.getByText(/taking you to your dashboard|welcome/i).first()).toBeVisible({ timeout: 20000 }).catch(() => {});
 });
 
 test("admin login lands on admin dashboard", async ({ page }) => {
-  const c = creds();
-  if (!c) test.skip(true, "needs E2E_ADMIN_EMAIL/PASSWORD + Supabase env");
+  const c = requireCreds();
   await login(page, c.admin.email, c.admin.password);
   // If this lands on /dashboard/member instead, the admin role SQL was not run.
   await expect(page).toHaveURL(/\/dashboard\/admin/, { timeout: 20000 });
 });
 
 test("submit-moderate-publish goes pending to live", async ({ page }) => {
-  const c = creds();
-  if (!c) test.skip(true, "needs E2E_MEMBER_EMAIL/PASSWORD + E2E_ADMIN_EMAIL/PASSWORD");
+  const c = requireCreds();
   const stamp = Date.now();
   const title = `E2E check ${stamp} — safe to delete`;
   let postId: string | null = null;
@@ -105,7 +118,7 @@ test("submit-moderate-publish goes pending to live", async ({ page }) => {
       })
       .select("id")
       .single();
-    expect(insertErr, "member insert under RLS").toBeNull();
+if (insertErr || !inserted) throw new Error(`member insert under RLS failed: ${insertErr?.message}`);
     postId = inserted.id;
 
     // 2. Author sees it as Pending in My Posts.
@@ -138,8 +151,7 @@ test("submit-moderate-publish goes pending to live", async ({ page }) => {
 });
 
 test("forum thread lifecycle is fully UI-driven", async ({ page }) => {
-  const c = creds();
-  if (!c) test.skip(true, "needs E2E_MEMBER_EMAIL/PASSWORD");
+  const c = requireCreds();
   const stamp = Date.now();
   const title = `E2E thread ${stamp} — safe to delete`;
 
@@ -167,3 +179,4 @@ test("forum thread lifecycle is fully UI-driven", async ({ page }) => {
   await page.getByRole("button", { name: "Delete" }).first().click();
   await expect(page).toHaveURL(/\/forum\/?$/, { timeout: 20000 });
 });
+
