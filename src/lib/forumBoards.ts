@@ -20,3 +20,16 @@ export const FORUM_BOARDS: ForumBoardSeed[] = [
 export function forumBoardById(id: string): ForumBoardSeed | undefined {
   return FORUM_BOARDS.find((b) => b.id === id);
 }
+
+// Board rows in the DB keep icon = NULL (plain ASCII for SQL editors);
+// the app renders the icon per board id instead.
+export function boardIcon(id: string, fallback = "🗨️"): string {
+  const icons: Record<string, string> = {
+    general: "🗨️",
+    ask: "🤝",
+    culture: "🥁",
+    market: "🛒",
+    suggest: "💡",
+  };
+  return icons[id] ?? fallback;
+}

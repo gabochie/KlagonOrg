@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MessageSquareQuote, Loader2 } from "lucide-react";
 import { fetchBoards, type ForumBoard } from "@/lib/forum";
+import { boardIcon } from "@/lib/forumBoards";
 import { Card, CardTitle, CardSub } from "@/components/ui";
 
 export function ForumSection() {
@@ -57,7 +58,7 @@ export function ForumSection() {
                   <Card className="h-full hover:border-amber transition-colors">
                     <div className="flex items-start gap-3 p-5">
                       <div className="text-2xl leading-none" aria-hidden>
-                        {b.icon ?? "🗨️"}
+                        {boardIcon(b.id)}
                       </div>
                       <div className="min-w-0">
                         <CardTitle className="text-navy group-hover:text-blue transition-colors flex items-center gap-2">

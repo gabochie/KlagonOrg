@@ -206,13 +206,15 @@ create policy "forum_posts_admin_all" on public.forum_posts
   with check (public.is_admin());
 
 -- ---------- seed boards ----------
+-- Icons are NULL: the app renders a board icon per board id so the DB
+-- stays plain ASCII (no copy/paste mangling through the SQL editor).
 insert into public.forum_boards (id, name, description, icon, position)
 values
-  ('general',    'General Talk',       'Open conversation about life in Klagon and beyond.', '🗨️', 1),
-  ('ask',        'Ask & Help',         'Questions, recommendations and community advice.', '🤝', 2),
-  ('culture',    'Culture & Chieftaincy', 'Heritage, arts, festivals and chieftaincy matters.', '🥁', 3),
-  ('market',     'Marketplace Talk',   'Buying, selling and experiences with local vendors.', '🛒', 4),
-  ('suggest',    'Site Feedback',      'Ideas and feedback for klagon.org itself.', '💡', 5)
+  ('general',    'General Talk',       'Open conversation about life in Klagon and beyond.', NULL, 1),
+  ('ask',        'Ask & Help',         'Questions, recommendations and community advice.', NULL, 2),
+  ('culture',    'Culture & Chieftaincy', 'Heritage, arts, festivals and chieftaincy matters.', NULL, 3),
+  ('market',     'Marketplace Talk',   'Buying, selling and experiences with local vendors.', NULL, 4),
+  ('suggest',    'Site Feedback',      'Ideas and feedback for klagon.org itself.', NULL, 5)
 on conflict (id) do update
   set name = excluded.name,
       description = excluded.description,
