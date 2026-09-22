@@ -5,8 +5,9 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { DONATION_TIERS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
-import { Heart, Smartphone, ShieldCheck } from "lucide-react";
-import { chargeDonation, confirmDonation, type MoMoNetwork } from "@/lib/payments";
+import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
+import { recordDonationIntent } from "@/lib/forms";
+import type { MoMoNetwork } from "@/lib/payments";
 
 const NETWORKS: { id: MoMoNetwork; label: string }[] = [
   { id: "mtn", label: "MTN MoMo" },
@@ -14,20 +15,21 @@ const NETWORKS: { id: MoMoNetwork; label: string }[] = [
   { id: "at", label: "AT Money" },
 ];
 
+// Public contact line (same number as the site footer).
+const CONTACT_DISPLAY = "0268 708 895";
+const CONTACT_TEL = "tel:+233268708895";
+const CONTACT_WA = "https://wa.me/233268708895?text=Hello%20KLAGON.org%2C%20I%20would%20like%20to%20donate.";
+
 export default function DonatePage() {
   const [selected, setSelected] = useState("3");
   const [customAmount, setCustomAmount] = useState("");
+  const [frequency, setFrequency] = useState<"once" | "monthly">("once");
   const [submitted, setSubmitted] = useState(false);
-  const [promptPhone, setPromptPhone] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
-
-  // OTP step
-  const [chargeRef, setChargeRef] = useState<string | null>(null);
-  const [otp, setOtp] = useState("");
-  const [verifying, setVerifying] = useState(false);
+  const [pledged, setPledged] = useState({ amount: "", phone: "", monthly: false, name: "" });
 
   const tier = DONATION_TIERS.find((t) => t.id === selected);
   const displayAmount = customAmount || tier?.amount || "";
@@ -37,51 +39,24 @@ export default function DonatePage() {
     e.preventDefault();
     setError(null);
     if (!amount || amount <= 0) return setError("Enter a valid amount.");
-    if (!form.phone.trim()) return setError("Enter the MoMo phone number to charge.");
+    if (!form.phone.trim()) return setError("Enter the MoMo number we should reach you on.");
     setSending(true);
-    const result = await chargeDonation({
+    const result = await recordDonationIntent({
       amount_ghs: amount,
       tier_id: tier?.id ?? null,
-      full_name: form.full_name || null,
+      full_name: form.full_name.trim() || null,
       phone: form.phone.trim(),
-      email: form.email || null,
-      network,
+      email: form.email.trim() || null,
+      metadata: { frequency, network },
     });
     setSending(false);
-    if (!result.ok) {
-      const detail = result.code
-        ? `${result.error ?? "Payment request failed."} (${result.code})`
-        : (result.error ?? "Payment request failed. Please try again.");
-      return setError(detail);
-    }
-    setPromptPhone(result.payer ?? form.phone.trim());
-    if (result.otp_required && result.ref) {
-      setChargeRef(result.ref);
-      setOtp("");
-      return;
-    }
-    setSubmitted(true);
-  };
-
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chargeRef) return;
-    setError(null);
-    setVerifying(true);
-    const result = await confirmDonation({
-      ref: chargeRef,
-      otp,
-      amount_ghs: amount,
+    if (result.error) return setError(result.error);
+    setPledged({
+      amount: displayAmount,
       phone: form.phone.trim(),
-      network,
+      monthly: frequency === "monthly",
+      name: form.full_name.trim(),
     });
-    setVerifying(false);
-    if (!result.ok) {
-      const detail = result.code
-        ? `${result.error ?? "Verification failed."} (${result.code})`
-        : (result.error ?? "Verification failed. Check the code and try again.");
-      return setError(detail);
-    }
     setSubmitted(true);
   };
 
@@ -101,15 +76,35 @@ export default function DonatePage() {
             Your donation goes directly to workshops, equipment, mentor stipends, and community
             projects that impact Klagon&apos;s youth.
           </p>
+          <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-2">
+            <a
+              href={CONTACT_TEL}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-white text-sm font-bold hover:bg-white/15 transition-colors"
+            >
+              <Phone size={15} /> {CONTACT_DISPLAY}
+            </a>
+            <a
+              href={CONTACT_WA}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber text-navy text-sm font-bold hover:bg-amber/90 transition-colors"
+            >
+              <MessageCircle size={15} /> WhatsApp to donate
+            </a>
+          </div>
+          <p className="text-white/50 text-xs mt-3">
+            Prefer to talk first? Call or WhatsApp us — a person picks up.
+          </p>
         </div>
       </section>
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-xl font-extrabold text-navy text-center tracking-tight mb-2">
-            Choose an amount to give
+            Pledge an amount to give
           </h2>
           <p className="text-sm text-gray text-center mb-10 max-w-md mx-auto">
-            100% of donations fund KLAGON.org programs. Every contribution is acknowledged.
+            Pledge below and we&apos;ll call or WhatsApp you within 24 hours to complete it
+            by MoMo. 100% of donations fund KLAGON.org programs.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8 max-w-2xl mx-auto">
             {DONATION_TIERS.map((t) => (
@@ -127,7 +122,7 @@ export default function DonatePage() {
               </button>
             ))}
           </div>
-          <div className="max-w-sm mx-auto mb-10">
+          <div className="max-w-sm mx-auto mb-6">
             <Input
               label="Or enter a custom amount (GH₵)"
               type="number"
@@ -136,57 +131,74 @@ export default function DonatePage() {
               onChange={(e) => { setCustomAmount(e.target.value); setSelected(""); }}
             />
           </div>
+          <div className="max-w-sm mx-auto mb-10">
+            <div className="text-xs font-semibold text-navy mb-1.5 text-center">How often?</div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setFrequency("once")}
+                className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                  frequency === "once"
+                    ? "border-amber bg-amber/10 text-navy"
+                    : "border-border bg-white text-gray hover:border-amber"
+                }`}
+              >
+                One-time
+              </button>
+              <button
+                type="button"
+                onClick={() => setFrequency("monthly")}
+                className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                  frequency === "monthly"
+                    ? "border-amber bg-amber/10 text-navy"
+                    : "border-border bg-white text-gray hover:border-amber"
+                }`}
+              >
+                Monthly reminder
+              </button>
+            </div>
+            <p className="text-[11px] text-gray text-center mt-2">
+              {frequency === "monthly"
+                ? "No auto-charges — we simply send you a MoMo prompt each month."
+                : "Give once today. We can always remind you again later."}
+            </p>
+          </div>
           <div className="max-w-lg mx-auto">
             {submitted ? (
               <div className="bg-white rounded-xl border border-border p-8 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber/15 mb-3">
-                  <Smartphone size="24" className="text-amber" />
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 mb-3">
+                  <CheckCircle size={24} className="text-emerald-700" />
                 </div>
-                <h3 className="text-base font-bold text-navy mb-1">Almost done — check your phone!</h3>
+                <h3 className="text-base font-bold text-navy mb-1">
+                  Medase{pledged.name ? `, ${pledged.name}` : ""}! Pledge recorded.
+                </h3>
                 <p className="text-sm text-gray mb-4">
-                  A payment prompt for {displayAmount} was sent to{" "}
-                  <span className="font-bold text-navy">{promptPhone}</span>. Approve it with
-                  your MoMo PIN to complete the donation.
+                  Your {pledged.monthly ? "monthly " : ""}pledge of{" "}
+                  <span className="font-bold text-navy">{pledged.amount}</span> is in.
+                  We&apos;ll call or WhatsApp{" "}
+                  <span className="font-bold text-navy">{pledged.phone}</span> within 24
+                  hours to complete it by MoMo.
                 </p>
-                <p className="text-xs text-gray">
-                  A receipt will be sent to your email once payment confirms. You&apos;ll also
-                  receive impact updates.
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <a
+                    href={CONTACT_TEL}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-navy text-white text-sm font-bold hover:bg-blue transition-colors"
+                  >
+                    <Phone size={15} /> Call now
+                  </a>
+                  <a
+                    href={CONTACT_WA}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-border text-navy text-sm font-bold hover:border-amber transition-colors"
+                  >
+                    <MessageCircle size={15} /> WhatsApp us
+                  </a>
+                </div>
+                <p className="text-xs text-gray mt-4">
+                  Outside Ghana? WhatsApp us and we&apos;ll arrange a card or bank transfer.
                 </p>
               </div>
-            ) : chargeRef ? (
-              <form
-                className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
-                onSubmit={handleVerify}
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber/15 mb-1">
-                  <ShieldCheck size="24" className="text-amber" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-navy mb-1">Verify your donation</h3>
-                  <p className="text-sm text-gray">
-                    We sent an SMS code to <span className="font-bold text-navy">{promptPhone}</span>.
-                    Enter it below to continue.
-                  </p>
-                </div>
-                <Input
-                  label="OTP from SMS"
-                  inputMode="numeric"
-                  placeholder="e.g. 483920"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/[^\d]/g, ""))}
-                />
-                {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
-                <Button variant="dark" size="lg" className="w-full" disabled={verifying || otp.length < 4}>
-                  {verifying ? "Verifying…" : "Confirm donation"}
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => { setChargeRef(null); setError(null); }}
-                  className="text-xs text-gray underline cursor-pointer font-sans"
-                >
-                  Change details
-                </button>
-              </form>
             ) : (
               <form
                 className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
@@ -194,12 +206,14 @@ export default function DonatePage() {
               >
                 {displayAmount && (
                   <div className="bg-pale rounded-lg p-3 text-center mb-2">
-                    <span className="text-xs text-gray">Donating: </span>
-                    <span className="text-sm font-bold text-navy">{displayAmount}</span>
+                    <span className="text-xs text-gray">Pledging: </span>
+                    <span className="text-sm font-bold text-navy">
+                      {displayAmount}{frequency === "monthly" ? " / month (reminder)" : ""}
+                    </span>
                   </div>
                 )}
                 <div>
-                  <div className="text-xs font-semibold text-navy mb-1.5">Mobile money network</div>
+                  <div className="text-xs font-semibold text-navy mb-1.5">Your MoMo network</div>
                   <div className="grid grid-cols-3 gap-2">
                     {NETWORKS.map((n) => (
                       <button
@@ -221,13 +235,13 @@ export default function DonatePage() {
                   <Input label="Full name" placeholder="Your name" required value={form.full_name} onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))} />
                   <Input label="MoMo phone" placeholder="0244 000 000" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                 </div>
-                <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                <Input label="Email (optional)" type="email" placeholder="you@email.com" required={false} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
-                  {sending ? "Sending request…" : `Donate ${displayAmount}`}
+                  {sending ? "Recording pledge…" : `Pledge ${displayAmount}`}
                 </Button>
                 <p className="text-[10px] text-gray text-center flex items-center justify-center gap-1">
-                  <Heart size="10" /> Secure donation via Moolre. A confirmation prompt will be sent to your phone.
+                  <Heart size={10} /> No payment is taken now — we complete every gift by phone or WhatsApp.
                 </p>
               </form>
             )}

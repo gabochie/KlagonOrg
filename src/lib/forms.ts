@@ -40,6 +40,7 @@ export interface DonationIntent {
   full_name: string | null;
   phone: string | null;
   email: string | null;
+  metadata?: Record<string, string>;
 }
 
 export async function submitContact(data: ContactData): Promise<{ error: string | null }> {
