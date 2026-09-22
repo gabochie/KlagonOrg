@@ -39,23 +39,6 @@ function BoardContent({ boardId }: { boardId: string }) {
   const searchParams = useSearchParams();
   const threadId = searchParams.get("t");
 
-  if (threadId) {
-    return (
-      <div>
-        <div className="bg-navy px-4 sm:px-6 py-4">
-          <div className="max-w-3xl mx-auto">
-            <Link
-              href={`/forum/${boardId}`}
-              className="text-xs font-semibold text-white/70 hover:text-amber hover:underline"
-            >
-              ← Back to this board
-            </Link>
-          </div>
-        </div>
-        <ThreadDetail threadId={threadId} />
-      </div>
-    );
-  }
   const [threads, setThreads] = useState<ForumThread[]>([]);
   const [loading, setLoading] = useState(true);
   const [boardName, setBoardName] = useState("");
@@ -84,6 +67,24 @@ function BoardContent({ boardId }: { boardId: string }) {
   }, [boardId]);
 
   const signIn = !user && !authLoading;
+
+  if (threadId) {
+    return (
+      <div>
+        <div className="bg-navy px-4 sm:px-6 py-4">
+          <div className="max-w-3xl mx-auto">
+            <Link
+              href={`/forum/${boardId}`}
+              className="text-xs font-semibold text-white/70 hover:text-amber hover:underline"
+            >
+              ← Back to this board
+            </Link>
+          </div>
+        </div>
+        <ThreadDetail threadId={threadId} />
+      </div>
+    );
+  }
 
   async function handleStart(e: React.FormEvent) {
     e.preventDefault();
