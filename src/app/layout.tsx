@@ -4,6 +4,7 @@ import Script from "next/script";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SalesAgent } from "@/components/chat/SalesAgent";
+import { Observability } from "@/components/observability/Observability";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             {children}
             <SalesAgent />
+            <Observability />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { reportError } from "@/components/observability/Observability";
+
 export default function Error({
   error,
   reset,
@@ -7,6 +10,9 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    reportError(error);
+  }, [error]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-light px-4">
       <div className="text-center max-w-sm">
