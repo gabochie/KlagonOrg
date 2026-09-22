@@ -165,5 +165,5 @@ test("forum thread lifecycle is fully UI-driven", async ({ page }) => {
   // Delete the thread (cascades to the reply).
   page.on("dialog", (d) => void d.accept());
   await page.getByRole("button", { name: "Delete" }).first().click();
-  await expect(page).toHaveURL(/\/forum$/, { timeout: 20000 });
+  await expect(page).toHaveURL(/\/forum\/?$/, { timeout: 20000 });
 });
