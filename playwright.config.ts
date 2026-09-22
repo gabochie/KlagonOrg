@@ -1,4 +1,36 @@
 import { defineConfig, devices } from "@playwright/test";
+import fs from "node:fs";
+
+/**
+ * Load throwaway-account creds for local runs from .env.e2e.local
+ * (gitignored). No dotenv dependency — trivial KEY=value parsing.
+ * CI injects the same names as job env vars instead.
+ * NEXT_PUBLIC_* fall back to .env.local so API-backed steps can reach
+ * Supabase without extra setup.
+ */
+function loadEnvFile(path: string) {
+  try {
+    const raw = fs.readFileSync(path, "utf8");
+    for (const line of raw.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+      const [key, ...rest] = trimmed.split("=");
+      let value = rest.join("=").trim();
+      if (
+        value.length >= 2 &&
+        ((value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'")))
+      ) {
+        value = value.slice(1, -1);
+      }
+      if (!(key in process.env)) process.env[key] = value;
+    }
+  } catch {
+    // absent file is fine (CI, or unauthenticated runs)
+  }
+}
+loadEnvFile(".env.e2e.local");
+loadEnvFile(".env.local");
 
 /**
  * KLAGON e2e. Unauthenticated specs run anywhere against dev.
