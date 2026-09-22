@@ -122,7 +122,7 @@ test("submit-moderate-publish goes pending to live", async ({ page }) => {
     await page.goto("/dashboard/admin/moderation");
     const queueCard = page.locator("div.rounded-xl", { hasText: title }).first();
     await expect(queueCard).toBeVisible({ timeout: 20000 });
-    await queueCard.getByRole("button", { name: "Approve" }).click();
+    await queueCard.getByRole("button", { name: "Approve", exact: true }).click();
     await expect(queueCard).toBeHidden({ timeout: 20000 });
 
     // 4. Public sees it live on /news.

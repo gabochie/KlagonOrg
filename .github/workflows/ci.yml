@@ -1,15 +1,22 @@
-# KLAGON quality gates — typecheck, lint, unit tests, production build.
+# KLAGON quality gates — typecheck, lint, unit tests, production build, E2E.
 # Runs on every push to main and every pull request. Fails fast in order:
 # nothing lints, tests, or ships if the types don't even check.
 #
-# Zero secrets required. The two NEXT_PUBLIC values are public (they ship
-# in the client bundle anyway) — set them as GitHub *Variables* (repo
-# Settings -> Secrets and variables -> Actions -> Variables tab), NOT
+# Zero secrets required for gates. The two NEXT_PUBLIC values are public
+# (they ship in the client bundle anyway) — set them as GitHub *Variables*
+# (repo Settings -> Secrets and variables -> Actions -> Variables tab), NOT
 # secrets. Without them the build has no data to prerender and Next
 # misreports dynamic routes as missing generateStaticParams.
 #
 #   NEXT_PUBLIC_SUPABASE_URL      (e.g. https://xyz.supabase.co)
 #   NEXT_PUBLIC_SUPABASE_ANON_KEY (the anon key from .env.local)
+#
+# The e2e job additionally needs four throwaway-account *Secrets* (same tab,
+# Secrets section) — real Supabase Auth users hit by the Playwright suite:
+#
+#   E2E_MEMBER_EMAIL / E2E_MEMBER_PASSWORD (role: member, status: approved)
+#   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD   (role: admin,  status: approved)
+# Without them the authenticated specs skip and the job still passes.
 
 name: ci
 
@@ -46,3 +53,27 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+  e2e:
+    needs: [gates]
+    runs-on: ubuntu-latest
+    env:
+      E2E_MEMBER_EMAIL: ${{ secrets.E2E_MEMBER_EMAIL }}
+      E2E_MEMBER_PASSWORD: ${{ secrets.E2E_MEMBER_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npx playwright test --reporter=list
