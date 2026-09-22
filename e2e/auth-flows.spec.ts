@@ -152,7 +152,7 @@ test("forum thread lifecycle is fully UI-driven", async ({ page }) => {
   await page.locator("#forum-title").fill(title);
   await page.locator("#forum-body").fill("Automated forum check. Safe to delete.");
   await page.getByRole("button", { name: "Start thread" }).click();
-  await expect(page).toHaveURL(/\/forum\/general\?t=/, { timeout: 20000 });
+  await expect(page).toHaveURL(/\/forum\/general\/\?t=/, { timeout: 20000 });
   await expect(page.getByRole("heading", { name: title })).toBeVisible({ timeout: 20000 });
 
   // Reply to it.
