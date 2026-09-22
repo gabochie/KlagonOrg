@@ -172,9 +172,24 @@ export default function SponsorPage() {
               ))}
             </div>
             <div className="max-w-lg mx-auto">
-              <h2 className="text-lg font-extrabold text-navy text-center mb-6">
+              <h2 className="text-lg font-extrabold text-navy text-center mb-2">
                 Get started as a sponsor
               </h2>
+              <p className="text-sm text-gray text-center mb-6">
+                Submit the form, or reach us directly —{" "}
+                <a href="tel:+233268708895" className="font-bold text-blue hover:underline">
+                  0268 708 895
+                </a>{" "}
+                ·{" "}
+                <a
+                  href="https://wa.me/233268708895?text=Hello%20KLAGON.org%2C%20I%20am%20interested%20in%20sponsorship."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-bold text-blue hover:underline"
+                >
+                  WhatsApp
+                </a>
+              </p>
               {submitted ? (
                 <div className="bg-white rounded-2xl border border-border p-8 text-center">
                   <div className="text-3xl mb-3">🤝</div>
