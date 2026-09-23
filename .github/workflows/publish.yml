@@ -1,0 +1,40 @@
+# KLAGON scheduled publishing — rebuilds + redeploys the static site daily.
+# Any blog post in content/blog/ with `status: scheduled` stays hidden until
+# its `date` arrives (see content/blog/README.md), then surfaces automatically
+# on the next run — no commit churn for a publish.
+#
+# Needs one repo Secret: CLOUDFLARE_API_TOKEN (Pages:Edit on klagon-org).
+# Reuses the repo Variables NEXT_PUBLIC_SUPABASE_URL / _ANON_KEY (same as ci).
+
+name: publish
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Production build (regenerates RSS + prerenders all pages)
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy out --project-name klagon-org --branch main

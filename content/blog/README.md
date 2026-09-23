@@ -39,12 +39,14 @@ course: "Introduction to AI"
 | `description` | ✅ | The single most important SEO field — put the key phrase and a promise |
 | `date` | ✅ | YYYY-MM-DD |
 | `updated` | optional | Add when you revise; boosts freshness signals |
-| `category` | ✅ | Must be one of the five: `Lifelong Learning`, `Digital Transformation Mastery`, `Thinking Skills`, `Building Visions`, `Making Things Happen` |
+| `category` | ✅ | Must be one of the six: `Lifelong Learning`, `Digital Transformation Mastery`, `Thinking Skills`, `Building Visions`, `Making Things Happen`, `Discover Klagon` |
 | `tags` | ✅ | 2–4 tags, lowercase, no symbols |
 | `author` | ✅ | Must be an approved name in `src/lib/blogAuthors.ts` (see below) |
 | `authorRole` | ✅ | Short authority line under the name |
 | `readTime` | ✅ | Estimate in whole minutes |
 | `icon` | ✅ | One emoji |
+| `image` | optional | Featured image path (e.g. `/brand/discover/10a_branded.jpg`). Renders as the card thumbnail, post hero, and the OG/Twitter/JSON-LD image. Omit for the default branding. |
+| `status` | optional | Set to `scheduled` to hide the post until its `date`. See *Scheduling* below. |
 | `course` | optional | Add to show a "Start Learning Free" CTA box linking to the Learning Hub |
 | `faq` | optional | 3–4 Q&A pairs; renders a FAQPage JSON-LD block (AI/LLMO rich-result eligible) |
 
@@ -66,6 +68,7 @@ Rules: 3–4 pairs, one plain sentence each, answers must match the article body
 
 ```
 Kweku Asante · Emmanuel Kumi · Ama Kofi · Serwaa Boateng · Mary Acheampong
+The Discover Klagon Guides (community-narrated tour team)
 ```
 
 ## 3. Write the body (Markdown)
@@ -99,7 +102,22 @@ These follow Google's Helpful Content & scaled-content policy — original value
 9. **Originality, always.** Do not mass-produce near-duplicate pages. Every article must be meaningfully different.
 10. **No keyword stuffing.** Use your key phrase naturally; write sentences a human would want to read.
 
-## 5. Publish
+## 5. Scheduling (publish on a future date)
+
+The `publish` GitHub Action rebuilds and redeploys every day at 06:00 (Ghana/UTC). A post with `status: scheduled` stays **hidden** (no page, no sitemap, no RSS entry) until its `date`, then surfaces automatically on the next scheduled deploy — no timing tricks needed.
+
+```markdown
+title: "..."
+date: "2026-10-01"          # the day it goes live
+status: scheduled           # hide until that day
+```
+
+Rules:
+- Posts **without** `status` are always visible (this keeps the existing pre-dated backlog live).
+- A scheduled post with a missing/malformed future date stays hidden — give it a real `YYYY-MM-DD`.
+- To publish immediately, drop `status: scheduled` (and set `date` to today).
+
+## 6. Publish
 
 ```bash
 npm run build   # regenerates RSS + pre-renders all pages

@@ -116,8 +116,19 @@ export default function BlogIndexPage() {
               className="group block bg-white dark:bg-ink-2 border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow mb-10"
             >
               <div className="flex flex-col sm:flex-row">
-                <div className="sm:w-2/5 bg-pale dark:bg-ink-3 flex items-center justify-center py-12 text-6xl">
-                  {featured.icon}
+                <div className="sm:w-2/5">
+                  {featured.image ? (
+                    <img
+                      src={featured.image}
+                      alt={featured.title}
+                      className="h-48 sm:h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="h-48 sm:h-full bg-pale dark:bg-ink-3 flex items-center justify-center text-6xl">
+                      {featured.icon}
+                    </div>
+                  )}
                 </div>
                 <div className="p-6 sm:p-8 sm:flex-1">
                   <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber/10 text-amber-800 dark:text-amber mb-3">
@@ -149,9 +160,18 @@ export default function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 className="group bg-white dark:bg-ink-2 border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow"
               >
-                <div className="h-24 bg-pale dark:bg-ink-3 flex items-center justify-center text-4xl">
-                  {post.icon}
-                </div>
+                {post.image ? (
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="h-24 w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-24 bg-pale dark:bg-ink-3 flex items-center justify-center text-4xl">
+                    {post.icon}
+                  </div>
+                )}
                 <div className="p-4 sm:p-5">
                   <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber/10 text-amber-800 dark:text-amber mb-2">
                     {post.category}

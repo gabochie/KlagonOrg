@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { isPostPublished } from "@/lib/blogSchedule";
 
 export interface BlogFaqItem {
   q: string;
@@ -21,6 +22,8 @@ export interface BlogPost {
   authorRole: string;
   readTime: number;
   icon: string;
+  image?: string;
+  status?: string;
   course?: string;
   faq?: BlogFaqItem[];
   content: string;
@@ -41,6 +44,7 @@ const CATEGORY_SLUGS: Record<string, string> = {
   "Thinking Skills": "thinking-skills",
   "Building Visions": "building-visions",
   "Making Things Happen": "making-things-happen",
+  "Discover Klagon": "discover-klagon",
 };
 
 export function categorySlug(name: string): string {
@@ -85,6 +89,8 @@ function readMarkdownFile(filePath: string): BlogPost {
     authorRole: data.authorRole || "",
     readTime: Number(data.readTime || 3),
     icon: data.icon || "📄",
+    image: data.image,
+    status: data.status,
     course: data.course,
     faq: Array.isArray(data.faq)
       ? data.faq
@@ -111,7 +117,7 @@ export function getAllPosts(): BlogPost[] {
           return null;
         }
       })
-      .filter((p): p is BlogPost => !!p && !!p.date)
+      .filter((p): p is BlogPost => !!p && isPostPublished(p))
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
   } catch {
     return [];

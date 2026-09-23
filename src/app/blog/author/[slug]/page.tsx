@@ -108,9 +108,18 @@ export default async function AuthorPage({ params }: Props) {
                     href={`/blog/${post.slug}`}
                     className="group bg-white dark:bg-ink-2 border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    <div className="h-24 bg-pale dark:bg-ink-3 flex items-center justify-center text-4xl">
-                      {post.icon}
-                    </div>
+                    {post.image ? (
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="h-24 w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="h-24 bg-pale dark:bg-ink-3 flex items-center justify-center text-4xl">
+                        {post.icon}
+                      </div>
+                    )}
                     <div className="p-4 sm:p-5">
                       <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber/10 text-amber-800 dark:text-amber mb-2">
                         {post.category}

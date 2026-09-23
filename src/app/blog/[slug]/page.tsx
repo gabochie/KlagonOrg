@@ -21,6 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPostBySlug(slug);
   if (!post) return { title: "Article not found" };
 
+  const ogImage = post.image
+    ? post.image.startsWith("http")
+      ? post.image
+      : `https://klagon.org${post.image}`
+    : "/brand/og-banner.png";
+
   const title = `${post.title} | KLAGON.org Blog`;
   return {
     title: post.title,
@@ -39,13 +45,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime: post.updated ? isoToDateTime(post.updated) : undefined,
       section: post.category,
       tags: post.tags,
-      images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: post.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: post.description,
-      images: ["/brand/og-banner.png"],
+      images: [ogImage],
     },
   };
 }
@@ -76,6 +82,11 @@ export default async function BlogPostPage({ params }: Props) {
   const published = isoToDateTime(post.date);
   const updated = post.updated ? isoToDateTime(post.updated) : null;
   const categoryPath = categorySlug(post.category);
+  const ogImage = post.image
+    ? post.image.startsWith("http")
+      ? post.image
+      : `https://klagon.org${post.image}`
+    : "https://klagon.org/brand/og-banner.png";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,7 +110,7 @@ export default async function BlogPostPage({ params }: Props) {
           name: "KLAGON.org",
           logo: { "@type": "ImageObject", url: "https://klagon.org/brand/klagon-logo.png" },
         },
-        image: "https://klagon.org/brand/og-banner.png",
+        image: ogImage,
         keywords: [...post.tags, post.category].join(", "),
         articleSection: post.category,
       },
@@ -171,6 +182,14 @@ export default async function BlogPostPage({ params }: Props) {
             {updated && <span>· Updated {formatBlogDate(post.updated ?? post.date)}</span>}
             <span>· {post.readTime} min read</span>
           </div>
+          {post.image && (
+            <img
+              src={post.image}
+              alt={post.title}
+              className="mt-6 w-full max-h-72 object-cover rounded-xl border border-white/10"
+              loading="lazy"
+            />
+          )}
         </div>
       </header>
 

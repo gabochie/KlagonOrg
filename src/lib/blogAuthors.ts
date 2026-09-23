@@ -42,6 +42,13 @@ export const BLOG_AUTHORS: BlogAuthor[] = [
     bio: "Mary leads KLAGON.org's digital literacy programme, teaching seniors and newcomers to use phones, mobile money, and the internet. She writes about practical digital and money skills for everyday life.",
     icon: "📚",
   },
+  {
+    name: "The Discover Klagon Guides",
+    slug: "discover-klagon-guides",
+    role: "Community-Narrated Tour Team, Discover Klagon",
+    bio: "The resident guides of Discover Klagon — vendors, elders, factory workers and youth who narrate their own market, kitchens and wetland. A share of every ticket goes directly to the guides who tell the story.",
+    icon: "🧭",
+  },
 ];
 
 export function getAuthorByName(name: string): BlogAuthor | undefined {

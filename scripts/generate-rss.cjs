@@ -41,12 +41,14 @@ function buildRss() {
         const description = get("description");
         const date = get("date");
         const category = get("category");
+        const status = get("status");
         return {
           title,
           slug,
           description,
           iso: date,
           category,
+          status,
         };
       } catch {
         return null;
@@ -54,6 +56,12 @@ function buildRss() {
     })
     .filter(Boolean)
     .filter((p) => p && p.title && p.slug)
+    .filter((p) => {
+      if (p.status !== "scheduled") return true;
+      const d = String(p.iso ?? "").trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
+      return d <= new Date().toISOString().slice(0, 10);
+    })
     .sort((a, b) => {
       const da = new Date(a.iso).getTime() || 0;
       const db = new Date(b.iso).getTime() || 0;
