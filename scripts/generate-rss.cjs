@@ -57,10 +57,10 @@ function buildRss() {
     .filter(Boolean)
     .filter((p) => p && p.title && p.slug)
     .filter((p) => {
-      if (p.status !== "scheduled") return true;
       const d = String(p.iso ?? "").trim();
       if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
-      return d <= new Date().toISOString().slice(0, 10);
+      if (p.status === "scheduled") return d <= new Date().toISOString().slice(0, 10);
+      return true;
     })
     .sort((a, b) => {
       const da = new Date(a.iso).getTime() || 0;
