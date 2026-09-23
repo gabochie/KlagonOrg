@@ -244,7 +244,7 @@ export default function RegisterPage() {
               Account creation will activate once the database is connected.
             </p>
           )}
-          <Turnstile onToken={setToken} />
+          <Turnstile onToken={setToken} onError={setError} />
           <button
             type="submit"
             disabled={busy}

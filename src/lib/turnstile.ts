@@ -33,13 +33,16 @@ export function loadTurnstileScript(): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   if (window.turnstile) return Promise.resolve();
   if (!scriptPromise) {
-    scriptPromise = new Promise((resolve) => {
+    scriptPromise = new Promise((resolve, reject) => {
       const s = document.createElement("script");
       s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
       s.async = true;
       s.defer = true;
       s.onload = () => resolve();
-      s.onerror = () => resolve();
+      s.onerror = () => {
+        scriptPromise = null;
+        reject(new Error("turnstile-script-failed"));
+      };
       document.head.appendChild(s);
     });
   }

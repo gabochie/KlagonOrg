@@ -9,10 +9,16 @@
 # 'unsafe-inline' for framework-injected styles + Google Fonts for kocc.
 # tiles.openfreemap.org serves the vector basemap (style JSON, glyphs,
 # sprites, tiles) — blocking it blanks the /map basemap.
+# challenges.cloudflare.com must stay allowed for Cloudflare Turnstile:
+#   - script-src: the api.js loader (without it window.turnstile never appears)
+#   - frame-src:  the widget's challenge iframe
+#   - connect-src: the verify worker that runs server-side siteverify
+# Without all three, every Turnstile-gated form (register, contact, mentor,
+# sponsor, field, walk, posts, chat) shows "complete the human check" forever.
 
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), geolocation=(), microphone=(self)
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://tiles.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://klagon-sales-agent.gideonabochie.workers.dev https://tiles.openfreemap.org; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://tiles.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://klagon-sales-agent.gideonabochie.workers.dev https://klagon-payments.gideonabochie.workers.dev https://tiles.openfreemap.org; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
