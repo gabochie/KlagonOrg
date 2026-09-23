@@ -1,0 +1,9 @@
+npm notice run klagonorg@0.1.0 dev
+npm notice run next dev
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://169.254.83.107:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 10.7s
