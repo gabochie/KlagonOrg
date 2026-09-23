@@ -1,0 +1,19 @@
+# KlagonOrg team notifications (Cloudflare Worker).
+# Zero-cost email alerts for new leads/submissions via the Email Sending
+# (send_email) binding. No paid APIs, no third-party providers.
+#
+# Endpoint:
+#   POST /api/notify  { type, fields } -> { ok }  (sends an email to TO_EMAIL)
+#   GET  /health
+#
+# Secrets (wrangler secret put): TO_EMAIL (team inbox, e.g. klagonorg@gmail.com)
+name = "klagon-notify"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[[send_email]]
+name = "EMAIL"
+
+[[kv_namespaces]]
+binding = "NOTIFY_RATE"
+id = "300cc33939ed4a02b96dda9d802b59b9"

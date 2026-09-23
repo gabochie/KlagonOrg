@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { SPONSOR_PLANS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { CheckCircle, ArrowRight, Building2, TrendingUp, Users, Globe } from "lucide-react";
+import { notifyTeam } from "@/lib/notify";
 import { submitSponsorApplication } from "@/lib/forms";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -51,6 +52,13 @@ export default function SponsorPage() {
     setSending(false);
     if (err) return setError(err);
     setSubmitted(true);
+    notifyTeam("sponsor", {
+      "Partner tier": plan?.name ?? selected,
+      "Full name / Org": form.full_name,
+      "Company": form.org_name || "",
+      Phone: form.phone,
+      Email: form.email,
+    });
   };
 
   return (

@@ -7,6 +7,7 @@ import { DONATION_TIERS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
 import { recordDonationIntent } from "@/lib/forms";
+import { notifyTeam } from "@/lib/notify";
 import type { MoMoNetwork } from "@/lib/payments";
 
 const NETWORKS: { id: MoMoNetwork; label: string }[] = [
@@ -58,6 +59,14 @@ export default function DonatePage() {
       name: form.full_name.trim(),
     });
     setSubmitted(true);
+    notifyTeam("pledge", {
+      Amount: displayAmount,
+      Frequency: frequency,
+      Network: network,
+      "Full name": form.full_name.trim(),
+      "MoMo phone": form.phone.trim(),
+      Email: form.email.trim(),
+    });
   };
 
   return (

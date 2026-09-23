@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { Button, Input } from "@/components/ui";
 import { Mail, MapPin, Phone, MessageCircle, ExternalLink } from "lucide-react";
 import { submitContact } from "@/lib/forms";
+import { notifyTeam } from "@/lib/notify";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 
@@ -50,6 +51,13 @@ export default function ContactPage() {
     setSending(false);
     if (err) return setError(err);
     setSubmitted(true);
+    notifyTeam("contact", {
+      Subject: form.subject || "General Inquiry",
+      Message: form.message,
+      "Full name": form.full_name || "",
+      Phone: form.phone || "",
+      Email: form.email || "",
+    });
   };
 
   return (

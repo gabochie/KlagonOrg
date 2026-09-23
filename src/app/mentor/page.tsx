@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { MENTOR_TOPICS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { submitMentorApplication } from "@/lib/forms";
+import { notifyTeam } from "@/lib/notify";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 
@@ -63,6 +64,14 @@ export default function MentorPage() {
     setSending(false);
     if (err) return setError(err);
     setSubmitted(true);
+    notifyTeam("mentor", {
+      "Full name": form.full_name,
+      Phone: form.phone,
+      Email: form.email,
+      Profession: form.profession || "",
+      Topics: selected ?? "",
+      Motivation: form.motivation || "",
+    });
   };
 
   return (
