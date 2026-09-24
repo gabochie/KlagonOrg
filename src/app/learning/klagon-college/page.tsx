@@ -89,7 +89,7 @@ export default function KlagonCollegePage() {
   const live = catalogue.courses;
   const comingSoon = catalogue.coming_soon;
   const capstones = catalogue.capstones;
-  const programmes = programmesDoc.programmes;
+  const programmes = programmesDoc.programs;
 
   const courseById = new Map<string, CourseRow>([...live, ...capstones].map((c) => [c.id, c]));
   const programCards = programmes.map((p) => {
