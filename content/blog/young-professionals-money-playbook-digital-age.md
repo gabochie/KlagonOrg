@@ -11,6 +11,7 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "💰"
 course: "Financial Literacy Basics"
+image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # The Young Professional's Money Playbook for the Digital Age

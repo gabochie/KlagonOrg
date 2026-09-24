@@ -11,6 +11,7 @@ authorRole: "Community Projects Coordinator, KlagonOrg"
 readTime: 6
 icon: "🎯"
 course: "Start Your First Business"
+image: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Why You Don't Finish Things — and How to Start Finishing

@@ -20,6 +20,7 @@ faq:
     a: "Yes: summarize long notes, generate practice questions, explain topics in simple language, and give feedback on your writing. Use it as a tutor, not a shortcut."
   - q: "Will AI replace my job?"
     a: "AI replaces tasks, not people who can do them well. Learn to delegate routine work to AI while strengthening judgement, communication and problem-solving."
+image: "https://images.pexels.com/photos/3861960/pexels-photo-3861960.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # AI for Beginners in Ghana: A Free 15-Minute Starting Guide

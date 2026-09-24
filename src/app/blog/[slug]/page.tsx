@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.title,
     description: post.description,
     keywords: [...post.tags, post.category, "KLAGON.org", "Ghana", "digital skills"],
+    robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title,
@@ -186,8 +187,11 @@ export default async function BlogPostPage({ params }: Props) {
             <img
               src={post.image}
               alt={post.title}
+              width={1200}
+              height={630}
+              fetchPriority="high"
+              decoding="async"
               className="mt-6 w-full max-h-72 object-cover rounded-xl border border-white/10"
-              loading="lazy"
             />
           )}
         </div>

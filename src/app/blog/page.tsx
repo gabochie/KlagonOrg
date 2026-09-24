@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     "Practical guides on lifelong learning, digital transformation mastery, thinking skills, building visions, and making things happen — written for young people in Ghana.",
   alternates: { canonical: "/blog" },
+  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   openGraph: {
     title: "KLAGON.org Blog — Mastery of Change in the Digital Age",
     description:
@@ -17,7 +18,14 @@ export const metadata: Metadata = {
     url: "https://klagon.org/blog",
     siteName: "KLAGON.org",
     type: "website",
-    images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org Blog" }],
+    images: [{ url: "https://klagon.org/brand/og-banner.png", width: 1200, height: 630, alt: "KLAGON.org Blog" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KLAGON.org Blog — Mastery of Change in the Digital Age",
+    description:
+      "Practical guides on lifelong learning, digital transformation, thinking skills, and building visions — free for Ghana's youth.",
+    images: ["https://klagon.org/brand/og-banner.png"],
   },
 };
 
@@ -121,8 +129,11 @@ export default function BlogIndexPage() {
                     <img
                       src={featured.image}
                       alt={featured.title}
+                      width={1200}
+                      height={630}
+                      fetchPriority="high"
+                      decoding="async"
                       className="h-48 sm:h-full w-full object-cover"
-                      loading="lazy"
                     />
                   ) : (
                     <div className="h-48 sm:h-full bg-pale dark:bg-ink-3 flex items-center justify-center text-6xl">
@@ -164,8 +175,11 @@ export default function BlogIndexPage() {
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="h-24 w-full object-cover"
+                    width={1200}
+                    height={630}
                     loading="lazy"
+                    decoding="async"
+                    className="h-24 w-full object-cover"
                   />
                 ) : (
                   <div className="h-24 bg-pale dark:bg-ink-3 flex items-center justify-center text-4xl">

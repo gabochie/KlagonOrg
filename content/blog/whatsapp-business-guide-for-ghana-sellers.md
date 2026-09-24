@@ -20,6 +20,7 @@ faq:
     a: "Post offers with clear prices, images and your catalog link, then reply fast. Consistency in posting beats occasional big promotions."
   - q: "Can my WhatsApp Business account sync with my phone contacts?"
     a: "Yes, it uses the same number and will pull contacts, but you control who sees your updates with labels and audience settings."
+image: "https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # WhatsApp Business for Ghana Sellers: A Complete Starter Guide

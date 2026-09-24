@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 6
 icon: "🔧"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Jua Kali Thinking: How Small-Scale Skills Build Big Success

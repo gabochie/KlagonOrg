@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "🧮"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/3861976/pexels-photo-3861976.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How Learning Skills Compounds: The Math of Becoming Remarkable

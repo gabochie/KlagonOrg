@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 6
 icon: "🗺️"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # A 5-Year Plan Template for Young Ghanaians

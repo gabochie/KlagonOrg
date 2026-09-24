@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "📘"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/3184390/pexels-photo-3184390.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Lifelong Learning in the Digital Age: A Practical Field Guide

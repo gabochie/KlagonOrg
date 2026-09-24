@@ -11,6 +11,7 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "📣"
 course: "Start Your First Business"
+image: "https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Digital Marketing Basics: Promote Anything Without a Big Budget

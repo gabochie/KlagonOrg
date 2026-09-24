@@ -73,6 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: p.updated ? new Date(p.updated) : new Date(p.date),
     changeFrequency: "yearly" as const,
     priority: 0.8,
+    images: p.image ? [p.image.startsWith("http") ? p.image : `${BASE}${p.image}`] : [],
   }));
 
   const categories = getCategories().map((c) => ({

@@ -20,6 +20,7 @@ faq:
     a: "Two to three focused hours daily is enough when you are consistent. Ninety minutes of deep work beats a whole weekend of distracted effort."
   - q: "When should I quit my job for the side hustle?"
     a: "Only when the hustle covers your living costs for at least six consecutive months. Until then, treat it as a portfolio you build alongside work."
+image: "https://images.pexels.com/photos/2988232/pexels-photo-2988232.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Side Hustles in Ghana: 9 Realistic Ideas You Can Start This Month

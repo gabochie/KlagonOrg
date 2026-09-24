@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${author.name} — Author & ${author.role}`,
     description: author.bio,
+    robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
     alternates: { canonical: `/blog/author/${author.slug}` },
     openGraph: {
       title: `${author.name} — KLAGON.org Blog Author`,
@@ -28,7 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://klagon.org/blog/author/${author.slug}`,
       siteName: "KLAGON.org",
       type: "profile",
-      images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: author.name }],
+      images: [{ url: "https://klagon.org/brand/og-banner.png", width: 1200, height: 630, alt: author.name }],
+    },
+    twitter: {
+      card: "summary",
+      title: `${author.name} — KLAGON.org Blog Author`,
+      description: author.bio,
     },
   };
 }
@@ -112,6 +118,8 @@ export default async function AuthorPage({ params }: Props) {
                       <img
                         src={post.image}
                         alt={post.title}
+                        width={1200}
+                        height={630}
                         className="h-24 w-full object-cover"
                         loading="lazy"
                       />

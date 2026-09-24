@@ -11,6 +11,7 @@ authorRole: "Community Projects Coordinator, KlagonOrg"
 readTime: 5
 icon: "🎯"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Building Visions That Last: How Young People Create Goals They Actually Keep

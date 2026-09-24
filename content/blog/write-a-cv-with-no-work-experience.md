@@ -20,6 +20,7 @@ faq:
     a: "In Ghana it is common, but keep it professional: a neat, recent photo. Date of birth is optional and never required for a strong CV."
   - q: "What is the one mistake that gets CVs ignored?"
     a: "Typos and inconsistent formatting. A clean one-page layout with zero errors beats a long list of skills, because employers read a CV in seconds."
+image: "https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Write a CV With No Work Experience

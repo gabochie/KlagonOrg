@@ -20,6 +20,7 @@ faq:
     a: "Sellers get fake payment notifications. Confirm the money is truly in your account, check the sender name, and only ship after you verify."
   - q: "What should I do if I have already been scammed?"
     a: "Report to the Cybercrime Unit and your mobile money provider immediately, change your passwords, and dispute or freeze the transaction."
+image: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Protect Yourself Online in Ghana: The Scam Guide You Need

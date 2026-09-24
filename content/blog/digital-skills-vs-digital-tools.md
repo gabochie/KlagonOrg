@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 5
 icon: "🛠️"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Digital Skills vs Digital Tools: The Difference That Decides Your Future

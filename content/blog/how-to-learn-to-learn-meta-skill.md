@@ -11,6 +11,7 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "🔄"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Learn to Learn: The Meta-Skill Behind Every Future-Proof Career

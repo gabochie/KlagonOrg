@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 6
 icon: "🚀"
 course: "Start Your First Business"
+image: "https://images.pexels.com/photos/3184639/pexels-photo-3184639.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Making Things Happen: The Execution Skills That Turn Ideas Into Reality

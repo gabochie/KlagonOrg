@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "⏰"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Build a Daily Routine That Actually Works for You

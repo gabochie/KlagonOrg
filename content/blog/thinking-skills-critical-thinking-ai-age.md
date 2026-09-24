@@ -11,6 +11,7 @@ authorRole: "Youth Coach & Communication Specialist, KlagonOrg"
 readTime: 5
 icon: "🧠"
 course: "Communication That Wins"
+image: "https://images.pexels.com/photos/4145153/pexels-photo-4145153.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Thinking Skills for the AI Age: Critical Thinking Is Your Career Superpower

@@ -19,6 +19,7 @@ faq:
     a: "Both. Use groups to test yourself out loud and explain topics; use solo time for past questions and the focused recall cycles in the plan."
   - q: "How do I stop procrastinating when studying?"
     a: "Use the twenty-five-minute focus rule: a short timer, one goal, no phone. Small daily blocks beat marathon sessions that never start."
+image: "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Study for Exams in Ghana: A System That Actually Works

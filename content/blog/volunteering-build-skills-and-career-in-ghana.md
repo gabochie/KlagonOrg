@@ -11,6 +11,7 @@ authorRole: "Community Projects Coordinator, KlagonOrg"
 readTime: 6
 icon: "🌳"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/3183152/pexels-photo-3183152.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Volunteering in Ghana: Build Skills, Experience, and Connections

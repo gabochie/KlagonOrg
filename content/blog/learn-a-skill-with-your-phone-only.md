@@ -11,6 +11,7 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "📱"
 course: "Introduction to AI"
+image: "https://images.pexels.com/photos/1181738/pexels-photo-1181738.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Learn a New Skill With Only Your Phone: A 30-Day Plan

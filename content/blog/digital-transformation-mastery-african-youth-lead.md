@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 6
 icon: "💻"
 course: "Introduction to AI"
+image: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Digital Transformation Mastery: What It Means and How Young Africans Can Lead It

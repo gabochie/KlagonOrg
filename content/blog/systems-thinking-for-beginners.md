@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 6
 icon: "🌐"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/4145190/pexels-photo-4145190.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Systems Thinking for Beginners: See the Whole, Not Just the Pieces

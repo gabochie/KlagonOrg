@@ -11,6 +11,7 @@ authorRole: "Community Projects Coordinator, KlagonOrg"
 readTime: 5
 icon: "🧿"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Write a Personal Mission Statement (With a Ghanaian Example)

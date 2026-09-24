@@ -11,6 +11,7 @@ authorRole: "Youth Coach & Communication Specialist, KlagonOrg"
 readTime: 5
 icon: "🖼️"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Vision Board or Vision Plan? The Honest Answer About Visualisation

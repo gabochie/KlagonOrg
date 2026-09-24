@@ -11,6 +11,7 @@ authorRole: "Digital Literacy Program Lead, KlagonOrg"
 readTime: 6
 icon: "📖"
 course: "Introduction to AI"
+image: "https://images.pexels.com/photos/1370296/pexels-photo-1370296.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Turn Reading Into Real Skills: The 1-4-7 Book Method

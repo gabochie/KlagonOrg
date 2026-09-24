@@ -11,6 +11,7 @@ authorRole: "Youth Coach & Communication Specialist, KlagonOrg"
 readTime: 6
 icon: "🔍"
 course: "Communication That Wins"
+image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Spot Fake News and Misinformation Online

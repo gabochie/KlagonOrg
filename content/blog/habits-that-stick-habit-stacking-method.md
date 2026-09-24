@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 5
 icon: "🔁"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/356040/pexels-photo-356040.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Build Habits That Stick: The Habit Stacking Method

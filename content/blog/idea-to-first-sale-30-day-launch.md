@@ -11,6 +11,7 @@ authorRole: "Programs Lead, KlagonOrg"
 readTime: 7
 icon: "🏁"
 course: "Start Your First Business"
+image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # From Idea to First Sale: A Practical 30-Day Launch Plan

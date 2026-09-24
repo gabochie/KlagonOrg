@@ -11,6 +11,7 @@ authorRole: "Youth Coach & Communication Specialist, KlagonOrg"
 readTime: 5
 icon: "⏱️"
 course: "Start Your First Business"
+image: "https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # The 15-Minute Rule: Beat Procrastination and Start Anything Today

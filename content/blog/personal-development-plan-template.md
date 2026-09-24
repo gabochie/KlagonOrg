@@ -11,6 +11,7 @@ authorRole: "Community Projects Coordinator, KlagonOrg"
 readTime: 5
 icon: "🗺️"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # The Personal Development Plan: Turn Your Vision Into a Year You Control

@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "🧭"
 course: "Leadership Foundations"
+image: "https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # How to Make Better Decisions When You Have Little Time

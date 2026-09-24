@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${meta.title} | KLAGON.org Blog`,
     description: meta.description,
+    robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
     alternates: { canonical: `/blog/category/${category}` },
     openGraph: {
       title: `${meta.title} | KLAGON.org Blog`,
@@ -62,7 +63,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "KLAGON.org",
       type: "website",
       locale: "en_GH",
-      images: [{ url: "/brand/og-banner.png", width: 1200, height: 630, alt: meta.title }],
+      images: [{ url: "https://klagon.org/brand/og-banner.png", width: 1200, height: 630, alt: meta.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${meta.title} | KLAGON.org Blog`,
+      description: meta.description,
+      images: ["https://klagon.org/brand/og-banner.png"],
     },
   };
 }
@@ -155,6 +162,8 @@ export default async function BlogCategoryPage({ params }: Props) {
                     <img
                       src={post.image}
                       alt={post.title}
+                      width={1200}
+                      height={630}
                       className="h-24 w-full object-cover"
                       loading="lazy"
                     />

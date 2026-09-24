@@ -11,6 +11,7 @@ authorRole: "Software Engineer & Volunteer Mentor, KlagonOrg"
 readTime: 6
 icon: "🦶"
 course: "Build Your Career Roadmap"
+image: "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ---
 
 # Digital Footprint 101: Build a Positive Online Reputation in Ghana
