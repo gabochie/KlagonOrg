@@ -53,7 +53,7 @@ interface Catalogue {
   capstones: CourseRow[];
 }
 interface ProgrammeCatalogue {
-  programmes: ProgrammeRow[];
+  programs: ProgrammeRow[];
 }
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
@@ -83,7 +83,7 @@ function skillTokens(tokens: string[] = []): string {
 
 export default function KlagonCollegePage() {
   const catalogue = loadJSON<Catalogue>("catalogue.json");
-  const programmesDoc = loadJSON<ProgrammeCatalogue>("programmes.json");
+  const programmesDoc = loadJSON<ProgrammeCatalogue>("programs.json");
   const taxonomy = loadJSON<Taxonomy>("skills-taxonomy.json");
 
   const live = catalogue.courses;
