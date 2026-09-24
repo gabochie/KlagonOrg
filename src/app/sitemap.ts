@@ -11,6 +11,15 @@ export const dynamic = "force-static";
 
 const BASE = "https://klagon.org";
 
+function xmlEscape(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 async function getCourseIds(): Promise<string[]> {
   try {
     const sb = getSupabase();
@@ -73,7 +82,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: p.updated ? new Date(p.updated) : new Date(p.date),
     changeFrequency: "yearly" as const,
     priority: 0.8,
-    images: p.image ? [p.image.startsWith("http") ? p.image : `${BASE}${p.image}`] : [],
+    images: p.image
+      ? [xmlEscape(p.image.startsWith("http") ? p.image : `${BASE}${p.image}`)]
+      : [],
   }));
 
   const categories = getCategories().map((c) => ({
