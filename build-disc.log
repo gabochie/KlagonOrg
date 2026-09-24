@@ -1,0 +1,183 @@
+npm notice run klagonorg@0.1.0 build
+npm notice run node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build
+Cleared .next/cache
+rss.xml written with 20 items
+   ▲ Next.js 15.5.19
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 21.6s
+   Linting and checking validity of types ...
+
+./src/app/blog/author/[slug]/page.tsx
+118:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/blog/category/[category]/page.tsx
+162:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/blog/page.tsx
+129:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+175:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/blog/[slug]/page.tsx
+187:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/landing/Footer.tsx
+101:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/landing/Navbar.tsx
+82:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/sponsor/BusinessCardContent.tsx
+88:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/sponsor/SponsorProfileContent.tsx
+81:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+93:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/sponsor/SponsorWallContent.tsx
+30:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/947) ...
+   Generating static pages (236/947) 
+   Generating static pages (473/947) 
+   Generating static pages (710/947) 
+ ✓ Generating static pages (947/947)
+   Finalizing page optimization ...
+   Collecting build traces ...
+   Exporting (0/2) ...
+ ✓ Exporting (2/2)
+
+Route (app)                                                        Size  First Load JS
+┌ ○ /                                                           2.57 kB         189 kB
+├ ○ /_not-found                                                   206 B         103 kB
+├ ○ /about                                                      1.25 kB         188 kB
+├ ○ /admin/login                                                4.86 kB         175 kB
+├ ○ /auth/forgot                                                4.07 kB         174 kB
+├ ○ /auth/login                                                 4.11 kB         174 kB
+├ ○ /auth/register                                              6.49 kB         181 kB
+├ ○ /auth/reset                                                 4.15 kB         174 kB
+├ ● /b/[slug]                                                     176 B         106 kB
+├   ├ /b/afram-plains-engineering
+├   ├ /b/tema-digital-hub
+├   └ /b/klagon-community-bakery
+├ ○ /blog                                                       1.25 kB         188 kB
+├ ● /blog/[slug]                                                3.63 kB         190 kB
+├   ├ /blog/volunteering-build-skills-and-career-in-ghana
+├   ├ /blog/finish-what-you-start-scope-and-ship
+├   ├ /blog/habits-that-stick-habit-stacking-method
+├   └ [+35 more paths]
+├ ● /blog/author/[slug]                                         1.25 kB         188 kB
+├   ├ /blog/author/kweku-asante
+├   ├ /blog/author/emmanuel-kumi
+├   ├ /blog/author/ama-kofi
+├   └ [+3 more paths]
+├ ○ /blog/authors                                               1.25 kB         188 kB
+├ ● /blog/category/[category]                                   1.25 kB         188 kB
+├   ├ /blog/category/making-things-happen
+├   ├ /blog/category/building-visions
+├   ├ /blog/category/thinking-skills
+├   └ [+3 more paths]
+├ ○ /business                                                   8.42 kB         195 kB
+├ ● /business/[slug]                                            3.47 kB         190 kB
+├   ├ /business/afram-plains-engineering
+├   ├ /business/tema-digital-hub
+├   └ /business/klagon-community-bakery
+├ ● /business/[slug]/badge                                      8.03 kB         194 kB
+├   ├ /business/afram-plains-engineering/badge
+├   ├ /business/tema-digital-hub/badge
+├   └ /business/klagon-community-bakery/badge
+├ ○ /business/templates                                         1.25 kB         188 kB
+├ ○ /classifieds                                                2.51 kB         189 kB
+├ ○ /classifieds/properties                                     2.51 kB         189 kB
+├ ○ /classifieds/vehicles                                       2.51 kB         189 kB
+├ ○ /coming-soon                                                3.88 kB         110 kB
+├ ○ /contact                                                    4.48 kB         195 kB
+├ ○ /culture                                                     8.9 kB         195 kB
+├ ○ /dashboard                                                  2.33 kB         169 kB
+├ ○ /dashboard/admin                                              24 kB         207 kB
+├ ○ /dashboard/admin/events                                      5.8 kB         172 kB
+├ ○ /dashboard/admin/moderation                                  5.9 kB         180 kB
+├ ○ /dashboard/admin/ops                                        2.58 kB         173 kB
+├ ○ /dashboard/admin/sponsors                                   4.16 kB         175 kB
+├ ○ /dashboard/coming-soon                                        176 B         106 kB
+├ ○ /dashboard/events                                           2.95 kB         177 kB
+├ ○ /dashboard/learning                                           176 B         106 kB
+├ ● /dashboard/learning/[id]                                    1.94 kB         204 kB
+├   ├ /dashboard/learning/48a23b87-c251-4f0e-b0ee-3e330989c7e7
+├   ├ /dashboard/learning/4376fdb9-53ed-466b-bbb8-792f292e566d
+├   ├ /dashboard/learning/207f42b7-69e7-4582-b639-d41d2badb700
+├   └ [+3 more paths]
+├ ○ /dashboard/member                                           10.8 kB         194 kB
+├ ○ /dashboard/news                                              4.9 kB         175 kB
+├ ○ /dashboard/projects                                         1.93 kB         176 kB
+├ ○ /dashboard/settings                                         4.68 kB         171 kB
+├ ○ /dashboard/super                                            8.33 kB         187 kB
+├ ○ /dashboard/super/command                                    4.36 kB         180 kB
+├ ○ /dashboard/volunteer                                        2.19 kB         173 kB
+├ ● /directory/[slug]                                           3.59 kB         190 kB
+├   ├ /directory/agenda-concrete-ghana-limited
+├   ├ /directory/apog-klagon
+├   ├ /directory/klagon-maternity-home-and-clinic
+├   └ [+737 more paths]
+├ ○ /donate                                                     3.73 kB         199 kB
+├ ○ /events                                                     5.38 kB         196 kB
+├ ○ /field                                                      5.13 kB         196 kB
+├ ○ /forum                                                       3.5 kB         190 kB
+├ ● /forum/[boardId]                                            6.31 kB         193 kB
+├   ├ /forum/general
+├   ├ /forum/ask
+├   ├ /forum/culture
+├   └ [+2 more paths]
+├ ○ /jobs                                                       5.22 kB         192 kB
+├ ○ /learning                                                   1.25 kB         188 kB
+├ ● /learning/[id]                                                560 B         219 kB
+├   ├ /learning/48a23b87-c251-4f0e-b0ee-3e330989c7e7
+├   ├ /learning/4376fdb9-53ed-466b-bbb8-792f292e566d
+├   ├ /learning/207f42b7-69e7-4582-b639-d41d2badb700
+├   └ [+3 more paths]
+├ ○ /map                                                        8.14 kB         195 kB
+├ ● /map/[slug]                                                 1.25 kB         188 kB
+├   ├ /map/kingsthrone-school-and-church
+├   ├ /map/police-station-klagon
+├   ├ /map/place-of-worship-klagon
+├   └ [+29 more paths]
+├ ○ /mentor                                                     3.74 kB         199 kB
+├ ○ /my/business                                                4.26 kB         195 kB
+├ ○ /my/posts                                                   2.23 kB         177 kB
+├ ○ /news                                                       3.37 kB         190 kB
+├ ● /news/[id]                                                  7.98 kB         194 kB
+├   ├ /news/32c45f4d-ca8b-408c-8403-ff90bd0b1ef6
+├   ├ /news/d972a8c1-1cdb-484b-93df-757d9ee47dca
+├   ├ /news/69192a78-d501-4b33-91e8-437747e7d91a
+├   └ [+27 more paths]
+├ ● /people/[id]                                                4.24 kB         191 kB
+├   ├ /people/4bab8486-7903-4722-b2e9-852264aaf220
+├   ├ /people/c546b3de-bd90-4658-9001-f54d954d9a6f
+├   ├ /people/2d23fda9-88b5-4b36-98b3-68cecd88ff11
+├   └ [+5 more paths]
+├ ○ /privacy                                                    1.22 kB         188 kB
+├ ○ /projects                                                   1.22 kB         191 kB
+├ ○ /robots.txt                                                   206 B         103 kB
+├ ○ /sitemap.xml                                                  206 B         103 kB
+├ ○ /sponsor                                                    5.08 kB         200 kB
+├ ○ /sponsors                                                   1.25 kB         188 kB
+├ ○ /submit                                                     15.1 kB         185 kB
+├ ○ /terms                                                      1.22 kB         188 kB
+├ ○ /tools/health-score                                         4.13 kB         195 kB
+├ ○ /visit                                                      1.25 kB         188 kB
+├ ○ /visit/stay                                                 4.84 kB         196 kB
+├ ○ /visit/stays                                                1.47 kB         192 kB
+├ ○ /visit/walk                                                 4.76 kB         196 kB
+└ ○ /volunteer                                                  2.83 kB         193 kB
++ First Load JS shared by all                                    102 kB
+  ├ chunks/3636-59dfb33aa090206c.js                             46.1 kB
+  ├ chunks/4bd1b696-100b9d70ed4e49c1.js                         54.2 kB
+  └ other shared chunks (total)                                 2.13 kB
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+
