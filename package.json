@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build",
+    "validate:klagon-college": "node scripts/validate-klagon-college.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "start": "next start",
