@@ -6,7 +6,8 @@ import { marked } from "marked";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient } from "@/lib/supabase-browser";
-import { fetchMyLessonProgress } from "@/lib/queries";
+import { fetchMyLessonProgress, fetchLessonQuizzes, fetchMyPassedQuizIds, recordQuizAttempt, fetchCourseLessonIds } from "@/lib/queries";
+import type { LessonQuiz } from "@/lib/queries";
 import { ArrowLeft, CheckCircle, Circle, Clock, ExternalLink, Lock } from "lucide-react";
 import { ReadAloud } from "@/components/read/ReadAloud";
 
@@ -25,6 +26,7 @@ export interface ViewerCourse {
   category: string | null;
   icon: string | null;
   description: string | null;
+  prerequisite: { id: string; title: string } | null;
 }
 
 function youtubeId(url: string): string | null {
@@ -52,6 +54,129 @@ function renderLessonMarkdown(markdown: string): string {
   );
 }
 
+export function QuizBlock({
+  quiz,
+  memberId,
+  alreadyPassed,
+  onRecorded,
+}: {
+  quiz: LessonQuiz;
+  memberId: string | null;
+  alreadyPassed: boolean;
+  onRecorded: (quizId: string, passed: boolean) => void;
+}) {
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [result, setResult] = useState<{ score: number; passed: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  // NOTE: parent renders <QuizBlock key={quiz.id}> so state resets per quiz.
+
+  const total = quiz.questions.length;
+  const passed = result?.passed ?? alreadyPassed;
+  const answeredAll = quiz.questions.every((_, i) => answers[i] !== undefined);
+
+  const submit = async () => {
+    if (!answeredAll || saving) return;
+    const s = quiz.questions.filter((q, i) => answers[i] === q.correct_index).length;
+    const p = s >= quiz.pass_score;
+    setResult({ score: s, passed: p });
+    if (memberId) {
+      setSaving(true);
+      const ok = await recordQuizAttempt(memberId, quiz.id, s, p);
+      setSaving(false);
+      if (ok) onRecorded(quiz.id, p);
+    }
+  };
+
+  return (
+    <div className="mt-6 rounded-xl border border-amber/40 bg-amber/5 p-4 sm:p-5">
+      <div className="text-xs font-extrabold text-navy mb-1">
+        Check yourself · pass {quiz.pass_score}/{total}
+        {quiz.badge_name && passed ? ` · 🏅 ${quiz.badge_name}` : ""}
+      </div>
+      {passed && (
+        <div className="mb-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-xs font-bold text-green-800">
+          Passed{result ? ` · ${result.score}/${total}` : ""} — nice work!
+        </div>
+      )}
+      {result && !result.passed && (
+        <div className="mb-3 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs font-bold text-red-800">
+          {result.score}/{total} — below the {quiz.pass_score} pass mark. Review the lesson and try again.
+        </div>
+      )}
+      <div className="space-y-4">
+        {quiz.questions.map((q, i) => (
+          <div key={q.id}>
+            <div className="text-xs font-bold text-navy mb-1.5">
+              {i + 1}. {q.stem}
+            </div>
+            <div className="space-y-1.5">
+              {q.options.map((opt, oi) => {
+                const picked = answers[i] === oi;
+                const revealed = result !== null;
+                const isCorrect = oi === q.correct_index;
+                return (
+                  <button
+                    key={oi}
+                    type="button"
+                    disabled={result !== null}
+                    onClick={() => setAnswers((prev) => ({ ...prev, [i]: oi }))}
+                    className={`w-full text-left text-xs rounded-lg border px-3 py-2 transition-colors font-sans ${
+                      revealed && isCorrect
+                        ? "border-green-500 bg-green-50 font-bold"
+                        : revealed && picked
+                          ? "border-red-400 bg-red-50"
+                          : picked
+                            ? "border-navy bg-pale font-bold"
+                            : "border-border bg-white hover:border-navy"
+                    } ${result !== null ? "cursor-default" : "cursor-pointer"}`}
+                  >
+                    <span className="font-extrabold mr-1.5">
+                      {"abc"[oi]}.
+                    </span>
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      {result === null ? (
+        <button
+          type="button"
+          onClick={() => void submit()}
+          disabled={!answeredAll || saving || !memberId}
+          title={!memberId ? "Sign in to record your score" : undefined}
+          className="mt-4 w-full py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors disabled:opacity-50 font-sans"
+        >
+          {!memberId
+            ? "Sign in to submit answers"
+            : saving
+              ? "Saving…"
+              : "Submit answers"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setResult(null)}
+          className="mt-4 w-full py-2.5 rounded-xl border border-border bg-white text-navy text-sm font-bold hover:border-navy transition-colors font-sans"
+        >
+          Try again
+        </button>
+      )}
+      {!memberId && (
+        <p className="mt-2 text-[11px] text-gray">
+          You can try the questions now —{" "}
+          <Link href="/auth/login" className="font-bold text-blue hover:underline">
+            sign in
+          </Link>{" "}
+          to record your score and earn XP.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function CourseViewer({
   course,
   lessons,
@@ -61,26 +186,49 @@ export function CourseViewer({
 }) {
   const { profile, refreshProfile } = useAuth();
   const [done, setDone] = useState<Set<string>>(new Set());
+  const [allDone, setAllDone] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(lessons[0]?.id ?? null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [celebrate, setCelebrate] = useState(false);
   const [xpToast, setXpToast] = useState<string | null>(null);
+  const [quizzes, setQuizzes] = useState<LessonQuiz[]>([]);
+  const [passedQuizzes, setPassedQuizzes] = useState<Set<string>>(new Set());
+  const [prereqLessonIds, setPrereqLessonIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const ids = lessons.map((l) => l.id);
+    void fetchLessonQuizzes(ids).then(setQuizzes);
+    // NOTE: parent renders <CourseViewer key={course.id}> so prereq state
+    // starts empty per course; only fetch when a prerequisite exists.
+    if (course.prerequisite) {
+      void fetchCourseLessonIds(course.prerequisite.id).then(setPrereqLessonIds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [course.id]);
 
   useEffect(() => {
     if (!profile?.id) return;
     void fetchMyLessonProgress(profile.id).then((ids) => {
+      setAllDone(new Set(ids));
       const mine = new Set(ids.filter((id) => lessons.some((l) => l.id === id)));
       setDone(mine);
       const firstOpen = lessons.find((l) => !mine.has(l.id));
       if (firstOpen) setSelectedId(firstOpen.id);
     });
+    void fetchMyPassedQuizIds(profile.id).then((ids) => setPassedQuizzes(new Set(ids)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.id]);
 
   const selected = lessons.find((l) => l.id === selectedId) ?? null;
   const pct = lessons.length === 0 ? 0 : Math.round((done.size / lessons.length) * 100);
   const selectedDone = selected ? done.has(selected.id) : false;
+  const selectedQuiz = selected ? quizzes.find((q) => q.lesson_id === selected.id) ?? null : null;
+  const selectedQuizPassed = selectedQuiz ? passedQuizzes.has(selectedQuiz.id) : false;
+  const prereqMet =
+    !course.prerequisite ||
+    (prereqLessonIds.length > 0 && prereqLessonIds.every((id) => allDone.has(id)));
+  const quizGateMet = !selectedQuiz || selectedQuizPassed;
   const yt = selected?.content_url ? youtubeId(selected.content_url) : null;
   const isPdf =
     !!selected?.content_url && !yt && /\.pdf($|[?#])/i.test(selected.content_url);
@@ -211,6 +359,18 @@ export function CourseViewer({
                   Sign in →
                 </Link>
               )}
+            </div>
+          )}
+          {course.prerequisite && !prereqMet && (
+            <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-navy">
+              Finish <span className="font-extrabold">“{course.prerequisite.title}”</span> first —
+              this course builds on it.{" "}
+              <Link
+                href={`/learning/${course.prerequisite.id}`}
+                className="font-bold text-blue hover:underline"
+              >
+                Go to prerequisite →
+              </Link>
             </div>
           )}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-4">
@@ -360,9 +520,34 @@ export function CourseViewer({
                     </div>
                   )}
 
+                  {selectedQuiz && (
+                    <QuizBlock
+                      key={selectedQuiz.id}
+                      quiz={selectedQuiz}
+                      memberId={profile?.id ?? null}
+                      alreadyPassed={selectedQuizPassed}
+                      onRecorded={(quizId, passed) => {
+                        if (passed) {
+                          setPassedQuizzes((prev) => new Set(prev).add(quizId));
+                          void refreshProfile();
+                          setXpToast("+10 XP earned 🎉");
+                          window.setTimeout(() => setXpToast(null), 3000);
+                        }
+                      }}
+                    />
+                  )}
+
                   {selectedDone ? (
                     <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm font-bold text-green-800">
                       <CheckCircle size={16} /> Completed · +10 XP earned
+                    </div>
+                  ) : !prereqMet ? (
+                    <div className="w-full py-2.5 rounded-xl bg-light text-gray/70 text-sm font-bold text-center font-sans">
+                      Complete “{course.prerequisite?.title}” first to unlock progress here
+                    </div>
+                  ) : selectedQuiz && !selectedQuizPassed ? (
+                    <div className="w-full py-2.5 rounded-xl bg-light text-gray/70 text-sm font-bold text-center font-sans">
+                      Pass the quiz above ({selectedQuiz.pass_score}/{selectedQuiz.questions.length}) to complete this lesson
                     </div>
                   ) : !hasMaterial ? (
                     <button

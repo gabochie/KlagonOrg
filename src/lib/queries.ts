@@ -393,3 +393,104 @@ function timeAgo(iso: string): string {
   const days = Math.floor(hrs / 24);
   return `${days} day${days === 1 ? "" : "s"} ago`;
 }
+
+// ------------------------------------------------------------------
+// quizzes (IT Tracks 0+1 and later; old courses have no quizzes)
+// NOTE: questions include correct_index so learners get instant
+// feedback. Answers already ship in the public lesson markdown today,
+// so this exposes nothing new.
+// ------------------------------------------------------------------
+
+export interface QuizQuestion {
+  id: string;
+  quiz_id: string;
+  sort_order: number;
+  kind: string;
+  stem: string;
+  options: string[];
+  correct_index: number;
+}
+
+export interface LessonQuiz {
+  id: string;
+  lesson_id: string;
+  pass_score: number;
+  badge_name: string | null;
+  questions: QuizQuestion[];
+}
+
+export async function fetchLessonQuizzes(lessonIds: string[]): Promise<LessonQuiz[]> {
+  const c = client();
+  if (!c || lessonIds.length === 0) return [];
+  const { data: quizzes, error } = await c
+    .from("quizzes")
+    .select("id,lesson_id,pass_score,badge_name")
+    .in("lesson_id", lessonIds);
+  if (error || !quizzes || quizzes.length === 0) return [];
+  const quizIds = quizzes.map((q) => q.id);
+  const { data: questions, error: qErr } = await c
+    .from("quiz_questions")
+    .select("id,quiz_id,sort_order,kind,stem,options,correct_index")
+    .in("quiz_id", quizIds)
+    .order("sort_order", { ascending: true });
+  if (qErr) return [];
+  const byQuiz = new Map<string, QuizQuestion[]>();
+  for (const q of questions ?? []) {
+    const rawOptions = Array.isArray(q.options) ? q.options : [];
+    const list = byQuiz.get(q.quiz_id) ?? [];
+    list.push({
+      id: q.id,
+      quiz_id: q.quiz_id,
+      sort_order: q.sort_order,
+      kind: q.kind,
+      stem: q.stem,
+      options: rawOptions.filter((o): o is string => typeof o === "string"),
+      correct_index: q.correct_index,
+    });
+    byQuiz.set(q.quiz_id, list);
+  }
+  return quizzes.map((q) => ({
+    id: q.id,
+    lesson_id: q.lesson_id,
+    pass_score: q.pass_score,
+    badge_name: q.badge_name,
+    questions: byQuiz.get(q.id) ?? [],
+  }));
+}
+
+export async function fetchMyPassedQuizIds(memberId: string): Promise<string[]> {
+  const c = client();
+  if (!c) return [];
+  const { data, error } = await c
+    .from("quiz_attempts")
+    .select("quiz_id")
+    .eq("member_id", memberId)
+    .eq("passed", true);
+  if (error || !data) return [];
+  return [...new Set(data.map((r) => r.quiz_id))];
+}
+
+export async function recordQuizAttempt(
+  memberId: string,
+  quizId: string,
+  score: number,
+  passed: boolean,
+): Promise<boolean> {
+  const c = client();
+  if (!c) return false;
+  const { error } = await c
+    .from("quiz_attempts")
+    .insert({ member_id: memberId, quiz_id: quizId, score, passed });
+  return !error;
+}
+
+export async function fetchCourseLessonIds(courseId: string): Promise<string[]> {
+  const c = client();
+  if (!c) return [];
+  const { data, error } = await c
+    .from("lessons")
+    .select("id")
+    .eq("course_id", courseId);
+  if (error || !data) return [];
+  return data.map((r) => r.id);
+}

@@ -10,6 +10,7 @@ export interface CourseReaderResult {
     icon: string | null;
     description: string | null;
     published: boolean;
+    prerequisite: { id: string; title: string } | null;
   } | null;
   lessons: {
     id: string;
@@ -26,17 +27,26 @@ export async function getCourseAndLessons(id: string): Promise<CourseReaderResul
     const sb = getSupabase();
     const { data: c } = await sb
       .from("courses")
-      .select("id,title,category,icon,description,published")
+      .select("id,title,category,icon,description,published,prerequisite_course_id")
       .eq("id", id)
       .maybeSingle();
     if (!c || !c.published) return { course: null, lessons: [] };
+    let prerequisite: { id: string; title: string } | null = null;
+    if (c.prerequisite_course_id) {
+      const { data: p } = await sb
+        .from("courses")
+        .select("id,title")
+        .eq("id", c.prerequisite_course_id)
+        .maybeSingle();
+      if (p) prerequisite = { id: p.id, title: p.title };
+    }
     const { data: l } = await sb
       .from("lessons")
       .select("id,title,duration_min,content_url,content,sort_order")
       .eq("course_id", id)
       .order("sort_order", { ascending: true });
     return {
-      course: c,
+      course: { ...c, prerequisite },
       lessons: (l ?? []).map((row) => ({
         id: row.id,
         title: row.title,
@@ -71,5 +81,5 @@ export async function CourseReaderContent({ id, backHref = "/learning" }: { id: 
     );
   }
 
-  return <CourseViewer course={course} lessons={lessons} />;
+  return <CourseViewer key={course.id} course={course} lessons={lessons} />;
 }

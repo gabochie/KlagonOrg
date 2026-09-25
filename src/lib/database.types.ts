@@ -212,6 +212,7 @@ export interface Database {
           icon: string;
           description: string | null;
           published: boolean;
+          prerequisite_course_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -221,6 +222,7 @@ export interface Database {
           icon?: string;
           description?: string | null;
           published?: boolean;
+          prerequisite_course_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["courses"]["Insert"]>;
         Relationships: [];
@@ -287,6 +289,93 @@ export interface Database {
         Insert: { id?: string; name: string; icon?: string };
         Update: Partial<Database["public"]["Tables"]["badges"]["Insert"]>;
         Relationships: [];
+      };
+      quizzes: {
+        Row: {
+          id: string;
+          lesson_id: string;
+          pass_score: number;
+          badge_name: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          lesson_id: string;
+          pass_score: number;
+          badge_name?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["quizzes"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_lesson_id_fkey";
+            columns: ["lesson_id"];
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quiz_questions: {
+        Row: {
+          id: string;
+          quiz_id: string;
+          sort_order: number;
+          kind: string;
+          stem: string;
+          options: Json;
+          correct_index: number;
+          explanation: string | null;
+        };
+        Insert: {
+          id?: string;
+          quiz_id: string;
+          sort_order?: number;
+          kind: string;
+          stem: string;
+          options: Json;
+          correct_index: number;
+          explanation?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["quiz_questions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey";
+            columns: ["quiz_id"];
+            referencedRelation: "quizzes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quiz_attempts: {
+        Row: {
+          id: string;
+          member_id: string;
+          quiz_id: string;
+          score: number;
+          passed: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          quiz_id: string;
+          score: number;
+          passed?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["quiz_attempts"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_member_id_fkey";
+            columns: ["member_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey";
+            columns: ["quiz_id"];
+            referencedRelation: "quizzes";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       reader_completions: {
         Row: { id: string; member_id: string; slug: string; completed_at: string };
