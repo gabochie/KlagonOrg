@@ -72,4 +72,24 @@ describe("volunteer program schema contract", () => {
     expect(s).toContain("'Star Volunteer'");
     expect(s).toContain("insert into public.notifications");
   });
+
+  it("In-kind offers table is open for gifts and closed for reads", () => {
+    const s = M("20260929000000_inkind_offers.sql");
+    expect(s).toContain("create table if not exists public.inkind_offers");
+    for (const category of [
+      "devices",
+      "connectivity",
+      "skills",
+      "visibility",
+      "hosting",
+      "venue",
+      "other",
+    ]) {
+      expect(s).toContain(`'${category}'`);
+    }
+    expect(s).toContain("inkind_offers_insert_open");
+    expect(s).toContain("for insert to anon, authenticated");
+    expect(s).toContain("inkind_offers_select_own_or_admin");
+    expect(s).toContain("inkind_offers_admin_write");
+  });
 });

@@ -6,14 +6,25 @@ import { Footer } from "@/components/landing/Footer";
 import { DONATION_TIERS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
-import { recordDonationIntent } from "@/lib/forms";
+import { recordDonationIntent, recordInKindOffer } from "@/lib/forms";
 import { notifyTeam } from "@/lib/notify";
+import { useAuth } from "@/components/auth/AuthProvider";
 import type { MoMoNetwork } from "@/lib/payments";
 
 const NETWORKS: { id: MoMoNetwork; label: string }[] = [
   { id: "mtn", label: "MTN MoMo" },
   { id: "telecel", label: "Telecel Cash" },
   { id: "at", label: "AT Money" },
+];
+
+const INKIND_CATEGORIES = [
+  { value: "devices", label: "Devices (laptops, phones, tablets)" },
+  { value: "connectivity", label: "Connectivity (data, Wi-Fi gear, power)" },
+  { value: "skills", label: "Skilled hours (dev, design, training)" },
+  { value: "visibility", label: "Visibility (printing, SMS, venue, media)" },
+  { value: "hosting", label: "Hosting & licenses" },
+  { value: "venue", label: "Space / venue" },
+  { value: "other", label: "Something else" },
 ];
 
 // Public contact line (same number as the site footer).
@@ -345,5 +356,121 @@ export default function DonatePage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+function InKindSection() {
+  const { profile } = useAuth();
+  const [category, setCategory] = useState("devices");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!title.trim()) return setError("Describe what you are offering.");
+    if (!name.trim() || !phone.trim()) {
+      return setError("Add your name and a phone number so we can reach you.");
+    }
+    setSending(true);
+    const result = await recordInKindOffer({
+      member_id: profile?.id ?? null,
+      category,
+      title: title.trim(),
+      description: description.trim() || null,
+      full_name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim() || null,
+    });
+    setSending(false);
+    if (result.error) return setError(result.error);
+    setDone(true);
+    notifyTeam("pledge", {
+      Kind: "In-kind offer",
+      Category: category,
+      Item: title.trim(),
+      "Full name": name.trim(),
+      Phone: phone.trim(),
+      Email: email.trim(),
+    });
+  };
+
+  return (
+    <section className="bg-pale py-14 sm:py-16 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-xl font-extrabold text-navy text-center tracking-tight mb-2">
+          Give goods, skills or space
+        </h2>
+        <p className="text-sm text-gray text-center mb-8 max-w-md mx-auto">
+          Laptops, data bundles, pro-bono hours, printing, a venue — in-kind gifts keep Klagon
+          running just like cash. Tell us what you have; we reply within 48 hours.
+        </p>
+        <div className="max-w-lg mx-auto">
+          {done ? (
+            <div className="bg-white rounded-xl border border-border p-8 text-center">
+              <div className="text-3xl mb-3">🎁</div>
+              <h3 className="text-base font-bold text-navy mb-1">Medase! Offer received.</h3>
+              <p className="text-sm text-gray">
+                Thank you{name ? `, ${name}` : ""} — our team will call or WhatsApp you within
+                48 hours to arrange collection or next steps.
+              </p>
+            </div>
+          ) : (
+            <form
+              className="bg-white rounded-xl border border-border p-6 sm:p-8 flex flex-col gap-4"
+              onSubmit={submit}
+            >
+              <div>
+                <div className="text-xs font-semibold text-navy mb-1.5">What are you offering?</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {INKIND_CATEGORIES.map((c) => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setCategory(c.value)}
+                      className={`py-2 px-2 rounded-lg border text-[11px] font-bold cursor-pointer font-sans transition-all ${
+                        category === c.value
+                          ? "border-amber bg-amber/10 text-navy"
+                          : "border-border text-gray hover:border-amber"
+                      }`}
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Input label="Short title" placeholder="e.g. 3 used laptops, weekend venue in Sakumono" required value={title} onChange={(e) => setTitle(e.target.value)} />
+              <div>
+                <label className="block text-xs font-semibold text-navy mb-1.5">
+                  Details (condition, quantity, location, availability)
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Anything that helps us say yes fast…"
+                  rows={3}
+                  className="w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-navy placeholder:text-gray/50 focus:outline-none focus:border-navy"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Input label="Full name" placeholder="Your name" required value={name} onChange={(e) => setName(e.target.value)} />
+                <Input label="Phone" placeholder="0244 000 000" required value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+              <Input label="Email (optional)" type="email" placeholder="you@email.com" required={false} value={email} onChange={(e) => setEmail(e.target.value)} />
+              {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+              <Button variant="dark" size="lg" className="w-full" disabled={sending}>
+                {sending ? "Sending offer…" : "Offer this gift"}
+              </Button>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }

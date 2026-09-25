@@ -114,3 +114,13 @@ test("sponsor page prefills interest from track and role links", async ({ page }
     timeout: 20000,
   });
 });
+
+test("donate page offers in-kind gifts alongside cash", async ({ page }) => {
+  await page.goto("/donate");
+  await expect(page.getByText("Give goods, skills or space")).toBeVisible({
+    timeout: 20000,
+  });
+  await expect(
+    page.getByRole("button", { name: /Devices \(laptops, phones, tablets\)/ }),
+  ).toBeVisible({ timeout: 20000 });
+});
