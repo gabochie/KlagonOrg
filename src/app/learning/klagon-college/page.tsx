@@ -37,6 +37,8 @@ interface CourseRow {
   duration_weeks?: number;
   type?: string;
   skills?: string[];
+  scope?: string;
+  evidence?: string[];
 }
 interface ProgrammeRow {
   id: string;
