@@ -85,3 +85,32 @@ test("admin volunteers page bounces strangers to admin login", async ({ page }) 
   await page.goto("/dashboard/admin/volunteers");
   await expect(page).toHaveURL(/\/admin\/login/, { timeout: 15000 });
 });
+
+test("impact page renders live program numbers", async ({ page }) => {
+  await page.goto("/impact");
+  await expect(page.getByText("Proof, not promises.")).toBeVisible({ timeout: 20000 });
+  for (const label of [
+    "Free courses live",
+    "Lessons published",
+    "Volunteers on the team",
+    "Open volunteer roles",
+  ]) {
+    await expect(page.getByText(label, { exact: true })).toBeVisible({ timeout: 20000 });
+  }
+});
+
+test("donate page offers Community Circle and diaspora channel", async ({ page }) => {
+  await page.goto("/donate");
+  await expect(page.getByText("The Community Circle")).toBeVisible({ timeout: 20000 });
+  await expect(page.getByRole("button", { name: /Card \/ bank \(diaspora\)/ })).toBeVisible({
+    timeout: 20000,
+  });
+});
+
+test("sponsor page prefills interest from track and role links", async ({ page }) => {
+  await page.goto("/sponsor?interest=Course%3A%20Build%20Your%20First%20Web%20Page");
+  await expect(page.getByText("You're enquiring about:")).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText(/Course: Build Your First Web Page/)).toBeVisible({
+    timeout: 20000,
+  });
+});

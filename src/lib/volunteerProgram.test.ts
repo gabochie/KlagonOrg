@@ -22,7 +22,10 @@ describe("volunteer program schema contract", () => {
     expect(s).toContain("values ('course-media', 'course-media', true)");
     expect(s).toContain("course_media_read_public");
     expect(s).toContain("course_media_insert_admin");
-    expect(s).toContain("c.cover_url,");
+    // cover_url must be appended LAST in the view select: CREATE OR REPLACE
+    // VIEW matches columns by position (42P16 otherwise).
+    const view = s.slice(s.indexOf("create or replace view public.courses_public"));
+    expect(view).toMatch(/count\(l\.id\)::int as lesson_count,\n\s*c\.cover_url\n/);
     expect(s).toContain("security_invoker = true");
   });
 
