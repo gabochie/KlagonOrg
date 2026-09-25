@@ -34,6 +34,16 @@ export interface VolunteerData {
   email: string | null;
 }
 
+export interface InKindOfferData {
+  member_id: string | null;
+  category: string;
+  title: string;
+  description: string | null;
+  full_name: string;
+  phone: string;
+  email: string | null;
+}
+
 export interface DonationIntent {
   amount_ghs: number;
   tier_id: string | null;
@@ -80,6 +90,20 @@ export async function recordDonationIntent(data: DonationIntent): Promise<{
   const { data: row, error } = await client
     .from("donations")
     .insert({ ...data, status: "pending", provider: "moolre" })
+    .select("id")
+    .single();
+  return { id: row?.id ?? null, error: error?.message ?? null };
+}
+
+export async function recordInKindOffer(data: InKindOfferData): Promise<{
+  id: string | null;
+  error: string | null;
+}> {
+  const client = getBrowserClient();
+  if (!client) return { id: null, error: "Offers not wired yet. Supabase keys not configured." };
+  const { data: row, error } = await client
+    .from("inkind_offers")
+    .insert(data)
     .select("id")
     .single();
   return { id: row?.id ?? null, error: error?.message ?? null };
