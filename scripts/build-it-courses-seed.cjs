@@ -221,7 +221,14 @@ for (const course of COURSES) {
     questions.forEach((q, qi) => {
       blocks.push(`insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)`);
       blocks.push(`select q.id, ${qi}, '${q.kind}', '${esc(q.stem)}', '${esc(JSON.stringify(q.options))}'::jsonb, ${q.correctIndex}`);
-      blocks.push(...lessonScope.map((s, si) => (si === 0 ? s.replace("from public.lessons l", "from public.quizzes q join public.lessons l on l.id = q.lesson_id") : s)));
+      const scope = lessonScope.map((s) =>
+        s.replace(
+          "from public.lessons l",
+          "from public.quizzes q join public.lessons l on l.id = q.lesson_id",
+        ),
+      );
+      scope[scope.length - 1] += ";";
+      blocks.push(...scope);
       blocks.push("");
     });
 

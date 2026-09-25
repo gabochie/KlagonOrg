@@ -29,22 +29,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Where does IT work live?', '["everywhere","KLAGON-IT folder","WhatsApp videos"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'App for coding HTML on phone?', '["Acode","Calculator","Camera"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Friend saves index.html in WhatsApp Videos, can''t find next day. Fix?', '["search all + move to KLAGON-IT/html","delete all","rename phone"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'You type `<H1>Hello` and preview blank. Fix?', '["add closing `</h1>` lowercase + save as .html","shout louder","buy laptop"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 0;
 
 -- Phone Ready - Start IT with Phone :: lesson 1 — Files That Don't Disappear (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -68,22 +68,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Best name?', '["new doc final","bakery-price-sept.txt","IMG123"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Free Drive size?', '["15GB","15MB","unlimited"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'File named `My New Document FINAL (3).docx` won''t open from link with %20 errors. Fix?', '["rename to `bakery-menu-sept.txt` hyphens","add more spaces","delete Drive"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'You uploaded to Drive but phone lost and can''t login - recovery?', '["use paper backup numbers + recovery phone to login on friend phone","give up","create new shop"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 1;
 
 -- Phone Ready - Start IT with Phone :: lesson 2 — Internet on Low Data - Learn Without Chopping Money (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -107,22 +107,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Save data by?', '["autoplay videos","download for offline on WiFi","clear SIM"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Exact search uses?', '["quotes","CAPS","emojis"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', '150MB gone in 1 day, WhatsApp auto-download ON with 20 videos. Fix?', '["turn OFF auto-download on data + download lessons on Hub WiFi","delete WhatsApp","buy 5GB"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Search `bakery` gives 2M results, need klagon bakery hours. Fix?', '["use `\"Klagon bakery hours\" site:klagon.org`","search `b`","watch YouTube"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 2;
 
 -- Phone Ready - Start IT with Phone :: lesson 3 — Project - Safe & Ready: Setup + Safety Check (12 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -146,22 +146,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'PIN share?', '["share with MTN staff","never share","share with friend"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Ready folder?', '["KLAGON-IT","Downloads mixed","no folder"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'SMS "MTN blocked, send PIN to 024X + click mtn-gh-free.com". Action?', '["send + click fast","ignore + verify via 100 + check sender MTN MoMo","forward to friends"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Phone shows 0MB, need to save lesson + keep locks. Order?', '["delete locks to free space","clear WhatsApp videos/cache (keep chats) + download on Hub WiFi + keep 2FA ON","factory reset"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3
+where c.title = 'Phone Ready - Start IT with Phone' and l.sort_order = 3;
 
 -- ================= Build Your First Web Page =================
 insert into public.courses (title, category, icon, description, published)
@@ -195,22 +195,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'What does HTML do?', '["Labels content","Hacks phones","Makes internet"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 0
+where c.title = 'Build Your First Web Page' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Where does visible content go?', '["head","body","doctype"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 0
+where c.title = 'Build Your First Web Page' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Page shows blank, code has `<body><h1>Hi` with no closing. Fix?', '["add `</h1></body></html>`","add more h1","delete head"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 0
+where c.title = 'Build Your First Web Page' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Title shows "Untitled", customer can''t find shop. Fix?', '["set `<title>Ama Bakery Klagon</title>` in head","make h1 bigger","add image"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 0
+where c.title = 'Build Your First Web Page' and l.sort_order = 0;
 
 -- Build Your First Web Page :: lesson 1 — Text That Talks: Headings, Paragraphs and Lists (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -234,22 +234,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'How many h1 per page?', '["1","5","10"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 1
+where c.title = 'Build Your First Web Page' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Which list for steps?', '["ul","ol","li alone"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 1
+where c.title = 'Build Your First Web Page' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Menu shows numbers 1,2,3 but items have no order. Fix?', '["change ol to ul with li","add more h1","delete li"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 1
+where c.title = 'Build Your First Web Page' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Screen reader skips importance, code uses `<b>pay now</b>`. Fix?', '["use `<strong>pay now</strong>` for meaning","make bigger","add br"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 1
+where c.title = 'Build Your First Web Page' and l.sort_order = 1;
 
 -- Build Your First Web Page :: lesson 2 — Click Here: Links, Images and Your Bakery Page (12 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -273,22 +273,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Which attribute for link destination?', '["src","href","alt"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 2
+where c.title = 'Build Your First Web Page' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Why alt?', '["decoration","accessibility + SEO","make bigger"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 2
+where c.title = 'Build Your First Web Page' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Image shows broken icon, code `<img src="bakery.jpg">` but file in photos/. Fix?', '["move to same folder or use `photos/bakery.jpg` + add alt","delete img","add href"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 2
+where c.title = 'Build Your First Web Page' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Link `<a>click here</a>` with no href goes nowhere. Fix?', '["add `href=\"https://wa.me/233243262019\"` + clear text","make bold","add image"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 2
+where c.title = 'Build Your First Web Page' and l.sort_order = 2;
 
 -- Build Your First Web Page :: lesson 3 — Project - My Klagon Business Card Page + Quiz (12 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -312,22 +312,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Skeleton order?', '["html>head>body","body>head>html","head>html>body"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 3
+where c.title = 'Build Your First Web Page' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Visible content tag?', '["head","title","body"]'::jsonb, 2
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 3
+where c.title = 'Build Your First Web Page' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Page has 3 h1 + img with alt="pic" + link "click here". Best fix first?', '["keep 1 h1 + alt=\"Fresh tea bread at Klagon Bakery\" + link \"Order on WhatsApp\"","add more h1","delete all"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 3
+where c.title = 'Build Your First Web Page' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Customer can''t order in 30 sec, menu is paragraph not list. Fix?', '["convert to ul menu + ol steps + WhatsApp button","add colour","add 5 photos"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Build Your First Web Page' and l.sort_order = 3
+where c.title = 'Build Your First Web Page' and l.sort_order = 3;
 
 -- ================= Forms, Photos & Tables =================
 insert into public.courses (title, category, icon, description, published)
@@ -361,22 +361,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Pro photo block?', '["img alone","figure+figcaption","div"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 0
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Why controls?', '["decoration","lets user play","SEO"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 0
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Video shows but no play button, code `<video src="baking.mp4">`. Fix?', '["add `controls` + width 100%","add more src","delete video"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 0
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Page 8MB with 6 raw photos, loads 40 sec on data. Fix?', '["compress to <200KB each, max 3, width 100%","add more photos","use 800px fixed"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 0
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 0;
 
 -- Forms, Photos & Tables :: lesson 1 — Tables: Prices and Opening Hours (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -400,22 +400,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Header cell?', '["td","th","tr"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 1
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Row tag?', '["tr","table","caption"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 1
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Prices show but screen reader reads no headers, code uses all td. Fix?', '["change first row td to th + add caption","add more rows","add border"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 1
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Table used for whole page layout breaks on phone. Fix?', '["use table only for prices/hours, layout via sections (Advanced)","add more tables","delete caption"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 1
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 1;
 
 -- Forms, Photos & Tables :: lesson 2 — Forms Part 1: Order Form for Bakery (12 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -439,22 +439,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'label for must match?', '["name","id","type"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 2
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Blocks empty submit?', '["placeholder","required","value"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 2
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Click "Phone" does nothing, code `<label>Phone</label><input id="phone">`. Fix?', '["add `for=\"phone\"` to label","add more inputs","delete label"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 2
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Qty accepts "plenty" text, total breaks. Fix?', '["use `type=\"number\" min=1 max=50` + required","use text","remove form"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 2
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 2;
 
 -- Forms, Photos & Tables :: lesson 3 — Forms Part 2 + Project: Contact & Booking Form (12 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -478,22 +478,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Multi-line message?', '["input text","textarea","select"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 3
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Label links by?', '["for=id","name=type","href=src"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 3
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Delivery radio allows both Pickup + Deliver ticked. Fix?', '["give both `name=\"delivery\"` same","give different names","delete radio"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 3
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Form sends empty name, no block. Fix?', '["add `required` + test label click jumps","add placeholder only","add more buttons"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Forms, Photos & Tables' and l.sort_order = 3
+where c.title = 'Forms, Photos & Tables' and l.sort_order = 3;
 
 -- ================= Publish Pro Site =================
 insert into public.courses (title, category, icon, description, published)
@@ -527,22 +527,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Unique content wrapper?', '["div","main","footer"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 0
+where c.title = 'Publish Pro Site' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'How many main per page?', '["3","1","10"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 0
+where c.title = 'Publish Pro Site' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Site uses 4 divs, Google + reader lost. Fix?', '["change to header/nav/main/footer with 1 h1","add more divs","delete nav"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 0
+where c.title = 'Publish Pro Site' and l.sort_order = 0;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Nav differs per page, users lost on order.html. Fix?', '["paste same nav on all 3 pages","remove links","use images only"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 0
+where c.title = 'Publish Pro Site' and l.sort_order = 0;
 
 -- Publish Pro Site :: lesson 1 — Be Found & Welcomed: SEO Meta + Accessibility (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -566,22 +566,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Mobile meta?', '["charset","viewport","description"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 1
+where c.title = 'Publish Pro Site' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Good link text?', '["click here","Order on WhatsApp","link"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 1
+where c.title = 'Publish Pro Site' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Site tiny on phone, must pinch. Code missing viewport. Fix?', '["add `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">`","add table","add image"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 1
+where c.title = 'Publish Pro Site' and l.sort_order = 1;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Reader hears "click here, click here" + alt="pic". Fix?', '["links \"Order/Menu\" + alt \"Fresh tea bread Klagon\"","add more click here","empty all alt"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 1
+where c.title = 'Publish Pro Site' and l.sort_order = 1;
 
 -- Publish Pro Site :: lesson 2 — Clean Code: Divs, Spans, Classes, IDs + Validation (11 min, 4 quiz Qs, pass 3)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -605,22 +605,22 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Reusable hook?', '["id","class","title"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 2
+where c.title = 'Publish Pro Site' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Unique per page?', '["class","id","p"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 2
+where c.title = 'Publish Pro Site' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Validator "duplicate id price" x3 + `<img></img>`. Fix?', '["change to class=\"price\" + `<img ...>` no close","add more ids","ignore"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 2
+where c.title = 'Publish Pro Site' and l.sort_order = 2;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', '`<p><ul><li>bread</li></ul></p>` flagged bad nesting. Fix?', '["close p before ul, siblings not parent","add div","delete list"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 2
+where c.title = 'Publish Pro Site' and l.sort_order = 2;
 
 -- Publish Pro Site :: lesson 3 — Project - Full 3-Page Site + Publish + Final Exam (14 min, 5 quiz Qs, pass 4)
 insert into public.lessons (course_id, title, duration_min, content, sort_order)
@@ -644,25 +644,25 @@ delete from public.quiz_questions where quiz_id in (
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 0, 'recall', 'Semantic top wrapper?', '["div","header","span"]'::jsonb, 1
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 3
+where c.title = 'Publish Pro Site' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 1, 'recall', 'Must for mobile?', '["viewport meta","table","iframe"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 3
+where c.title = 'Publish Pro Site' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 2, 'fix-it', 'Live site has 3 mains + no description + "click here" links. Fix first?', '["1 main + description + clear links","add mains","delete header"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 3
+where c.title = 'Publish Pro Site' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 3, 'fix-it', 'Netlify shows broken images after drag. Fix?', '["keep html+jpg same folder lowercase + re-drag","separate folders random","rename to spaces"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 3
+where c.title = 'Publish Pro Site' and l.sort_order = 3;
 
 insert into public.quiz_questions (quiz_id, sort_order, kind, stem, options, correct_index)
 select q.id, 4, 'recall', 'SEO snippet from?', '["meta description","button","footer only"]'::jsonb, 0
 from public.quizzes q join public.lessons l on l.id = q.lesson_id join public.courses c on c.id = l.course_id
-where c.title = 'Publish Pro Site' and l.sort_order = 3
+where c.title = 'Publish Pro Site' and l.sort_order = 3;
 
