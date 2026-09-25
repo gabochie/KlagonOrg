@@ -42,6 +42,8 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/about", changeFrequency: "monthly", priority: 0.7 },
   { path: "/mentor", changeFrequency: "monthly", priority: 0.7 },
   { path: "/volunteer", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/team", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/impact", changeFrequency: "weekly", priority: 0.8 },
   { path: "/sponsor", changeFrequency: "monthly", priority: 0.7 },
   { path: "/donate", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },

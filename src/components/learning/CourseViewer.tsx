@@ -311,6 +311,14 @@ export function CourseViewer({
               {course.description}
             </div>
           )}
+          <div className="mt-2">
+            <Link
+              href={`/sponsor?interest=${encodeURIComponent(`Course: ${course.title}`)}`}
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-amber hover:text-white transition-colors"
+            >
+              ♥ Sponsor this track
+            </Link>
+          </div>
           {course.description && (
             <div className="mt-3">
               <ReadAloud targetId="course-desc" />

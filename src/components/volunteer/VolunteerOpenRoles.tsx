@@ -79,12 +79,20 @@ export function VolunteerOpenRoles() {
                   {STATUS_LABEL[app.status] ?? app.status}
                 </div>
               ) : (
-                <Link
-                  href={`/volunteer/apply?role=${encodeURIComponent(r.title)}&post=${r.id}`}
-                  className="block text-center w-full py-2 rounded-lg text-xs font-bold bg-amber text-navy hover:bg-white transition-colors"
-                >
-                  Claim this role →
-                </Link>
+                <>
+                  <Link
+                    href={`/volunteer/apply?role=${encodeURIComponent(r.title)}&post=${r.id}`}
+                    className="block text-center w-full py-2 rounded-lg text-xs font-bold bg-amber text-navy hover:bg-white transition-colors"
+                  >
+                    Claim this role →
+                  </Link>
+                  <Link
+                    href={`/sponsor?interest=${encodeURIComponent(`Role: ${r.title}`)}`}
+                    className="block text-center w-full py-1.5 mt-1.5 rounded-lg text-[11px] font-bold text-white/60 hover:text-amber transition-colors"
+                  >
+                    ♥ Sponsor this role
+                  </Link>
+                </>
               )}
             </div>
           );

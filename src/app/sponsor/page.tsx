@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { SPONSOR_PLANS } from "@/lib/constants";
@@ -19,7 +20,35 @@ const STATS = [
 ];
 
 export default function SponsorPage() {
-  const [selected, setSelected] = useState("growth");
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full overflow-hidden">
+          <main className="w-full">
+            <section className="bg-light py-20 px-4 text-center text-sm text-gray">
+              Loading…
+            </section>
+          </main>
+        </div>
+      }
+    >
+      <SponsorPageContent />
+    </Suspense>
+  );
+}
+
+function SponsorPageContent() {
+  const params = useSearchParams();
+  const interest = (params.get("interest") ?? "").trim();
+  const matchedPlan = SPONSOR_PLANS.find(
+    (p) =>
+      p.id.toLowerCase() === interest.toLowerCase() ||
+      p.name.toLowerCase() === interest.toLowerCase(),
+  );
+  const [selected, setSelected] = useState(matchedPlan?.id ?? "growth");
+  const [interestMsg] = useState(() =>
+    interest && !matchedPlan ? `Interested in sponsoring: ${interest}` : null,
+  );
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +76,7 @@ export default function SponsorPage() {
       ...form,
       org_name: form.org_name || null,
       plan_id: selected || null,
-      message: null,
+      message: interestMsg,
     });
     setSending(false);
     if (err) return setError(err);
@@ -183,6 +212,11 @@ export default function SponsorPage() {
               <h2 className="text-lg font-extrabold text-navy text-center mb-2">
                 Get started as a sponsor
               </h2>
+              {interestMsg && (
+                <div className="max-w-lg mx-auto mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-navy text-center">
+                  You&apos;re enquiring about: <span className="font-extrabold">{interest}</span>
+                </div>
+              )}
               <p className="text-sm text-gray text-center mb-6">
                 Submit the form, or reach us directly —{" "}
                 <a href="tel:+233268708895" className="font-bold text-blue hover:underline">

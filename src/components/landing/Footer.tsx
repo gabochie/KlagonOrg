@@ -19,6 +19,7 @@ const learnLinks = [
   { label: "Projects", href: "/projects" },
   { label: "Volunteer", href: "/volunteer" },
   { label: "Team", href: "/team" },
+  { label: "Our Impact", href: "/impact" },
   { label: "Become a Mentor", href: "/mentor" },
 ];
 
