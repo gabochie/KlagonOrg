@@ -69,7 +69,7 @@ export default async function CollegeCoursePage({
   const { id } = await params;
   const doc = loadDoc();
   const row = [...(doc.courses ?? []), ...(doc.capstones ?? [])].find((c) => c.id === id);
-  const isCapstone = row && doc.capstones?.some((c) => c.id === idoperaio);
+  const isCapstone = row && doc.capstones?.some((c) => c.id === id);
 
   return (
     <div className="w-full overflow-hidden">
