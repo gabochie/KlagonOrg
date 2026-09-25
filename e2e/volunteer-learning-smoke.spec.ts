@@ -30,8 +30,8 @@ test("IT course page renders lessons with an interactive quiz gate", async ({ pa
     .first()
     .click();
   await expect(page).toHaveURL(/\/learning\/[0-9a-f-]{36}/, { timeout: 20000 });
-  // Lesson list renders.
-  await expect(page.getByText(/Your Phone is Your First Computer Lab/)).toBeVisible({
+  // Lesson list renders (title appears in sidebar and main panel).
+  await expect(page.getByText(/Your Phone is Your First Computer Lab/).first()).toBeVisible({
     timeout: 20000,
   });
   // Quiz block renders with pass mark and options.
