@@ -686,6 +686,33 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["volunteer_reviews"]["Insert"]>;
         Relationships: [];
       };
+      inkind_offers: {
+        Row: {
+          id: string;
+          member_id: string | null;
+          category: string;
+          title: string;
+          description: string | null;
+          full_name: string;
+          phone: string;
+          email: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id?: string | null;
+          category: string;
+          title: string;
+          description?: string | null;
+          full_name: string;
+          phone: string;
+          email?: string | null;
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["inkind_offers"]["Insert"]>;
+        Relationships: [];
+      };
       sponsor_applications: {
         Row: {
           id: string;
