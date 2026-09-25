@@ -341,6 +341,7 @@ export default function DonatePage() {
           </div>
         </div>
       </section>
+      <InKindSection />
       </main>
       <Footer />
     </div>
