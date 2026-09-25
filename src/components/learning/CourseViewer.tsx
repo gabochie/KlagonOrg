@@ -195,14 +195,22 @@ export function CourseViewer({
   const [quizzes, setQuizzes] = useState<LessonQuiz[]>([]);
   const [passedQuizzes, setPassedQuizzes] = useState<Set<string>>(new Set());
   const [prereqLessonIds, setPrereqLessonIds] = useState<string[]>([]);
+  const [prereqLoaded, setPrereqLoaded] = useState(false);
 
   useEffect(() => {
     const ids = lessons.map((l) => l.id);
     void fetchLessonQuizzes(ids).then(setQuizzes);
     // NOTE: parent renders <CourseViewer key={course.id}> so prereq state
     // starts empty per course; only fetch when a prerequisite exists.
+    // Fail OPEN on fetch error (server RLS still enforces the real gate);
+    // fail closed only while loading so the banner never flashes wrong.
     if (course.prerequisite) {
-      void fetchCourseLessonIds(course.prerequisite.id).then(setPrereqLessonIds);
+      void fetchCourseLessonIds(course.prerequisite.id)
+        .then((pids) => {
+          setPrereqLessonIds(pids);
+          setPrereqLoaded(true);
+        })
+        .catch(() => setPrereqLoaded(true));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course.id]);
@@ -227,7 +235,8 @@ export function CourseViewer({
   const selectedQuizPassed = selectedQuiz ? passedQuizzes.has(selectedQuiz.id) : false;
   const prereqMet =
     !course.prerequisite ||
-    (prereqLessonIds.length > 0 && prereqLessonIds.every((id) => allDone.has(id)));
+    (prereqLoaded &&
+      (prereqLessonIds.length === 0 || prereqLessonIds.every((id) => allDone.has(id))));
   const quizGateMet = !selectedQuiz || selectedQuizPassed;
   const yt = selected?.content_url ? youtubeId(selected.content_url) : null;
   const isPdf =

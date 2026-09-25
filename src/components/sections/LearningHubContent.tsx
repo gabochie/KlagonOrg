@@ -57,7 +57,10 @@ export async function LearningHubContent() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((c) => {
-              const pct = Math.round((c.lessonsDone / c.lessons) * 100);
+              // NOTE: this grid is a public server component with no member
+              // context, so per-learner progress cannot be shown here. Per-course
+              // progress lives on the course page itself. Do not render a
+              // hardcoded 0% — it reads as broken after completing lessons.
               return (
                 <Link
                   key={c.id}
@@ -79,7 +82,6 @@ export async function LearningHubContent() {
                     </h2>
                     <div className="mt-3 flex items-center gap-3 text-[11px] text-gray">
                       <span>{c.lessons} lessons</span>
-                      <span>{pct}% complete</span>
                     </div>
                   </div>
                 </Link>
