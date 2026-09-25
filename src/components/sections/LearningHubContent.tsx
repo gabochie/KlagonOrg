@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase";
 import { COURSES } from "@/lib/constants";
+import { CourseCover } from "@/components/learning/CourseCover";
 import type { Course } from "@/types";
 
 const categoryColors: Record<string, string> = {
@@ -17,7 +18,7 @@ async function getCourses(): Promise<Course[]> {
     const sb = getSupabase();
     const { data, error } = await sb
       .from("courses_public")
-      .select("id,title,category,icon,lesson_count")
+      .select("id,title,category,icon,cover_url,lesson_count")
       .order("created_at", { ascending: true });
     if (error || !data || data.length === 0) return COURSES;
     return data.map((r) => ({
@@ -25,6 +26,7 @@ async function getCourses(): Promise<Course[]> {
       title: r.title,
       category: r.category,
       icon: r.icon,
+      cover_url: r.cover_url ?? null,
       lessons: r.lesson_count,
       lessonsDone: 0,
       color: "#EEF2FF",
@@ -68,10 +70,10 @@ export async function LearningHubContent() {
                   className="group bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer block"
                 >
                   <div
-                    className="h-20 flex items-center justify-center text-2xl"
+                    className="h-20 flex items-center justify-center text-2xl overflow-hidden"
                     style={{ background: categoryColors[c.category] ?? c.color }}
                   >
-                    {c.icon}
+                    <CourseCover coverUrl={c.cover_url} icon={c.icon} title={c.title} />
                   </div>
                   <div className="p-5">
                     <div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1.5">

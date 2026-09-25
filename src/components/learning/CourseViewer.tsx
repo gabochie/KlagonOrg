@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { marked } from "marked";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { CourseCover } from "@/components/learning/CourseCover";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { fetchMyLessonProgress, fetchLessonQuizzes, fetchMyPassedQuizIds, recordQuizAttempt, fetchCourseLessonIds } from "@/lib/queries";
@@ -25,6 +26,7 @@ export interface ViewerCourse {
   title: string;
   category: string | null;
   icon: string | null;
+  cover_url: string | null;
   description: string | null;
   prerequisite: { id: string; title: string } | null;
 }
@@ -286,8 +288,12 @@ export function CourseViewer({
             <ArrowLeft size={14} /> All courses
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-amber flex items-center justify-center text-2xl flex-shrink-0">
-              {course.icon ?? "📚"}
+            <div className="w-12 h-12 rounded-xl bg-amber flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
+              <CourseCover
+                coverUrl={course.cover_url}
+                icon={course.icon ?? "📚"}
+                title={course.title}
+              />
             </div>
             <div className="min-w-0">
               {course.category && (

@@ -85,6 +85,7 @@ export async function fetchPublicCourses(): Promise<Course[]> {
     lessons: r.lesson_count,
     lessonsDone: 0,
     color: "#EEF2FF",
+    cover_url: r.cover_url ?? null,
   }));
 }
 

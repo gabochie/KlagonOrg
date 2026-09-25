@@ -211,6 +211,7 @@ export interface Database {
           category: string;
           icon: string;
           description: string | null;
+          cover_url: string | null;
           published: boolean;
           prerequisite_course_id: string | null;
           created_at: string;
@@ -221,6 +222,7 @@ export interface Database {
           category: string;
           icon?: string;
           description?: string | null;
+          cover_url?: string | null;
           published?: boolean;
           prerequisite_course_id?: string | null;
         };
@@ -550,6 +552,48 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["volunteer_signups"]["Insert"]>;
         Relationships: [];
+      };
+      volunteer_applications: {
+        Row: {
+          id: string;
+          member_id: string;
+          post_id: string | null;
+          role: string;
+          status: string;
+          terms_accepted_at: string;
+          terms_version: string;
+          id_type: string;
+          id_number: string;
+          photo_url: string | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          probation_ends_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          post_id?: string | null;
+          role: string;
+          status?: string;
+          terms_accepted_at?: string;
+          terms_version?: string;
+          id_type: string;
+          id_number: string;
+          photo_url?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          probation_ends_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["volunteer_applications"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_applications_member_id_fkey";
+            columns: ["member_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       sponsor_applications: {
         Row: {
@@ -1416,6 +1460,7 @@ export interface Database {
           category: string;
           icon: string;
           description: string | null;
+          cover_url: string | null;
           created_at: string;
           lesson_count: number;
         };

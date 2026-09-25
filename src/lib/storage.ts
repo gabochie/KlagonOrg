@@ -11,6 +11,8 @@ import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 
 export const POST_MEDIA_BUCKET = "post-media";
 export const SPONSOR_MEDIA_BUCKET = "sponsor-media";
+export const COURSE_MEDIA_BUCKET = "course-media";
+export const MEMBER_MEDIA_BUCKET = "member-media";
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -100,6 +102,56 @@ export async function uploadSponsorMedia(
   if (error) return { ok: false, error: error.message };
 
   const { data } = c.storage.from(SPONSOR_MEDIA_BUCKET).getPublicUrl(path);
+  return { ok: true, url: data.publicUrl, path };
+}
+
+/** Upload a course cover to course-media under the course's folder (admin only per RLS). */
+export async function uploadCourseMedia(
+  file: File,
+  courseId: string
+): Promise<UploadResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase is not configured." };
+  const c = getBrowserClient();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+
+  const invalid = validateImage(file);
+  if (invalid) return { ok: false, error: invalid };
+
+  const path = `courses/${courseId}/${Date.now()}-${slugify(file.name)}.${extOf(file)}`;
+
+  const { error } = await c.storage.from(COURSE_MEDIA_BUCKET).upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  const { data } = c.storage.from(COURSE_MEDIA_BUCKET).getPublicUrl(path);
+  return { ok: true, url: data.publicUrl, path };
+}
+
+/** Upload a member photo (ID/selfie/avatar) to member-media under the member's folder. */
+export async function uploadMemberMedia(
+  file: File,
+  memberId: string
+): Promise<UploadResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase is not configured." };
+  const c = getBrowserClient();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+
+  const invalid = validateImage(file);
+  if (invalid) return { ok: false, error: invalid };
+
+  const path = `${memberId}/${Date.now()}-${slugify(file.name)}.${extOf(file)}`;
+
+  const { error } = await c.storage.from(MEMBER_MEDIA_BUCKET).upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  const { data } = c.storage.from(MEMBER_MEDIA_BUCKET).getPublicUrl(path);
   return { ok: true, url: data.publicUrl, path };
 }
 

@@ -42,7 +42,7 @@ const adminMain: NavItem[] = [
   { icon: "📅", label: "Events", href: "/dashboard/admin/events" },
   { icon: "📚", label: "Learning Hub", href: SOON, soon: true },
   { icon: "🏗️", label: "Projects", href: SOON, soon: true },
-  { icon: "🙋", label: "Volunteers", href: SOON, soon: true },
+  { icon: "🙋", label: "Volunteers", href: "/dashboard/admin/volunteers" },
 ];
 
 const adminEngagement: NavItem[] = [

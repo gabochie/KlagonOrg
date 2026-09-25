@@ -7,6 +7,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { MEMBER_COURSES } from "@/lib/constants";
 import { fetchPublicCourses, fetchMyLessonProgress, isUuid } from "@/lib/queries";
 import { DemoTag } from "@/components/ui";
+import { CourseCover } from "@/components/learning/CourseCover";
 import { CheckCircle } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
@@ -87,10 +88,15 @@ export function LearningProgress() {
             className="flex items-center gap-2.5 py-2 border-b border-border last:border-b-0"
           >
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-base flex-shrink-0"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-base flex-shrink-0 overflow-hidden"
               style={{ background: c.color }}
             >
-              {c.icon}
+              <CourseCover
+                coverUrl={c.cover_url}
+                icon={c.icon}
+                title={c.title}
+                emojiClassName="text-base"
+              />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-xs font-bold text-navy truncate">{c.title}</div>

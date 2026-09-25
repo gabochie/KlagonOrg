@@ -8,6 +8,7 @@ export interface CourseReaderResult {
     title: string;
     category: string | null;
     icon: string | null;
+    cover_url: string | null;
     description: string | null;
     published: boolean;
     prerequisite: { id: string; title: string } | null;
@@ -27,7 +28,7 @@ export async function getCourseAndLessons(id: string): Promise<CourseReaderResul
     const sb = getSupabase();
     const { data: c } = await sb
       .from("courses")
-      .select("id,title,category,icon,description,published,prerequisite_course_id")
+      .select("id,title,category,icon,cover_url,description,published,prerequisite_course_id")
       .eq("id", id)
       .maybeSingle();
     if (!c || !c.published) return { course: null, lessons: [] };

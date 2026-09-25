@@ -1,64 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { VOLUNTEER_OPPS } from "@/lib/constants";
-import { getBrowserClient } from "@/lib/supabase-browser";
+import { useAuth } from "@/components/auth/AuthProvider";
+import {
+  fetchMyVolunteerApplications,
+  type VolunteerApplication,
+} from "@/lib/volunteers";
 
 const categories = Array.from(new Set(VOLUNTEER_OPPS.map((v) => v.category)));
 
-const OPP_PROJECT: Record<string, string> = {
-  "Tree-Planting Volunteer": "d57a554e-cd8d-4c6b-bf4f-0ba1941dd6ff",
-  "Digital Literacy Tutor": "aedddf00-63b1-469d-9ce6-79dc5d60811d",
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Applied · under review",
+  probationary: "On probation",
+  active: "On the team 🎉",
+  inactive: "Ended",
+  rejected: "Not successful",
 };
 
 export function VolunteerSection() {
+  const { profile } = useAuth();
   const [filter, setFilter] = useState("All");
-  const [joined, setJoined] = useState<Set<string>>(new Set());
-  const [notice, setNotice] = useState<string | null>(null);
+  const [myApps, setMyApps] = useState<VolunteerApplication[]>([]);
 
   const filtered =
     filter === "All" ? VOLUNTEER_OPPS : VOLUNTEER_OPPS.filter((v) => v.category === filter);
 
-  const toggleJoin = async (opp: { id: string; title: string }) => {
-    if (joined.has(opp.id)) return;
-    const client = getBrowserClient();
-    if (!client || !client.auth.getUser) {
-      setNotice("Sign in to volunteer. Registration for new roles requires an account.");
+  useEffect(() => {
+    if (!profile?.id) {
+      void Promise.resolve([]).then(setMyApps);
       return;
     }
-    const { data: sessionData } = await client.auth.getSession();
-    const memberId = sessionData.session?.user.id;
-    if (!memberId) {
-      setNotice("Sign in to volunteer. Registration for new roles requires an account.");
-      return;
-    }
-    const projectId = OPP_PROJECT[opp.title] ?? null;
-    const { data: prof } = await client
-      .from("profiles")
-      .select("full_name,phone,email")
-      .eq("id", memberId)
-      .single();
-    const { error: signupErr } = await client.from("volunteer_signups").insert({
-      project_id: projectId,
-      member_id: memberId,
-      role: opp.title,
-      full_name: prof?.full_name ?? null,
-      phone: prof?.phone ?? null,
-      email: prof?.email ?? null,
-    });
-    if (signupErr) {
-      setNotice("Could not sign up. Please try again.");
-      return;
-    }
-    if (projectId) {
-      await client.from("project_volunteers").upsert(
-        { project_id: projectId, member_id: memberId },
-        { onConflict: "project_id,member_id", ignoreDuplicates: true }
-      );
-    }
-    setJoined((prev) => new Set(prev).add(opp.id));
-    setNotice(null);
-  };
+    void fetchMyVolunteerApplications(profile.id).then(setMyApps);
+  }, [profile?.id]);
+
+  const appFor = (role: string) =>
+    myApps.find((a) => a.post_id === null && a.role === role) ?? null;
 
   return (
     <main className="w-full">
@@ -71,8 +49,12 @@ export function VolunteerSection() {
             Give your time. Make an impact.
           </h1>
           <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Every skill you have can help someone in Klagon. Find a volunteer role that matches your
-            interests and availability.
+            Every skill you have can help someone in Klagon. Roles are unpaid with a 30-day
+            probation — continuation depends on performance.{" "}
+            <Link href="/volunteer/terms" className="font-bold text-amber hover:underline">
+              Read the terms
+            </Link>
+            .
           </p>
         </div>
       </section>
@@ -104,17 +86,16 @@ export function VolunteerSection() {
             ))}
           </div>
           <div className="mb-6 text-xs text-gray bg-pale rounded-lg px-4 py-3">
-            These are the roles we&apos;re building for the Klagon pilot — sign up and we&apos;ll
-            confirm as each program goes live.
+            Applying requires ID verification (Ghana Card + photo) and acceptance of the{" "}
+            <Link href="/volunteer/terms" className="font-bold text-blue hover:underline">
+              Volunteer Terms
+            </Link>
+            . Approved volunteers join a 30-day probation.
           </div>
-          {notice && (
-            <div className="mb-6 text-xs font-semibold bg-amber/10 text-navy rounded-lg px-4 py-3">
-              {notice}
-            </div>
-          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((v) => {
-              const isJoined = joined.has(v.id);
+              const app = profile ? appFor(v.title) : null;
+              const open = app && ["pending", "probationary", "active"].includes(app.status);
               return (
                 <div
                   key={v.id}
@@ -134,14 +115,24 @@ export function VolunteerSection() {
                   <div className="flex items-center gap-2 text-xs text-gray mb-4">
                     <span className="font-semibold text-navy">{v.commitment}</span>
                   </div>
-                  <button
-                    onClick={() => void toggleJoin(v)}
-                    className={`w-full py-2 rounded-lg text-xs font-bold cursor-pointer font-sans transition-colors ${
-                      isJoined ? "bg-green/10 text-green-800" : "bg-navy text-white hover:bg-blue"
-                    }`}
-                  >
-                    {isJoined ? "✓ Signed Up" : "Sign Up"}
-                  </button>
+                  {open && app ? (
+                    <div
+                      className={`w-full py-2 rounded-lg text-xs font-bold text-center ${
+                        app.status === "active"
+                          ? "bg-green/10 text-green-800"
+                          : "bg-amber/10 text-navy"
+                      }`}
+                    >
+                      {STATUS_LABEL[app.status] ?? app.status}
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/volunteer/apply?role=${encodeURIComponent(v.title)}`}
+                      className="block text-center w-full py-2 rounded-lg text-xs font-bold bg-navy text-white hover:bg-blue transition-colors"
+                    >
+                      Apply now
+                    </Link>
+                  )}
                 </div>
               );
             })}

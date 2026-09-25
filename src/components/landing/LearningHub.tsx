@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase";
 import { COURSES } from "@/lib/constants";
+import { CourseCover } from "@/components/learning/CourseCover";
 
 const categoryColors: Record<string, string> = {
   "Future Skills": "#EEF2FF",
@@ -16,6 +17,7 @@ type HubCourse = {
   title: string;
   category: string;
   icon: string;
+  cover_url: string | null;
   lessons: number;
   color: string;
 };
@@ -25,7 +27,7 @@ async function getCourses(): Promise<{ courses: HubCourse[]; linked: boolean }> 
     const sb = getSupabase();
     const { data, error } = await sb
       .from("courses_public")
-      .select("id,title,category,icon,lesson_count")
+      .select("id,title,category,icon,cover_url,lesson_count")
       .order("created_at", { ascending: true });
     if (error || !data || data.length === 0) throw new Error("empty");
     return {
@@ -35,6 +37,7 @@ async function getCourses(): Promise<{ courses: HubCourse[]; linked: boolean }> 
         title: r.title,
         category: r.category,
         icon: r.icon,
+        cover_url: r.cover_url ?? null,
         lessons: r.lesson_count,
         color: categoryColors[r.category] ?? "#EEF2FF",
       })),
@@ -47,6 +50,7 @@ async function getCourses(): Promise<{ courses: HubCourse[]; linked: boolean }> 
         title: c.title,
         category: c.category,
         icon: c.icon,
+        cover_url: c.cover_url ?? null,
         lessons: c.lessons,
         color: c.color,
       })),
@@ -75,10 +79,10 @@ export async function LearningHub() {
             const card = (
               <>
                 <div
-                  className="h-20 flex items-center justify-center text-2xl"
+                  className="h-20 flex items-center justify-center text-2xl overflow-hidden"
                   style={{ background: c.color }}
                 >
-                  {c.icon}
+                  <CourseCover coverUrl={c.cover_url} icon={c.icon} title={c.title} />
                 </div>
                 <div className="p-3 sm:p-4">
                   <div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1.5">
