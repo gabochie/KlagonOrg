@@ -268,6 +268,24 @@ export function PostDetailContent({ id }: { id: string }) {
               </div>
             </div>
           )}
+          {!expired && post.type === "job" && post.details?.org_role === true && (
+            <div className="bg-navy rounded-xl p-4 mb-8 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex-1">
+                <div className="text-xs font-extrabold text-white">
+                  This is a volunteer role — claim it
+                </div>
+                <div className="text-[11px] text-white/60 mt-0.5">
+                  Unpaid · 30-day probation · Ghana Card ID + photo required.
+                </div>
+              </div>
+              <Link
+                href={`/volunteer/apply?role=${encodeURIComponent(post.title)}&post=${post.id}`}
+                className="inline-flex items-center justify-center rounded-lg bg-amber px-4 py-2.5 text-xs font-bold text-navy hover:bg-white transition-colors whitespace-nowrap"
+              >
+                Claim this role →
+              </Link>
+            </div>
+          )}
           {images.length > 0 && (
             // eslint-disable-next-line @next/next/no-img-element
             <img

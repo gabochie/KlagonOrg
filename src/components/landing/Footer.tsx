@@ -18,6 +18,7 @@ const learnLinks = [
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
   { label: "Volunteer", href: "/volunteer" },
+  { label: "Team", href: "/team" },
   { label: "Become a Mentor", href: "/mentor" },
 ];
 

@@ -229,6 +229,8 @@ export interface PostFilters {
   search?: string;
   boostedFirst?: boolean;
   limit?: number;
+  /** Hide org volunteer roles (they live under the Volunteer tab). */
+  excludeOrgRoles?: boolean;
 }
 
 export interface PostInput {

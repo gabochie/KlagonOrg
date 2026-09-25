@@ -141,6 +141,7 @@ export function JobsBoard() {
         category: category === "All" ? undefined : category,
         search: appliedQuery || undefined,
         limit,
+        excludeOrgRoles: true,
       });
       if (active) {
         setJobs(data);

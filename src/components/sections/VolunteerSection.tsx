@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { VOLUNTEER_OPPS } from "@/lib/constants";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { VolunteerOpenRoles } from "@/components/volunteer/VolunteerOpenRoles";
 import {
   fetchMyVolunteerApplications,
   type VolunteerApplication,
@@ -60,6 +61,11 @@ export function VolunteerSection() {
       </section>
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
+          <VolunteerOpenRoles />
+          <h2 className="text-base font-extrabold text-navy mb-1">General roles</h2>
+          <p className="text-xs text-gray mb-4">
+            Ongoing areas where we always welcome help — apply and we will match you.
+          </p>
           <div className="flex flex-wrap items-center gap-2 mb-8">
             <button
               onClick={() => setFilter("All")}

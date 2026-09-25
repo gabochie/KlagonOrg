@@ -188,6 +188,9 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
       const q2 = filters.search.replace(/[%,()]/g, "").trim();
       if (q2) q = q.or(`title.ilike.%${q2}%,excerpt.ilike.%${q2}%,category.ilike.%${q2}%`);
     }
+    if (filters.excludeOrgRoles) {
+      q = q.or("details->>org_role.is.null,details->>org_role.neq.true");
+    }
     return q
       .order("boost_until", { ascending: false, nullsFirst: false })
       .order("published_at", { ascending: false })

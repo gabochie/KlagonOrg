@@ -595,6 +595,97 @@ export interface Database {
           },
         ];
       };
+      team_members: {
+        Row: {
+          id: string;
+          member_id: string;
+          application_id: string | null;
+          role: string;
+          photo_url: string | null;
+          status: string;
+          is_active: boolean;
+          joined_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          application_id?: string | null;
+          role: string;
+          photo_url?: string | null;
+          status?: string;
+          is_active?: boolean;
+          joined_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["team_members"]["Insert"]>;
+        Relationships: [];
+      };
+      volunteer_tasks: {
+        Row: {
+          id: string;
+          application_id: string;
+          title: string;
+          description: string | null;
+          status: string;
+          xp_awarded: boolean;
+          created_by: string | null;
+          due_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          application_id: string;
+          title: string;
+          description?: string | null;
+          status?: string;
+          due_at?: string | null;
+          created_by?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["volunteer_tasks"]["Insert"]>;
+        Relationships: [];
+      };
+      volunteer_hours: {
+        Row: {
+          id: string;
+          application_id: string;
+          member_id: string;
+          hours: number;
+          worked_on: string;
+          note: string | null;
+          verified: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          application_id: string;
+          member_id: string;
+          hours: number;
+          worked_on: string;
+          note?: string | null;
+          verified?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["volunteer_hours"]["Insert"]>;
+        Relationships: [];
+      };
+      volunteer_reviews: {
+        Row: {
+          id: string;
+          application_id: string;
+          reviewer_id: string | null;
+          rating: number;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          application_id: string;
+          reviewer_id?: string | null;
+          rating: number;
+          note?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["volunteer_reviews"]["Insert"]>;
+        Relationships: [];
+      };
       sponsor_applications: {
         Row: {
           id: string;
