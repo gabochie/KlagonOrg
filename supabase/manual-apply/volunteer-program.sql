@@ -45,6 +45,8 @@ create policy "course_media_delete_admin" on storage.objects
   );
 
 -- ---------- courses_public: expose cover_url ----------
+-- NOTE: cover_url is appended LAST. CREATE OR REPLACE VIEW matches columns
+-- by position, so inserting it mid-list fails with 42P16.
 create or replace view public.courses_public as
 select
   c.id,
@@ -52,9 +54,9 @@ select
   c.category,
   c.icon,
   c.description,
-  c.cover_url,
   c.created_at,
-  count(l.id)::int as lesson_count
+  count(l.id)::int as lesson_count,
+  c.cover_url
 from public.courses c
 left join public.lessons l on l.course_id = c.id
 where c.published = true
