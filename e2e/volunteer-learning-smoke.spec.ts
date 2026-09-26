@@ -124,3 +124,20 @@ test("donate page offers in-kind gifts alongside cash", async ({ page }) => {
     page.getByRole("button", { name: /Devices \(laptops, phones, tablets\)/ }),
   ).toBeVisible({ timeout: 20000 });
 });
+
+test("homepage carries donate above the fold with proof link", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: /Donate/ }).first()).toBeVisible({
+    timeout: 20000,
+  });
+  await expect(page.getByText(/Keep Klagon online/)).toBeVisible({ timeout: 20000 });
+});
+
+test("blog articles end with a conversion block", async ({ page }) => {
+  await page.goto("/blog");
+  const first = page.locator('a[href^="/blog/"]').first();
+  await first.click();
+  await expect(page.getByText("This story was made possible by people like you.")).toBeVisible({
+    timeout: 20000,
+  });
+});
