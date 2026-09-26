@@ -9,6 +9,8 @@ import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
 import { recordDonationIntent, recordInKindOffer } from "@/lib/forms";
 import { notifyTeam } from "@/lib/notify";
 import { recordLeadEvent } from "@/lib/analytics";
+import { Turnstile } from "@/components/Turnstile";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { useAuth } from "@/components/auth/AuthProvider";
 import type { MoMoNetwork } from "@/lib/payments";
 
@@ -42,6 +44,7 @@ export default function DonatePage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
+  const [token, setToken] = useState<string | null>(null);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
   const [pledged, setPledged] = useState({ amount: "", phone: "", monthly: false, name: "", card: false });
 
@@ -59,7 +62,13 @@ export default function DonatePage() {
     if (channel === "card" && !form.email.trim()) {
       return setError("Enter your email so we can send the secure payment link.");
     }
+    if (!token) return setError("Please complete the human check before submitting.");
     setSending(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setSending(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const result = await recordDonationIntent({
       amount_ghs: amount,
       tier_id: tier?.id ?? null,
@@ -374,6 +383,7 @@ export default function DonatePage() {
                 </div>
                 <Input label={channel === "card" ? "Email (required for your payment link)" : "Email (optional)"} type="email" placeholder="you@email.com" required={channel === "card"} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Recording pledge…" : `Pledge ${displayAmount}`}
                 </Button>
