@@ -1,6 +1,7 @@
 "use client";
 
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
+import { recordLeadEvent } from "@/lib/analytics";
 
 // Increment when /volunteer/terms content changes; stored per application.
 export const VOLUNTEER_TERMS_VERSION = "2026-09";
@@ -98,6 +99,12 @@ export async function fileVolunteerApplication(
     }
     return { ok: false, error: "Could not submit. Please try again." };
   }
+  recordLeadEvent({
+    source: "volunteer-apply",
+    action: "submit",
+    memberId,
+    metadata: { role: input.role },
+  });
   return { ok: true };
 }
 

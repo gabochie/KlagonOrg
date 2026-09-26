@@ -12,7 +12,7 @@ Current roster (all brand-owned, in this repo, photography we took or commission
 
 | src                       | caption                                            | credit                 |
 | ------------------------- | -------------------------------------------------- | ---------------------- |
-| `/brand/youth-hero.png`   | Klagon youth in a skills workshop                  | KLAGON.org field team  |
+| `/brand/youth-hero.jpg`   | Klagon youth in a skills workshop                  | KLAGON.org field team  |
 | `/brand/og-banner.png`    | The four doors of Klagon                           | KLAGON.org brand       |
 | `/brand/community/banner-2.jpg` | One community, countless stories             | KLAGON.org (owned)     |
 | `/brand/community/chief.jpg`    | Leadership rooted in the community           | KLAGON.org (owned)     |

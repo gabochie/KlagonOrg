@@ -713,6 +713,27 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["inkind_offers"]["Insert"]>;
         Relationships: [];
       };
+      lead_events: {
+        Row: {
+          id: string;
+          member_id: string | null;
+          source: string;
+          action: string;
+          page: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id?: string | null;
+          source: string;
+          action: string;
+          page?: string | null;
+          metadata?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["lead_events"]["Insert"]>;
+        Relationships: [];
+      };
       sponsor_applications: {
         Row: {
           id: string;

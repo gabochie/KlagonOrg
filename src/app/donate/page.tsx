@@ -8,6 +8,7 @@ import { Button, Input } from "@/components/ui";
 import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
 import { recordDonationIntent, recordInKindOffer } from "@/lib/forms";
 import { notifyTeam } from "@/lib/notify";
+import { recordLeadEvent } from "@/lib/analytics";
 import { useAuth } from "@/components/auth/AuthProvider";
 import type { MoMoNetwork } from "@/lib/payments";
 
@@ -109,6 +110,7 @@ export default function DonatePage() {
           <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-2">
             <a
               href={CONTACT_TEL}
+              onClick={() => recordLeadEvent({ source: "donate-page", action: "call-click" })}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-white text-sm font-bold hover:bg-white/15 transition-colors"
             >
               <Phone size={15} /> {CONTACT_DISPLAY}
@@ -117,6 +119,7 @@ export default function DonatePage() {
               href={CONTACT_WA}
               target="_blank"
               rel="noreferrer"
+              onClick={() => recordLeadEvent({ source: "donate-page", action: "whatsapp-click" })}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber text-navy text-sm font-bold hover:bg-amber/90 transition-colors"
             >
               <MessageCircle size={15} /> WhatsApp to donate
@@ -195,7 +198,7 @@ export default function DonatePage() {
               <button
                 type="button"
                 onClick={() => setFrequency("once")}
-                className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                className={`py-2.5 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
                   frequency === "once"
                     ? "border-amber bg-amber/10 text-navy"
                     : "border-border bg-white text-gray hover:border-amber"
@@ -206,7 +209,7 @@ export default function DonatePage() {
               <button
                 type="button"
                 onClick={() => setFrequency("monthly")}
-                className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                className={`py-2.5 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
                   frequency === "monthly"
                     ? "border-amber bg-amber/10 text-navy"
                     : "border-border bg-white text-gray hover:border-amber"
@@ -284,7 +287,7 @@ export default function DonatePage() {
                     <button
                       type="button"
                       onClick={() => setChannel("momo")}
-                      className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                      className={`py-2.5 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
                         channel === "momo"
                           ? "border-amber bg-amber/10 text-navy"
                           : "border-border text-gray hover:border-amber"
@@ -295,7 +298,7 @@ export default function DonatePage() {
                     <button
                       type="button"
                       onClick={() => setChannel("card")}
-                      className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                      className={`py-2.5 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
                         channel === "card"
                           ? "border-amber bg-amber/10 text-navy"
                           : "border-border text-gray hover:border-amber"
@@ -319,7 +322,7 @@ export default function DonatePage() {
                           key={n.id}
                           type="button"
                           onClick={() => setNetwork(n.id)}
-                          className={`py-2 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
+                          className={`py-2.5 rounded-lg border text-xs font-bold cursor-pointer font-sans transition-all ${
                             network === n.id
                               ? "border-amber bg-amber/10 text-navy"
                               : "border-border text-gray hover:border-amber"
@@ -434,7 +437,7 @@ function InKindSection() {
                       key={c.value}
                       type="button"
                       onClick={() => setCategory(c.value)}
-                      className={`py-2 px-2 rounded-lg border text-[11px] font-bold cursor-pointer font-sans transition-all ${
+                      className={`py-2.5 px-2 rounded-lg border text-[11px] font-bold cursor-pointer font-sans transition-all ${
                         category === c.value
                           ? "border-amber bg-amber/10 text-navy"
                           : "border-border text-gray hover:border-amber"

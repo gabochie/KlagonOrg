@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { recordLeadEvent } from "@/lib/analytics";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { SPONSOR_PLANS } from "@/lib/constants";
@@ -219,7 +220,11 @@ function SponsorPageContent() {
               )}
               <p className="text-sm text-gray text-center mb-6">
                 Submit the form, or reach us directly —{" "}
-                <a href="tel:+233268708895" className="font-bold text-blue hover:underline">
+                <a
+                  href="tel:+233268708895"
+                  onClick={() => recordLeadEvent({ source: "sponsor-page", action: "call-click" })}
+                  className="font-bold text-blue hover:underline"
+                >
                   0268 708 895
                 </a>{" "}
                 ·{" "}
@@ -227,6 +232,7 @@ function SponsorPageContent() {
                   href="https://wa.me/233268708895?text=Hello%20KLAGON.org%2C%20I%20am%20interested%20in%20sponsorship."
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => recordLeadEvent({ source: "sponsor-page", action: "whatsapp-click" })}
                   className="font-bold text-blue hover:underline"
                 >
                   WhatsApp

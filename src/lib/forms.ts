@@ -1,4 +1,5 @@
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { recordLeadEvent } from "@/lib/analytics";
 
 export interface ContactData {
   full_name: string | null;
@@ -57,6 +58,7 @@ export async function submitContact(data: ContactData): Promise<{ error: string 
   const client = getBrowserClient();
   if (!client) return { error: "Form is not wired to a backend yet. Supabase keys not configured." };
   const { error } = await client.from("contact_messages").insert(data);
+  if (!error) recordLeadEvent({ source: "contact-form", action: "submit" });
   return { error: error?.message ?? null };
 }
 
@@ -64,6 +66,7 @@ export async function submitMentorApplication(data: MentorData): Promise<{ error
   const client = getBrowserClient();
   if (!client) return { error: "Form is not wired to a backend yet. Supabase keys not configured." };
   const { error } = await client.from("mentor_applications").insert(data);
+  if (!error) recordLeadEvent({ source: "mentor-form", action: "submit" });
   return { error: error?.message ?? null };
 }
 
@@ -71,6 +74,13 @@ export async function submitSponsorApplication(data: SponsorData): Promise<{ err
   const client = getBrowserClient();
   if (!client) return { error: "Form is not wired to a backend yet. Supabase keys not configured." };
   const { error } = await client.from("sponsor_applications").insert(data);
+  if (!error) {
+    recordLeadEvent({
+      source: "sponsor-form",
+      action: "submit",
+      metadata: { plan: data.plan_id ?? "none" },
+    });
+  }
   return { error: error?.message ?? null };
 }
 
@@ -92,6 +102,16 @@ export async function recordDonationIntent(data: DonationIntent): Promise<{
     .insert({ ...data, status: "pending", provider: "moolre" })
     .select("id")
     .single();
+  if (!error) {
+    recordLeadEvent({
+      source: "donate-form",
+      action: "submit",
+      metadata: {
+        channel: data.metadata?.channel ?? "momo",
+        frequency: data.metadata?.frequency ?? "once",
+      },
+    });
+  }
   return { id: row?.id ?? null, error: error?.message ?? null };
 }
 
@@ -106,5 +126,12 @@ export async function recordInKindOffer(data: InKindOfferData): Promise<{
     .insert(data)
     .select("id")
     .single();
+  if (!error) {
+    recordLeadEvent({
+      source: "inkind-form",
+      action: "submit",
+      metadata: { category: data.category },
+    });
+  }
   return { id: row?.id ?? null, error: error?.message ?? null };
 }

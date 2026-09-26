@@ -32,7 +32,7 @@ export interface CommunityShot {
  */
 export const COMMUNITY_SHOTS: CommunityShot[] = [
   {
-    src: "/brand/youth-hero.png",
+    src: "/brand/youth-hero.jpg",
     alt: "Klagon youth in a skills workshop, seen from behind to protect identities",
     caption: "Skills today, livelihoods tomorrow — youth tracks in Klagon",
     credit: "KLAGON.org (owned)",

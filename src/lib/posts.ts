@@ -8,6 +8,7 @@
 // ------------------------------------------------------------------
 
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { Database, Json } from "@/lib/database.types";
 import type {
   AuthorBadge,
@@ -461,6 +462,7 @@ export async function subscribeToNewsletter(
     if (error.code === "23505") return { ok: true };
     return { ok: false, error: error.message };
   }
+  recordLeadEvent({ source: "newsletter", action: "subscribe", metadata: { source } });
   return { ok: true };
 }
 
