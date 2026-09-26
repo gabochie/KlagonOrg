@@ -134,10 +134,11 @@ test("homepage carries donate above the fold with proof link", async ({ page }) 
 });
 
 test("blog articles end with a conversion block", async ({ page }) => {
-  await page.goto("/blog");
-  const first = page.locator('a[href^="/blog/"]').first();
-  await first.click();
+  await page.goto("/blog/volunteering-build-skills-and-career-in-ghana");
   await expect(page.getByText("This story was made possible by people like you.")).toBeVisible({
+    timeout: 20000,
+  });
+  await expect(page.getByRole("link", { name: /Donate/ }).first()).toBeVisible({
     timeout: 20000,
   });
 });
