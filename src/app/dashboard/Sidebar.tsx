@@ -38,6 +38,7 @@ const memberAccount: NavItem[] = [
 const adminMain: NavItem[] = [
   { icon: "📊", label: "Dashboard", href: "/dashboard/admin" },
   { icon: "🛂", label: "Moderation", href: "/dashboard/admin/moderation" },
+  { icon: "📥", label: "Inbox", href: "/dashboard/admin/inbox" },
   { icon: "👥", label: "Members", href: SOON, soon: true },
   { icon: "📅", label: "Events", href: "/dashboard/admin/events" },
   { icon: "📚", label: "Learning Hub", href: SOON, soon: true },

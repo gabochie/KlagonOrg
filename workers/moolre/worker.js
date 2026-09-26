@@ -101,6 +101,82 @@ async function sendDonationEmails(env, ref) {
   ).catch(() => null);
 }
 
+// ---------- visitor auto-replies (lead-gen Phase 3) ----------
+// DEPLOY: `npx wrangler deploy` from workers/moolre (needs Cloudflare auth),
+// then `wrangler secret put FOLLOWUP_KEY` (any random string) alongside the
+// existing BREVO_API_KEY. Delivery per event via Supabase Dashboard →
+// Database → Webhooks: POST to /api/followup/autoreply on INSERT into
+// donations / inkind_offers / contact_messages / sponsor_applications /
+// mentor_applications / volunteer_applications with HTTP headers
+// {"x-followup-key": "<FOLLOWUP_KEY>"} and a JSON body of
+// {"kind": "<template>", "to": "<email>", "name": "...", "ref": "..."}.
+// Until wired, the site works unchanged (in-app + manual WhatsApp only).
+const AUTOREPLY_TEMPLATES = {
+  pledge: {
+    subject: (name) => `Medase ${name}! Your KLAGON.org pledge is in 🙏`,
+    html: (name, ref) =>
+      `<p>Hi ${name},</p><p>Medase — your pledge${ref ? ` (ref <code>${ref}</code>)` : ""} is recorded. We call or WhatsApp you within 24 hours to complete it by MoMo. Every cedi funds KLAGON.org programs.</p><p><a href="https://klagon.org/impact">See what your gift builds →</a></p>`,
+  },
+  inkind: {
+    subject: (name) => `Medase ${name}! Your gift offer is in 🎁`,
+    html: (name) =>
+      `<p>Hi ${name},</p><p>Medase for offering your gift to Klagon! Our team replies within 48 hours to arrange collection or next steps.</p><p><a href="https://klagon.org/impact">See what gifts like yours build →</a></p>`,
+  },
+  contact: {
+    subject: (name) => `We got your message, ${name} ✉️`,
+    html: (name) =>
+      `<p>Hi ${name},</p><p>Thanks for writing to KLAGON.org — a real person replies within 24 hours. Anything urgent, WhatsApp 026 870 8895.</p>`,
+  },
+  sponsor: {
+    subject: (name) => `Medase ${name} — your sponsorship enquiry is in 🤝`,
+    html: (name) =>
+      `<p>Hi ${name},</p><p>Thanks for your interest in partnering with KLAGON.org. Our partnerships team finalizes details within 2 business days.</p><p><a href="https://klagon.org/impact">Our impact, in live numbers →</a></p>`,
+  },
+  mentor: {
+    subject: (name) => `Medase ${name} — mentor application received 🎉`,
+    html: (name) =>
+      `<p>Hi ${name},</p><p>Your KLAGON.org mentor application is under review — we confirm within 48 hours. Medase for stepping up for Klagon's youth.</p>`,
+  },
+  volunteer: {
+    subject: (name) => `Medase ${name} — volunteer application received 🙋`,
+    html: (name) =>
+      `<p>Hi ${name},</p><p>Your volunteer application is under review (ID verification first). We confirm within a few days — track it any time in your dashboard.</p>`,
+  },
+  newsletter: {
+    subject: () => `Welcome to KLAGON.org news 📰`,
+    html: () =>
+      `<p>You're on the list — community news and new listings, once a month, no spam.</p><p>Meanwhile: <a href="https://klagon.org/learning">learn something free</a> or <a href="https://klagon.org/volunteer">volunteer</a>.</p>`,
+  },
+};
+
+function firstTokenName(name) {
+  const n = String(name || "").trim().split(" ")[0];
+  return n || "Friend";
+}
+
+async function handleAutoreply(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "bad-json" }, 400);
+  }
+  if (!env.FOLLOWUP_KEY || request.headers.get("x-followup-key") !== env.FOLLOWUP_KEY) {
+    return json({ error: "forbidden" }, 403);
+  }
+  const tpl = AUTOREPLY_TEMPLATES[body.kind];
+  const to = String(body.to || "").trim();
+  if (!tpl || !to) return json({ error: "unknown-kind" }, 400);
+  const name = firstTokenName(body.name);
+  const result = await brevoSend(
+    env,
+    [{ email: to, name }],
+    tpl.subject(name),
+    tpl.html(name, body.ref)
+  ).catch(() => null);
+  return json({ ok: true, result });
+}
+
 async function moolreCollect(env, { channel, payer, amount, ref, network, otp }) {
   const res = await fetch(MOOLRE_API, {
     method: "POST",
@@ -427,6 +503,11 @@ export default {
       }
       if (request.method === "POST") return handleTurnstileVerify(request, env);
       return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/followup/autoreply") {
+      if (request.method !== "POST") return json({ error: "method-not-allowed" }, 405);
+      return handleAutoreply(request, env);
     }
 
     if (url.pathname === "/api/email/test") {

@@ -86,6 +86,11 @@ test("admin volunteers page bounces strangers to admin login", async ({ page }) 
   await expect(page).toHaveURL(/\/admin\/login/, { timeout: 15000 });
 });
 
+test("admin inbox bounces strangers to admin login", async ({ page }) => {
+  await page.goto("/dashboard/admin/inbox");
+  await expect(page).toHaveURL(/\/admin\/login/, { timeout: 15000 });
+});
+
 test("impact page renders live program numbers", async ({ page }) => {
   await page.goto("/impact");
   await expect(page.getByText("Proof, not promises.")).toBeVisible({ timeout: 20000 });
