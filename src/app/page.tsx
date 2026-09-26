@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { HomeGiveBand } from "@/components/landing/HomeGiveBand";
 import { BusinessHighlights } from "@/components/landing/BusinessHighlights";
 import { FourDoors } from "@/components/landing/FourDoors";
 import { LearningHub } from "@/components/landing/LearningHub";
@@ -14,6 +15,7 @@ export default function Home() {
       <Navbar />
       <main className="w-full">
         <Hero />
+        <HomeGiveBand />
         <FourDoors />
         <BusinessHighlights />
         <LearningHub />

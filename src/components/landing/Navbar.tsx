@@ -155,9 +155,17 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <div
-            className="hidden md:flex items-center gap-2 w-[190px] justify-end"
+            className="hidden md:flex items-center gap-2 w-auto justify-end"
             aria-live="polite"
           >
+            <Link href="/donate">
+              <Button
+                size="sm"
+                className="whitespace-nowrap bg-amber text-navy hover:bg-amber/90 border-transparent"
+              >
+                ♥ Donate
+              </Button>
+            </Link>
             {signedIn ? (
               <Link href={dashboardHref}>
                 <Button size="sm" className="whitespace-nowrap">
@@ -240,6 +248,11 @@ export function Navbar() {
               })}
             </div>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 dark:border-white/10">
+              <Link href="/donate" onClick={closeMenu}>
+                <Button size="sm" className="w-full bg-amber text-navy hover:bg-amber/90 border-transparent">
+                  ♥ Donate
+                </Button>
+              </Link>
               {signedIn ? (
                 <Link href={dashboardHref} onClick={closeMenu}>
                   <Button size="sm" className="w-full">

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { DONATION_TIERS } from "@/lib/constants";
+import { DONATION_TIERS, TESTIMONIALS } from "@/lib/constants";
 import { Button, Input } from "@/components/ui";
 import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
 import { recordDonationIntent, recordInKindOffer } from "@/lib/forms";
@@ -163,6 +163,36 @@ export default function DonatePage() {
           <h2 className="text-xl font-extrabold text-navy text-center tracking-tight mb-2">
             Pledge an amount to give
           </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10 max-w-3xl mx-auto">
+            {TESTIMONIALS.map((t) => (
+              <figure
+                key={t.name}
+                className="bg-white rounded-xl border border-border p-4 flex flex-col"
+              >
+                <blockquote className="text-[11px] text-gray leading-relaxed flex-1">
+                  {t.quote}
+                </blockquote>
+                <figcaption className="mt-2 flex items-center gap-2">
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white flex-shrink-0"
+                    style={{ background: t.color }}
+                  >
+                    {t.initials}
+                  </span>
+                  <span>
+                    <span className="block text-[11px] font-bold text-navy">{t.name}</span>
+                    <span className="block text-[10px] text-gray">{t.role}</span>
+                  </span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="text-center text-[11px] text-gray mb-10 -mt-6">
+            Real people, real outcomes.{" "}
+            <a href="/impact" className="font-bold text-blue hover:underline">
+              See live impact numbers →
+            </a>
+          </p>
           <p className="text-sm text-gray text-center mb-10 max-w-md mx-auto">
             Pledge below and we&apos;ll call or WhatsApp you within 24 hours to complete it
             by MoMo. 100% of donations fund KLAGON.org programs.
@@ -349,6 +379,9 @@ export default function DonatePage() {
                 </Button>
                 <p className="text-[10px] text-gray text-center flex items-center justify-center gap-1">
                   <Heart size={10} /> No payment is taken now — we complete every gift by phone or WhatsApp.
+                </p>
+                <p className="text-[10px] text-gray text-center">
+                  Every gift receipted by MoMo + email. 100% funds KLAGON.org programs.
                 </p>
               </form>
             )}

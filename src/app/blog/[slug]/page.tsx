@@ -7,6 +7,7 @@ import { formatBlogDate, isoToDateTime } from "@/lib/blogFormat";
 import { getAuthorByName } from "@/lib/blogAuthors";
 import { ReadAloud } from "@/components/read/ReadAloud";
 import { ArticleReaderTracker } from "@/components/gamify/ArticleReaderTracker";
+import { ArticleCta } from "@/components/blog/ArticleCta";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -270,6 +271,10 @@ export default async function BlogPostPage({ params }: Props) {
           )}
         </div>
       </article>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-2 -mt-2">
+        <ArticleCta />
+      </div>
 
       {/* Related */}
       <section className="bg-white dark:bg-ink-2 py-12 sm:py-14 px-4 sm:px-6 border-t border-border">
