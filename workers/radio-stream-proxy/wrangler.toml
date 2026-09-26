@@ -1,0 +1,11 @@
+# Klagon Radio stream proxy (Cloudflare Worker).
+# HTTPS upgrade for free Caster.fm HTTP mount. No secrets required.
+# Deploy: cd workers/radio-stream-proxy && wrangler deploy
+# Custom domain: attach radio.klagon.org -> this worker (Workers Routes).
+name = "klagon-radio-proxy"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# Public listener mount only. Never put the Caster SOURCE password here.
+UPSTREAM_MOUNT = "http://morcast.caster.fm:10560/4st2F"
