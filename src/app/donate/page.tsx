@@ -519,7 +519,7 @@ function InKindSection() {
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
                 <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
-                  {sending ? "Recording pledge…" : `Pledge ${displayAmount}`}
+                  {sending ? "Sending offer…" : "Offer this gift"}
                 </Button>
             </form>
           )}
