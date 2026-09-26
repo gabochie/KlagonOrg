@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/posts";
+import { getInvisibleToken, verifyTurnstile } from "@/lib/turnstile";
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,18 @@ export function NewsletterSignup() {
       return;
     }
     setState("sending");
+    // Invisible human check; fail open so a blocked challenge script
+    // never costs a legit subscriber (spam cost here is one DB row).
+    try {
+      const token = await getInvisibleToken();
+      const check = await verifyTurnstile(token);
+      if (!check.success) {
+        setState("Human check failed. Please try again.");
+        return;
+      }
+    } catch {
+      // Fall through and subscribe anyway (see above).
+    }
     const res = await subscribeToNewsletter(value, undefined, "footer");
     setState(res.ok ? "done" : (res.error ?? "Something went wrong."));
   }

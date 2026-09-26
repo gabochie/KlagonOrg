@@ -415,6 +415,7 @@ function InKindSection() {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
@@ -424,7 +425,13 @@ function InKindSection() {
     if (!name.trim() || !phone.trim()) {
       return setError("Add your name and a phone number so we can reach you.");
     }
+    if (!token) return setError("Please complete the human check before submitting.");
     setSending(true);
+    const check = await verifyTurnstile(token);
+    if (!check.success) {
+      setSending(false);
+      return setError(check.error ?? "Human check failed. Please try again.");
+    }
     const result = await recordInKindOffer({
       member_id: profile?.id ?? null,
       category,
@@ -509,10 +516,11 @@ function InKindSection() {
                 <Input label="Phone" placeholder="0244 000 000" required value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
               <Input label="Email (optional)" type="email" placeholder="you@email.com" required={false} value={email} onChange={(e) => setEmail(e.target.value)} />
-              {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
-              <Button variant="dark" size="lg" className="w-full" disabled={sending}>
-                {sending ? "Sending offer…" : "Offer this gift"}
-              </Button>
+                {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <Turnstile onToken={setToken} />
+                <Button variant="dark" size="lg" className="w-full" disabled={sending}>
+                  {sending ? "Recording pledge…" : `Pledge ${displayAmount}`}
+                </Button>
             </form>
           )}
         </div>
