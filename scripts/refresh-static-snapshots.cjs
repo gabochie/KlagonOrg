@@ -25,6 +25,7 @@ const TARGETS = [
   { file: "sponsor-slugs.json", table: "sponsors", columns: "slug", label: "active sponsor slugs" },
   { file: "business-card-slugs.json", table: "business_cards", columns: "slug", label: "business card slugs" },
   { file: "news-ids.json", table: "posts", columns: "id", label: "approved news ids" },
+  { file: "course-ids.json", table: "courses", columns: "id", label: "published course ids" },
 ];
 
 function loadEnv(file) {
@@ -59,6 +60,7 @@ async function main() {
     let query = `${url}/rest/v1/${target.table}?select=${target.columns}&limit=1000`;
     if (target.table === "sponsors") query += "&status=eq.active";
     if (target.table === "posts") query += "&status=eq.approved";
+    if (target.table === "courses") query += "&published=eq.true";
 
     try {
       const res = await fetch(query, {

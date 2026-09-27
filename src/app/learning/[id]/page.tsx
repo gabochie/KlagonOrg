@@ -3,6 +3,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
 import { COURSES } from "@/lib/constants";
+import courseIds from "@/data/course-ids.json";
 import { getSupabase } from "@/lib/supabase";
 import { resolveStaticKeys } from "@/lib/staticParams";
 
@@ -15,7 +16,11 @@ export async function generateStaticParams(): Promise<{ id: string }[]> {
       if (error) throw error;
       return (data ?? []).map((c) => c.id as string);
     },
-    COURSES.map((c) => c.id)
+    // Real published course ids, not the COURSES placeholders. Falling back to
+    // placeholders would silently drop every real course page from the export
+    // while still producing a green build. COURSES ids are appended as a last
+    // resort so params are never empty, which would be fatal for output: export.
+    [...courseIds, ...COURSES.map((c) => c.id)]
   );
   return ids.map((id) => ({ id }));
 }

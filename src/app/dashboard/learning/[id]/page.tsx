@@ -1,5 +1,6 @@
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
 import { COURSES } from "@/lib/constants";
+import courseIds from "@/data/course-ids.json";
 import { getSupabase } from "@/lib/supabase";
 import { resolveStaticKeys } from "@/lib/staticParams";
 
@@ -12,7 +13,7 @@ export async function generateStaticParams(): Promise<{ id: string }[]> {
       if (error) throw error;
       return (data ?? []).map((c) => c.id as string);
     },
-    COURSES.map((c) => c.id)
+    [...courseIds, ...COURSES.map((c) => c.id)]
   );
   return ids.map((id) => ({ id }));
 }
