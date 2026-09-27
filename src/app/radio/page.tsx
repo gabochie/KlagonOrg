@@ -36,7 +36,7 @@ export default function RadioPage() {
             </h1>
             <p className="text-white/60 text-sm max-w-lg mx-auto mb-6">
               Hyper-local talk for Klagon. No app, no login — press play below.
-              Live when our Broadcaster PC is on (Free plan, 96k).
+              Live when our MIXXX + BUTT PC is on (Free plan, 96k).
             </p>
             <div className="max-w-md mx-auto bg-white rounded-2xl p-4">
               <div
@@ -48,7 +48,9 @@ export default function RadioPage() {
                 data-channelId=""
                 data-rendered="false"
               >
-                <a href="https://www.caster.fm">Shoutcast Hosting</a>
+                <a href="https://www.caster.fm">Shoutcast Hosting</a>{" "}
+                <a href="https://www.caster.fm">Stream Hosting</a>{" "}
+                <a href="https://www.caster.fm">Radio Server Hosting</a>
               </div>
             </div>
             <p className="text-white/50 text-xs mt-4">
