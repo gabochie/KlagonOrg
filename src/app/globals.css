@@ -191,6 +191,17 @@
   100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
 }
 
+/* Klagon Radio listen chip */
+@keyframes radioPulse {
+  0% { transform: scale(0.7); opacity: 0.75; }
+  70% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.radio-pulse {
+  animation: radioPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 /* Feature toasts */
 .xp-toast {
   animation: toast-pop 300ms ease-out;
@@ -215,6 +226,7 @@
 @media (prefers-reduced-motion: reduce) {
   .read-aloud-highlight { transition: none; }
   .confetti-piece { animation: none; display: none; }
+  .radio-pulse { animation: none; opacity: 0.35; }
   .xp-toast,
   .xp-toast-center { animation: none; }
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui";
 import { CommunityCarousel } from "@/components/landing/CommunityCarousel";
+import { RadioListenChip } from "@/components/landing/RadioListenChip";
 
 export function Hero() {
   return (
@@ -22,13 +23,16 @@ export function Hero() {
               Learn new skills, map the community, and help build it — for residents,
               businesses, visitors and young people alike.
             </p>
-            <div className="flex flex-wrap items-center gap-3 mb-10">
+            <div className="flex flex-wrap items-center gap-3 mb-5">
               <Link href="/auth/register">
                 <Button size="lg">Join Free Today →</Button>
               </Link>
               <Link href="/map">
                 <Button variant="ghost" size="lg">Explore Klagon →</Button>
               </Link>
+            </div>
+            <div className="mb-10">
+              <RadioListenChip />
             </div>
           </div>
           <div className="w-full max-w-[440px] mx-auto md:mx-0">
