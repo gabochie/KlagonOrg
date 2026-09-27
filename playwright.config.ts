@@ -52,9 +52,10 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],
   use: {
-    // 3100, not 3000: this machine already runs another project's Next server
-    // on 3000, and reuseExistingServer would silently test against that.
-    baseURL: "http://localhost:3100",
+    // 3210 is arbitrary but deliberate: this machine already runs other apps'
+    // servers (3000 and 3100 were both taken by other projects), and a
+    // collision silently served the wrong site to the whole suite.
+    baseURL: "http://localhost:3210",
     trace: "on-first-retry",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
@@ -64,9 +65,12 @@ export default defineConfig({
   // actually deploys, so this tests what ships. Run `npm run build` first;
   // `serve` fails loudly if out/ is missing or stale.
   webServer: {
-    command: "npx --yes serve out -l 3100 --no-clipboard",
-    url: "http://localhost:3100",
-    reuseExistingServer: !process.env.CI,
+    command: "npx --yes serve out -l 3210 --no-clipboard",
+    url: "http://localhost:3210",
+    // Never reuse: if something else already owns the port, Playwright would
+    // happily point the suite at a stranger's app and report nonsense
+    // failures. Failing loudly is the correct outcome.
+    reuseExistingServer: false,
     timeout: 180000,
   },
 });
