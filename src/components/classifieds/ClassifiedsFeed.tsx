@@ -9,6 +9,7 @@ import {
   fetchPortalPosts,
   type Vertical,
 } from "@/lib/posts";
+import { isBoostActive, boostedFirst } from "@/lib/boosts";
 import type { Post, PostArea } from "@/types";
 
 const AREAS: (PostArea | "all")[] = ["all", "klagon", "tema_west"];
@@ -36,6 +37,14 @@ export function ClassifiedsFeed({ initialVertical }: { initialVertical?: Vertica
     const list = [...posts];
     if (sort === "price-low") list.sort((a, b) => (a.priceGhs ?? Infinity) - (b.priceGhs ?? Infinity));
     if (sort === "price-high") list.sort((a, b) => (b.priceGhs ?? -1) - (a.priceGhs ?? -1));
+    // A price sort is still reader-controlled, but it must not quietly refund
+    // a sponsor's paid placement: `posts` arrives boost-first from the server
+    // and re-sorting by price alone would drop every boosted listing back into
+    // the crowd. Boosted listings stay ahead, sorted by the reader's price
+    // order within each group.
+    if (sort !== "newest") {
+      return list.sort((a, b) => boostedFirst(a, b));
+    }
     return list;
   }, [posts, sort]);
 
@@ -100,6 +109,11 @@ export function ClassifiedsFeed({ initialVertical }: { initialVertical?: Vertica
               className="block bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow"
             >
               <div className="p-4 sm:p-5">
+                {isBoostActive(p) && (
+                  <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber/15 text-amber-strong mb-2">
+                    ⚡ Featured
+                  </span>
+                )}
                 {p.subcategory && (
                   <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber/10 text-amber-800 mb-2">
                     {p.subcategory}

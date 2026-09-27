@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
@@ -15,6 +15,7 @@ import {
   sendContactMessage,
 } from "@/lib/posts";
 import type { Post } from "@/types";
+import { isBoostActive } from "@/lib/boosts";
 import { ORG_WA } from "@/lib/wa";
 import {
   filePostClaim,
@@ -95,7 +96,7 @@ export function PostDetailContent({ id }: { id: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-sm text-gray font-semibold">Loading post…</div>
+        <div className="animate-pulse text-sm text-gray font-semibold">Loading postâ€¦</div>
       </div>
     );
   }
@@ -218,9 +219,9 @@ export function PostDetailContent({ id }: { id: string }) {
                 {post.subcategory}
               </span>
             )}
-            {post.boostTier !== "none" && post.boostUntil && (
+            {isBoostActive(post) && (
               <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/15 text-amber">
-                ⚡ Featured
+                âš¡ Featured
               </span>
             )}
           </div>
@@ -230,7 +231,7 @@ export function PostDetailContent({ id }: { id: string }) {
           {post.excerpt && <p className="text-white/70 text-sm sm:text-base mb-5">{post.excerpt}</p>}
           {post.priceGhs != null && (
             <div className="text-xl font-extrabold text-amber mb-4">
-              GH₵ {post.priceGhs.toLocaleString()}
+              GHâ‚µ {post.priceGhs.toLocaleString()}
             </div>
           )}
           <div className="flex flex-wrap items-center gap-3 text-[11px] text-white/50">
@@ -239,18 +240,18 @@ export function PostDetailContent({ id }: { id: string }) {
               {post.authorBadge === "verified" && (
                 <span className="text-blue font-bold" title="Verified member">
                   {" "}
-                  ✓
+                  âœ“
                 </span>
               )}
               {post.authorBadge === "editorial" && (
-                <span className="text-amber font-bold"> · Editorial</span>
+                <span className="text-amber font-bold"> Â· Editorial</span>
               )}
             </span>
-            <span>·</span>
+            <span>Â·</span>
             <span>{AREA_LABELS[post.area]}</span>
             {post.publishedAt && (
               <>
-                <span>·</span>
+                <span>Â·</span>
                 <span>Published {fmtDate(post.publishedAt)}</span>
               </>
             )}
@@ -272,17 +273,17 @@ export function PostDetailContent({ id }: { id: string }) {
             <div className="bg-navy rounded-xl p-4 mb-8 flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="flex-1">
                 <div className="text-xs font-extrabold text-white">
-                  This is a volunteer role — claim it
+                  This is a volunteer role â€” claim it
                 </div>
                 <div className="text-[11px] text-white/60 mt-0.5">
-                  Unpaid · 30-day probation · Ghana Card ID + photo required.
+                  Unpaid Â· 30-day probation Â· Ghana Card ID + photo required.
                 </div>
               </div>
               <Link
                 href={`/volunteer/apply?role=${encodeURIComponent(post.title)}&post=${post.id}`}
                 className="inline-flex items-center justify-center rounded-lg bg-amber px-4 py-2.5 text-xs font-bold text-navy hover:bg-white transition-colors whitespace-nowrap"
               >
-                Claim this role →
+                Claim this role â†’
               </Link>
             </div>
           )}
@@ -310,12 +311,12 @@ export function PostDetailContent({ id }: { id: string }) {
 
           {post.type === "event" && (post.eventDate || post.eventLocation) && (
             <div className="bg-white border border-border rounded-xl p-5 mb-8">
-              <div className="text-xs font-extrabold text-navy mb-2">📅 Event details</div>
+              <div className="text-xs font-extrabold text-navy mb-2">ðŸ“… Event details</div>
               <div className="text-sm text-gray space-y-1">
                 {post.eventDate && (
                   <div>
                     Date: <strong className="text-navy">{fmtDate(post.eventDate)}</strong>
-                    {post.eventTime ? ` · ${post.eventTime}` : ""}
+                    {post.eventTime ? ` Â· ${post.eventTime}` : ""}
                   </div>
                 )}
                 {post.eventLocation && (
@@ -358,7 +359,7 @@ export function PostDetailContent({ id }: { id: string }) {
                     href={`tel:${post.contactPhone}`}
                     className="px-4 py-2 rounded-xl bg-navy text-white text-xs font-bold hover:bg-blue transition-colors"
                   >
-                    📞 {post.contactPhone}
+                    ðŸ“ž {post.contactPhone}
                   </a>
                 )}
                 {post.contactEmail && (
@@ -366,13 +367,13 @@ export function PostDetailContent({ id }: { id: string }) {
                     href={`mailto:${post.contactEmail}`}
                     className="px-4 py-2 rounded-xl bg-white border border-border text-navy text-xs font-bold hover:border-navy transition-colors"
                   >
-                    ✉️ Email
+                    âœ‰ï¸ Email
                   </a>
                 )}
               </div>
               {msgState === "done" ? (
                 <div className="text-xs font-bold text-emerald-700 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5">
-                  Message sent — the poster will get back to you.
+                  Message sent â€” the poster will get back to you.
                 </div>
               ) : (
                 <form onSubmit={(e) => void onContact(e)} className="space-y-2">
@@ -393,7 +394,7 @@ export function PostDetailContent({ id }: { id: string }) {
                   <textarea
                     value={msgBody}
                     onChange={(e) => setMsgBody(e.target.value)}
-                    placeholder="Write your message…"
+                    placeholder="Write your messageâ€¦"
                     rows={3}
                     className="w-full px-3 py-2 rounded-xl bg-light border border-border text-xs text-navy placeholder:text-gray/60 focus:outline-none focus:border-navy"
                   />
@@ -405,7 +406,7 @@ export function PostDetailContent({ id }: { id: string }) {
                     disabled={msgState === "sending" || !msgBody.trim()}
                     className="px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors cursor-pointer disabled:opacity-50"
                   >
-                    {msgState === "sending" ? "Sending…" : "Send message"}
+                    {msgState === "sending" ? "Sendingâ€¦" : "Send message"}
                   </button>
                 </form>
               )}
@@ -419,17 +420,17 @@ export function PostDetailContent({ id }: { id: string }) {
               </div>
               <p className="text-xs text-gray leading-relaxed mb-3">
                 This property was spotted on a public marketplace and posted here unclaimed
-                so Klagon finds it first. If you are the agent or owner, claim it free —
+                so Klagon finds it first. If you are the agent or owner, claim it free â€”
                 use the number from your original advert so we can verify you on WhatsApp,
                 then the listing (and its enquiries) becomes yours.
               </p>
               {claimState === "done" || myClaim?.status === "pending" ? (
                 <div className="text-xs font-bold text-emerald-700 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5">
-                  Claim under review — we verify on WhatsApp, usually within 24 hours.
+                  Claim under review â€” we verify on WhatsApp, usually within 24 hours.
                 </div>
               ) : myClaim?.status === "approved" ? (
                 <div className="text-xs font-bold text-emerald-700 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2.5">
-                  This listing is yours — manage it from My Posts.
+                  This listing is yours â€” manage it from My Posts.
                 </div>
               ) : user ? (
                 <form onSubmit={(e) => void onClaim(e)} className="space-y-2">
@@ -437,7 +438,7 @@ export function PostDetailContent({ id }: { id: string }) {
                     <input
                       value={claimPhone}
                       onChange={(e) => setClaimPhone(e.target.value)}
-                      placeholder="Your advert number (e.g. 024…)"
+                      placeholder="Your advert number (e.g. 024â€¦)"
                       inputMode="tel"
                       className="px-3 py-2 rounded-xl bg-white border border-border text-xs text-navy placeholder:text-gray/60 focus:outline-none focus:border-navy"
                     />
@@ -456,7 +457,7 @@ export function PostDetailContent({ id }: { id: string }) {
                     disabled={claimState === "sending" || !claimPhone.trim()}
                     className="px-4 py-2 rounded-xl bg-amber text-navy text-xs font-bold hover:bg-amber/90 transition-colors cursor-pointer disabled:opacity-50"
                   >
-                    {claimState === "sending" ? "Filing…" : "Claim this listing"}
+                    {claimState === "sending" ? "Filingâ€¦" : "Claim this listing"}
                   </button>
                 </form>
               ) : (
@@ -509,7 +510,7 @@ export function PostDetailContent({ id }: { id: string }) {
               onClick={() => void onCopy()}
               className="px-3 py-1.5 rounded-lg bg-white border border-border text-[11px] font-bold text-navy hover:border-navy transition-colors cursor-pointer"
             >
-              {copied ? "Copied ✓" : "Copy link"}
+              {copied ? "Copied âœ“" : "Copy link"}
             </button>
           </div>
 
@@ -520,7 +521,7 @@ export function PostDetailContent({ id }: { id: string }) {
               </Link>
             ) : reportState === "done" ? (
               <div className="text-[11px] font-bold text-emerald-700">
-                Thanks — our moderators will take a look.
+                Thanks â€” our moderators will take a look.
               </div>
             ) : (
               <div>
@@ -550,7 +551,7 @@ export function PostDetailContent({ id }: { id: string }) {
                       disabled={reportState === "sending"}
                       className="px-3 py-1.5 rounded-lg bg-red-700 text-white text-[11px] font-bold hover:bg-red-800 transition-colors cursor-pointer disabled:opacity-50"
                     >
-                      {reportState === "sending" ? "Sending…" : "Submit report"}
+                      {reportState === "sending" ? "Sendingâ€¦" : "Submit report"}
                     </button>
                     {reportState === "error" && (
                       <span className="text-[11px] font-bold text-red-700">
@@ -583,7 +584,7 @@ export function PostDetailContent({ id }: { id: string }) {
                     {r.title}
                   </h3>
                   <div className="text-[10px] text-gray">
-                    {fmtDate(r.publishedAt ?? r.createdAt)} · {AREA_LABELS[r.area]}
+                    {fmtDate(r.publishedAt ?? r.createdAt)} Â· {AREA_LABELS[r.area]}
                   </div>
                 </Link>
               ))}

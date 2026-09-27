@@ -32,8 +32,8 @@ export default async function BusinessPage() {
       tagline: s.tagline ?? null,
       logoUrl: s.logo_url ?? null,
       categories: Array.isArray(s.categories) ? s.categories : [],
-      wa: contact.whatsapp ?? contact.phone ?? null,
-      tel: contact.phone ?? null,
+      whatsapp: contact.whatsapp ?? null,
+      phone: contact.phone ?? null,
     };
   });
 

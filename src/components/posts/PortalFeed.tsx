@@ -10,6 +10,7 @@ import {
   fetchPortalPosts,
 } from "@/lib/posts";
 import type { Post, PostArea, PostType } from "@/types";
+import { isBoostActive } from "@/lib/boosts";
 
 const TABS: Array<PostType | "all"> = [
   "all",
@@ -73,7 +74,7 @@ function PostCard({ post }: { post: Post }) {
           <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber/10 text-amber-800">
             {post.category || POST_TYPE_LABELS[post.type]}
           </span>
-          {post.boostTier !== "none" && post.boostUntil && (
+          {isBoostActive(post) && (
             <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber/15 text-amber-strong">
               ⚡ Featured
             </span>

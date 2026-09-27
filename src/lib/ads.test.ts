@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   AD_SLOTS,
+  hasSeenPlacement,
   isAdFreeRoute,
   isFirstPartyAdRouteAllowed,
   isThirdPartyAdRouteAllowed,
   matchSponsors,
   normalizePath,
+  withPlacementSeen,
   type SponsoredPlacement,
 } from "./ads";
 
@@ -124,8 +126,8 @@ describe("matchSponsors", () => {
     tagline,
     logoUrl: null,
     categories,
-    wa: null,
-    tel: null,
+    whatsapp: null,
+    phone: null,
   });
 
   const bakery = sponsor("Klagon Community Bakery", ["Bakery"], "Fresh bread daily");
@@ -162,6 +164,53 @@ describe("matchSponsors", () => {
     const pool = [bakery, engineer, sponsor("Bakery Plus", ["Bakery"])];
     expect(matchSponsors(pool, { term: "bakery", category: "construction" })).toEqual([]);
     expect(matchSponsors(pool, { term: "bakery", category: "bakery" })).toHaveLength(2);
+  });
+});
+
+describe("impression de-duplication", () => {
+  // The bug this guards: a slot holding several paid placements. Keying the
+  // session on the slot alone credited only the first sponsor and silently
+  // dropped the rest, so they could be clicked but never prove a view.
+  const SLOT = "directory-sponsored";
+
+  it("treats an empty session as unseen", () => {
+    expect(hasSeenPlacement([], SLOT)).toBe(false);
+  });
+
+  it("credits each sponsor in a shared slot independently", () => {
+    let seen: string[] = [];
+    const slots = ["a", "b", "c"].map((slug) => `${SLOT}:${slug}`);
+
+    const counted = slots.filter((key) => {
+      if (hasSeenPlacement(seen, key)) return false;
+      seen = withPlacementSeen(seen, key);
+      return true;
+    });
+
+    expect(counted).toEqual(slots);
+    expect(seen).toEqual(slots);
+  });
+
+  it("counts a sponsor once per session, not once per scroll", () => {
+    let seen: string[] = [];
+    const key = `${SLOT}:afram`;
+    for (let view = 0; view < 5; view++) {
+      if (!hasSeenPlacement(seen, key)) seen = withPlacementSeen(seen, key);
+    }
+    expect(seen).toEqual([key]);
+  });
+
+  it("does not let one sponsor's view consume another's", () => {
+    let seen: string[] = [];
+    seen = withPlacementSeen(seen, `${SLOT}:a`);
+    expect(hasSeenPlacement(seen, `${SLOT}:b`)).toBe(false);
+  });
+
+  it("preserves earlier keys and does not mutate its input", () => {
+    const before = ["radio-top"];
+    const after = withPlacementSeen(before, "business-sponsored");
+    expect(before).toEqual(["radio-top"]);
+    expect(after).toEqual(["radio-top", "business-sponsored"]);
   });
 });
 

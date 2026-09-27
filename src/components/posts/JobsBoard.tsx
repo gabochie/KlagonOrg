@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, Phone, MessageCircle, CalendarClock, ChevronRight } from "lucide-react";
 import { AREA_LABELS, CATEGORY_SEEDS, fetchPortalPosts, isPostExpired } from "@/lib/posts";
+import { isBoostActive } from "@/lib/boosts";
 import type { Post, PostArea } from "@/types";
 
 const JOB_CATEGORIES = CATEGORY_SEEDS["job"];
@@ -44,7 +45,7 @@ function JobCard({ post }: { post: Post }) {
             <span className="px-2 py-0.5 rounded-full bg-amber/15 text-amber-800 text-[10px] font-bold tracking-wide uppercase">
               {post.category}
             </span>
-            {post.boostTier !== "none" && post.boostUntil && (
+            {isBoostActive(post) && (
               <span className="px-2 py-0.5 rounded-full bg-amber/15 text-amber-strong text-[10px] font-bold">
                 ⚡ Featured
               </span>

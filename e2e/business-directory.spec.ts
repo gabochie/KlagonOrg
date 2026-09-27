@@ -31,6 +31,32 @@ test("directory lists businesses and keeps sponsored partners separate", async (
   }
 });
 
+test("each sponsor is credited its own impression, not just the first", async ({ page }) => {
+  await page.goto("/business");
+  const block = page.getByTestId("directory-sponsored");
+  await expect(block).toBeVisible({ timeout: 15000 });
+
+  // The block sits below the fold; impressions are viewability-gated, so the
+  // reader has to actually reach it.
+  await block.scrollIntoViewIfNeeded();
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const raw = sessionStorage.getItem("klagon_ad_impressions");
+          const seen: string[] = raw ? JSON.parse(raw) : [];
+          return seen.filter((k) => k.startsWith("directory-sponsored:")).length;
+        }),
+      { timeout: 10000 },
+    )
+    .toBeGreaterThanOrEqual(3);
+
+  // Every card names the tier the partner paid for.
+  await expect(block.getByText(/Partner$/).first()).toBeVisible();
+  // And each card carries its own Sponsored marker for assistive tech.
+  await expect(block.getByText("Sponsored placement.", { exact: false })).toHaveCount(3);
+});
+
 test("directory search and sort still control the organic results", async ({ page }) => {
   await page.goto("/business");
   await expect(page.getByTestId("directory-sponsored")).toBeVisible({ timeout: 15000 });

@@ -122,12 +122,28 @@ export function isThirdPartyAdRouteAllowed(pathname: string | null | undefined):
 
 const SEEN_KEY = "klagon_ad_impressions";
 
-function alreadySeenThisSession(slot: string): boolean {
+/**
+ * Pure half of impression de-duplication: has this placement been counted
+ * already in the current session?
+ *
+ * Split out from the sessionStorage read so the rule that decides whether a
+ * paid placement is credited can be tested without a browser.
+ */
+export function hasSeenPlacement(seen: readonly string[], dedupeKey: string): boolean {
+  return seen.includes(dedupeKey);
+}
+
+/** The list to persist once `dedupeKey` has been credited. Order is preserved. */
+export function withPlacementSeen(seen: readonly string[], dedupeKey: string): string[] {
+  return [...seen, dedupeKey];
+}
+
+function alreadySeenThisSession(dedupeKey: string): boolean {
   try {
     const raw = window.sessionStorage.getItem(SEEN_KEY);
     const seen: string[] = raw ? (JSON.parse(raw) as string[]) : [];
-    if (seen.includes(slot)) return true;
-    window.sessionStorage.setItem(SEEN_KEY, JSON.stringify([...seen, slot]));
+    if (hasSeenPlacement(seen, dedupeKey)) return true;
+    window.sessionStorage.setItem(SEEN_KEY, JSON.stringify(withPlacementSeen(seen, dedupeKey)));
     return false;
   } catch {
     // Private mode or a full quota: fall back to counting the impression.
@@ -153,8 +169,13 @@ export interface SponsoredPlacement {
   tagline: string | null;
   logoUrl: string | null;
   categories: string[];
-  wa: string | null;
-  tel: string | null;
+  /**
+   * Kept separate from `phone` on purpose. A number that was never registered
+   * on WhatsApp still opens a wa.me chat, but labelling that button "WhatsApp"
+   * would be claiming something untrue about the business.
+   */
+  whatsapp: string | null;
+  phone: string | null;
 }
 
 function normalizeText(value: string) {
@@ -226,9 +247,23 @@ export function matchSponsors(
 }
 
 /** One impression per slot per session. Never throws. */
-export function recordAdImpression(slot: AdSlot, metadata?: AdMetadata): void {
+/**
+ * Counts one viewable impression for a placement.
+ *
+ * `dedupeKey` exists because a slot can hold several distinct paid placements.
+ * A block of three sponsor cards is one slot, but each sponsor needs its own
+ * per-session impression to be able to prove they were seen; keying the session
+ * on the slot alone would credit only the first card and silently swallow the
+ * rest. The reported `slot` stays the same either way, so reporting groups by
+ * position while de-duplication groups by advertiser.
+ */
+export function recordAdImpression(
+  slot: AdSlot,
+  metadata?: AdMetadata,
+  dedupeKey?: string,
+): void {
   if (typeof window === "undefined") return;
-  if (alreadySeenThisSession(slot)) return;
+  if (alreadySeenThisSession(dedupeKey ?? slot)) return;
   recordLeadEvent({ source: AD_SOURCE, action: "impression", metadata: { slot, ...metadata } });
 }
 

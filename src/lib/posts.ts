@@ -466,12 +466,15 @@ export async function subscribeToNewsletter(
   return { ok: true };
 }
 
-/** Purchase a boost. Delegates pricing validation to the purchase_boost() RPC. */
-export async function purchaseBoost(postId: string, tier: BoostTier): Promise<SubmitResult> {
-  const c = client();
-  if (!c) return { ok: false, error: "Supabase is not configured." };
-  const { data, error } = await c.rpc("purchase_boost", { p_post_id: postId, p_tier: tier });
-  if (error) return { ok: false, error: error.message };
-  if (!data) return { ok: false, error: "Boost could not be applied to this post." };
-  return { ok: true, id: postId };
-}
+// NOTE: there is deliberately no client-side purchaseBoost().
+//
+// The purchase_boost() RPC applies paid placement and prices it server-side,
+// but it does not verify payment itself - it trusts the caller. It is granted
+// to service_role only (migration 20260930000000_boost_payment_gate.sql) and is
+// called by the payment worker after payment is confirmed. A browser-callable
+// wrapper would have let any signed-in post owner grant themselves a free
+// boost. End users request a boost through lead capture; the worker applies it.
+//
+// To grant a boost out of band (manual invoice, comp, a correction), call
+// purchase_boost() as service_role or set posts.boost_tier / boost_fee_ghs /
+// boost_until directly from a privileged session.
