@@ -15,6 +15,8 @@ export const metadata: Metadata = {
  * pages rather than breaking the export. Approved member ids only come from
  * the profiles_public view (safe columns, approved members).
  */
+export const dynamicParams = false;
+
 export async function generateStaticParams(): Promise<{ id: string }[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
