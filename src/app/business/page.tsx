@@ -3,6 +3,8 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { BusinessDirectoryContent } from "@/components/sections/BusinessDirectoryContent";
 import type { DirectorySnapshot } from "@/lib/directory";
+import { fetchPublicSponsors, parseContact } from "@/lib/sponsors";
+import type { SponsoredPlacement } from "@/lib/ads";
 import snapshotData from "@/data/business-directory.json";
 
 export const metadata: Metadata = {
@@ -12,12 +14,33 @@ export const metadata: Metadata = {
   alternates: { canonical: "/business" },
 };
 
-export default function BusinessPage() {
+export default async function BusinessPage() {
   const snapshot = snapshotData as unknown as DirectorySnapshot;
+
+  // Sponsors are the buyers of directory placement. They live in their own
+  // curated table with no slug overlap with the 740 auto-imported listings, so
+  // they are projected into a separate labelled block rather than merged into
+  // the organic results. Fails closed to no placements if Supabase is
+  // unreachable at build time.
+  const sponsors = await fetchPublicSponsors();
+  const sponsored: SponsoredPlacement[] = sponsors.map((s) => {
+    const contact = parseContact(s.contact);
+    return {
+      slug: s.slug,
+      name: s.name,
+      tier: s.tier,
+      tagline: s.tagline ?? null,
+      logoUrl: s.logo_url ?? null,
+      categories: Array.isArray(s.categories) ? s.categories : [],
+      wa: contact.whatsapp ?? contact.phone ?? null,
+      tel: contact.phone ?? null,
+    };
+  });
+
   return (
     <div className="w-full overflow-hidden">
       <Navbar />
-      <BusinessDirectoryContent snapshot={snapshot} />
+      <BusinessDirectoryContent snapshot={snapshot} sponsored={sponsored} />
       <Footer />
     </div>
   );

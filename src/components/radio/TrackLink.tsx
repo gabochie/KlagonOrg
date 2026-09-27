@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { recordLeadEvent } from "@/lib/analytics";
+import { recordAdClick, type AdSlot } from "@/lib/ads";
 
 const EXTERNAL = /^(https?:|tel:|mailto:)/;
 
@@ -15,6 +16,12 @@ interface TrackLinkProps {
   children: ReactNode;
   /** Force external handling (opens in a new tab) for a relative-looking href. */
   external?: boolean;
+  /**
+   * Set when this link is paid inventory. Records an ad click in addition to
+   * the ordinary conversion event, so sponsor reporting and lead reporting
+   * never have to be joined by hand.
+   */
+  adSlot?: AdSlot;
 }
 
 /**
@@ -30,8 +37,10 @@ export function TrackLink({
   className,
   children,
   external,
+  adSlot,
 }: TrackLinkProps) {
   const onClick = () => {
+    if (adSlot) recordAdClick(adSlot, metadata);
     recordLeadEvent({ source, action, metadata });
   };
 

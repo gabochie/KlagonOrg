@@ -54,7 +54,7 @@ export const RADIO_SHOWS: RadioShow[] = [
     start: 18 * 60,
     end: 22 * 60,
     title: "Good Evening Klagon",
-    desc: "Community mix — independent Klagon voices, interviews, event listings. Prime time.",
+    desc: "Community mix — independent Klagon voices, interviews, event listings, plus the weekly Ramsar & ecotourism strand (Sakumo lagoon, birds, walk). Prime time.",
     cta: "Sponsor prime time",
     sponsorSlot: "18:00–22:00",
   },

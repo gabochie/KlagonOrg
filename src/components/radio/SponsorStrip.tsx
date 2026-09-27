@@ -1,5 +1,7 @@
 import { fetchPublicSponsors, parseContact } from "@/lib/sponsors";
 import { TrackLink } from "@/components/radio/TrackLink";
+import { AdImpressionBoundary } from "@/components/ads/AdImpressionBoundary";
+import type { AdSlot } from "@/lib/ads";
 
 /**
  * First-party advertising inventory: the businesses already backing KLAGON.
@@ -7,8 +9,11 @@ import { TrackLink } from "@/components/radio/TrackLink";
  * This is the inventory we can actually sell in Klagon — a sponsor's name and
  * message reaching a captive, local audience. It renders nothing when there are
  * no active sponsors, so the page never shows an empty "sponsored by" header.
+ *
+ * Stays a server component so the sponsor list is prerendered into the static
+ * HTML; viewability and clicks are attached by the two small client wrappers.
  */
-export async function SponsorStrip() {
+export async function SponsorStrip({ slot = "sponsors-wall" }: { slot?: AdSlot }) {
   const sponsors = await fetchPublicSponsors();
   if (!sponsors.length) return null;
 
@@ -16,7 +21,7 @@ export async function SponsorStrip() {
 
   return (
     <section className="bg-white py-12 sm:py-14 px-4 sm:px-6 border-t border-border">
-      <div className="max-w-5xl mx-auto">
+      <AdImpressionBoundary slot={slot} className="max-w-5xl mx-auto">
         <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
           <div>
             <h2 className="text-lg font-extrabold text-navy tracking-tight">
@@ -46,6 +51,7 @@ export async function SponsorStrip() {
                   href={href}
                   source="radio"
                   action="sponsor-click"
+                  adSlot={slot}
                   metadata={{ sponsor: s.slug, tier: s.tier }}
                   className="flex h-full flex-col gap-2 rounded-2xl border border-border p-4 transition hover:border-amber hover:shadow-md"
                 >
@@ -66,14 +72,16 @@ export async function SponsorStrip() {
                   )}
                   <span className="text-xs font-extrabold text-navy leading-snug">{s.name}</span>
                   {s.tagline ? (
-                    <span className="text-[11px] text-gray leading-snug line-clamp-2">{s.tagline}</span>
+                    <span className="text-[11px] text-gray leading-snug line-clamp-2">
+                      {s.tagline}
+                    </span>
                   ) : null}
                 </TrackLink>
               </li>
             );
           })}
         </ul>
-      </div>
+      </AdImpressionBoundary>
     </section>
   );
 }

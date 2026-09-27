@@ -16,6 +16,9 @@ import {
   fetchDirectoryClaimMap,
   fileDirectoryClaim,
 } from "@/lib/directoryClaims";
+import { SponsoredDirectoryBlock } from "@/components/sections/SponsoredDirectoryBlock";
+import type { SponsoredPlacement } from "@/lib/ads";
+import { matchSponsors } from "@/lib/ads";
 
 type SortKey = "featured" | "rating" | "reviews" | "name";
 
@@ -50,11 +53,11 @@ function BusinessCard({
   const contact = b.wa || b.tel ? (
     b.wa ? (
       <a href={waHref(b.wa, b.name)} target="_blank" rel="noopener noreferrer" className={`${btn} ${btnNavy} flex-1`}>
-        <MessageCircle size="13" /> WhatsApp
+        <MessageCircle size={13} /> WhatsApp
       </a>
     ) : (
       <a href={telHref(b.tel)} className={`${btn} ${btnNavy} flex-1`}>
-        <Phone size="13" /> Call
+        <Phone size={13} /> Call
       </a>
     )
   ) : (
@@ -161,7 +164,13 @@ function BusinessCard({
   );
 }
 
-export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnapshot }) {
+export function BusinessDirectoryContent({
+  snapshot,
+  sponsored = [],
+}: {
+  snapshot: DirectorySnapshot;
+  sponsored?: SponsoredPlacement[];
+}) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
@@ -201,6 +210,14 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
     }
     return ranked;
   }, [snapshot.businesses, query, activeCategory, sort]);
+
+  // Paying partners only appear when they genuinely answer this reader's
+  // search, and never on a search that found nothing at all — otherwise a
+  // sponsor would read as a result for a query it has nothing to do with.
+  const visibleSponsors = useMemo(() => {
+    if (visible.length === 0) return [];
+    return matchSponsors(sponsored, { term: query, category: activeCategory });
+  }, [sponsored, query, activeCategory, visible.length]);
 
   // Pull the live claim state for whatever businesses are currently shown.
   useEffect(() => {
@@ -321,9 +338,10 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
           </div>
         </div>
 
+        <SponsoredDirectoryBlock sponsors={visibleSponsors} />
+
         {visible.length === 0 ? (
-          <div className="bg-light rounded-2xl border border-border p-10 text-center">
-            <p className="text-sm font-bold text-navy mb-1">No match for &quot;{query}&quot;</p>
+          <div className="bg-light rounded-2xl border border-border p-10 text-center">            <p className="text-sm font-bold text-navy mb-1">No match for &quot;{query}&quot;</p>
             <p className="text-sm text-gray">Try a different search or clear the category filter.</p>
             <button
               onClick={() => { setQuery(""); setActiveCategory(""); }}
@@ -333,7 +351,7 @@ export function BusinessDirectoryContent({ snapshot }: { snapshot: DirectorySnap
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div data-testid="directory-results" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {visible.map((b) => (
               <BusinessCard key={b.id} b={b} claimState={claims[b.id] ?? "unclaimed"} onClaim={setClaim} />
             ))}

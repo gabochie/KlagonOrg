@@ -134,8 +134,8 @@ export default function RadioPage() {
         <section className="bg-pale py-10 sm:py-12 px-4 sm:px-6">
           <div className="max-w-5xl mx-auto">
             <AdSlot
-              slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RADIO_TOP}
-              label="radio-top"
+              slot="radio-top"
+              unit={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RADIO_TOP}
               houseAd={
                 <HouseAd
                   placement="radio-top"
@@ -147,7 +147,7 @@ export default function RadioPage() {
           </div>
         </section>
 
-        <SponsorStrip />
+        <SponsorStrip slot="radio-sponsors" />
 
         <section className="bg-white py-14 sm:py-16 px-4 sm:px-6">
           <div className="max-w-5xl mx-auto">
@@ -196,8 +196,8 @@ export default function RadioPage() {
         <section className="bg-white pb-14 sm:pb-16 px-4 sm:px-6">
           <div className="max-w-5xl mx-auto">
             <AdSlot
-              slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RADIO_MID}
-              label="radio-mid"
+              slot="radio-mid"
+              unit={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RADIO_MID}
               className="rounded-2xl border border-border p-4"
               houseAd={
                 <HouseAd
