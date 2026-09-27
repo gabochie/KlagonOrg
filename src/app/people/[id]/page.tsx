@@ -12,17 +12,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Fails open: if Supabase is unreachable at build time we ship zero member
- * pages rather than breaking the export. Approved member ids only come from
- * the profiles_public view (safe columns, approved members).
- */
-/**
  * Static export enumerates member pages at build time, so generateStaticParams
  * must never hand Next an empty array — an empty list fails the whole export
  * with "missing generateStaticParams()". Approved ids come from the live
- * profiles_public view; the committed snapshot in src/data/member-ids.json is
- * the fallback (refresh it with `node scripts/refresh-member-ids.cjs`), which
- * keeps builds deterministic when Supabase is unreachable.
+ * profiles_public view (safe columns, approved members); the committed snapshot
+ * in src/data/member-ids.json is the fallback (refresh it with
+ * `node scripts/refresh-member-ids.cjs`), which keeps builds deterministic when
+ * Supabase is unreachable.
  */
 export const dynamicParams = false;
 
@@ -58,7 +54,6 @@ export async function generateStaticParams(): Promise<{ id: string }[]> {
     );
   }
   return ids.map((id) => ({ id }));
-}
 }
 
 export default async function PersonPage({ params }: { params: Promise<{ id: string }> }) {
