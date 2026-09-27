@@ -41,7 +41,9 @@ const get = async (p) => {
     console.log("lessons probe:", probe.status, JSON.stringify(probe.body).slice(0, 200));
   }
 
-  const lessons = await get(`/rest/v1/lessons?select=*&course_id=eq.${c.id}&order=position.asc&limit=50`);
+  const lessons = await get(
+    `/rest/v1/lessons?select=id,title,sort_order&course_id=eq.${c.id}&order=sort_order.asc&limit=50`,
+  );
   if (Array.isArray(lessons.body)) {
     console.log(`\nlessons for this course: ${lessons.body.length}`);
     for (const l of lessons.body) {
