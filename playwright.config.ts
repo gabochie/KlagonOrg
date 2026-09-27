@@ -41,6 +41,13 @@ loadEnvFile(".env.local");
  */
 export default defineConfig({
   testDir: "./e2e",
+  // Playwright's 30s default is too tight here: `webServer` runs `next dev`, so
+  // the first hit on a route pays an on-demand compile (seconds), and the
+  // multi-write auth flows chain several sequential round-trips. Measured
+  // network medians are ~200-500ms per request, so the budget, not the app, was
+  // the flake source. Individual expect() timeouts are still 20s and still
+  // meaningful.
+  timeout: 90_000,
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],
