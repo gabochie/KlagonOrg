@@ -1,18 +1,23 @@
 import type { Metadata } from "next";
 import { BusinessCardContent } from "@/components/sponsor/BusinessCardContent";
 import { getSupabase } from "@/lib/supabase";
+import { resolveStaticKeys } from "@/lib/staticParams";
+import BUSINESS_CARD_SLUGS from "@/data/business-card-slugs.json";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  try {
-    const sb = getSupabase();
-    const { data, error } = await sb.from("business_cards").select("slug");
-    if (error || !data) return [];
-    return data.map((c) => ({ slug: c.slug }));
-  } catch {
-    return [];
-  }
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  const slugs = await resolveStaticKeys(
+    "/b/[slug]",
+    async () => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from("business_cards").select("slug");
+      if (error) throw error;
+      return (data ?? []).map((c) => c.slug as string);
+    },
+    BUSINESS_CARD_SLUGS as string[]
+  );
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

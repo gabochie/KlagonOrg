@@ -3,21 +3,23 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { SponsorProfileContent } from "@/components/sponsor/SponsorProfileContent";
 import { getSupabase } from "@/lib/supabase";
+import { resolveStaticKeys } from "@/lib/staticParams";
+import SPONSOR_SLUGS from "@/data/sponsor-slugs.json";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  try {
-    const sb = getSupabase();
-    const { data, error } = await sb
-      .from("sponsors")
-      .select("slug")
-      .eq("status", "active");
-    if (error || !data) return [];
-    return data.map((s) => ({ slug: s.slug }));
-  } catch {
-    return [];
-  }
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  const slugs = await resolveStaticKeys(
+    "/business/[slug]",
+    async () => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from("sponsors").select("slug").eq("status", "active");
+      if (error) throw error;
+      return (data ?? []).map((s) => s.slug as string);
+    },
+    SPONSOR_SLUGS as string[]
+  );
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

@@ -3,23 +3,28 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { PostDetailContent } from "@/components/posts/PostDetailContent";
 import { getSupabase } from "@/lib/supabase";
+import { resolveStaticKeys } from "@/lib/staticParams";
+import NEWS_IDS from "@/data/news-ids.json";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  try {
-    const sb = getSupabase();
-    const { data, error } = await sb
-      .from("posts")
-      .select("id")
-      .eq("status", "approved")
-      .order("published_at", { ascending: false })
-      .limit(500);
-    if (error || !data) return [];
-    return data.map((p) => ({ id: p.id }));
-  } catch {
-    return [];
-  }
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  const ids = await resolveStaticKeys(
+    "/news/[id]",
+    async () => {
+      const sb = getSupabase();
+      const { data, error } = await sb
+        .from("posts")
+        .select("id")
+        .eq("status", "approved")
+        .order("published_at", { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      return (data ?? []).map((p) => p.id as string);
+    },
+    NEWS_IDS as string[]
+  );
+  return ids.map((id) => ({ id }));
 }
 
 export async function generateMetadata({
