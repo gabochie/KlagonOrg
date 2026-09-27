@@ -140,7 +140,10 @@ if (insertErr || !inserted) throw new Error(`member insert under RLS failed: ${i
       .locator('[data-testid="moderation-card"]')
       .filter({ hasText: title });
     await expect(queueCard).toBeVisible({ timeout: 20000 });
-    await queueCard.getByRole("button", { name: "Approve", exact: true }).click();
+    // The button renders a decorative tick, so its accessible name is
+    // "✓ Approve". An exact "Approve" match never resolves and used to hang
+    // until the whole test timed out. Match the label, not the decoration.
+    await queueCard.getByRole("button", { name: /Approve/ }).click();
     await expect(queueCard).toBeHidden({ timeout: 20000 });
 
     // 4. Public sees it live on /news.

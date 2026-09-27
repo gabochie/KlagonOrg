@@ -45,6 +45,14 @@ interface AuthContextValue {
   session: Session | null;
   profile: ProfileRow | null;
   loading: boolean;
+  /**
+   * True once the initial session lookup has settled AND the profile row has
+   * been fetched (or determined not to exist). `isAdmin` is derived from
+   * profile.role, so role checks are only meaningful after this flips —
+   * otherwise a hard refresh briefly reports isAdmin === false and route
+   * guards bounce the user out of admin pages mid-load.
+   */
+  profileLoaded: boolean;
   configured: boolean;
   role: UserRole | "anonymous";
   status: MemberStatus | "none";
@@ -70,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const configured = Boolean(getBrowserClient());
 
   const loadProfile = useCallback(async (userId: string) => {
@@ -100,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       if (!client) {
         setLoading(false);
+        setProfileLoaded(true);
         return;
       }
 
@@ -107,18 +117,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       setSession(data.session);
       setUser(data.session?.user ?? null);
-      setLoading(false);
+      // Await the profile before declaring the session settled: role checks
+      // (isAdmin/isSuperAdmin) are meaningless until it lands.
       if (data.session?.user.id) {
-        void loadProfile(data.session.user.id);
+        await loadProfile(data.session.user.id);
       }
+      setLoading(false);
+      if (!active) return;
+      setProfileLoaded(true);
 
-      const { data: sub } = client.auth.onAuthStateChange((_event, currentSession) => {
+      const { data: sub } = client.auth.onAuthStateChange(async (_event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         if (currentSession?.user.id) {
-          void loadProfile(currentSession.user.id);
+          await loadProfile(currentSession.user.id);
+          setProfileLoaded(true);
         } else {
           setProfile(null);
+          setProfileLoaded(true);
         }
       });
       unsubscribe = sub.subscription.unsubscribe;
@@ -152,6 +168,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signedInProfile = (p as ProfileRow | null) ?? null;
         if (signedInProfile) setProfile(signedInProfile);
       }
+      setProfileLoaded(true);
       return { error: null, profile: signedInProfile };
     },
     []
@@ -241,6 +258,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       profile,
       loading,
+      profileLoaded,
       configured,
       role,
       status,
@@ -255,7 +273,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       changePassword,
       sendPasswordReset,
     };
-  }, [user, session, profile, loading, configured, signIn, signUp, signOut, refreshProfile, updateProfile, changePassword, sendPasswordReset]);
+  }, [user, session, profile, loading, profileLoaded, configured, signIn, signUp, signOut, refreshProfile, updateProfile, changePassword, sendPasswordReset]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

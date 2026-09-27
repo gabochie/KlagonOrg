@@ -5,16 +5,18 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export function RequireSuperAdmin({ children }: { children: ReactNode }) {
-  const { loading, user, isSuperAdmin } = useAuth();
+  const { loading, user, isSuperAdmin, profileLoaded } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (loading) return;
+    // Same reasoning as RequireAdmin: isSuperAdmin is false until profile.role
+    // arrives, so gate on profileLoaded to avoid bouncing on a transient value.
+    if (loading || !profileLoaded) return;
     if (!user) router.replace("/admin/login");
     else if (!isSuperAdmin) router.replace("/dashboard");
-  }, [loading, user, isSuperAdmin, router]);
+  }, [loading, profileLoaded, user, isSuperAdmin, router]);
 
-  if (loading || !isSuperAdmin) {
+  if (loading || !profileLoaded || !isSuperAdmin) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
