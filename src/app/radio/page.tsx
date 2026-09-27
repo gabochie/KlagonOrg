@@ -67,7 +67,11 @@ export default function RadioPage() {
             <CasterPlayer />
           </div>
           <div className="flex flex-wrap items-center gap-2 md:shrink-0">
-            <OnAirNow />
+            {/* Hidden on phones: the hero already states the hours, and the
+                sticky bar must not eat a third of a small viewport. */}
+            <div className="hidden sm:block">
+              <OnAirNow />
+            </div>
             <TrackLink
               href="/donate"
               source="radio"
