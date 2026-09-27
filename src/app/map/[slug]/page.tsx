@@ -5,13 +5,22 @@ import { Footer } from "@/components/landing/Footer";
 import { MapPlaceContent } from "@/components/map/MapPlaceContent";
 import { getMapPages } from "@/lib/map/data";
 import { entityTypeLabel } from "@/lib/map/layers";
+import { resolveStaticKeys } from "@/lib/staticParams";
+import MAP_PAGE_SLUGS from "@/data/map-page-slugs.json";
 
 export const dynamicParams = false;
 export const dynamic = "force-static";
 
-export async function generateStaticParams() {
-  const { slugById } = await getMapPages();
-  return [...slugById.values()].map((slug) => ({ slug }));
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  const slugs = await resolveStaticKeys(
+    "/map/[slug]",
+    async () => {
+      const { slugById } = await getMapPages();
+      return [...slugById.values()];
+    },
+    MAP_PAGE_SLUGS as string[]
+  );
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
