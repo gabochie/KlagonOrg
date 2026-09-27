@@ -1,15 +1,20 @@
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
+import { COURSES } from "@/lib/constants";
 import { getSupabase } from "@/lib/supabase";
+import { resolveStaticKeys } from "@/lib/staticParams";
 
-export async function generateStaticParams() {
-  try {
-    const sb = getSupabase();
-    const { data, error } = await sb.from("courses").select("id").eq("published", true);
-    if (error || !data) return [];
-    return data.map((c) => ({ id: c.id }));
-  } catch {
-    return [];
-  }
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  const ids = await resolveStaticKeys(
+    "/dashboard/learning/[id]",
+    async () => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from("courses").select("id").eq("published", true);
+      if (error) throw error;
+      return (data ?? []).map((c) => c.id as string);
+    },
+    COURSES.map((c) => c.id)
+  );
+  return ids.map((id) => ({ id }));
 }
 
 export default async function DashboardCoursePage({

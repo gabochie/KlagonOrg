@@ -4,16 +4,20 @@ import { Footer } from "@/components/landing/Footer";
 import { CourseReaderContent } from "@/components/sections/CourseReaderContent";
 import { COURSES } from "@/lib/constants";
 import { getSupabase } from "@/lib/supabase";
+import { resolveStaticKeys } from "@/lib/staticParams";
 
-export async function generateStaticParams() {
-  try {
-    const sb = getSupabase();
-    const { data, error } = await sb.from("courses").select("id").eq("published", true);
-    if (!error && data && data.length > 0) return data.map((c) => ({ id: c.id }));
-  } catch {
-    /* fall through to local fallback */
-  }
-  return COURSES.map((c) => ({ id: c.id }));
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  const ids = await resolveStaticKeys(
+    "/learning/[id]",
+    async () => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from("courses").select("id").eq("published", true);
+      if (error) throw error;
+      return (data ?? []).map((c) => c.id as string);
+    },
+    COURSES.map((c) => c.id)
+  );
+  return ids.map((id) => ({ id }));
 }
 
 export async function generateMetadata({
