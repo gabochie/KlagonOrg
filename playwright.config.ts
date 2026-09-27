@@ -52,13 +52,20 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],
   use: {
-    baseURL: "http://localhost:3000",
+    // 3100, not 3000: this machine already runs another project's Next server
+    // on 3000, and reuseExistingServer would silently test against that.
+    baseURL: "http://localhost:3100",
     trace: "on-first-retry",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // Serve the real static export instead of `next dev`. Dev cold-compiles every
+  // route on first hit, and that compile — not app or database latency — is what
+  // pushed the multi-step auth flow past its budget. `out/` is the artifact that
+  // actually deploys, so this tests what ships. Run `npm run build` first;
+  // `serve` fails loudly if out/ is missing or stale.
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
+    command: "npx --yes serve out -l 3100 --no-clipboard",
+    url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 180000,
   },

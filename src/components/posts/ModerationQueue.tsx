@@ -123,7 +123,11 @@ export function ModerationQueue() {
       ) : (
         <div className="flex flex-col gap-2.5">
           {visible.map((p) => (
-            <div key={p.id} className="bg-white rounded-2xl border border-border p-4 shadow-sm">
+            <div
+              key={p.id}
+              data-testid="moderation-card"
+              className="bg-white rounded-2xl border border-border p-4 shadow-sm"
+            >
               <div className="flex items-start gap-3.5">
                 {p.coverUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element

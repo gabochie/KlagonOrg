@@ -133,7 +133,12 @@ if (insertErr || !inserted) throw new Error(`member insert under RLS failed: ${i
     await login(page, c.admin.email, c.admin.password);
     await expect(page).toHaveURL(/\/dashboard\/admin/, { timeout: 20000 });
     await page.goto("/dashboard/admin/moderation");
-    const queueCard = page.locator("div.rounded-xl", { hasText: title }).first();
+    // Scope to this post's own card. A broad `div.rounded-xl` selector also
+    // matches shared ancestors, so one leftover pending post from an earlier
+    // failed run made this resolve to several Approve buttons and fail.
+    const queueCard = page
+      .locator('[data-testid="moderation-card"]')
+      .filter({ hasText: title });
     await expect(queueCard).toBeVisible({ timeout: 20000 });
     await queueCard.getByRole("button", { name: "Approve", exact: true }).click();
     await expect(queueCard).toBeHidden({ timeout: 20000 });
