@@ -141,7 +141,10 @@ export default function DonatePage() {
       </section>
       <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="max-w-2xl mx-auto mb-12 rounded-2xl bg-navy p-6 sm:p-8 text-center">
+          <div
+            id="community-circle"
+            className="max-w-2xl mx-auto mb-12 rounded-2xl bg-navy p-6 sm:p-8 text-center scroll-mt-24"
+          >
             <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-2">
               The Community Circle
             </div>

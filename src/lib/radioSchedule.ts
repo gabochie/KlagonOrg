@@ -101,9 +101,15 @@ export function currentShow(date: Date = new Date()): RadioShow | null {
   return RADIO_SHOWS.find((s) => now >= s.start && now < s.end) ?? null;
 }
 
-export function nextShow(date: Date = new Date()): RadioShow | null {
+/**
+ * The next show to start. When today's schedule is exhausted (the overnight
+ * 23:00-06:00 gap) this rolls over to tomorrow's first show, so a listener
+ * arriving at 02:00 is still told when the station returns rather than just
+ * "off air".
+ */
+export function nextShow(date: Date = new Date()): RadioShow {
   const now = accraMinutes(date);
-  return RADIO_SHOWS.find((s) => now < s.start) ?? null;
+  return RADIO_SHOWS.find((s) => now < s.start) ?? RADIO_SHOWS[0];
 }
 
 export function accraClock(date: Date = new Date()): string {
