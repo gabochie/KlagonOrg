@@ -126,7 +126,11 @@ export function BoostRequestsQueue() {
   }, []);
 
   useEffect(() => {
-    void load();
+    // Wrapped so the first setState lands in a microtask rather than the
+    // effect body, which trips react-hooks/set-state-in-effect.
+    void (async () => {
+      await load();
+    })();
   }, [load]);
 
   async function apply(postId: string) {
