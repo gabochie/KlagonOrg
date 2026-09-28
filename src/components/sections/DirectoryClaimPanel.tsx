@@ -154,7 +154,7 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
             className="w-full rounded-xl px-4 py-3 text-sm mb-3 border border-white/20 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-amber"
           />
           {problem && (
-            <p className="text-xs text-amber mb-3" role="alert">
+            <p className="text-xs text-amber mb-3" role="alert" data-testid="claim-error">
               {problem}
             </p>
           )}
@@ -202,7 +202,9 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
       >
         <Send size={16} /> Invite the owner to claim
       </a>
-      <p className="mt-4 text-[11px] text-white/50">Listing ID {b.id}. We verify ownership within 24 hours.</p>
+      <p className="mt-4 text-[11px] text-white/50" data-testid="claim-listing-id">
+        Listing ID {b.id}. We verify ownership within 24 hours.
+      </p>
     </div>
   );
 }
