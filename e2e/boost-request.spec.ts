@@ -79,7 +79,8 @@ test.describe("boost request", () => {
 
     const target = approved.find((p) => !p.boost_until) ?? approved[0];
     const card = page.locator(`[data-post-id="${target.id}"]`).first();
-    test.skip((await card.count()) === 0, "approved post not rendered on /my/posts");
+    // A missing card is a real regression, not a "no data" skip.
+    expect(await card.count(), "approved post is rendered on /my/posts").toBeGreaterThan(0);
 
     if (target.boost_until && new Date(target.boost_until) > new Date()) {
       // Live boost: shows its end date, not a second sales pitch.
@@ -88,15 +89,17 @@ test.describe("boost request", () => {
       return;
     }
 
+    // Mirror of boostPriceFor(): the quote must come from the server rule,
+    // so this asserts the panel cannot drift from what purchase_boost charges.
+    const expected =
+      target.type === "classified" && (target.category === "Properties" || target.category === "Auto")
+        ? { fee: 50, days: 7 }
+        : target.type === "classified"
+          ? { fee: 20, days: 3 }
+          : { fee: 30, days: 3 };
+
     await card.getByRole("button", { name: /Feature this listing/i }).click();
-    // Price must be the authoritative tier for this vertical, not a hardcoded
-    // string: properties/auto premium is 50, classifieds featured is 20.
-    const expected = /GH₵ 50 for 7 days/.test(target.category ?? "")
-      ? 50
-      : target.type === "classified"
-        ? 20
-        : 30;
-    await expect(card.getByText(new RegExp(`GH₵ ${expected} for ${expected === 50 ? 7 : 3} days`))).toBeVisible();
+    await expect(card.getByText(`GH₵ ${expected.fee} for ${expected.days} days`)).toBeVisible();
     await expect(card.getByText(/goes live once payment clears/i)).toBeVisible();
   });
 
@@ -117,7 +120,7 @@ test.describe("boost request", () => {
     await page.goto("/my/posts");
 
     const card = page.locator(`[data-post-id="${target.id}"]`).first();
-    test.skip((await card.count()) === 0, "approved post not rendered on /my/posts");
+    expect(await card.count(), "approved post is rendered on /my/posts").toBeGreaterThan(0);
 
     await card.getByRole("button", { name: /Feature this listing/i }).click();
     await card.getByRole("button", { name: /Request this boost/i }).click();
