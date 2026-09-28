@@ -1,10 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { AREA_LABELS, POST_TYPE_LABELS, deleteMyPost, fetchMyPosts, resubmitPost } from "@/lib/posts";
 import { isBoostActive } from "@/lib/boosts";
+import { BoostRequestPanel } from "@/components/posts/BoostRequestPanel";
 import type { Post } from "@/types";
 import { PostStatusChip } from "./PostStatusChip";
 
@@ -55,7 +56,7 @@ export function MyPostsList() {
   if (busy) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="animate-pulse text-sm text-gray font-semibold">Loading your postsâ€¦</div>
+        <div className="animate-pulse text-sm text-gray font-semibold">Loading your posts…</div>
       </div>
     );
   }
@@ -63,9 +64,9 @@ export function MyPostsList() {
   if (posts.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-border p-12 text-center shadow-sm">
-        <div className="text-3xl mb-3">ðŸ—žï¸</div>
+        <div className="text-3xl mb-3">🗞️</div>
         <div className="text-sm font-bold text-navy mb-1">No posts yet</div>
-        <div className="text-xs text-gray mb-5">Share something with your community â€” it&apos;s free.</div>
+        <div className="text-xs text-gray mb-5">Share something with your community — it&apos;s free.</div>
         <Link
           href="/submit"
           className="inline-block px-4 py-2 rounded-lg bg-navy text-white text-sm font-bold hover:bg-blue transition-colors"
@@ -79,7 +80,13 @@ export function MyPostsList() {
   return (
     <div className="flex flex-col gap-2.5">
       {posts.map((p) => (
-        <div key={p.id} className="bg-white rounded-2xl border border-border p-4 shadow-sm">
+        <div
+          key={p.id}
+          data-testid="my-post-card"
+          data-post-id={p.id}
+          data-post-status={p.status}
+          className="bg-white rounded-2xl border border-border p-4 shadow-sm"
+        >
           <div className="flex items-start gap-3.5">
             {p.coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -90,31 +97,31 @@ export function MyPostsList() {
               />
             ) : (
               <div className="w-20 h-20 rounded-xl bg-pale flex items-center justify-center flex-shrink-0 border border-border">
-                <span className="text-xl">ðŸ–¼ï¸</span>
+                <span className="text-xl">🖼️</span>
               </div>
             )}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] font-bold uppercase tracking-wide text-amber-strong">
                   {POST_TYPE_LABELS[p.type]}
-                  {p.type === "classified" && p.category ? ` Â· ${p.category}` : ""}
+                  {p.type === "classified" && p.category ? ` · ${p.category}` : ""}
                 </span>
                 <PostStatusChip status={p.status} />
                 {isBoostActive(p) && (
                   <span className="text-[10px] font-bold text-amber-strong bg-amber/15 px-1.5 py-0.5 rounded-full">
-                    âš¡ Featured
+                    ⚡ Featured
                   </span>
                 )}
               </div>
               <div className="text-sm font-extrabold text-navy truncate mt-0.5">{p.title}</div>
               <div className="text-[11px] text-gray mt-1">
                 {fmt(p.createdAt)}
-                {p.status === "approved" && p.publishedAt ? ` Â· live ${fmt(p.publishedAt)}` : ""}
-                {p.area ? ` Â· ${AREA_LABELS[p.area]}` : ""}
+                {p.status === "approved" && p.publishedAt ? ` · live ${fmt(p.publishedAt)}` : ""}
+                {p.area ? ` · ${AREA_LABELS[p.area]}` : ""}
                 {p.type === "job" && p.expiresAt
                   ? new Date(p.expiresAt) <= new Date()
-                    ? " Â· closed"
-                    : ` Â· closes ${fmt(p.expiresAt)}`
+                    ? " · closed"
+                    : ` · closes ${fmt(p.expiresAt)}`
                   : ""}
               </div>
               {p.status === "rejected" && p.rejectedReason && (
@@ -156,6 +163,7 @@ export function MyPostsList() {
                   </button>
                 )}
               </div>
+              <BoostRequestPanel post={p} />
             </div>
           </div>
         </div>
