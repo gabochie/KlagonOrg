@@ -25,22 +25,23 @@ declare
   v_count int;
   v_left int;
 begin
+  -- position() rather than LIKE: no wildcard semantics to reason about, so a
+  -- '%' or '_' inside the bad sequence can never widen the match.
   update public.sponsors
      set opening_hours = replace(opening_hours, v_bad, v_fix),
          updated_at = now()
    where opening_hours is not null
-     and opening_hours like '%' || v_bad || '%';
+     and position(v_bad in opening_hours) > 0;
 
   get diagnostics v_count = row_count;
   raise notice 'sponsor opening_hours: repaired % row(s)', v_count;
 
   -- Safety net. If the literal above were ever wrong this update would match
   -- nothing and exit 0, which is the worst kind of failure for a data repair:
-  -- it looks like it worked. Warn loudly instead if any bad bytes survive, and
-  -- keep the surviving text in the message so the pattern can be corrected.
+  -- it looks like it worked. Warn loudly instead if any bad bytes survive.
   select count(*) into v_left
     from public.sponsors
-   where opening_hours like '%' || v_bad || '%';
+   where position(v_bad in opening_hours) > 0;
 
   if v_left > 0 then
     raise warning 'sponsor opening_hours: % row(s) still contain the bad sequence; pattern needs extending', v_left;

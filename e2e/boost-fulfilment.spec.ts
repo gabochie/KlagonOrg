@@ -96,7 +96,7 @@ test.describe("boost fulfilment", () => {
       email: c.memberEmail,
       password: c.memberPassword,
     });
-    if (sErr || !signed.user) throw new Error(`member sign-in failed: ${sErr.message}`);
+    if (sErr || !signed.user) throw new Error(`member sign-in failed: ${sErr?.message}`);
 
     const title = `E2E boost fulfil ${Date.now()} — safe to delete`;
     const { data: inserted, error: iErr } = await member
@@ -115,18 +115,21 @@ test.describe("boost fulfilment", () => {
       .select("id")
       .single();
     if (iErr || !inserted) throw new Error(`insert failed: ${iErr?.message}`);
-    postId = inserted.id;
+    // Non-null local for the rest of the test; the outer postId is only the
+    // afterAll cleanup handle, which may legitimately be null.
+    const target: string = inserted.id;
+    postId = target;
 
     const { error: aErr } = await admin
       .from("posts")
       .update({ status: "approved", published_at: new Date().toISOString(), rejected_reason: null })
-      .eq("id", postId);
+      .eq("id", target);
     if (aErr) throw new Error(`approve failed: ${aErr.message}`);
 
     // 2. The revoked purchase_boost must stay unreachable from a member
     //    session. This is the whole reason the grant path had to be added.
     const { data: sneaky, error: sneakErr } = await member.rpc("purchase_boost", {
-      p_post_id: postId,
+      p_post_id: target,
       p_tier: "premium",
     });
     if (!sneakErr) {
@@ -134,14 +137,14 @@ test.describe("boost fulfilment", () => {
     } else {
       expect(sneakErr.message, "expected a permission error").toMatch(/permission|denied|not granted/i);
     }
-    const afterSneak = await readPost(postId);
+    const afterSneak = await readPost(target);
     expect(afterSneak.boost_tier, "self-purchase attempt must not boost the post").toBe("none");
     expect(afterSneak.boost_until).toBeNull();
 
     // 3. Member requests the boost through the UI.
     await login(page, c.memberEmail, c.memberPassword);
     await page.goto("/my/posts");
-    const card = page.locator(`[data-post-id="${postId}"]`).first();
+    const card = page.locator(`[data-post-id="${target}"]`).first();
     await expect(card, "listing is listed for its owner").toBeVisible({ timeout: 20000 });
     await card.getByRole("button", { name: /Feature this listing/i }).click();
     await card.getByRole("button", { name: /Request this boost/i }).click();
@@ -150,7 +153,7 @@ test.describe("boost fulfilment", () => {
     // 4. Staff fulfil it from the admin queue.
     await login(page, c.adminEmail, c.adminPassword);
     await page.goto("/dashboard/admin/boosts");
-    const queue = page.locator(`[data-post-id="${postId}"]`).first();
+    const queue = page.locator(`[data-post-id="${target}"]`).first();
     await expect(queue, "boost request reaches the staff queue").toBeVisible({ timeout: 20000 });
     // A Properties classified is the premium tier: 50 for 7 days.
     await expect(queue.getByText(/50 \/ 7d/)).toBeVisible();
@@ -158,7 +161,7 @@ test.describe("boost fulfilment", () => {
     await expect(queue.getByText(/Boost applied/i)).toBeVisible({ timeout: 20000 });
 
     // 5. The post is genuinely boosted, at the quoted price and duration.
-    const boosted = await readPost(postId);
+    const boosted = await readPost(target);
     expect(boosted.boost_tier).toBe("premium");
     expect(Number(boosted.boost_fee_ghs)).toBe(50);
     const daysOut = (new Date(boosted.boost_until as string).getTime() - Date.now()) / 86_400_000;
@@ -168,12 +171,12 @@ test.describe("boost fulfilment", () => {
     // 6. The owner sees the boosted state, and cannot buy a second one.
     await login(page, c.memberEmail, c.memberPassword);
     await page.goto("/my/posts");
-    const ownCard = page.locator(`[data-post-id="${postId}"]`).first();
+    const ownCard = page.locator(`[data-post-id="${target}"]`).first();
     await expect(ownCard.getByText(/Featured until/i)).toBeVisible({ timeout: 20000 });
     await expect(ownCard.getByRole("button", { name: /Feature this listing/i })).toHaveCount(0);
 
     // 7. Re-applying is refused rather than silently extending the boost.
-    const { data: again } = await admin.rpc("admin_apply_boost", { p_post_id: postId });
+    const { data: again } = await admin.rpc("admin_apply_boost", { p_post_id: target });
     expect(again, "a live boost must not be stacked").toBe(false);
   });
 });

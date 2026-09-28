@@ -34,3 +34,44 @@ export function isBoostActive(post: Boostable, now: number = Date.now()): boolea
 export function boostedFirst<T extends Boostable>(a: T, b: T, now?: number): number {
   return Number(isBoostActive(b, now)) - Number(isBoostActive(a, now));
 }
+
+/** Extra shape needed to re-rank a feed: newest-first within a group. */
+export interface Rankable extends Boostable {
+  publishedAt: string | null;
+}
+
+/**
+ * Order a feed the way it is actually sold: live boosts on top, everything
+ * else newest first.
+ *
+ * This exists because ordering by the raw boost_until column cannot express
+ * "boosts that have not expired". Postgres sorts a past timestamp above a null
+ * unless told otherwise, so a listing whose boost ran out last week keeps
+ * outranking every unboosted listing purely because its column is non-null.
+ * The server has no way to say "treat an expired boost as no boost" through
+ * PostgREST, so the final order is applied here instead.
+ *
+ * Within the boosted group the longest-running boost stays first, matching the
+ * server's boost_until ordering; organic posts fall back to newest first.
+ *
+ * `limit` is applied after re-ranking so the caller's page size still holds.
+ */
+export function rankWithBoosts<T extends Rankable>(posts: T[], limit: number, now?: number): T[] {
+  const at = now ?? Date.now();
+  const time = (v: string | null): number => {
+    if (!v) return 0;
+    const t = Date.parse(v);
+    return Number.isNaN(t) ? 0 : t;
+  };
+
+  return [...posts]
+    .sort((a, b) => {
+      const aLive = isBoostActive(a, at);
+      const bLive = isBoostActive(b, at);
+      if (aLive !== bLive) return aLive ? -1 : 1;
+      // Both boosted: longest remaining boost first, as the server ordered it.
+      if (aLive) return time(b.boostUntil) - time(a.boostUntil);
+      return time(b.publishedAt) - time(a.publishedAt);
+    })
+    .slice(0, limit);
+}

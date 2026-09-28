@@ -43,9 +43,16 @@ export default defineConfig({
   testDir: "./e2e",
   // Generous because the multi-step auth flows chain several sequential
   // round-trips, and Supabase Auth is the slowest hop (~400ms median, with
-  // multi-second spikes measured from this machine). Individual expect()
-  // timeouts are still 20s and still meaningful.
+  // multi-second spikes measured from this machine). See expect.timeout above.
   timeout: 90_000,
+  // This was documented but never actually set, so every expect() was using
+  // Playwright's 5s default. That is the single biggest source of flakes here:
+  // a Supabase Auth round-trip that takes 2s on a good day and 6s on a bad one
+  // fails on the bad day and looks like a product bug. 20s still fails fast
+  // enough to catch a genuinely broken flow.
+  expect: {
+    timeout: 20_000,
+  },
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],

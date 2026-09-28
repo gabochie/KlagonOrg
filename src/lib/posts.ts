@@ -8,6 +8,7 @@
 // ------------------------------------------------------------------
 
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
+import { rankWithBoosts } from "@/lib/boosts";
 import { recordLeadEvent } from "@/lib/analytics";
 import type { Database, Json } from "@/lib/database.types";
 import type {
@@ -204,7 +205,13 @@ export async function fetchPortalPosts(filters: PostFilters = {}): Promise<Post[
     ({ data, error } = await base());
   }
   if (error || !data) return [];
-  return data.map(mapPost);
+  // The server order is kept on purpose: boost_until descending puts live
+  // boosts (future timestamps) ahead of everything, so they are always inside
+  // the returned window and re-ranking below cannot silently drop one. What the
+  // server cannot express is that an *expired* boost should count as no boost,
+  // so the ordering customers actually paid for is applied here instead.
+  const mapped = data.map(mapPost);
+  return rankWithBoosts(mapped, filters.limit ?? 60);
 }
 
 export async function fetchFeaturedPosts(limit = 3): Promise<Post[]> {
