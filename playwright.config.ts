@@ -59,6 +59,9 @@ export default defineConfig({
   // Refuses to run if the configured port is serving something other than a
   // Klagon static export. See e2e/global-setup.ts.
   globalSetup: "./e2e/global-setup.ts",
+  // Sweeps test rows left behind by an interrupted run, so they cannot pile up
+  // as publicly visible posts or block real businesses from claiming a listing.
+  globalTeardown: "./e2e/global-teardown.ts",
   use: {
     // 3210 is arbitrary but deliberate: this machine already runs other apps'
     // servers (3000 and 3100 were both taken by other projects), and a
