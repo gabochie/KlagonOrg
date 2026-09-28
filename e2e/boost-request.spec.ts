@@ -71,14 +71,14 @@ test.describe("boost request", () => {
 
     // A pending/rejected listing must not sell a boost that cannot run yet.
     for (const p of posts.filter((x) => x.status !== "approved")) {
-      const card = page.locator("li", { hasText: p.id }).first();
+      const card = page.locator(`[data-post-id="${p.id}"]`).first();
       if ((await card.count()) > 0) {
         await expect(card.getByRole("button", { name: /Feature this listing/i })).toHaveCount(0);
       }
     }
 
     const target = approved.find((p) => !p.boost_until) ?? approved[0];
-    const card = page.locator("li", { hasText: target.id }).first();
+    const card = page.locator(`[data-post-id="${target.id}"]`).first();
     test.skip((await card.count()) === 0, "approved post not rendered on /my/posts");
 
     if (target.boost_until && new Date(target.boost_until) > new Date()) {
@@ -116,7 +116,7 @@ test.describe("boost request", () => {
     await login(page, c.email, c.password);
     await page.goto("/my/posts");
 
-    const card = page.locator("li", { hasText: target.id }).first();
+    const card = page.locator(`[data-post-id="${target.id}"]`).first();
     test.skip((await card.count()) === 0, "approved post not rendered on /my/posts");
 
     await card.getByRole("button", { name: /Feature this listing/i }).click();
