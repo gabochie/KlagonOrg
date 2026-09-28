@@ -73,6 +73,12 @@ export function BoostRequestPanel({ post }: { post: Post }) {
       return;
     }
     const { error: insertError } = await client.from("lead_events").insert({
+      // Attribute the request to its owner. Without this the row is orphaned:
+      // lead_events_select_own_or_admin only matches member_id = auth.uid(), so
+      // the member could not even see their own request, let alone staff
+      // reconcile it. This panel only ever renders on the viewer's own posts,
+      // so the post's submitter is the signed-in user.
+      member_id: post.submittedBy,
       source: "boost-request",
       action: "submit",
       page: typeof window !== "undefined" ? window.location.pathname.slice(0, 160) : null,
