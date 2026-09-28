@@ -85,24 +85,39 @@ test.describe("directory listing claim", () => {
       await page.locator("#claim-phone").fill(`024${String(stamp).slice(-7)}`);
       await page.getByTestId("claim-submit").click();
 
-      // The panel must lock to "under review" rather than inviting a second claim.
-      await expect(page.getByText(/A claim is in progress/i)).toBeVisible({ timeout: 20000 });
-
-      // And the claim must genuinely be in the table staff read, with enough
+      // The claim must genuinely be in the table staff read, with enough
       // detail to verify ownership. This is the assertion that would have
       // failed before: WhatsApp was opened and nothing was ever recorded.
-      const { data, error } = await sb
-        .from("directory_claims")
-        .select("business_id, claimant_name, claimant_phone, status")
-        .eq("claimant_name", claimant)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (error) throw new Error(`claim read failed: ${error.message}`);
+      // Polled because the write is fired without blocking the UI transition.
+      let row: { business_id: string; status: string; claimant_phone: string | null } | null = null;
+      await expect
+        .poll(
+          async () => {
+            const { data, error } = await sb
+              .from("directory_claims")
+              .select("business_id, status, claimant_phone")
+              .eq("claimant_name", claimant)
+              .order("created_at", { ascending: false })
+              .limit(1);
+            if (error) throw new Error(`claim read failed: ${error.message}`);
+            row = data?.[0] ?? null;
+            return row;
+          },
+          { timeout: 20000, message: "claim row was written for staff to review" },
+        )
+        .toBeTruthy();
 
-      expect(data, "claim row was written for staff to review").toHaveLength(1);
-      expect(data?.[0].business_id, "claim is tied to the listing shown").toBe(id);
-      expect(data?.[0].status, "claims start pending for staff review").toBe("pending");
-      expect(data?.[0].claimant_phone, "staff get a number to verify against").toBeTruthy();
+      expect(row!.business_id, "claim is tied to the listing shown").toBe(id);
+      expect(row!.status, "claims start pending for staff review").toBe("pending");
+      expect(row!.claimant_phone, "staff get a number to verify against").toBeTruthy();
+
+      // Reload rather than asserting in place: the claim lock is server-backed,
+      // so a fresh load is the contract that actually matters. It also proves
+      // the state was persisted, not just optimistically rendered, and that the
+      // owner is no longer invited to file a duplicate claim.
+      await page.reload();
+      await expect(page.getByText(/A claim is in progress/i)).toBeVisible({ timeout: 20000 });
+      await expect(page.getByTestId("claim-start")).toHaveCount(0);
       return;
     }
 

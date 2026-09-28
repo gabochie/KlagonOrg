@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Send, BadgeCheck, ShieldCheck, Users } from "lucide-react";
 import type { DirectoryBusiness } from "@/lib/directory";
 import {
@@ -25,11 +25,17 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  // Set the moment a claim is accepted so a claim-map read that resolved before
+  // the insert committed cannot drag the panel back to "unclaimed" and invite
+  // the owner to file a second claim.
+  const filed = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
     fetchDirectoryClaimMap([b.id]).then((map) => {
-      if (!cancelled) setState(map[b.id] ?? "unclaimed");
+      if (cancelled) return;
+      if (filed.current && map[b.id] === undefined) return;
+      setState(map[b.id] ?? "unclaimed");
     });
     return () => {
       cancelled = true;
@@ -74,11 +80,18 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
       // Lock as pending on any reviewed outcome; error === null means the table
       // is missing (migration not applied) and we must not claim success.
       if (res.ok || res.error === null || (res.error && /already/i.test(res.error))) {
+        filed.current = true;
         setAsking(false);
         setState("pending");
+        // Re-read so the panel reflects what staff will actually see. The
+        // insert is committed but the row can take a moment to surface.
+        void fetchDirectoryClaimMap([b.id]).then((map) => {
+          const next = map[b.id];
+          if (next && next !== "unclaimed") setState(next);
+        });
         return;
       }
-      setProblem(res.error ?? "We could not save that claim. Please message us on WhatsApp instead.");
+      setProblem(res.error || "We could not save that claim. Please message us on WhatsApp instead.");
     });
   }
 
