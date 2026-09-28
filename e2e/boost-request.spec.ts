@@ -36,6 +36,9 @@ async function login(page: Page, email: string, password: string) {
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').first().fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
+  // Wait for the post-login redirect: navigating to a guarded route before the
+  // session is persisted bounces straight back to /auth/login.
+  await expect(page).toHaveURL(/\/dashboard\/member/, { timeout: 20000 });
 }
 
 type Row = { id: string; type: string; category: string | null; status: string; boost_until: string | null };
@@ -67,7 +70,9 @@ test.describe("boost request", () => {
 
     await login(page, c.email, c.password);
     await page.goto("/my/posts");
-    await expect(page.getByText(/My posts/i).first()).toBeVisible();
+    // Wait for the async list rather than asserting an instant count, or the
+    // assertion races the fetch and fails on an empty skeleton.
+    await expect(page.locator('[data-testid="my-post-card"]').first()).toBeVisible({ timeout: 20000 });
 
     // A pending/rejected listing must not sell a boost that cannot run yet.
     for (const p of posts.filter((x) => x.status !== "approved")) {
@@ -80,7 +85,7 @@ test.describe("boost request", () => {
     const target = approved.find((p) => !p.boost_until) ?? approved[0];
     const card = page.locator(`[data-post-id="${target.id}"]`).first();
     // A missing card is a real regression, not a "no data" skip.
-    expect(await card.count(), "approved post is rendered on /my/posts").toBeGreaterThan(0);
+    await expect(card, "approved post is rendered on /my/posts").toBeVisible({ timeout: 20000 });
 
     if (target.boost_until && new Date(target.boost_until) > new Date()) {
       // Live boost: shows its end date, not a second sales pitch.
@@ -118,6 +123,7 @@ test.describe("boost request", () => {
 
     await login(page, c.email, c.password);
     await page.goto("/my/posts");
+    await expect(page.locator('[data-testid="my-post-card"]').first()).toBeVisible({ timeout: 20000 });
 
     const card = page.locator(`[data-post-id="${target.id}"]`).first();
     expect(await card.count(), "approved post is rendered on /my/posts").toBeGreaterThan(0);
