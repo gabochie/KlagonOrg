@@ -1687,6 +1687,12 @@ export interface Database {
         };
         Returns: boolean;
       };
+      admin_apply_boost: {
+        Args: {
+          p_post_id: string;
+        };
+        Returns: boolean;
+      };
       moderate_map_point: {
         Args: {
           p_map_id: string;

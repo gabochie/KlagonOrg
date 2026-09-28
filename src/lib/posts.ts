@@ -386,8 +386,34 @@ export async function fetchModerationQueue(status: PostStatus = "pending"): Prom
   return data.map(mapPost);
 }
 
-export async function approvePost(postId: string): Promise<SubmitResult> {
+/**
+ * Staff-only: apply the correct boost tier/fee to an approved post.
+ *
+ * Boosts are sold by hand until a payment rail exists, so the fulfillment path
+ * is a WhatsApp-confirmed payment followed by this call. The tier and price are
+ * derived in the database from the post itself, which is why no tier or fee is
+ * accepted as an argument: staff cannot grant an ineligible tier or invent a
+ * price, and the caller cannot be tricked into showing a different number than
+ * the one that gets charged.
+ *
+ * Returns ok=false for posts that are not live, are already boosted, or do not
+ * exist — the same guards purchase_boost applies.
+ */
+export async function adminApplyBoost(postId: string): Promise<SubmitResult> {
   const c = client();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+  const { data, error } = await c.rpc("admin_apply_boost", { p_post_id: postId });
+  if (error) return { ok: false, error: error.message };
+  if (data !== true) {
+    return {
+      ok: false,
+      error: "Could not apply the boost. It only works on a live listing that is not already boosted.",
+    };
+  }
+  return { ok: true, id: postId };
+}
+
+export async function approvePost(postId: string): Promise<SubmitResult> {  const c = client();
   if (!c) return { ok: false, error: "Supabase is not configured." };
   const { error } = await c
     .from("posts")
