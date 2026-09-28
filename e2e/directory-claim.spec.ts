@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Claiming a business listing from its own profile page.
@@ -11,6 +11,13 @@ import { createClient } from "@supabase/supabase-js";
  * "unclaimed" and the review queue never saw them.
  *
  * This asserts the row is written with the details staff need to verify it.
+ *
+ * Cleanup is not optional. directory_claims has a partial unique index on
+ * business_id where status <> 'rejected', so a leftover test row permanently
+ * blocks a real Klagon business from claiming its own listing. An earlier
+ * version of this spec deliberately left rows behind ("acceptable") and
+ * 17 listings ended up locked out while the staff queue was nothing but test
+ * data. So the row is deleted afterwards, and the deletion is verified.
  */
 
 function env(name: string): string | undefined {
@@ -20,6 +27,22 @@ function env(name: string): string | undefined {
 
 const URL = env("NEXT_PUBLIC_SUPABASE_URL");
 const ANON = env("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+const ADMIN_EMAIL = env("E2E_ADMIN_EMAIL");
+const ADMIN_PASSWORD = env("E2E_ADMIN_PASSWORD");
+
+/** Row the test created, so afterAll can remove exactly that and no more. */
+let claimedBusinessId: string | null = null;
+let claimant = "";
+
+async function adminClient(): Promise<SupabaseClient> {
+  const c = createClient(URL as string, ANON as string);
+  const { error } = await c.auth.signInWithPassword({
+    email: ADMIN_EMAIL as string,
+    password: ADMIN_PASSWORD as string,
+  });
+  if (error) throw new Error(`admin sign-in failed, cannot clean up: ${error.message}`);
+  return c;
+}
 
 test.describe("directory listing claim", () => {
   test.beforeAll(() => {
@@ -29,10 +52,33 @@ test.describe("directory listing claim", () => {
     }
   });
 
+  test.afterAll(async () => {
+    if (!claimedBusinessId || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      // Without admin creds the row cannot be removed, and leaving it would
+      // block this business for real. Say so loudly rather than exiting quietly.
+      if (claimedBusinessId) {
+        throw new Error(
+          `claim row for ${claimedBusinessId} (${claimant}) needs deleting manually: E2E admin creds absent`,
+        );
+      }
+      return;
+    }
+    const admin = await adminClient();
+    const { error } = await admin
+      .from("directory_claims")
+      .delete()
+      .eq("business_id", claimedBusinessId)
+      .eq("claimant_name", claimant);
+    if (error) {
+      throw new Error(`claim cleanup failed for ${claimedBusinessId}: ${error.message}`);
+    }
+    claimedBusinessId = null;
+  });
+
   test("files the claim so staff can see it, and locks the panel", async ({ page }) => {
     const sb = createClient(URL as string, ANON as string);
     const stamp = Date.now();
-    const claimant = `E2E Claimant ${stamp}`;
+    claimant = `E2E Claimant ${stamp}`;
 
     // window.open is what hands the visitor to WhatsApp; stub it before any
     // script runs so the click never spawns a tab.
@@ -72,6 +118,7 @@ test.describe("directory listing claim", () => {
         .split(".")[0]
         .trim();
       if (taken.has(id)) continue;
+      claimedBusinessId = id;
 
       await start.click();
       await expect(page.getByTestId("claim-form")).toBeVisible();
