@@ -47,13 +47,28 @@ export default async function globalTeardown(_config: FullConfig): Promise<void>
 
     let removed = 0;
 
-    for (const pattern of CLAIMANT_PREFIXES) {
-      const { count, error } = await sb
-        .from("directory_claims")
-        .delete({ count: "exact" })
-        .like("claimant_name", pattern);
-      if (error) throw new Error(`claim sweep (${pattern}): ${error.message}`);
-      removed += count ?? 0;
+    // Claims are listed and deleted through the admin-gated RPC pair, never
+    // with `.from("directory_claims").delete().like(...)`.
+    //
+    // Two independent reasons. The PII lockdown revoked SELECT on
+    // claimant_name, and Postgres requires SELECT on every column named in a
+    // DELETE's WHERE clause, so the filter alone is now forbidden. And
+    // PostgREST returns the deleted row by default, so a table DELETE needs
+    // SELECT on every column regardless. This sweep is the safety net for the
+    // exact failure it hit before — it must not be the thing that breaks.
+    //
+    // The pattern match happens in JS on data the staff RPC already returns, so
+    // no LIKE and no pattern-matching SQL is exposed to the database.
+    const { data: claims, error: claimsErr } = await sb.rpc("admin_directory_claims");
+    if (claimsErr) throw new Error(`claim list failed: ${claimsErr.message}`);
+
+    const stale = ((claims ?? []) as { id: string; claimant_name: string }[]).filter((c) =>
+      CLAIMANT_PREFIXES.some((p) => c.claimant_name.startsWith(p.replace("%", ""))),
+    );
+    for (const c of stale) {
+      const { error: delErr } = await sb.rpc("admin_delete_directory_claim", { p_id: c.id });
+      if (delErr) throw new Error(`claim delete failed for ${c.id}: ${delErr.message}`);
+      removed += 1;
     }
 
     const { count: posts, error: postErr } = await sb

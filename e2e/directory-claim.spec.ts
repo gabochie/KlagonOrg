@@ -64,13 +64,23 @@ test.describe("directory listing claim", () => {
       return;
     }
     const admin = await adminClient();
-    const { error } = await admin
-      .from("directory_claims")
-      .delete()
-      .eq("business_id", claimedBusinessId)
-      .eq("claimant_name", claimant);
-    if (error) {
-      throw new Error(`claim cleanup failed for ${claimedBusinessId}: ${error.message}`);
+    // Deletion goes through the admin-gated function, not `.delete()` on the
+    // table. PostgREST returns the deleted row by default, so a direct DELETE
+    // needs SELECT on every column and the PII lockdown took those away. A
+    // cleanup path that quietly stops working is how leftover claim rows once
+    // locked 17 real businesses out of claiming their own listing.
+    const { data: rows, error: listErr } = await admin.rpc("admin_directory_claims");
+    if (listErr) {
+      throw new Error(
+        `claim row for ${claimedBusinessId} (${claimant}) needs deleting manually: admin_directory_claims failed (${listErr.message})`,
+      );
+    }
+    for (const row of ((rows ?? []) as { id: string; business_id: string; claimant_name: string }[])
+      .filter((r) => r.business_id === claimedBusinessId && r.claimant_name === claimant)) {
+      const { error } = await admin.rpc("admin_delete_directory_claim", { p_id: row.id });
+      if (error) {
+        throw new Error(`claim cleanup failed for ${claimedBusinessId}: ${error.message}`);
+      }
     }
     claimedBusinessId = null;
   });
@@ -141,19 +151,25 @@ test.describe("directory listing claim", () => {
       // claimant_phone or claimant_name at all since the PII lockdown, so
       // "did the phone get stored" is now an admin-only question. The
       // public-readability of that data is asserted in directory-claim-admin.
+      //
+      // Read through the staff RPC, not the table. Even a signed-in admin has
+      // column privileges on only (business_id, status), so a direct
+      // `.select("claimant_phone")` would now fail for staff too. Filter in
+      // JS for the same reason: the table read cannot filter on a PII column.
       const admin = await adminClient();
       let row: { business_id: string; status: string; claimant_phone: string | null } | null = null;
       await expect
         .poll(
           async () => {
-            const { data, error } = await admin
-              .from("directory_claims")
-              .select("business_id, status, claimant_phone")
-              .eq("claimant_name", claimant)
-              .order("created_at", { ascending: false })
-              .limit(1);
+            const { data, error } = await admin.rpc("admin_directory_claims");
             if (error) throw new Error(`claim read failed: ${error.message}`);
-            row = data?.[0] ?? null;
+            row =
+              ((data ?? []) as {
+                business_id: string;
+                status: string;
+                claimant_phone: string | null;
+                claimant_name: string;
+              }[]).find((r) => r.claimant_name === claimant) ?? null;
             return row;
           },
           { timeout: 20000, message: "claim row was written for staff to review" },

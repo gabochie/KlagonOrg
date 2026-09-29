@@ -1698,13 +1698,17 @@ export interface Database {
         Returns: {
           id: string;
           business_id: string;
-          business_name: string | null;
-          area: string | null;
-          claimant_name: string | null;
-          claimant_phone: string | null;
+          business_name: string;
+          area: string;
+          claimant_name: string;
+          claimant_phone: string;
           status: string;
           created_at: string;
         }[];
+      };
+      admin_delete_directory_claim: {
+        Args: { p_id: string };
+        Returns: boolean;
       };
       moderate_map_point: {
         Args: {

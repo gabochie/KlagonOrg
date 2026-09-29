@@ -62,6 +62,30 @@ async function login(page: Page, email: string, password: string) {
   await page.waitForURL(/\/dashboard/, { timeout: 30000 });
 }
 
+/**
+ * Remove a claim row as staff.
+ *
+ * Deliberately goes through admin_delete_directory_claim() rather than
+ * `.from("directory_claims").delete()`. PostgREST returns the deleted row by
+ * default, so a direct DELETE needs SELECT on every column, and the PII lockdown
+ * removed exactly those. Cleanup that silently stops working is how 17 leftover
+ * claim rows once filled the review queue and locked 17 real businesses out of
+ * claiming their own listing, so this route is the only one that still works.
+ */
+async function deleteClaim(admin: SupabaseClient, id: string): Promise<void> {
+  const { error } = await admin.rpc("admin_delete_directory_claim", { p_id: id });
+  if (error) throw new Error(`claim delete failed for ${id}: ${error.message}`);
+}
+
+/** Every claim row matching a business_id, resolved to ids via the staff RPC. */
+async function claimIdsFor(admin: SupabaseClient, bid: string): Promise<string[]> {
+  const { data, error } = await admin.rpc("admin_directory_claims");
+  if (error) throw new Error(`admin_directory_claims failed: ${error.message}`);
+  return ((data ?? []) as { id: string; business_id: string }[])
+    .filter((r) => r.business_id === bid)
+    .map((r) => r.id);
+}
+
 const stamp = () => Date.now();
 
 /** Listing the test claims. Chosen per run so repeated runs never collide. */
@@ -82,7 +106,9 @@ test.describe("directory claim review", () => {
       throw new Error(`claim row for ${businessId} (${claimant}) needs deleting manually: no E2E admin creds`);
     }
     const admin = await adminClient();
-    await admin.from("directory_claims").delete().eq("business_id", businessId);
+    for (const id of await claimIdsFor(admin, businessId)) {
+      await deleteClaim(admin, id);
+    }
   });
 
   test("staff can see and approve a claim, and the public page flips to Claimed", async ({ page }) => {
@@ -221,10 +247,12 @@ test.describe("directory claim review", () => {
       expect(retry.error, "a rejected claim must not block a new claim").toBeNull();
 
       if (retry.data) {
-        await admin.from("directory_claims").delete().eq("id", retry.data.id);
+        await deleteClaim(admin, retry.data.id);
       }
     } finally {
-      await admin.from("directory_claims").delete().eq("business_id", bid);
+      for (const id of await claimIdsFor(admin, bid)) {
+        await deleteClaim(admin, id);
+      }
     }
   });
 
@@ -251,10 +279,16 @@ test.describe("directory claim review", () => {
     const admin = await adminClient();
     try {
       // A member must not be able to verify their own claim, or any claim.
+      //
+      // Filtered by business_id rather than id on purpose: `id` is not among
+      // the two columns the lockdown lets a signed-in role read, so filtering
+      // on it would fail on column privileges and the test would pass even if
+      // RLS were wide open. business_id is readable, so this exercises the
+      // is_admin() policy and nothing else.
       const { data: approved, error: updErr } = await member
         .from("directory_claims")
         .update({ status: "approved" })
-        .eq("id", ins.data.id)
+        .eq("business_id", bid)
         .select("status");
       expect(updErr, "member update is rejected or affects no rows").toBeTruthy();
       expect(approved ?? [], "member must not be able to approve a claim").toHaveLength(0);
@@ -275,15 +309,21 @@ test.describe("directory claim review", () => {
       expect(rpcErr, "admin_directory_claims must refuse non-admins").toBeTruthy();
       expect(rpcData ?? []).toHaveLength(0);
 
+      // Nor delete a claim out from under staff.
+      const { error: delErr } = await member.rpc("admin_delete_directory_claim", {
+        p_id: ins.data.id,
+      });
+      expect(delErr, "admin_delete_directory_claim must refuse non-admins").toBeTruthy();
+
       // Still pending, untouched.
       const { data: state } = await admin
         .from("directory_claims")
         .select("status")
-        .eq("id", ins.data.id)
+        .eq("business_id", bid)
         .single();
       expect(state?.status, "claim was not approved by the member").toBe("pending");
     } finally {
-      await admin.from("directory_claims").delete().eq("business_id", bid);
+      await deleteClaim(admin, ins.data.id);
     }
   });
 });
