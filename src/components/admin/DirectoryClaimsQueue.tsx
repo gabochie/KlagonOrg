@@ -92,7 +92,17 @@ export function DirectoryClaimsQueue() {
         </div>
       )}
 
-      {!loadError && pending.length === 0 && (        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
+      {decideError && (
+        <div
+          data-testid="directory-claim-decide-error"
+          className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-bold text-amber-900"
+        >
+          {decideError}
+        </div>
+      )}
+
+      {!loadError && pending.length === 0 && (
+        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
           <div className="text-2xl mb-2">✅</div>
           <div className="text-sm font-bold text-navy">No claims waiting</div>
           <div className="text-xs text-gray mt-1">
