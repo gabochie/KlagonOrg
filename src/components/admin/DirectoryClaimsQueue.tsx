@@ -36,6 +36,7 @@ export function DirectoryClaimsQueue() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [decideError, setDecideError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { claims: rows, error } = await fetchAdminDirectoryClaims();
@@ -54,11 +55,19 @@ export function DirectoryClaimsQueue() {
 
   async function decide(claim: AdminDirectoryClaim, approve: boolean) {
     setBusy(claim.id);
-    const res = approve ? await approveDirectoryClaim(claim.id) : await rejectDirectoryClaim(claim.id);
+    setDecideError(null);
+    // Keyed on business_id, not id: see setClaimStatus in directoryClaims.ts.
+    // The claim is still removed on failure only if the write succeeded, so a
+    // staff member never sees a claim silently vanish without being decided.
+    const res = approve
+      ? await approveDirectoryClaim(claim.businessId)
+      : await rejectDirectoryClaim(claim.businessId);
     if (res.ok) {
       // Drop it from the actionable list rather than refetching: the queue is
       // small and a full reload would re-expose every claimant phone on screen.
       setClaims((prev) => prev.filter((c) => c.id !== claim.id));
+    } else {
+      setDecideError(res.error ?? "That decision could not be saved.");
     }
     setBusy(null);
   }
@@ -83,8 +92,7 @@ export function DirectoryClaimsQueue() {
         </div>
       )}
 
-      {!loadError && pending.length === 0 && (
-        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
+      {!loadError && pending.length === 0 && (        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
           <div className="text-2xl mb-2">✅</div>
           <div className="text-sm font-bold text-navy">No claims waiting</div>
           <div className="text-xs text-gray mt-1">

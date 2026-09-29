@@ -176,27 +176,51 @@ export async function fetchAdminDirectoryClaims(): Promise<{ claims: AdminDirect
   return { claims: ((data ?? []) as ClaimRow[]).map(toAdminClaim), error: null };
 }
 
-async function setClaimStatus(id: string, status: "approved" | "rejected"): Promise<ClaimResult> {
+async function setClaimStatus(businessId: string, status: "approved" | "rejected"): Promise<ClaimResult> {
   const c = client();
   if (!c) return { ok: false, error: "Supabase is not configured." };
-  // updated_at has no trigger, so maintain it here or the queue cannot show
-  // when staff actually decided.
+
+  // Filtered by business_id and status, never by id.
+  //
+  // Two reasons, both from the PII lockdown. Postgres requires SELECT on every
+  // column named in an UPDATE's WHERE clause, and id is not among the two
+  // columns a signed-in role may read — filtering by id fails with
+  // "permission denied for table directory_claims" and no claim can ever be
+  // decided. And PostgREST cannot return the updated row, so a failed update is
+  // indistinguishable from a successful one without a follow-up read.
+  //
+  // Targeting business_id + status='pending' is exactly one row: the partial
+  // unique index directory_claims_active_business_key allows only one
+  // non-rejected row per business_id, and only pending claims are actionable.
+  // It also means a claim another admin already decided is a harmless no-op
+  // rather than a second write.
   const { error } = await c
     .from("directory_claims")
     .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", id);
+    .eq("business_id", businessId)
+    .eq("status", "pending");
   if (error) return { ok: false, error: error.message };
+
+  // Confirm the decision actually landed, since the update cannot return it.
+  const { data, error: readErr } = await c.rpc("admin_directory_claims");
+  if (readErr) return { ok: false, error: readErr.message };
+  const stillPending = ((data ?? []) as ClaimRow[]).some(
+    (r) => r.business_id === businessId && r.status === "pending",
+  );
+  if (stillPending) {
+    return { ok: false, error: "The claim could not be updated. It may already have been decided." };
+  }
   return { ok: true };
 }
 
 /** Approving shows the public "Claimed" badge and removes the claim buttons. */
-export function approveDirectoryClaim(id: string): Promise<ClaimResult> {
-  return setClaimStatus(id, "approved");
+export function approveDirectoryClaim(businessId: string): Promise<ClaimResult> {
+  return setClaimStatus(businessId, "approved");
 }
 
 /** Rejecting frees the listing for a fresh claim. */
-export function rejectDirectoryClaim(id: string): Promise<ClaimResult> {
-  return setClaimStatus(id, "rejected");
+export function rejectDirectoryClaim(businessId: string): Promise<ClaimResult> {
+  return setClaimStatus(businessId, "rejected");
 }
 
 /**
