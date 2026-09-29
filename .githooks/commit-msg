@@ -1,0 +1,44 @@
+#!/bin/sh
+# Auto-title commits whose message says nothing.
+#
+# Installed via `git config core.hooksPath .githooks`, so it is version
+# controlled and applies to GitHub Desktop as well as the command line.
+#
+# It REWRITES rather than rejects on purpose. A hook that exits non-zero blocks
+# the commit, and GitHub Desktop has no way to pass --no-verify, so a blocking
+# hook would leave the user unable to commit at all until they found a terminal.
+# Rewriting cannot trap anyone, and the hook explains on stderr what it wrote
+# and how to amend it.
+#
+# If node is unavailable this hook exits 0 and does nothing. A missing tool must
+# never be the reason a commit fails.
+
+msg_file="$1"
+[ -n "$msg_file" ] && [ -f "$msg_file" ] || exit 0
+
+node_bin=""
+if command -v node >/dev/null 2>&1; then
+  node_bin="node"
+else
+  # GUI apps (GitHub Desktop) do not always inherit the PATH a terminal has, and
+  # nvm4w puts node behind a symlink dir. Fall back to the usual locations so
+  # this still works when launched from a desktop app rather than a shell.
+  for candidate in \
+    "/c/Program Files/nodejs/node.exe" \
+    "/c/nvm4w/nodejs/node.exe" \
+    "$LOCALAPPDATA/Programs/nodejs/node.exe" \
+    "$APPDATA/nvm/node.exe"
+  do
+    if [ -x "$candidate" ]; then
+      node_bin="$candidate"
+      break
+    fi
+  done
+fi
+
+# No node: exit 0 so the commit still lands. Never block on a missing tool.
+[ -n "$node_bin" ] || exit 0
+
+"$node_bin" "$(dirname "$0")/../scripts/suggest-commit-message.mjs" --check "$msg_file" || true
+
+exit 0
