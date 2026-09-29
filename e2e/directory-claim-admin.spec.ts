@@ -118,18 +118,18 @@ test.describe("directory claim review", () => {
     businessId = `E2E-CLAIM-${s}`;
     claimant = `E2E Claimant ${s}`;
 
-    const ins = await anon
-      .from("directory_claims")
-      .insert({
-        business_id: businessId,
-        business_name: "E2E Review Bakery",
-        area: "Klagon",
-        claimant_name: claimant,
-        claimant_phone: "0240001122",
-        status: "pending",
-      })
-      .select("id")
-      .single();
+    // Seeded without `.select()`. PostgREST returns the inserted row, which
+    // needs SELECT on every column, and the PII lockdown left `authenticated`
+    // and `anon` with only (business_id, status). A plain insert is all a real
+    // visitor can do, so the test should not do more than the product can.
+    const ins = await anon.from("directory_claims").insert({
+      business_id: businessId,
+      business_name: "E2E Review Bakery",
+      area: "Klagon",
+      claimant_name: claimant,
+      claimant_phone: "0240001122",
+      status: "pending",
+    });
     if (ins.error) throw new Error(`seed insert failed: ${ins.error.message}`);
 
     // The RPC is how staff read claims now. If it is missing, the migration has
@@ -197,18 +197,14 @@ test.describe("directory claim review", () => {
     const s = stamp();
     const bid = `E2E-REJECT-${s}`;
 
-    const first = await anon
-      .from("directory_claims")
-      .insert({
-        business_id: bid,
-        business_name: "E2E Reject Shop",
-        area: "Klagon",
-        claimant_name: `E2E Reject Claimant ${s}`,
-        claimant_phone: "0240003344",
-        status: "pending",
-      })
-      .select("id")
-      .single();
+    const first = await anon.from("directory_claims").insert({
+      business_id: bid,
+      business_name: "E2E Reject Shop",
+      area: "Klagon",
+      claimant_name: `E2E Reject Claimant ${s}`,
+      claimant_phone: "0240003344",
+      status: "pending",
+    });
     if (first.error) throw new Error(`seed insert failed: ${first.error.message}`);
 
     try {
@@ -232,22 +228,24 @@ test.describe("directory claim review", () => {
 
       // The point of rejecting: the unique index only covers non-rejected rows,
       // so the owner can try again instead of being locked out forever.
-      const retry = await anon
-        .from("directory_claims")
-        .insert({
-          business_id: bid,
-          business_name: "E2E Reject Shop",
-          area: "Klagon",
-          claimant_name: `E2E Reject Claimant ${s} retry`,
-          claimant_phone: "0240003344",
-          status: "pending",
-        })
-        .select("id")
-        .single();
+      // A rejected claim must not block a new claim.
+      const retry = await anon.from("directory_claims").insert({
+        business_id: bid,
+        business_name: "E2E Reject Shop",
+        area: "Klagon",
+        claimant_name: `E2E Reject Claimant ${s} retry`,
+        claimant_phone: "0240003344",
+        status: "pending",
+      });
       expect(retry.error, "a rejected claim must not block a new claim").toBeNull();
 
-      if (retry.data) {
-        await deleteClaim(admin, retry.data.id);
+      // Two rows for this business_id now: the rejected one and the retry.
+      // Resolve ids as staff, since a client holding only (business_id, status)
+      // cannot read id back after inserting.
+      const ids = await claimIdsFor(admin, bid);
+      expect(ids, "rejected row is kept and the retry is a second row").toHaveLength(2);
+      for (const id of ids) {
+        await deleteClaim(admin, id);
       }
     } finally {
       for (const id of await claimIdsFor(admin, bid)) {
@@ -262,21 +260,19 @@ test.describe("directory claim review", () => {
     const s = stamp();
     const bid = `E2E-MEMBER-${s}`;
 
-    const ins = await anon
-      .from("directory_claims")
-      .insert({
-        business_id: bid,
-        business_name: "E2E Member Shop",
-        area: "Klagon",
-        claimant_name: `E2E Member Claimant ${s}`,
-        claimant_phone: "0240005566",
-        status: "pending",
-      })
-      .select("id")
-      .single();
+    const ins = await anon.from("directory_claims").insert({
+      business_id: bid,
+      business_name: "E2E Member Shop",
+      area: "Klagon",
+      claimant_name: `E2E Member Claimant ${s}`,
+      claimant_phone: "0240005566",
+      status: "pending",
+    });
     if (ins.error) throw new Error(`seed insert failed: ${ins.error.message}`);
 
     const admin = await adminClient();
+    const [claimId] = await claimIdsFor(admin, bid);
+    if (!claimId) throw new Error(`seed row for ${bid} is not visible to staff`);
     try {
       // A member must not be able to verify their own claim, or any claim.
       //
@@ -311,7 +307,7 @@ test.describe("directory claim review", () => {
 
       // Nor delete a claim out from under staff.
       const { error: delErr } = await member.rpc("admin_delete_directory_claim", {
-        p_id: ins.data.id,
+        p_id: claimId,
       });
       expect(delErr, "admin_delete_directory_claim must refuse non-admins").toBeTruthy();
 
@@ -323,7 +319,7 @@ test.describe("directory claim review", () => {
         .single();
       expect(state?.status, "claim was not approved by the member").toBe("pending");
     } finally {
-      await deleteClaim(admin, ins.data.id);
+      await deleteClaim(admin, claimId);
     }
   });
 });
