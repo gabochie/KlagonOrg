@@ -176,51 +176,67 @@ export async function fetchAdminDirectoryClaims(): Promise<{ claims: AdminDirect
   return { claims: ((data ?? []) as ClaimRow[]).map(toAdminClaim), error: null };
 }
 
-async function setClaimStatus(businessId: string, status: "approved" | "rejected"): Promise<ClaimResult> {
+/**
+ * Move a claim from one status to another, verifying the write landed.
+ *
+ * Filtered by business_id and status, never by id. Postgres requires SELECT on
+ * every column named in an UPDATE's WHERE clause, and the PII lockdown left
+ * signed-in roles with only (business_id, status) — filtering by id fails with
+ * "permission denied for table directory_claims" and no claim can ever be
+ * decided. PostgREST also cannot return the updated row, so a failed update is
+ * indistinguishable from a successful one without a follow-up read.
+ *
+ * business_id + status names exactly one row: the partial unique index
+ * directory_claims_active_business_key allows only one non-rejected row per
+ * business_id, and `from` pins the transition, so a decision another admin has
+ * already made is a harmless no-op rather than a second write.
+ *
+ * `from` is also what makes a decision reversible. Without it a mis-click left a
+ * real business permanently badged as verified with no way back but SQL.
+ */
+async function moveClaimStatus(
+  businessId: string,
+  next: "pending" | "approved" | "rejected",
+  from: "pending" | "approved" | "rejected",
+): Promise<ClaimResult> {
   const c = client();
   if (!c) return { ok: false, error: "Supabase is not configured." };
 
-  // Filtered by business_id and status, never by id.
-  //
-  // Two reasons, both from the PII lockdown. Postgres requires SELECT on every
-  // column named in an UPDATE's WHERE clause, and id is not among the two
-  // columns a signed-in role may read — filtering by id fails with
-  // "permission denied for table directory_claims" and no claim can ever be
-  // decided. And PostgREST cannot return the updated row, so a failed update is
-  // indistinguishable from a successful one without a follow-up read.
-  //
-  // Targeting business_id + status='pending' is exactly one row: the partial
-  // unique index directory_claims_active_business_key allows only one
-  // non-rejected row per business_id, and only pending claims are actionable.
-  // It also means a claim another admin already decided is a harmless no-op
-  // rather than a second write.
   const { error } = await c
     .from("directory_claims")
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status: next, updated_at: new Date().toISOString() })
     .eq("business_id", businessId)
-    .eq("status", "pending");
+    .eq("status", from);
   if (error) return { ok: false, error: error.message };
 
-  // Confirm the decision actually landed, since the update cannot return it.
+  // Confirm the transition actually happened, since the update cannot return it.
   const { data, error: readErr } = await c.rpc("admin_directory_claims");
   if (readErr) return { ok: false, error: readErr.message };
-  const stillPending = ((data ?? []) as ClaimRow[]).some(
+  const isPending = ((data ?? []) as ClaimRow[]).some(
     (r) => r.business_id === businessId && r.status === "pending",
   );
-  if (stillPending) {
-    return { ok: false, error: "The claim could not be updated. It may already have been decided." };
+  if (isPending !== (next === "pending")) {
+    return { ok: false, error: "That change could not be saved. Someone may have decided this claim already." };
   }
   return { ok: true };
 }
 
 /** Approving shows the public "Claimed" badge and removes the claim buttons. */
 export function approveDirectoryClaim(businessId: string): Promise<ClaimResult> {
-  return setClaimStatus(businessId, "approved");
+  return moveClaimStatus(businessId, "approved", "pending");
 }
 
 /** Rejecting frees the listing for a fresh claim. */
 export function rejectDirectoryClaim(businessId: string): Promise<ClaimResult> {
-  return setClaimStatus(businessId, "rejected");
+  return moveClaimStatus(businessId, "rejected", "pending");
+}
+
+/** Undo a decision, putting the claim back in the review queue. */
+export function reopenDirectoryClaim(
+  businessId: string,
+  decided: "approved" | "rejected",
+): Promise<ClaimResult> {
+  return moveClaimStatus(businessId, "pending", decided);
 }
 
 /**

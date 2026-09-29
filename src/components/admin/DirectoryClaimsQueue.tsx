@@ -7,6 +7,7 @@ import {
   buildClaimVerificationMessage,
   fetchAdminDirectoryClaims,
   rejectDirectoryClaim,
+  reopenDirectoryClaim,
   type AdminDirectoryClaim,
 } from "@/lib/directoryClaims";
 import { normalizePhone } from "@/lib/outreach";
@@ -56,18 +57,31 @@ export function DirectoryClaimsQueue() {
   async function decide(claim: AdminDirectoryClaim, approve: boolean) {
     setBusy(claim.id);
     setDecideError(null);
-    // Keyed on business_id, not id: see setClaimStatus in directoryClaims.ts.
-    // The claim is still removed on failure only if the write succeeded, so a
-    // staff member never sees a claim silently vanish without being decided.
+    // Keyed on business_id, not id: see moveClaimStatus in directoryClaims.ts.
+    const next = approve ? "approved" : "rejected";
     const res = approve
       ? await approveDirectoryClaim(claim.businessId)
       : await rejectDirectoryClaim(claim.businessId);
     if (res.ok) {
-      // Drop it from the actionable list rather than refetching: the queue is
-      // small and a full reload would re-expose every claimant phone on screen.
-      setClaims((prev) => prev.filter((c) => c.id !== claim.id));
+      // Kept in the list with its new status rather than dropped, so it moves
+      // into "Recently decided" where staff can still undo a mis-click. The
+      // whole claim list is not refetched: that would re-expose every claimant
+      // phone on screen again.
+      setClaims((prev) => prev.map((c) => (c.id === claim.id ? { ...c, status: next } : c)));
     } else {
       setDecideError(res.error ?? "That decision could not be saved.");
+    }
+    setBusy(null);
+  }
+
+  async function reopen(claim: AdminDirectoryClaim) {
+    setBusy(claim.id);
+    setDecideError(null);
+    const res = await reopenDirectoryClaim(claim.businessId, claim.status === "approved" ? "approved" : "rejected");
+    if (res.ok) {
+      setClaims((prev) => prev.map((c) => (c.id === claim.id ? { ...c, status: "pending" } : c)));
+    } else {
+      setDecideError(res.error ?? "That claim could not be reopened.");
     }
     setBusy(null);
   }
@@ -190,7 +204,10 @@ export function DirectoryClaimsQueue() {
 
       {decided.length > 0 && (
         <details className="rounded-2xl border border-border bg-white p-4 shadow-sm">
-          <summary className="text-[11px] font-bold text-gray cursor-pointer select-none">
+          <summary
+            data-testid="directory-claims-decided-toggle"
+            className="text-[11px] font-bold text-gray cursor-pointer select-none"
+          >
             Recently decided ({claims.length - pending.length})
           </summary>
           <ul className="mt-3 flex flex-col gap-1.5">
@@ -198,20 +215,35 @@ export function DirectoryClaimsQueue() {
               <li
                 key={c.id}
                 data-testid="directory-claim-decided"
+                data-claim-id={c.id}
                 data-status={c.status}
                 className="text-[11px] text-gray flex items-center justify-between gap-2 flex-wrap"
               >
                 <span>
                   {c.businessName ?? c.businessId} · {c.claimantName ?? "Unnamed"}
                 </span>
-                <span
-                  className={
-                    c.status === "approved"
-                      ? "font-bold text-emerald-700"
-                      : "font-bold text-gray/70"
-                  }
-                >
-                  {c.status}
+                <span className="flex items-center gap-2">
+                  <span
+                    className={
+                      c.status === "approved"
+                        ? "font-bold text-emerald-700"
+                        : "font-bold text-gray/70"
+                    }
+                  >
+                    {c.status}
+                  </span>
+                  {/* A decision has to be reversible. Approving the wrong claim
+                      permanently badged a real business as verified, and the
+                      only way back was a manual UPDATE in the SQL editor. */}
+                  <button
+                    type="button"
+                    onClick={() => void reopen(c)}
+                    disabled={busy === c.id}
+                    data-testid="claim-reopen"
+                    className="font-bold text-blue underline cursor-pointer disabled:opacity-60"
+                  >
+                    {busy === c.id ? "Reopening…" : "Reopen"}
+                  </button>
                 </span>
               </li>
             ))}

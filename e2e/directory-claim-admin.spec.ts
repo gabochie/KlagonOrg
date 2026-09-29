@@ -1,5 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 /**
  * The staff end of an owner claim on a /business directory listing, plus the
@@ -88,6 +90,41 @@ async function claimIdsFor(admin: SupabaseClient, bid: string): Promise<string[]
 
 const stamp = () => Date.now();
 
+/**
+ * Pick a real directory listing that nobody has claimed.
+ *
+ * Needed because the "does the public page actually flip to Claimed" assertion
+ * has to run against a genuine /directory/<slug> page. The directory is a static
+ * export generated from src/data/business-directory.json with
+ * `dynamicParams = false`, so a made-up business_id has no page to visit and the
+ * assertion would be theatre.
+ *
+ * The claim panel reads its state in the browser from the live table, so a page
+ * built before the decision still reflects it. No rebuild needed.
+ *
+ * Scans from the end of the list: e2e/directory-claim.spec.ts takes the first
+ * free listing it finds in DOM order, and two specs claiming the same business
+ * concurrently would corrupt each other's state.
+ */
+function pickFreeListing(anon: SupabaseClient): Promise<{ id: string; slug: string; name: string }> {
+  return (async () => {
+    const { data: existing, error } = await anon.from("directory_claims").select("business_id, status");
+    if (error) throw new Error(`could not read existing claims: ${error.message}`);
+    // A rejected row does not block a new claim; pending and approved do.
+    const blocked = new Set(
+      (existing ?? []).filter((r) => r.status !== "rejected").map((r) => r.business_id as string),
+    );
+    const snapshot = JSON.parse(
+      readFileSync(path.join(process.cwd(), "src", "data", "business-directory.json"), "utf8"),
+    ) as { businesses: { id: string; slug: string; name: string }[] };
+    for (let i = snapshot.businesses.length - 1; i >= 0; i -= 1) {
+      const b = snapshot.businesses[i];
+      if (!blocked.has(b.id)) return b;
+    }
+    throw new Error("every listing already has an active claim; cannot pick a free one");
+  })();
+}
+
 /** Listing the test claims. Chosen per run so repeated runs never collide. */
 let businessId = "";
 let claimant = "";
@@ -111,7 +148,7 @@ test.describe("directory claim review", () => {
     }
   });
 
-  test("staff can see and approve a claim, and the public page flips to Claimed", async ({ page }) => {
+  test("staff can see and approve a claim", async ({ page }) => {
     const anon = createClient(URL as string, ANON as string);
     const admin = await adminClient();
     const s = stamp();
@@ -189,6 +226,107 @@ test.describe("directory claim review", () => {
       .single();
     if (readErr) throw new Error(`post-approve read failed: ${readErr.message}`);
     expect(decided.status, "approve marks the claim approved").toBe("approved");
+  });
+
+  test("approving a real claim flips its public listing page to Claimed", async ({ page }) => {
+    const anon = createClient(URL as string, ANON as string);
+    const admin = await adminClient();
+    const listing = await pickFreeListing(anon);
+    const s = stamp();
+
+    const ins = await anon.from("directory_claims").insert({
+      business_id: listing.id,
+      business_name: listing.name,
+      area: "Klagon",
+      claimant_name: `E2E Public Page ${s}`,
+      claimant_phone: "0240007788",
+      status: "pending",
+    });
+    if (ins.error) throw new Error(`seed insert failed: ${ins.error.message}`);
+    const [claimId] = await claimIdsFor(admin, listing.id);
+    if (!claimId) throw new Error(`seed row for ${listing.id} is not visible to staff`);
+
+    try {
+      // Before: the owner can still start a claim.
+      await page.goto(`/directory/${listing.slug}/`);
+      await expect(
+        page.getByTestId("claim-start"),
+        "an unclaimed listing still invites a claim",
+      ).toBeVisible({ timeout: 20000 });
+
+      await login(page, ADMIN_EMAIL as string, ADMIN_PASSWORD as string);
+      await page.goto("/dashboard/admin/directory-claims");
+      const card = page.getByTestId("directory-claim").filter({ hasText: listing.id });
+      await expect(card, "the real listing's claim is in the staff queue").toBeVisible({
+        timeout: 20000,
+      });
+      await card.getByTestId("claim-approve").click();
+      await expect(card, "approved claim leaves the queue").toHaveCount(0);
+
+      // The actual gap this closes: the whole point of approving is that the
+      // owner's page changes. Asserted on the real page, as a logged-out
+      // visitor would see it, after a fresh load.
+      await page.context().clearCookies();
+      await page.goto(`/directory/${listing.slug}/`);
+      await expect(
+        page.getByText("This listing is verified to its owner."),
+        "approved listing shows the verified-owner panel",
+      ).toBeVisible({ timeout: 20000 });
+      await expect(page.getByText("Claimed", { exact: true })).toBeVisible();
+      await expect(
+        page.getByTestId("claim-start"),
+        "a claimed listing must not invite another claim",
+      ).toHaveCount(0);
+      await expect(
+        page.getByText("A claim is in progress."),
+        "a decided claim must not still read as under review",
+      ).toHaveCount(0);
+
+      // And the badge is driven by the database, not baked into the build:
+      // reopening the same claim must take the page back out of "Claimed".
+      await login(page, ADMIN_EMAIL as string, ADMIN_PASSWORD as string);
+      await page.goto("/dashboard/admin/directory-claims");
+      await page.getByTestId("directory-claims-decided-toggle").click();
+      const decidedRow = page.locator(`[data-testid="directory-claim-decided"][data-claim-id="${claimId}"]`);
+      await expect(decidedRow, "the decided claim is listed for staff").toBeVisible({
+        timeout: 20000,
+      });
+      await decidedRow.getByTestId("claim-reopen").click();
+      await expect(decidedRow, "reopened claim leaves the decided list").toHaveCount(0);
+
+      await page.context().clearCookies();
+      await page.goto(`/directory/${listing.slug}/`);
+      await expect(
+        page.getByText("A claim is in progress."),
+        "a reopened claim reads as under review, not claimed",
+      ).toBeVisible({ timeout: 20000 });
+      await expect(page.getByText("This listing is verified to its owner.")).toHaveCount(0);
+
+      // Reject it, and the real owner gets their claim button back.
+      await login(page, ADMIN_EMAIL as string, ADMIN_PASSWORD as string);
+      await page.goto("/dashboard/admin/directory-claims");
+      await page
+        .getByTestId("directory-claim")
+        .filter({ hasText: listing.id })
+        .getByTestId("claim-reject")
+        .click();
+      await expect(
+        page.getByTestId("directory-claim").filter({ hasText: listing.id }),
+        "rejected claim leaves the actionable queue",
+      ).toHaveCount(0);
+
+      await page.context().clearCookies();
+      await page.goto(`/directory/${listing.slug}/`);
+      await expect(
+        page.getByTestId("claim-start"),
+        "rejecting frees the real listing for its owner again",
+      ).toBeVisible({ timeout: 20000 });
+      await expect(page.getByText("This listing is verified to its owner.")).toHaveCount(0);
+    } finally {
+      // Never leave a real business sitting in a decided state because a test
+      // run was interrupted.
+      await deleteClaim(admin, claimId);
+    }
   });
 
   test("reject frees the listing for a fresh claim", async ({ page }) => {
