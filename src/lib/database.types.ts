@@ -1693,6 +1693,19 @@ export interface Database {
         };
         Returns: boolean;
       };
+      admin_directory_claims: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          business_id: string;
+          business_name: string | null;
+          area: string | null;
+          claimant_name: string | null;
+          claimant_phone: string | null;
+          status: string;
+          created_at: string;
+        }[];
+      };
       moderate_map_point: {
         Args: {
           p_map_id: string;

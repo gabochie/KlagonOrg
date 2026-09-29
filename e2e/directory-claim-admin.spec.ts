@@ -1,0 +1,289 @@
+import { test, expect, type Page } from "@playwright/test";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+/**
+ * The staff end of an owner claim on a /business directory listing, plus the
+ * privacy boundary around the claimant's contact details.
+ *
+ * Two things are asserted here that nothing else covers:
+ *
+ * 1. A claim can actually be decided. Claims used to have no admin surface at
+ *    all — the public form filed a row and nothing in the product could ever
+ *    move it past "pending", so the verified badge was unreachable. Worse, an
+ *    undecided claim blocks any new claim on that listing
+ *    (directory_claims_active_business_key allows one non-rejected row per
+ *    business_id), so a real owner could be locked out indefinitely.
+ *
+ * 2. The claimant's name and phone are NOT publicly readable. Before the
+ *    lockdown, directory_claims_read_all was `for select using (true)` and the
+ *    anon key ships in the client bundle, so anyone could dump the phone
+ *    numbers of people trying to claim their business. The public badge read is
+ *    now limited to (business_id, status) by column grant, with staff reading
+ *    the full row through an is_admin()-gated SECURITY DEFINER function.
+ */
+
+function env(name: string): string | undefined {
+  const v = process.env[name];
+  return v && v.length > 0 ? v : undefined;
+}
+
+const URL = env("NEXT_PUBLIC_SUPABASE_URL");
+const ANON = env("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+const ADMIN_EMAIL = env("E2E_ADMIN_EMAIL");
+const ADMIN_PASSWORD = env("E2E_ADMIN_PASSWORD");
+const MEMBER_EMAIL = env("E2E_MEMBER_EMAIL");
+const MEMBER_PASSWORD = env("E2E_MEMBER_PASSWORD");
+
+async function adminClient(): Promise<SupabaseClient> {
+  const c = createClient(URL as string, ANON as string);
+  const { error } = await c.auth.signInWithPassword({
+    email: ADMIN_EMAIL as string,
+    password: ADMIN_PASSWORD as string,
+  });
+  if (error) throw new Error(`admin sign-in failed: ${error.message}`);
+  return c;
+}
+
+async function memberClient(): Promise<SupabaseClient> {
+  const c = createClient(URL as string, ANON as string);
+  const { error } = await c.auth.signInWithPassword({
+    email: MEMBER_EMAIL as string,
+    password: MEMBER_PASSWORD as string,
+  });
+  if (error) throw new Error(`member sign-in failed: ${error.message}`);
+  return c;
+}
+
+async function login(page: Page, email: string, password: string) {
+  await page.goto("/auth/login");
+  await page.locator('input[type="email"]').fill(email);
+  await page.locator('input[type="password"]').first().fill(password);
+  await page.getByRole("button", { name: "Sign In" }).click();
+  await page.waitForURL(/\/dashboard/, { timeout: 30000 });
+}
+
+const stamp = () => Date.now();
+
+/** Listing the test claims. Chosen per run so repeated runs never collide. */
+let businessId = "";
+let claimant = "";
+
+test.describe("directory claim review", () => {
+  test.beforeAll(() => {
+    if (!URL || !ANON || !ADMIN_EMAIL || !ADMIN_PASSWORD || !MEMBER_EMAIL || !MEMBER_PASSWORD) {
+      test.skip(true, "needs Supabase env and E2E member+admin creds");
+      throw new Error("unreachable — test skipped");
+    }
+  });
+
+  test.afterAll(async () => {
+    if (!businessId) return;
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      throw new Error(`claim row for ${businessId} (${claimant}) needs deleting manually: no E2E admin creds`);
+    }
+    const admin = await adminClient();
+    await admin.from("directory_claims").delete().eq("business_id", businessId);
+  });
+
+  test("staff can see and approve a claim, and the public page flips to Claimed", async ({ page }) => {
+    const anon = createClient(URL as string, ANON as string);
+    const admin = await adminClient();
+    const s = stamp();
+    businessId = `E2E-CLAIM-${s}`;
+    claimant = `E2E Claimant ${s}`;
+
+    const ins = await anon
+      .from("directory_claims")
+      .insert({
+        business_id: businessId,
+        business_name: "E2E Review Bakery",
+        area: "Klagon",
+        claimant_name: claimant,
+        claimant_phone: "0240001122",
+        status: "pending",
+      })
+      .select("id")
+      .single();
+    if (ins.error) throw new Error(`seed insert failed: ${ins.error.message}`);
+
+    // The RPC is how staff read claims now. If it is missing, the migration has
+    // not been applied and there is nothing to review.
+    const { data: viaRpc, error: rpcErr } = await admin.rpc("admin_directory_claims");
+    if (rpcErr) {
+      test.skip(
+        true,
+        `admin_directory_claims missing (${rpcErr.message}) — apply 20260930030000_directory_claims_pii.sql`,
+      );
+      return;
+    }
+    expect(
+      ((viaRpc ?? []) as { business_id: string }[]).some((r) => r.business_id === businessId),
+      "pending claim is visible to staff via the gated RPC",
+    ).toBe(true);
+
+    // And the same data is NOT reachable without admin rights.
+    const { data: viaTable, error: tableErr } = await anon
+      .from("directory_claims")
+      .select("claimant_name, claimant_phone")
+      .eq("business_id", businessId);
+    if (tableErr) {
+      // PostgREST rejects the request outright: also acceptable.
+      expect(tableErr.message).toBeTruthy();
+    } else {
+      expect(viaTable ?? [], "anon must not read claimant PII").toHaveLength(0);
+    }
+
+    await login(page, ADMIN_EMAIL as string, ADMIN_PASSWORD as string);
+    await page.goto("/dashboard/admin/directory-claims");
+
+    const card = page.getByTestId("directory-claim").filter({ hasText: businessId });
+    await expect(card, "claim appears in the staff queue").toBeVisible({ timeout: 20000 });
+    await expect(card).toContainText(claimant);
+    await expect(card).toContainText("0240001122");
+
+    // Verification happens in WhatsApp; the link should open a thread with the
+    // claimant and name the listing.
+    const verify = card.getByTestId("claim-verify-link");
+    await expect(verify, "claimant phone links into a WhatsApp thread").toBeVisible();
+    const href = await verify.getAttribute("href");
+    expect(href).toContain("wa.me/233240001122");
+    expect(decodeURIComponent(href ?? "")).toContain(businessId);
+
+    await card.getByTestId("claim-approve").click();
+
+    // Cleared from the actionable queue, and durably decided in the database.
+    await expect(
+      page.getByTestId("directory-claim").filter({ hasText: businessId }),
+      "approved claim leaves the actionable queue",
+    ).toHaveCount(0);
+    const { data: decided, error: readErr } = await admin
+      .from("directory_claims")
+      .select("status")
+      .eq("business_id", businessId)
+      .single();
+    if (readErr) throw new Error(`post-approve read failed: ${readErr.message}`);
+    expect(decided.status, "approve marks the claim approved").toBe("approved");
+  });
+
+  test("reject frees the listing for a fresh claim", async ({ page }) => {
+    const anon = createClient(URL as string, ANON as string);
+    const admin = await adminClient();
+    const s = stamp();
+    const bid = `E2E-REJECT-${s}`;
+
+    const first = await anon
+      .from("directory_claims")
+      .insert({
+        business_id: bid,
+        business_name: "E2E Reject Shop",
+        area: "Klagon",
+        claimant_name: `E2E Reject Claimant ${s}`,
+        claimant_phone: "0240003344",
+        status: "pending",
+      })
+      .select("id")
+      .single();
+    if (first.error) throw new Error(`seed insert failed: ${first.error.message}`);
+
+    try {
+      await login(page, ADMIN_EMAIL as string, ADMIN_PASSWORD as string);
+      await page.goto("/dashboard/admin/directory-claims");
+      const card = page.getByTestId("directory-claim").filter({ hasText: bid });
+      await expect(card).toBeVisible({ timeout: 20000 });
+      await card.getByTestId("claim-reject").click();
+      await expect(
+        page.getByTestId("directory-claim").filter({ hasText: bid }),
+        "rejected claim leaves the actionable queue",
+      ).toHaveCount(0);
+
+      const { data: after, error: afterErr } = await admin
+        .from("directory_claims")
+        .select("status")
+        .eq("business_id", bid)
+        .single();
+      if (afterErr) throw new Error(`post-reject read failed: ${afterErr.message}`);
+      expect(after.status).toBe("rejected");
+
+      // The point of rejecting: the unique index only covers non-rejected rows,
+      // so the owner can try again instead of being locked out forever.
+      const retry = await anon
+        .from("directory_claims")
+        .insert({
+          business_id: bid,
+          business_name: "E2E Reject Shop",
+          area: "Klagon",
+          claimant_name: `E2E Reject Claimant ${s} retry`,
+          claimant_phone: "0240003344",
+          status: "pending",
+        })
+        .select("id")
+        .single();
+      expect(retry.error, "a rejected claim must not block a new claim").toBeNull();
+
+      if (retry.data) {
+        await admin.from("directory_claims").delete().eq("id", retry.data.id);
+      }
+    } finally {
+      await admin.from("directory_claims").delete().eq("business_id", bid);
+    }
+  });
+
+  test("a signed-in member cannot approve a claim or read claimant PII", async () => {
+    const anon = createClient(URL as string, ANON as string);
+    const member = await memberClient();
+    const s = stamp();
+    const bid = `E2E-MEMBER-${s}`;
+
+    const ins = await anon
+      .from("directory_claims")
+      .insert({
+        business_id: bid,
+        business_name: "E2E Member Shop",
+        area: "Klagon",
+        claimant_name: `E2E Member Claimant ${s}`,
+        claimant_phone: "0240005566",
+        status: "pending",
+      })
+      .select("id")
+      .single();
+    if (ins.error) throw new Error(`seed insert failed: ${ins.error.message}`);
+
+    const admin = await adminClient();
+    try {
+      // A member must not be able to verify their own claim, or any claim.
+      const { data: approved, error: updErr } = await member
+        .from("directory_claims")
+        .update({ status: "approved" })
+        .eq("id", ins.data.id)
+        .select("status");
+      expect(updErr, "member update is rejected or affects no rows").toBeTruthy();
+      expect(approved ?? [], "member must not be able to approve a claim").toHaveLength(0);
+
+      // Nor read the contact details of other claimants.
+      const { data: leaked, error: leakErr } = await member
+        .from("directory_claims")
+        .select("claimant_name, claimant_phone")
+        .eq("business_id", bid);
+      if (leakErr) {
+        expect(leakErr.message).toBeTruthy();
+      } else {
+        expect(leaked ?? [], "member must not read claimant PII").toHaveLength(0);
+      }
+
+      // The gated RPC must refuse a non-admin outright, not return empty.
+      const { data: rpcData, error: rpcErr } = await member.rpc("admin_directory_claims");
+      expect(rpcErr, "admin_directory_claims must refuse non-admins").toBeTruthy();
+      expect(rpcData ?? []).toHaveLength(0);
+
+      // Still pending, untouched.
+      const { data: state } = await admin
+        .from("directory_claims")
+        .select("status")
+        .eq("id", ins.data.id)
+        .single();
+      expect(state?.status, "claim was not approved by the member").toBe("pending");
+    } finally {
+      await admin.from("directory_claims").delete().eq("business_id", bid);
+    }
+  });
+});

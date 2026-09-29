@@ -36,6 +36,24 @@ export interface ClaimResult {
   error?: string;
 }
 
+/**
+ * The admin view of a claim. Deliberately not `extends DirectoryClaim`: the
+ * public panel only ever needs pending/approved, while staff must be able to
+ * tell a rejected claim apart from one that was never made.
+ */
+export type DirectoryClaimStatus = "pending" | "approved" | "rejected";
+
+export interface AdminDirectoryClaim {
+  id: string;
+  businessId: string;
+  businessName: string | null;
+  area: string | null;
+  claimantName: string | null;
+  claimantPhone: string | null;
+  status: DirectoryClaimStatus;
+  createdAt: string;
+}
+
 const client = () => {
   if (!isSupabaseConfigured()) return null;
   return getBrowserClient();
@@ -118,9 +136,86 @@ export async function fileDirectoryClaim(input: {
 }
 
 // ------------------------------------------------------------------
-// WhatsApp message builders
+// admin
+//
+// The table itself is no longer readable by anon or members: the public
+// badge read is limited to (business_id, status) by column grant, and the
+// claimant name/phone that staff need to verify ownership come from
+// admin_directory_claims(), a SECURITY DEFINER function that raises unless
+// is_admin(). So this queue cannot fall back to a plain select.
 // ------------------------------------------------------------------
 
+/** Unknown statuses fall back to "pending" so they stay visible in the queue. */
+function toAdminClaim(row: ClaimRow): AdminDirectoryClaim {
+  const status = row.status === "approved" || row.status === "rejected" ? row.status : "pending";
+  return {
+    id: row.id,
+    businessId: row.business_id,
+    businessName: row.business_name,
+    area: row.area,
+    claimantName: row.claimant_name,
+    claimantPhone: row.claimant_phone,
+    status,
+    createdAt: row.created_at,
+  };
+}
+
+/**
+ * Every claim, pending first, for the staff review queue. Pending last would
+ * be a real risk here: an unverified claim locks a listing out of new claims
+ * via directory_claims_active_business_key until someone acts on it.
+ */
+export async function fetchAdminDirectoryClaims(): Promise<{ claims: AdminDirectoryClaim[]; error: string | null }> {
+  const c = client();
+  if (!c) return { claims: [], error: "Supabase is not configured." };
+  const { data, error } = await c.rpc("admin_directory_claims");
+  // The error is surfaced rather than swallowed: before the PII migration this
+  // RPC does not exist, and an empty queue would read as "no claims waiting"
+  // when in fact the queue could not load at all.
+  if (error) return { claims: [], error: error.message };
+  return { claims: ((data ?? []) as ClaimRow[]).map(toAdminClaim), error: null };
+}
+
+async function setClaimStatus(id: string, status: "approved" | "rejected"): Promise<ClaimResult> {
+  const c = client();
+  if (!c) return { ok: false, error: "Supabase is not configured." };
+  // updated_at has no trigger, so maintain it here or the queue cannot show
+  // when staff actually decided.
+  const { error } = await c
+    .from("directory_claims")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+/** Approving shows the public "Claimed" badge and removes the claim buttons. */
+export function approveDirectoryClaim(id: string): Promise<ClaimResult> {
+  return setClaimStatus(id, "approved");
+}
+
+/** Rejecting frees the listing for a fresh claim. */
+export function rejectDirectoryClaim(id: string): Promise<ClaimResult> {
+  return setClaimStatus(id, "rejected");
+}
+
+/**
+ * A prefilled WhatsApp message asking the claimant to prove they run the
+ * business. Verification happens in that thread, so the staff queue links
+ * straight into it rather than making staff retype the listing name.
+ */
+export function buildClaimVerificationMessage(claim: {
+  businessName: string | null;
+  businessId: string;
+  claimantName: string | null;
+}): string {
+  const who = claim.claimantName ? ` ${claim.claimantName},` : "";
+  return `Hi${who}! Thanks for claiming your KLAGON.org listing: ${claim.businessName ?? claim.businessId} (${claim.businessId}). To finish verification, please reply here with one detail that only the owner would know — for example your shop sign, your opening hours, or the owner full name on your business registration. Once confirmed we will add the verified badge to your page and add you to the Klagon business owners group.`;
+}
+
+// ------------------------------------------------------------------
+// WhatsApp message builders
+// ------------------------------------------------------------------
 /** Sent to the KlagonOrg line when a visitor starts the claim flow. */
 export function buildClaimMessage(b: {
   name: string;

@@ -136,11 +136,17 @@ test.describe("directory listing claim", () => {
       // detail to verify ownership. This is the assertion that would have
       // failed before: WhatsApp was opened and nothing was ever recorded.
       // Polled because the write is fired without blocking the UI transition.
+      //
+      // Read as admin, deliberately. The anon client can no longer see
+      // claimant_phone or claimant_name at all since the PII lockdown, so
+      // "did the phone get stored" is now an admin-only question. The
+      // public-readability of that data is asserted in directory-claim-admin.
+      const admin = await adminClient();
       let row: { business_id: string; status: string; claimant_phone: string | null } | null = null;
       await expect
         .poll(
           async () => {
-            const { data, error } = await sb
+            const { data, error } = await admin
               .from("directory_claims")
               .select("business_id, status, claimant_phone")
               .eq("claimant_name", claimant)
