@@ -49,9 +49,12 @@ jobs:
           if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
             echo "::error::CLOUDFLARE_API_TOKEN secret is not set. Create a token with Pages:Edit on klagon-org (Cloudflare dashboard -> My Profile -> API Tokens) and add it under repo Settings -> Secrets and variables -> Actions."
             echo "ready=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
+            # Fail the run, do not just annotate. A missing token means nothing
+            # was published, and a green run that deployed nothing is worse than
+            # a red one -- it means the failure can go unnoticed again.
+            exit 1
           fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to Cloudflare Pages
         if: steps.gate.outputs.ready == 'true'
