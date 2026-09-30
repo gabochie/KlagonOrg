@@ -2,3 +2,7 @@
 * text=auto
 # Patch files must stay LF: patch-package cannot parse CRLF on Linux builders
 patches/*.patch text eol=lf
+# GitHub Actions only parses workflows with LF endings. This repo is checked out
+# with core.autocrlf=true, so without this rule a Windows checkout can normalize
+# a workflow to CRLF and the runner will fail to parse it.
+.github/workflows/*.yml text eol=lf
