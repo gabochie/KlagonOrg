@@ -24,6 +24,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Manual rerun. Paired with the `if` on the e2e job below: push to main runs
+  # the full suite, a pull request runs gates only, and this runs gates + e2e
+  # on demand without touching main.
+  workflow_dispatch:
 
 env:
   NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
@@ -54,8 +58,40 @@ jobs:
       - name: Production build
         run: npm run build
 
+      # The e2e job below is a separate job on a separate runner, and out/ is
+      # gitignored, so the export simply did not exist there. `serve out` then
+      # had nothing to mount and every run died on
+      # "Timed out waiting 180000ms from config.webServer" -- the e2e suite had
+      # never actually executed on CI. Ship the export across instead of paying
+      # for a second build.
+      #
+      # compression-level: 0 is deliberate. The export is ~140MB of prerendered
+      # HTML plus already-compressed PNGs (directory/ 77MB, brand/ 35MB), so
+      # zipping it burns runner CPU and minutes to save almost nothing.
+      - name: Upload static export
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-export
+          path: out/
+          retention-days: 1
+          compression-level: 0
+
+  # Full end-to-end suite. Runs on pushes to main and on manual dispatch, but
+  # NOT on pull requests.
+  #
+  # Reason: these specs are not read-only. They create posts, boost requests
+  # and directory claims against the real Supabase project, and rely on
+  # global-teardown.ts sweeping the rows afterwards. That teardown is the right
+  # safety net for a scheduled main-branch run, but making every pull request --
+  # including ones from forks -- a production write is a materially different
+  # risk, and it buys little: the cheap checks that actually catch most mistakes
+  # (typecheck, lint, unit tests, production build) all still run on PRs.
+  #
+  # If a staging Supabase project is ever added, move this back to `pull_request`
+  # and point it there. That is the real fix; this is the safe interim.
   e2e:
     needs: [gates]
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       E2E_MEMBER_EMAIL: ${{ secrets.E2E_MEMBER_EMAIL }}
@@ -75,5 +111,15 @@ jobs:
       - name: Install Playwright chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Download static export
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export
+          path: out/
+
+      # The specs expect a real static export, not `next dev`, and global-setup
+      # re-verifies that the served site is actually KLAGON before the suite
+      # runs -- so the artifact has to be in place before Playwright starts its
+      # webServer, which is why this download precedes the test step.
       - name: End-to-end tests
         run: npx playwright test --reporter=list
