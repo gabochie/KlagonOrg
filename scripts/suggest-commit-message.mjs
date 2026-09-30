@@ -34,11 +34,55 @@ const CONVENTIONAL =
 const FILE_VERB =
   /^(update|updated|updating|add|added|create|created|change|changed|edit|edited|modify|modified|rename|delete|removed|remove|fix|fixed|fixing)\b/i;
 
-/** "Update rss.xml", "Create TrackLink.tsx" — a short title ending in a filename. */
+/** Verbs a commit message is often *about*, and which get mangled by typo. */
+const GIT_VERBS = [
+  "commit", "committing", "push", "pushing", "merge", "merging", "rebase",
+  "revert", "reverting", "branch", "tag", "checkout", "stash", "fetch",
+];
+
+/** Levenshtein distance, capped for speed. Only ever called on short words. */
+function editDistance(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return 99;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    for (let j = 1; j <= b.length; j++) {
+      row[j] = Math.min(
+        prev[j] + 1,
+        row[j - 1] + 1,
+        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    prev = row;
+  }
+  return prev[b.length];
+}
+
+/**
+ * "Update rss.xml", "Create TrackLink.tsx" — a short title that just names a
+ * file. A trailing token counts as a filename if it carries an extension or an
+ * internal hyphen, which is why "Update commit-msg" is caught while the real
+ * sentence "add claim queue" is not: neither "queue" nor "typo" is file-shaped.
+ */
 function isFileTouchOnly(subject) {
   const words = subject.trim().split(/\s+/);
   if (words.length > 4) return false;
-  return /\.[A-Za-z0-9]{1,6}$/.test(words[words.length - 1]);
+  const last = words[words.length - 1];
+  return /\.[A-Za-z0-9]{1,6}$/.test(last) || /^[A-Za-z0-9]+(-[A-Za-z0-9]+)+$/.test(last);
+}
+
+/**
+ * "Comminting MD" is a typo of "committing" wearing a real word as camouflage.
+ * Distance 1 from a git verb is a typo; distance 0 is the genuine word, so
+ * "commit the fix" is left alone.
+ */
+function isMangledGitVerb(subject) {
+  const first = subject.trim().split(/\s+/)[0]?.toLowerCase() ?? "";
+  if (first.length < 4) return false;
+  return GIT_VERBS.some((v) => {
+    const d = editDistance(first, v);
+    return d >= 1 && d <= 2 && first !== v;
+  });
 }
 
 /** Path segments too generic to describe a change. */
@@ -66,6 +110,7 @@ export function isWeakSubject(subject) {
   const t = (subject ?? "").trim();
   if (!t) return true;
   if (FILE_VERB.test(t) && isFileTouchOnly(t)) return true;
+  if (isMangledGitVerb(t)) return true;
   // Keyboard mashing, caught structurally: a single space-free run of letters is
   // not an English commit message.
   if (!/\s/.test(t) && /^[A-Za-z]+$/.test(t)) return true;
