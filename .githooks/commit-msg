@@ -16,6 +16,28 @@
 msg_file="$1"
 [ -n "$msg_file" ] && [ -f "$msg_file" ] || exit 0
 
+# Locate this script's own copy, not a copy of it.
+#
+# GitHub Desktop does not run this file directly. It copies a proxy executable
+# into a temporary directory, points core.hooksPath at that directory, and lets
+# git call the proxy -- so $0 can be a temp path like /tmp/xyz/commit-msg.exe
+# with no scripts/ directory anywhere near it. Deriving the script location from
+# $0 is therefore unsafe, and a path that does not exist makes node exit
+# non-zero, which the `|| true` below would silently swallow: the hook would
+# appear installed and quietly do nothing.
+#
+# Try $0 first so the hook still works if it is ever copied deliberately, then
+# fall back to the repository root as git itself sees it.
+hook_dir=$(dirname "$0")
+script="$hook_dir/../scripts/suggest-commit-message.mjs"
+
+if [ ! -f "$script" ]; then
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+  script="$repo_root/scripts/suggest-commit-message.mjs"
+fi
+
+[ -f "$script" ] || exit 0
+
 node_bin=""
 if command -v node >/dev/null 2>&1; then
   node_bin="node"
@@ -39,6 +61,11 @@ fi
 # No node: exit 0 so the commit still lands. Never block on a missing tool.
 [ -n "$node_bin" ] || exit 0
 
-"$node_bin" "$(dirname "$0")/../scripts/suggest-commit-message.mjs" --check "$msg_file" || true
+if ! "$node_bin" "$script" --check "$msg_file"; then
+  # Only warn. Still exit 0: a broken auto-titler must not cost the user their
+  # commit, but it should not fail completely silently either, because the
+  # symptom is an unexplained junk title in the history.
+  echo "commit-msg hook: could not auto-title (node \"$node_bin\" failed on $script)" >&2
+fi
 
 exit 0
