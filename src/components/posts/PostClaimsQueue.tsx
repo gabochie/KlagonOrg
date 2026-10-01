@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import {
   approvePostClaim,
   fetchPostClaimsQueue,
@@ -88,21 +89,25 @@ export function PostClaimsQueue() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                <button
+              <div className="grid grid-cols-2 gap-1.5 mt-2 sm:flex sm:flex-wrap">
+                <Button
                   disabled={busy === c.id}
                   onClick={() => void decide(c, true)}
-                  className="px-2.5 py-1.5 rounded-lg bg-amber text-navy text-[11px] font-bold cursor-pointer hover:bg-amber/90 disabled:opacity-50"
+                  variant="amber"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
                   Approve + hand over
-                </button>
-                <button
+                </Button>
+                <Button
                   disabled={busy === c.id}
                   onClick={() => void decide(c, false)}
-                  className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale disabled:opacity-50"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
                   Reject
-                </button>
+                </Button>
               </div>
             </div>
           ))}
