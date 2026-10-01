@@ -223,10 +223,16 @@
   to { transform: translate(-50%, 0); opacity: 1; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .read-aloud-highlight { transition: none; }
-  .confetti-piece { animation: none; display: none; }
-  .radio-pulse { animation: none; opacity: 0.35; }
-  .xp-toast,
-  .xp-toast-center { animation: none; }
-}
+/* Safe-area insets for installed PWA (notched phones, home indicator).
+   These utilities are applied by components that need to respect the notch
+   and home indicator without hardcoding pixel values. */
+.safe-top    { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-left   { padding-left: env(safe-area-inset-left); }
+.safe-right  { padding-right: env(safe-area-inset-right); }
+
+/* Footer gets bottom inset so content never sits behind the home bar. */
+.safe-footer { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+/* Sticky top nav gets top inset so the logo never hides under the notch. */
+.safe-nav-top { padding-top: env(safe-area-inset-top); }
