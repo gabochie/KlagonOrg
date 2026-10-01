@@ -3,13 +3,12 @@
 # its `date` arrives (see content/blog/README.md), then surfaces automatically
 # on the next run — no commit churn for a publish.
 #
-# Needs one repo Secret: CLOUDFLARE_API_TOKEN (Pages:Edit on klagon-org).
+# Needs one repo Secret: CLOUDFLARE_API_TOKEN (Cloudflare Pages -> Edit).
 # Reuses the repo Variables NEXT_PUBLIC_SUPABASE_URL / _ANON_KEY (same as ci).
 #
-# If this workflow has never gone green, the secret is almost certainly the
-# reason. Until it is set, the "Check deploy credentials" step below fails the
-# run with an explicit message, and the "Verify deployment is live" step is
-# skipped. Nothing publishes silently.
+# The account id is hardcoded below. It is a public identifier, not a
+# credential, and it is required: wrangler otherwise calls /memberships to
+# discover the account, which a Pages-scoped token is not allowed to read.
 
 name: publish
 
@@ -59,8 +58,16 @@ jobs:
       - name: Deploy to Cloudflare Pages
         if: steps.gate.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
+        env:
+          # Without an explicit account id, wrangler calls /memberships to work
+          # out which account to deploy to. The Pages:Edit token cannot read
+          # memberships, so that call fails with auth error 10000 and the deploy
+          # dies before it starts. Naming the account skips the lookup entirely.
+          # This is the public account id, not a credential.
+          CLOUDFLARE_ACCOUNT_ID: 4039696cf86114b111be5cadb164a3a9
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 4039696cf86114b111be5cadb164a3a9
           command: pages deploy out --project-name klagon-org --branch main
 
       - name: Verify deployment is live
