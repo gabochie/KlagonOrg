@@ -37,6 +37,25 @@ export interface ClaimResult {
 }
 
 /**
+ * Turn a raw PostgREST message into something safe to render, keeping the real
+ * one in the console.
+ *
+ * These strings reach business owners (submitting a claim) and staff (deciding
+ * one), and PostgREST errors name the objects involved: the
+ * `directory_claims` table, the `admin_directory_claims` RPC, and on a project
+ * where a migration has not been applied, the migration filename itself. None
+ * of that helps the person reading it, and on an admin surface it tells anyone
+ * who reaches it exactly which database object is missing.
+ *
+ * The two cases worth a specific message are handled by the callers, which
+ * know whether the failure was a duplicate claim or a missing schema.
+ */
+function safeClaimError(raw: unknown, fallback: string): string {
+  console.error("[directory-claims]", raw);
+  return fallback;
+}
+
+/**
  * The admin view of a claim. Deliberately not `extends DirectoryClaim`: the
  * public panel only ever needs pending/approved, while staff must be able to
  * tell a rejected claim apart from one that was never made.
@@ -128,9 +147,10 @@ export async function fileDirectoryClaim(input: {
       return { ok: false, error: "This listing has already been claimed or is under review." };
     }
     if (String(error.message).toLowerCase().includes("relation") || String(error.message).toLowerCase().includes("does not exist")) {
+      console.error("[directory-claims] schema missing:", error.message);
       return { ok: false, error: undefined };
     }
-    return { ok: false, error: error.message };
+    return { ok: false, error: safeClaimError(error, "That claim could not be submitted. Please try again.") };
   }
   return { ok: true };
 }
@@ -172,6 +192,12 @@ export async function fetchAdminDirectoryClaims(): Promise<{ claims: AdminDirect
   // The error is surfaced rather than swallowed: before the PII migration this
   // RPC does not exist, and an empty queue would read as "no claims waiting"
   // when in fact the queue could not load at all.
+  //
+  // Unlike the public submit path this returns the raw PostgREST message on
+  // purpose. Its only caller is the admin queue, which logs it, derives a
+  // support reference from it, and does not put it in the DOM. That is what
+  // keeps an operator able to tell "RPC missing" from "permission denied"
+  // without re-exposing the detail on screen.
   if (error) return { claims: [], error: error.message };
   return { claims: ((data ?? []) as ClaimRow[]).map(toAdminClaim), error: null };
 }
@@ -207,11 +233,15 @@ async function moveClaimStatus(
     .update({ status: next, updated_at: new Date().toISOString() })
     .eq("business_id", businessId)
     .eq("status", from);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    return { ok: false, error: safeClaimError(error, "That decision could not be saved. Please try again.") };
+  }
 
   // Confirm the transition actually happened, since the update cannot return it.
   const { data, error: readErr } = await c.rpc("admin_directory_claims");
-  if (readErr) return { ok: false, error: readErr.message };
+  if (readErr) {
+    return { ok: false, error: safeClaimError(readErr, "That decision could not be confirmed. Please try again.") };
+  }
   const isPending = ((data ?? []) as ClaimRow[]).some(
     (r) => r.business_id === businessId && r.status === "pending",
   );
