@@ -23,13 +23,28 @@ export const metadata: Metadata = {
   description:
     "KLAGON.org is the digital home of Klagon — where the community learns, hosts, maps itself, and does business. Join free today.",
   alternates: { canonical: "/" },
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
       { url: "/brand/klagon-logo.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
-    apple: "/brand/klagon-logo.png",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "KLAGON",
+    statusBarStyle: "black-translucent",
+  },
+  viewport: {
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
+      { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
+    ],
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
   },
   openGraph: {
     type: "website",
