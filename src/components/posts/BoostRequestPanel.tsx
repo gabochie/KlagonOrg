@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Zap } from "lucide-react";
+import { Button } from "@/components/ui";
 import { boostPriceFor } from "@/lib/posts";
 import { notifyTeam } from "@/lib/notify";
 import { isBoostActive } from "@/lib/boosts";
@@ -145,20 +146,18 @@ export function BoostRequestPanel({ post }: { post: Post }) {
               </a>
             </p>
           )}
-          <div className="flex flex-wrap gap-1.5 mt-2.5">
-            <button
-              onClick={() => void request()}
+          <div className="grid grid-cols-2 gap-2 mt-2.5">
+            <Button
+              size="sm"
+              variant="dark"
               disabled={sending}
-              className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold hover:bg-blue transition-colors cursor-pointer disabled:opacity-60"
+              onClick={() => void request()}
             >
               {sending ? "Sending…" : "Request this boost"}
-            </button>
-            <button
-              onClick={() => setOpen(false)}
-              className="px-2.5 py-1.5 rounded-lg bg-white border border-border text-navy text-[11px] font-bold hover:bg-pale transition-colors cursor-pointer"
-            >
+            </Button>
+            <Button size="sm" variant="secondary" onClick={() => setOpen(false)}>
               Not now
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
