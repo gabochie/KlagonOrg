@@ -70,10 +70,10 @@ export async function LearningHubContent() {
                   className="group bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer block"
                 >
                   <div
-                    className="h-20 flex items-center justify-center text-2xl overflow-hidden"
+                    className="aspect-video flex items-center justify-center text-2xl overflow-hidden"
                     style={{ background: categoryColors[c.category] ?? c.color }}
                   >
-                    <CourseCover coverUrl={c.cover_url} icon={c.icon} title={c.title} />
+                    <CourseCover course={c} icon={c.icon} title={c.title} />
                   </div>
                   <div className="p-5">
                     <div className="text-[10px] font-bold tracking-widest uppercase text-amber-strong dark:text-amber mb-1.5">

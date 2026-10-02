@@ -291,21 +291,21 @@ export function CourseViewer({
           >
             <ArrowLeft size={14} /> All courses
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-amber flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
-              <CourseCover
-                coverUrl={course.cover_url}
-                icon={course.icon ?? "📚"}
-                title={course.title}
-              />
-            </div>
-            <div className="min-w-0">
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+            <CourseCover
+              course={course}
+              icon={course.icon ?? "📚"}
+              title={course.title}
+              size={1200}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
               {course.category && (
                 <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1">
                   {course.category}
                 </div>
               )}
-              <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-tight">
+              <h1 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
                 {course.title}
               </h1>
             </div>

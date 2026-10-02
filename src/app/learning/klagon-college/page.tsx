@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { CourseCover } from "@/components/learning/CourseCover";
 
 export const metadata: Metadata = {
   title: "Klagon College — KLAGON.org",
@@ -39,6 +40,8 @@ interface CourseRow {
   skills?: string[];
   scope?: string;
   evidence?: string[];
+  /** Authored cover base path (no size suffix); templates fill when absent. */
+  cover?: string;
 }
 interface ProgrammeRow {
   id: string;
@@ -165,18 +168,27 @@ export default function KlagonCollegePage() {
             <p className="text-sm text-slate-500 mb-6">Owned by the college, already on the platform.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {live.map((c) => (
-                <div key={c.id} className="rounded-2xl border border-border bg-white p-5 shadow-sm">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-bold text-amber">{c.id}</span>
-                    <StatusBadge status={c.status ?? "live"} />
+                <div key={c.id} className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+                  <div className="aspect-video overflow-hidden bg-light">
+                    <CourseCover
+                      course={{ cover: c.cover, school: c.school, category: c.category }}
+                      icon="📚"
+                      title={c.title}
+                    />
                   </div>
-                  <h3 className="mt-2 font-semibold text-navy leading-snug">{c.title}</h3>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {c.duration_weeks ? `${c.duration_weeks} weeks` : c.category} · {c.type}
-                  </p>
-                  {c.skills && c.skills.length > 0 && (
-                    <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{skillTokens(c.skills)}</p>
-                  )}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-amber">{c.id}</span>
+                      <StatusBadge status={c.status ?? "live"} />
+                    </div>
+                    <h3 className="mt-2 font-semibold text-navy leading-snug">{c.title}</h3>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {c.duration_weeks ? `${c.duration_weeks} weeks` : c.category} · {c.type}
+                    </p>
+                    {c.skills && c.skills.length > 0 && (
+                      <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{skillTokens(c.skills)}</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -185,28 +197,46 @@ export default function KlagonCollegePage() {
             <p className="text-sm text-slate-500 mb-6">Honestly marked — not shipped until they ship.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {comingSoon.map((c) => (
-                <div key={c.id} className="rounded-2xl border border-dashed border-amber/40 bg-amber-50/40 p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-bold text-amber">Soon · {c.school}</span>
-                    <StatusBadge status={c.status ?? "coming_soon"} />
+                <div key={c.id} className="overflow-hidden rounded-2xl border border-dashed border-amber/40 bg-amber-50/40">
+                  <div className="aspect-video overflow-hidden">
+                    <CourseCover
+                      course={{ school: c.school, category: c.category }}
+                      icon="📚"
+                      title={c.title}
+                    />
                   </div>
-                  <h3 className="mt-2 font-semibold text-navy leading-snug">{c.title}</h3>
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-amber">Soon · {c.school}</span>
+                      <StatusBadge status={c.status ?? "coming_soon"} />
+                    </div>
+                    <h3 className="mt-2 font-semibold text-navy leading-snug">{c.title}</h3>
+                  </div>
                 </div>
               ))}
             </div>
 
             <h2 className="text-2xl font-bold text-navy mt-12 mb-2">Capstone</h2>
             {capstones.map((cap) => (
-              <div key={cap.id} className="rounded-2xl border border-navy/15 bg-navy/[0.03] p-5">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-semibold text-navy">{cap.title}</h3>
-                  <StatusBadge status="live" />
+              <div key={cap.id} className="overflow-hidden rounded-2xl border border-navy/15 bg-navy/[0.03]">
+                <div className="aspect-video overflow-hidden">
+                  <CourseCover
+                    course={{ school: cap.school, category: cap.category }}
+                    icon="🎓"
+                    title={cap.title}
+                  />
                 </div>
-                <p className="mt-1 text-[11px] text-slate-500">{cap.id}</p>
-                <p className="mt-2 text-sm text-slate-600">{cap.scope}</p>
-                {cap.skills && cap.skills.length > 0 && (
-                  <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{skillTokens(cap.skills)}</p>
-                )}
+                <div className="p-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-semibold text-navy">{cap.title}</h3>
+                    <StatusBadge status="live" />
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-500">{cap.id}</p>
+                  <p className="mt-2 text-sm text-slate-600">{cap.scope}</p>
+                  {cap.skills && cap.skills.length > 0 && (
+                    <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{skillTokens(cap.skills)}</p>
+                  )}
+                </div>
               </div>
             ))}
 

@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { marked } from "marked";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { CourseCover } from "@/components/learning/CourseCover";
 import { sanitizeHtml } from "@/lib/sanitize";
 import Link from "next/link";
 
@@ -21,6 +22,8 @@ interface Row {
   outcomes?: string[];
   scope?: string;
   evidence?: string[];
+  /** Authored cover base path (no size suffix); templates fill when absent. */
+  cover?: string;
 }
 
 interface Doc {
@@ -83,9 +86,20 @@ export default async function CollegeCoursePage({
               >
                 ← Back to Klagon College
               </Link>
-            <h1 className="mt-3 text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold text-white tracking-tight leading-tight">
-              {row?.title ?? id}
-            </h1>
+            <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <CourseCover
+                course={{ cover: row?.cover, school: row?.school, category: row?.category }}
+                icon="📚"
+                title={row?.title ?? id}
+                size={1200}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+                <h1 className="text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold text-white tracking-tight leading-tight">
+                  {row?.title ?? id}
+                </h1>
+              </div>
+            </div>
             {row?.skills && row.skills.length > 0 && (
               <p className="mt-3 text-[13px] leading-relaxed text-white/70">
                 {row.skills.map(titleCase).join(" · ")}
