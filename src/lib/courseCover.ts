@@ -18,8 +18,10 @@
 export type CoverSize = 600 | 1200;
 
 export interface CoverableCourse {
-  /** DB/component field. Authored covers are base paths; uploads are full URLs. */
+  /** camelCase component field. Authored covers are base paths; uploads are full URLs. */
   coverUrl?: string | null;
+  /** snake_case DB field (courses.cover_url / courses_public). Same semantics. */
+  cover_url?: string | null;
   /** Content-layer field (catalogue.json). Same semantics as coverUrl. */
   cover?: string | null;
   school?: string | null;
@@ -58,7 +60,7 @@ export function templateKey(course: CoverableCourse): string {
 
 /** The image src for a course at a given size. Always returns a path. */
 export function resolveCourseCover(course: CoverableCourse, size: CoverSize = 600): string {
-  const cover = (course.coverUrl ?? course.cover)?.trim();
+  const cover = (course.coverUrl ?? course.cover_url ?? course.cover)?.trim();
   if (cover) {
     if (FILE_EXT.test(cover)) return cover;
     return `${cover.replace(/\/$/, "")}-${size}.webp`;
