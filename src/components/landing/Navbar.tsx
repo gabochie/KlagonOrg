@@ -34,6 +34,8 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { user, profile, loading } = useAuth();
   const closeMenu = () => setOpen(false);
@@ -67,6 +69,61 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", onDown);
   }, [moreOpen]);
 
+  // Lock background scroll while the mobile sheet is open, then restore it.
+  useEffect(() => {
+    if (!open) return;
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+    };
+  }, [open]);
+
+  // Trap focus inside the mobile sheet and restore it to the trigger on close.
+  useEffect(() => {
+    if (!open) return;
+    const menu = menuRef.current;
+    const trigger = triggerRef.current;
+    if (!menu) return;
+
+    const selector =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    menu.querySelector<HTMLElement>("[data-menu-autofocus]")?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const items = Array.from(menu.querySelectorAll<HTMLElement>(selector)).filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+      if (items.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const current = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (current === first || !menu.contains(current))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (current === last || !menu.contains(current))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      trigger?.focus();
+    };
+  }, [open]);
+
   const dashboardHref =
     profile?.role === "super_admin"
       ? "/dashboard/super"
@@ -77,8 +134,8 @@ export function Navbar() {
   const signedIn = !loading && Boolean(user);
 
   return (
-    <nav className="bg-white border-b border-border h-14 sticky top-0 z-50 flex items-center px-4 sm:px-6 dark:bg-ink-2">
-      <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
+    <nav className="bg-white border-b border-border sticky top-0 z-50 dark:bg-ink-2">
+      <div className="h-14 safe-nav-top flex items-center px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <img src="/brand/klagon-logo.png" alt="KLAGON.org" className="h-9 w-auto rounded-lg" />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
@@ -189,7 +246,8 @@ export function Navbar() {
             )}
           </div>
           <button
-            className="md:hidden p-1.5 rounded-lg hover:bg-light dark:hover:bg-white/8 cursor-pointer"
+            ref={triggerRef}
+            className="md:hidden min-h-11 min-w-11 p-2 rounded-lg hover:bg-light dark:hover:bg-white/8 cursor-pointer flex items-center justify-center"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
@@ -203,16 +261,21 @@ export function Navbar() {
       {open && (
         <div
           id="mobile-nav"
-          className="absolute top-14 left-0 right-0 bg-white border-b border-border p-4 sm:p-5 md:hidden shadow-lg animate-fade-in dark:bg-ink-2"
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+          className="absolute top-full left-0 right-0 max-h-[calc(100dvh-3.5rem-env(safe-area-inset-top))] overflow-y-auto overscroll-contain bg-white border-b border-border p-4 sm:p-5 md:hidden shadow-lg animate-fade-in dark:bg-ink-2"
         >
           <div className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => {
+            {NAV_LINKS.map((link, i) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
                 <Link
                   key={link.label}
                   href={link.href}
                   onClick={closeMenu}
+                  data-menu-autofocus={i === 0 ? "" : undefined}
                   className={cn(
                     "px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                     active
@@ -248,7 +311,7 @@ export function Navbar() {
                 );
               })}
             </div>
-            <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 dark:border-white/10">
+            <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 dark:border-white/10 safe-footer">
               <Link href="/donate" onClick={closeMenu}>
                 <Button size="sm" className="w-full bg-amber text-navy hover:bg-amber/90 border-transparent">
                   ♥ Donate
