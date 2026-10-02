@@ -34,6 +34,14 @@ describe("resolveCourseCover", () => {
     );
   });
 
+  it("reads the DB snake_case cover_url field", () => {
+    expect(resolveCourseCover({ cover_url: "/brand/learning/SOE-VEN-01" }, 1200)).toBe(
+      "/brand/learning/SOE-VEN-01-1200.webp",
+    );
+    const url = "https://x.supabase.co/storage/v1/object/public/course-media/c/cover.webp";
+    expect(resolveCourseCover({ cover_url: url }, 1200)).toBe(url);
+  });
+
   it("picks a branded template by school", () => {
     expect(resolveCourseCover({ school: "SOE" }, 1200)).toBe(
       "/brand/learning/templates/soe-1200.webp",
