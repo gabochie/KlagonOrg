@@ -93,7 +93,7 @@ export function ModerationQueue() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as PostType | "all")}
-            className="px-2.5 py-1.5 rounded-lg border border-border text-xs font-semibold text-navy bg-white cursor-pointer"
+            className="max-sm:min-h-12 max-sm:text-base rounded-lg border border-border px-2.5 py-1.5 text-xs font-semibold text-navy bg-white cursor-pointer"
           >
             {TYPE_FILTERS.map((t) => (
               <option key={t} value={t}>
