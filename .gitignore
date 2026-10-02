@@ -10,3 +10,8 @@ test-results/
 playwright-report/
 playwright/.cache/
 workers/**/.wrangler/
+
+# Generated on every `npm run build` by scripts/generate-rss.cjs. Tracking it
+# meant each build rewrote <lastBuildDate> and left a modified file behind,
+# which is how "chore: update rss" commits kept appearing on their own.
+/public/rss.xml
