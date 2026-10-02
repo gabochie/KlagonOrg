@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SalesAgent } from "@/components/chat/SalesAgent";
 import { Observability } from "@/components/observability/Observability";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <SalesAgent />
             <Observability />
+            <OfflineBanner />
           </AuthProvider>
         </ThemeProvider>
       </body>
