@@ -5,6 +5,7 @@ import { Zap } from "lucide-react";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import { adminApplyBoost } from "@/lib/posts";
 import type { Database, Json } from "@/lib/database.types";
+import { Button } from "@/components/ui/Button";
 
 /**
  * Boost requests from /my/posts, and the button that fulfils them.
@@ -174,8 +175,8 @@ export function BoostRequestsQueue() {
         >
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="min-w-0">
-              <div className="text-sm font-extrabold text-navy">{r.title}</div>
-              <div className="text-[11px] text-gray mt-0.5">
+              <div className="text-sm font-extrabold text-navy break-words">{r.title}</div>
+              <div className="text-xs text-gray mt-0.5 max-sm:text-[13px]">
                 {[r.postType, r.category].filter(Boolean).join(" · ")}
                 {" · asked "}
                 {new Date(r.lastSeen).toLocaleString()}
@@ -196,25 +197,27 @@ export function BoostRequestsQueue() {
                 <Zap size={12} /> Boost applied
               </span>
             ) : (
-              <button
+              <Button
                 onClick={() => void apply(r.postId)}
                 disabled={busy === r.postId}
-                className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold hover:bg-blue transition-colors cursor-pointer disabled:opacity-60"
+                variant="dark"
+                size="sm"
+                className="max-sm:min-h-12"
               >
                 {busy === r.postId ? "Applying…" : "Mark paid & apply boost"}
-              </button>
+              </Button>
             )}
             <a
               href={`https://klagon.org/news/${r.postId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] font-bold text-blue underline"
+              className="text-xs font-bold text-blue underline max-sm:min-h-11 max-sm:inline-flex max-sm:items-center"
             >
               View listing
             </a>
           </div>
 
-          {r.error && <div className="text-[11px] text-red-700 mt-2">{r.error}</div>}
+          {r.error && <div className="text-xs text-red-700 mt-2 max-sm:text-[13px]">{r.error}</div>}
         </div>
       ))}
     </div>

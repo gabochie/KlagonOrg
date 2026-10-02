@@ -10,6 +10,7 @@ import type { CultureCreator } from "@/lib/posts";
 import { fetchMyRsvpIds, toggleRsvp, isUuid } from "@/lib/queries";
 import type { Event, Post } from "@/types";
 import { Sparkles, Calendar, Clock, MapPin, Music2, Landmark, BookOpen, PenLine } from "lucide-react";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "service"> = {
   workshop: "workshop",
@@ -209,9 +210,7 @@ export function CultureHub() {
           )}
 
           {!ready ? (
-            <div className="py-16 text-center">
-              <div className="animate-pulse text-xs text-gray font-semibold">Loading The Culture Hub…</div>
-            </div>
+            <LoadingMessage label="Loading The Culture Hub…" className="text-xs" />
           ) : !hasContent ? (
             <div className="bg-white rounded-2xl border border-border p-10 sm:p-14 text-center max-w-xl mx-auto">
               <div className="w-14 h-14 rounded-2xl bg-pale flex items-center justify-center mx-auto mb-5">

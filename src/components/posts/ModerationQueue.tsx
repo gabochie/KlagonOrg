@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AREA_LABELS, POST_TYPE_LABELS, approvePost, fetchModerationQueue, rejectPost } from "@/lib/posts";
 import type { Post, PostStatus, PostType } from "@/types";
 import { PostStatusChip } from "./PostStatusChip";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const STATUS_TABS: PostStatus[] = ["pending", "approved", "rejected", "hidden"];
 const TYPE_FILTERS: (PostType | "all")[] = ["all", "news", "event", "business", "classified", "job", "announcement"];
@@ -93,7 +94,7 @@ export function ModerationQueue() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as PostType | "all")}
-            className="px-2.5 py-1.5 rounded-lg border border-border text-xs font-semibold text-navy bg-white cursor-pointer"
+            className="max-sm:min-h-12 max-sm:text-base rounded-lg border border-border px-2.5 py-1.5 text-xs font-semibold text-navy bg-white cursor-pointer"
           >
             {TYPE_FILTERS.map((t) => (
               <option key={t} value={t}>
@@ -105,9 +106,7 @@ export function ModerationQueue() {
       </div>
 
       {busy ? (
-        <div className="py-16 text-center">
-          <div className="animate-pulse text-xs text-gray font-semibold">Loading queue…</div>
-        </div>
+        <LoadingMessage label="Loading queue…" className="text-xs" />
       ) : visible.length === 0 ? (
         <div className="flex items-center justify-center">
           <div className="mx-auto max-w-md">

@@ -159,7 +159,7 @@ export function ReadAloud({ targetId }: { targetId: string }) {
                 type="button"
                 aria-label={`Speed ${r}x`}
                 onClick={() => setRate(r)}
-                className={`px-2.5 py-1.5 text-[10px] font-bold cursor-pointer transition-colors font-sans ${
+                className={`min-h-11 min-w-11 inline-flex items-center justify-center rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer transition-colors font-sans ${
                   rate === r ? "bg-navy text-white" : "text-gray hover:text-navy"
                 }`}
               >

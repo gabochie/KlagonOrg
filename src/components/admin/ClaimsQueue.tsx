@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { approveClaim, fetchClaimQueue, rejectClaim, type Claim } from "@/lib/claims";
+import { Button } from "@/components/ui/Button";
 
 export function ClaimsQueue() {
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -43,14 +44,14 @@ export function ClaimsQueue() {
     <div className="bg-white rounded-xl border border-border p-4">
       <div className="mb-3">
         <div className="text-sm font-extrabold text-navy">Ownership Claims ({claims.length})</div>
-        <div className="text-[11px] text-gray mt-0.5">
+        <div className="text-xs text-gray mt-0.5 max-sm:text-[13px]">
           Verify the requester runs the business, then approve — they can edit photos, prices,
           and reply to reviews.
         </div>
       </div>
 
       {notice && (
-        <div className="text-[11px] font-semibold text-amber-800 bg-amber/10 rounded-lg px-3 py-2 mb-3">
+        <div className="text-xs font-semibold text-amber-800 bg-amber/10 rounded-lg px-3 py-2 mb-3">
           {notice}
         </div>
       )}
@@ -65,31 +66,35 @@ export function ClaimsQueue() {
         <div className="flex flex-col gap-2 max-h-[420px] overflow-y-auto">
           {claims.map((c) => (
             <div key={c.id} className="rounded-xl border border-border p-3">
-              <div className="text-xs font-bold text-navy">{c.sponsorName ?? c.sponsorId}</div>
-              <div className="text-[11px] text-gray mt-0.5">
+              <div className="text-sm font-bold text-navy break-words">{c.sponsorName ?? c.sponsorId}</div>
+              <div className="text-xs text-gray mt-0.5 max-sm:text-[13px]">
                 {[c.relationship, c.phone, c.note].filter(Boolean).join(" · ") || "No details given"}
               </div>
-              <div className="text-[10px] text-gray/60 mt-0.5">
+              <div className="text-xs text-gray/60 mt-0.5">
                 {new Date(c.createdAt).toLocaleDateString(undefined, {
                   month: "short",
                   day: "numeric",
                 })}
               </div>
-              <div className="flex gap-1.5 mt-2">
-                <button
+              <div className="grid grid-cols-2 gap-2 mt-3 sm:flex sm:gap-1.5">
+                <Button
                   disabled={busy === c.id}
                   onClick={() => void approve(c)}
-                  className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                  variant="dark"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
                   Approve
-                </button>
-                <button
+                </Button>
+                <Button
                   disabled={busy === c.id}
                   onClick={() => void reject(c)}
-                  className="px-2.5 py-1.5 rounded-lg bg-light text-red-700 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                  variant="dangerSoft"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
                   Reject
-                </button>
+                </Button>
               </div>
             </div>
           ))}

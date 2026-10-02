@@ -17,6 +17,7 @@ import {
 import type { Post } from "@/types";
 import { isBoostActive } from "@/lib/boosts";
 import { ORG_WA } from "@/lib/wa";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 import {
   filePostClaim,
   fetchMyPostClaim,
@@ -95,9 +96,7 @@ export function PostDetailContent({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-sm text-gray font-semibold">Loading post…</div>
-      </div>
+      <LoadingMessage label="Loading post…" className="text-sm" />
     );
   }
 

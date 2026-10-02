@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SalesAgent } from "@/components/chat/SalesAgent";
 import { Observability } from "@/components/observability/Observability";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { BottomNav } from "@/components/landing/BottomNav";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -13,6 +15,19 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
   variable: "--font-plus-jakarta",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  // themeColor belongs to the viewport export on Next 15.5. Setting it on
+  // `metadata` type-checks but Next ignores it there, so the installed app
+  // silently loses its status bar colour.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://klagon.org"),
@@ -23,13 +38,19 @@ export const metadata: Metadata = {
   description:
     "KLAGON.org is the digital home of Klagon — where the community learns, hosts, maps itself, and does business. Join free today.",
   alternates: { canonical: "/" },
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
       { url: "/brand/klagon-logo.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
-    apple: "/brand/klagon-logo.png",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "KLAGON",
+    statusBarStyle: "black-translucent",
   },
   openGraph: {
     type: "website",
@@ -61,6 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <SalesAgent />
             <Observability />
+            <OfflineBanner />
+            <BottomNav />
           </AuthProvider>
         </ThemeProvider>
       </body>

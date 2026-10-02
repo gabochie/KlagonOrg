@@ -116,7 +116,7 @@ export function QualityCenter() {
         </div>
         <button
           onClick={reset}
-          className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-light px-3 py-1.5 text-xs font-bold text-navy hover:bg-pale"
         >
           Reset cycle
         </button>

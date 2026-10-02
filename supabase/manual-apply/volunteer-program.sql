@@ -66,6 +66,16 @@ order by c.created_at asc;
 alter view public.courses_public
   set (security_invoker = true);
 
+-- Seed the authored cover for courses that have committed art. Values are base
+-- paths (no size suffix); the renderer appends -600.webp / -1200.webp. Courses
+-- without a real cover keep cover_url = null and fall back to the branded
+-- per-school/category template chosen in src/lib/courseCover.ts.
+-- Mirrors supabase/migrations/20260930040000_course_cover_seed.sql.
+update public.courses
+   set cover_url = '/brand/learning/SOE-VEN-01'
+ where title = 'Launch a Real Side Business in 90 Days'
+   and cover_url is distinct from '/brand/learning/SOE-VEN-01';
+
 -- Phase B: volunteer applications with terms, Ghana Card ID + photo, probation.
 -- Replaces one-click volunteer_signups with a verifiable application pipeline:
 -- pending -> probationary (30 days) -> active | inactive, or rejected.

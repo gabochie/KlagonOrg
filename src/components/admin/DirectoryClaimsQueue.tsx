@@ -12,6 +12,7 @@ import {
 } from "@/lib/directoryClaims";
 import { normalizePhone } from "@/lib/outreach";
 import { waLink } from "@/lib/wa";
+import { Button } from "@/components/ui/Button";
 
 /**
  * Staff review queue for owner claims on the 740 static /business listings.
@@ -32,17 +33,36 @@ import { waLink } from "@/lib/wa";
 
 const DECIDED_LIMIT = 10;
 
+/**
+ * Short handle the operator can quote in a bug report so a user-visible failure
+ * correlates with the console line that still holds the real PostgREST error.
+ * Derived from the message so it is stable for one failure instead of changing
+ * on every render, which is what makes it useful.
+ */
+function supportRefFor(message: string): string {
+  let h = 0;
+  for (let i = 0; i < message.length; i += 1) {
+    h = (h * 31 + message.charCodeAt(i)) >>> 0;
+  }
+  return h.toString(36).slice(0, 6).toUpperCase();
+}
+
 export function DirectoryClaimsQueue() {
   const [claims, setClaims] = useState<AdminDirectoryClaim[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [decideError, setDecideError] = useState<string | null>(null);
+  const [supportRef, setSupportRef] = useState("");
 
   const load = useCallback(async () => {
     const { claims: rows, error } = await fetchAdminDirectoryClaims();
     setClaims(rows);
     setLoadError(error);
+    setSupportRef(error ? supportRefFor(error) : "");
+    // The detail the UI deliberately does not render. Keep it in the console so
+    // the operator still has the RPC/table/migration name when debugging.
+    if (error) console.error("[directory-claims] load failed:", error);
     setLoading(false);
   }, []);
 
@@ -86,7 +106,7 @@ export function DirectoryClaimsQueue() {
     setBusy(null);
   }
 
-  if (loading) return <div className="text-xs text-gray">Loading listing claims…</div>;
+  if (loading) return <div className="text-sm text-gray">Loading listing claims…</div>;
 
   const pending = claims.filter((c) => c.status === "pending");
   const decided = claims.filter((c) => c.status !== "pending").slice(0, DECIDED_LIMIT);
@@ -98,11 +118,20 @@ export function DirectoryClaimsQueue() {
           data-testid="directory-claims-error"
           className="rounded-2xl border border-red-200 bg-red-50 p-4 text-[11px] font-bold text-red-800"
         >
-          Could not load listing claims: {loadError}
+          Could not load listing claims.
           <div className="font-normal text-red-700 mt-1">
-            If this says the function does not exist, migration 20260930030000_directory_claims_pii.sql has not been
-            applied yet.
+            Nothing has been changed. Try again in a moment; if it keeps failing, quote reference{" "}
+            <span className="font-bold">{supportRef}</span> when reporting this.
           </div>
+          {/* The raw Supabase/PostgREST message stays out of the DOM. It names
+              the RPC (admin_directory_claims), usually the table, and on a
+              misconfigured project names the migration that has not been
+              applied -- it used to render that filename right here. None of it
+              means anything to a staff member deciding a business claim, and an
+              admin screen that names the missing database object is free
+              reconnaissance. It goes to the console instead; `supportRef` is the
+              handle staff quote in a bug report so the operator can correlate
+              it with the logged line. */}
         </div>
       )}
 
@@ -136,8 +165,14 @@ export function DirectoryClaimsQueue() {
         >
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="min-w-0">
-              <div className="text-sm font-extrabold text-navy">{c.businessName ?? c.businessId}</div>
-              <div className="text-[11px] text-gray mt-0.5">
+              {/* break-words: business names in this table are user-supplied and
+                  a long one ("Accra Metropolitan Driving School & Vehicle
+                  Registration Agency Limited") pushed the meta line off a 320px
+                  screen instead of wrapping. */}
+              <div className="text-sm font-extrabold text-navy break-words">
+                {c.businessName ?? c.businessId}
+              </div>
+              <div className="text-xs text-gray mt-0.5 max-sm:text-[13px]">
                 {c.area ? `${c.area} · ` : ""}
                 Listing {c.businessId} · asked {new Date(c.createdAt).toLocaleString()}
               </div>
@@ -147,8 +182,8 @@ export function DirectoryClaimsQueue() {
             </div>
           </div>
 
-          <div className="mt-3 text-[12px] text-navy">
-            <span className="font-bold">{c.claimantName ?? "Unnamed claimant"}</span>
+          <div className="mt-3 text-[13px] max-sm:text-sm text-navy">
+            <span className="font-bold break-words">{c.claimantName ?? "Unnamed claimant"}</span>
             {c.claimantPhone && (
               <>
                 {" · "}
@@ -156,12 +191,15 @@ export function DirectoryClaimsQueue() {
                   const digits = normalizePhone(c.claimantPhone);
                   const label = c.claimantPhone;
                   return digits ? (
+                    /* min-h-11 on the link: on a phone this is the primary way to
+                       verify a claim, and it was a ~20px inline underline under
+                       a number the staff member has to read digits off. */
                     <a
                       href={waLink(digits, buildClaimVerificationMessage(c))}
                       target="_blank"
                       rel="noopener noreferrer"
                       data-testid="claim-verify-link"
-                      className="text-blue underline font-bold inline-flex items-center gap-1"
+                      className="text-blue underline font-bold inline-flex items-center gap-1 max-sm:min-h-11"
                     >
                       <MessageCircle size={12} /> {label}
                     </a>
@@ -173,28 +211,36 @@ export function DirectoryClaimsQueue() {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 mt-3">
-            <button
+          {/* Two-up grid below sm, inline wrap above it. Approve and reject
+              publish PII-bearing claim data, so the pair needs to be two
+              deliberately-sized targets rather than whatever a 24px inline
+              button happens to wrap into next to a long business name. */}
+          <div className="grid grid-cols-2 gap-2 mt-3 sm:flex sm:flex-wrap sm:items-center">
+            <Button
               onClick={() => void decide(c, true)}
               disabled={busy === c.id}
               data-testid="claim-approve"
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold hover:bg-blue transition-colors cursor-pointer disabled:opacity-60"
+              variant="dark"
+              size="sm"
+              className="w-full sm:w-auto max-sm:min-h-12"
             >
               <BadgeCheck size={12} /> {busy === c.id ? "Saving…" : "Approve & verify"}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => void decide(c, false)}
               disabled={busy === c.id}
               data-testid="claim-reject"
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-light text-red-700 text-[11px] font-bold cursor-pointer disabled:opacity-60"
+              variant="dangerSoft"
+              size="sm"
+              className="w-full sm:w-auto max-sm:min-h-12"
             >
               <XCircle size={12} /> Reject
-            </button>
+            </Button>
             <a
               href={`https://klagon.org/business`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] font-bold text-blue underline"
+              className="col-span-2 sm:col-auto text-xs font-bold text-blue underline max-sm:min-h-11 max-sm:flex max-sm:items-center max-sm:justify-center"
             >
               Open directory
             </a>

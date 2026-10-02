@@ -1,0 +1,33 @@
+{
+  "id": "/",
+  "name": "KLAGON.org — The Digital Home of Klagon",
+  "short_name": "KLAGON",
+  "description": "Discover what's happening, find local businesses, learn new skills, and help build the community.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#0F1B5C",
+  "background_color": "#F4F6FB",
+  "categories": ["business", "education", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

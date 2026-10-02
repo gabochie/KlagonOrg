@@ -14,6 +14,7 @@ import {
   rejectPost,
 } from "@/lib/posts";
 import type { Post, PostStatus } from "@/types";
+import { Button } from "@/components/ui/Button";
 
 const TABS: { id: PostStatus | "all"; label: string }[] = [
   { id: "pending", label: "Pending" },
@@ -148,46 +149,54 @@ export function ModerationQueue() {
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
                         placeholder="Reason the member will see…"
-                        className="w-full rounded-lg border border-border px-3 py-1.5 text-xs"
+                        className="w-full rounded-lg border border-border px-3 py-1.5 text-base sm:text-xs max-sm:min-h-12"
                       />
-                      <div className="flex gap-1.5">
-                        <button
+                      <div className="grid grid-cols-2 gap-1.5 sm:flex">
+                        <Button
                           disabled={busy === p.id}
                           onClick={() => void reject(p)}
-                          className="px-2.5 py-1.5 rounded-lg bg-red-700 text-white text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                          variant="danger"
+                          size="sm"
+                          className="w-full sm:w-auto"
                         >
                           Confirm Reject
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => {
                             setRejectId(null);
                             setReason("");
                           }}
-                          className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer"
+                          variant="secondary"
+                          size="sm"
+                          className="w-full sm:w-auto"
                         >
                           Cancel
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex gap-1.5">
-                      <button
+                    <div className="grid grid-cols-2 gap-1.5 sm:flex">
+                      <Button
                         disabled={busy === p.id}
                         onClick={() => void approve(p)}
-                        className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                        variant="dark"
+                        size="sm"
+                        className="w-full sm:w-auto"
                       >
                         Approve
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => {
                           setRejectId(p.id);
                           setReason("");
                           setNotice(null);
                         }}
-                        className="px-2.5 py-1.5 rounded-lg bg-light text-red-700 text-[11px] font-bold cursor-pointer"
+variant="dangerSoft"
+                  size="sm"
+                  className="w-full sm:w-auto"
                       >
                         Reject…
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

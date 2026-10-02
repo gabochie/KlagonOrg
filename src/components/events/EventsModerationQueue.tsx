@@ -11,6 +11,7 @@ import {
 } from "@/lib/events";
 import type { EventSubmission } from "@/lib/events";
 import type { MemberStatus } from "@/lib/database.types";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const STATUS_TABS: MemberStatus[] = ["pending", "approved", "rejected"];
 
@@ -82,9 +83,7 @@ export function EventsModerationQueue() {
       </div>
 
       {busy ? (
-        <div className="py-16 text-center">
-          <div className="animate-pulse text-xs text-gray font-semibold">Loading events…</div>
-        </div>
+        <LoadingMessage label="Loading events…" className="text-xs" />
       ) : items.length === 0 ? (
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-2xl border border-border p-12 text-center shadow-sm">

@@ -1,0 +1,182 @@
+# KLAGON preview deploys — builds a pull request and puts it behind a real URL.
+#
+# Why this exists: the mobile + PWA work (Phases 1-4 of
+# PWA Klagon/02-pwa-mobile-plan.md) cannot be honestly validated from a
+# desktop browser. Safe-area insets, the Android install prompt, the iOS
+# keyboard-zoom behaviour and installability all need a real device opening a
+# real origin. A mockup is a design artifact; this is how the design gets
+# checked. Branch protection (Tier 1) makes the PR mandatory; this makes the PR
+# testable on a phone.
+#
+# Needs the same repo Secret as publish: CLOUDFLARE_API_TOKEN (Pages:Edit on
+# klagon-org). Deploys to a Pages *branch* environment, so the production
+# `main` deployment and klagon.org are never touched.
+#
+# These builds are disposable. They exist to be opened, tapped, and thrown away.
+
+name: preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# A new push to the PR supersedes the previous run. Cancelling keeps a queue of
+# stale previews from piling up in the Pages dashboard, which also makes it
+# harder to tell which URL is current.
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+jobs:
+  deploy:
+    # Drafts are work in progress; nobody is testing them yet.
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Same fail-loudly reasoning as publish.yml: a fork PR gets no secrets,
+      # and wrangler's own error for that is a generic non-interactive-token
+      # message that buries the real cause. Skipping is correct here -- a fork
+      # cannot deploy and there is nothing to fix on our side.
+      - name: Check deploy credentials
+        id: gate
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            if [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ]; then
+              echo "Fork pull request: secrets are unavailable, so no preview can deploy."
+              echo "Skipping. Ask the PR author to run it from a branch on the repo."
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error::CLOUDFLARE_API_TOKEN is not set, so previews cannot deploy. Same secret publish.yml uses -- repo Settings -> Secrets and variables -> Actions -> Secrets."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+
+      - name: Production build
+        if: steps.gate.outputs.ready == 'true'
+        run: npm run build
+
+      # A Pages branch environment, not production. The branch name has to be a
+      # valid DNS label, so slashes become dashes; `feat/mobile-ux-phase-1`
+      # would otherwise be rejected by Pages.
+      - name: Resolve preview branch name
+        id: branch
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          name='${{ github.head_ref }}'
+          safe=$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9-' '-' | sed 's/-\{2,\}/-/g; s/^-//; s/-$//')
+          echo "safe=$safe" >> "$GITHUB_OUTPUT"
+          echo "Preview branch: $safe (from $name)"
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        if: steps.gate.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v3
+        env:
+          # Same reason as publish.yml: the Pages:Edit token cannot read
+          # /memberships, so wrangler must be told the account explicitly or it
+          # fails with auth error 10000 before deploying anything.
+          CLOUDFLARE_ACCOUNT_ID: 4039696cf86114b111be5cadb164a3a9
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 4039696cf86114b111be5cadb164a3a9
+          command: pages deploy out --project-name klagon-org --branch ${{ steps.branch.outputs.safe }} --commit-hash ${{ github.event.pull_request.head.sha }}
+
+      # Green wrangler is not proof the URL serves. Same reasoning as the
+      # liveness check in publish.yml: a cached or half-propagated deploy also
+      # exits 0, and the point of this workflow is a URL a human is about to
+      # open on a phone.
+      - name: Verify preview is reachable
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          url='${{ steps.deploy.outputs.pages-deployment-alias-url }}'
+          if [ -z "$url" ]; then
+            url='${{ steps.deploy.outputs.deployment-url }}'
+          fi
+          echo "Preview URL: $url"
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url/" || true)
+            if [ "$code" = "200" ]; then
+              echo "Serving HTTP 200 after $((i * 10))s"
+              exit 0
+            fi
+            echo "attempt $i: HTTP $code, retrying in 10s"
+            sleep 10
+          done
+          echo "::error::Preview at $url did not return 200 after 120s. Pages deployments can take a while to propagate; re-check the run before assuming the branch is broken."
+          exit 1
+
+      # Post the URL so a reviewer does not have to dig through Actions logs to
+      # find the thing they are meant to open on their phone. One comment per
+      # run, tracked by a hidden marker so reruns replace it instead of
+      # burying the PR in noise.
+      - name: Comment preview URL on the PR
+        if: steps.gate.outputs.ready == 'true' && steps.deploy.outputs.pages-deployment-alias-url != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.pages-deployment-alias-url }}';
+            const sha = '${{ github.event.pull_request.head.sha }}'.slice(0, 7);
+            const marker = '<!-- klagon-preview -->';
+            const body = [
+              marker,
+              '### Preview deploy',
+              '',
+              '| | |',
+              '|---|---|',
+              `| URL | ${url} |`,
+              `| Commit | \`${sha}\` |`,
+              `| Branch env | \`${{ steps.branch.outputs.safe }}\` |`,
+              '',
+              'Disposable. Not production — `klagon.org` is untouched by this run.',
+              '',
+              'Mobile work: open this on a real device. iOS Safari and Android Chrome differ on',
+              'safe-area insets, keyboard zoom, and install prompts, and the install prompt only',
+              'appears over HTTPS on a real origin.',
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const existing = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100,
+            });
+            const prior = existing.data.find(c => c.body && c.body.includes(marker));
+
+            if (prior) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: prior.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number, body,
+              });
+            }
+
+      - name: Explain skipped preview
+        if: steps.gate.outputs.ready == 'false' && github.event.pull_request.head.repo.fork == 'true'
+        run: |
+          {
+            echo "### Preview deploy skipped"
+            echo ""
+            echo "Fork pull requests cannot access repo secrets, so no Cloudflare deploy ran."
+            echo "To preview this branch, open a PR from a branch on \`gabochie/KlagonOrg\`."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -8,6 +8,7 @@ import { isBoostActive } from "@/lib/boosts";
 import { BoostRequestPanel } from "@/components/posts/BoostRequestPanel";
 import type { Post } from "@/types";
 import { PostStatusChip } from "./PostStatusChip";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 function fmt(iso: string | null): string {
   if (!iso) return "";
@@ -55,9 +56,7 @@ export function MyPostsList() {
 
   if (busy) {
     return (
-      <div className="flex items-center justify-center py-16">
-        <div className="animate-pulse text-sm text-gray font-semibold">Loading your posts…</div>
-      </div>
+      <LoadingMessage label="Loading your posts…" className="text-sm" />
     );
   }
 

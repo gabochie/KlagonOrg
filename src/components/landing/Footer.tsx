@@ -96,7 +96,7 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy py-10 sm:py-12 px-4 sm:px-6">
+    <footer className="bg-navy py-10 sm:py-12 px-4 sm:px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3rem+env(safe-area-inset-bottom))]">
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 mb-8">
           <div className="col-span-2 sm:col-span-1">

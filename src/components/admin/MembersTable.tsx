@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import { ADMIN_MEMBERS } from "@/lib/constants";
 import type { Database } from "@/lib/database.types";
@@ -159,82 +160,154 @@ export function MembersTable() {
       ) : filtered.length === 0 ? (
         <div className="p-6 text-xs text-gray font-semibold">No members in this view.</div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-light">
-                {["Member", "Age", "Interests", "Joined", "Status", "Action"].map((h) => (
-                  <th
-                    key={h}
-                    className="px-3 py-2 text-[10px] font-bold text-gray uppercase tracking-wider text-left"
+        <>
+          {/* Below sm the six-column table has to scroll sideways to be
+              readable at 320px, which hides the Suspend/Restore action behind
+              a horizontal swipe. Cards keep every field and the action
+              reachable without scrolling sideways. */}
+          <div className="sm:hidden divide-y divide-border">
+            {filtered.map((m) => (
+              <div key={m.id} className="p-3">
+                <div className="flex items-start gap-2">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: m.avatarBg, color: m.textColor }}
                   >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((m) => (
-                <tr key={m.id} className="hover:bg-light/50 transition-colors">
-                  <td className="px-3 py-2.5 border-t border-border">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                        style={{ background: m.avatarBg, color: m.textColor }}
-                      >
-                        {m.initials}
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-navy">{m.name}</div>
-                        <div className="text-[11px] text-gray">{m.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-2.5 border-t border-border text-xs text-gray">
-                    {m.age ?? "—"}
-                  </td>
-                  <td className="px-3 py-2.5 border-t border-border">
+                    {m.initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-bold text-navy break-words">{m.name}</div>
+                    <div className="text-xs text-gray break-all">{m.email}</div>
+                  </div>
+                  <span
+                    className={`shrink-0 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${statusPill(m.status)}`}
+                  >
+                    {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
+                  </span>
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray">
+                  <span>Age: {m.age ?? "—"}</span>
+                  <span>Joined: {m.joined}</span>
+                </div>
+
+                {(m.interests ?? []).length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
                     {(m.interests ?? []).slice(0, 3).map((i) => (
                       <span
                         key={i}
-                        className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pale text-blue-800 mr-1"
+                        className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pale text-blue-800"
                       >
                         {i}
                       </span>
                     ))}
-                  </td>
-                  <td className="px-3 py-2.5 border-t border-border text-xs text-gray">{m.joined}</td>
-                  <td className="px-3 py-2.5 border-t border-border">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${statusPill(m.status)}`}
+                  </div>
+                )}
+
+                <div className="mt-3">
+                  {m.status === "approved" ? (
+                    <Button
+                      size="sm"
+                      variant="dangerSoft"
+                      className="w-full"
+                      onClick={() => void setStatus(m.id, "rejected")}
                     >
-                      {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5 border-t border-border">
-                    {m.status === "approved" ? (
-                      <button
-                        onClick={() => void setStatus(m.id, "rejected")}
-                        className="px-2 py-1 rounded-lg border border-border text-[11px] font-semibold text-navy bg-white cursor-pointer font-sans hover:bg-red-50 hover:border-red-300 transition-colors"
-                        title="Suspend this member"
-                      >
-                        Suspend
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => void setStatus(m.id, "approved")}
-                        className="px-2 py-1 rounded-lg bg-navy text-white text-[11px] font-semibold cursor-pointer font-sans hover:bg-blue transition-colors"
-                        title="Restore this member"
-                      >
-                        Restore
-                      </button>
-                    )}
-                  </td>
+                      Suspend this member
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="dark"
+                      className="w-full"
+                      onClick={() => void setStatus(m.id, "approved")}
+                    >
+                      Restore this member
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden overflow-x-auto sm:block">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-light">
+                  {["Member", "Age", "Interests", "Joined", "Status", "Action"].map((h) => (
+                    <th
+                      key={h}
+                      className="px-3 py-2 text-[10px] font-bold text-gray uppercase tracking-wider text-left"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map((m) => (
+                  <tr key={m.id} className="hover:bg-light/50 transition-colors">
+                    <td className="px-3 py-2.5 border-t border-border">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                          style={{ background: m.avatarBg, color: m.textColor }}
+                        >
+                          {m.initials}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-navy">{m.name}</div>
+                          <div className="text-[11px] text-gray">{m.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5 border-t border-border text-xs text-gray">
+                      {m.age ?? "—"}
+                    </td>
+                    <td className="px-3 py-2.5 border-t border-border">
+                      {(m.interests ?? []).slice(0, 3).map((i) => (
+                        <span
+                          key={i}
+                          className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pale text-blue-800 mr-1"
+                        >
+                          {i}
+                        </span>
+                      ))}
+                    </td>
+                    <td className="px-3 py-2.5 border-t border-border text-xs text-gray">
+                      {m.joined}
+                    </td>
+                    <td className="px-3 py-2.5 border-t border-border">
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${statusPill(m.status)}`}
+                      >
+                        {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 border-t border-border">
+                      {m.status === "approved" ? (
+                        <Button
+                          size="sm"
+                          variant="dangerSoft"
+                          onClick={() => void setStatus(m.id, "rejected")}
+                        >
+                          Suspend
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="dark"
+                          onClick={() => void setStatus(m.id, "approved")}
+                        >
+                          Restore
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

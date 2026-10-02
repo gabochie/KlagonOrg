@@ -49,12 +49,12 @@ export function NewsletterSignup() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
           aria-label="Email address"
-          className="min-w-0 flex-1 rounded-lg bg-white/10 border border-white/15 px-2.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber"
+          className="min-w-0 flex-1 max-sm:min-h-12 max-sm:text-base rounded-lg bg-white/10 border border-white/15 px-2.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber"
         />
         <button
           type="submit"
           disabled={state === "sending"}
-          className="px-3 py-1.5 rounded-lg bg-amber text-navy text-xs font-bold cursor-pointer hover:bg-amber/90 disabled:opacity-50 flex-shrink-0"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-amber px-3 py-1.5 text-xs font-bold text-navy cursor-pointer hover:bg-amber/90 disabled:opacity-50 flex-shrink-0"
         >
           {state === "sending" ? "…" : "Join"}
         </button>

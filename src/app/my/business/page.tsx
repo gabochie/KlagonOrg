@@ -300,16 +300,16 @@ function ManageInner() {
                     {r.reply}
                   </div>
                 ) : (
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex flex-col gap-2 mt-2 sm:flex-row">
                     <input
                       value={replies[r.id] ?? ""}
                       onChange={(e) => setReplies((prev) => ({ ...prev, [r.id]: e.target.value }))}
                       placeholder="Write a public reply…"
-                      className="flex-1 rounded-lg border border-border px-2 py-1.5 text-xs"
+                      className="flex-1 max-sm:min-h-12 max-sm:text-base rounded-lg border border-border px-2 py-1.5 text-xs"
                     />
                     <button
                       onClick={() => void reply(r.id)}
-                      className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer"
+                      className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-navy px-3 py-1.5 text-xs font-bold text-white cursor-pointer"
                     >
                       Reply
                     </button>

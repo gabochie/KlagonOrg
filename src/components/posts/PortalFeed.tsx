@@ -11,6 +11,7 @@ import {
 } from "@/lib/posts";
 import type { Post, PostArea, PostType } from "@/types";
 import { isBoostActive } from "@/lib/boosts";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const TABS: Array<PostType | "all"> = [
   "all",
@@ -265,9 +266,7 @@ export function PortalFeed() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="animate-pulse text-sm text-gray font-semibold">Loading posts…</div>
-        </div>
+        <LoadingMessage label="Loading posts…" className="text-sm" />
       ) : posts.length === 0 ? (
         <div className="bg-white rounded-xl border border-border p-10 text-center">
           <div className="text-3xl mb-3">📭</div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PostForm } from "@/components/posts/PostForm";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 function SubmitInner() {
   const params = useSearchParams();
@@ -13,12 +14,8 @@ function SubmitInner() {
 }
 
 function Fallback() {
-  return (
-    <div className="flex items-center justify-center py-20">
-      <div className="animate-pulse text-sm text-gray font-semibold">Loading…</div>
-    </div>
-  );
-}
+    return <LoadingMessage label="Loading…" />;
+  }
 
 export default function SubmitPage() {
   return (

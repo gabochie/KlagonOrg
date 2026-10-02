@@ -159,14 +159,14 @@ export function MapImporter() {
   return (
     <div className="bg-white rounded-xl border border-border p-4">
       <div className="text-sm font-extrabold text-navy">Map Points Importer</div>
-      <div className="text-[11px] text-gray mt-0.5 mb-3">
+      <div className="text-xs text-gray mt-0.5 mb-3">
         OSM staging snapshot → pending review → approve. Unverified rows never go public.
       </div>
 
       {verdicts.length === 0 ? (
         <label className="block border border-dashed border-border rounded-xl p-6 text-center cursor-pointer hover:bg-light/50">
           <div className="text-xs font-bold text-navy">Upload staging CSV</div>
-          <div className="text-[11px] text-gray mt-1">
+          <div className="text-xs text-gray mt-1">
             Copy <span className="font-mono">staging_tema_west_osm.csv</span> from your DBGABOCHIE
             checkout and upload here. Parsed in your browser.
           </div>
@@ -179,7 +179,7 @@ export function MapImporter() {
         </label>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
             <span className="font-bold text-navy">{fileName}</span>
             <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 font-bold">
               {importable.length} importable
@@ -203,7 +203,7 @@ export function MapImporter() {
           {byEntity.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3">
               {byEntity.map(([e, n]) => (
-                <span key={e} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pale text-navy">
+                <span key={e} className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pale text-navy">
                   {e}: {n}
                 </span>
               ))}
@@ -212,7 +212,7 @@ export function MapImporter() {
           {quarantineReasons.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3">
               {quarantineReasons.map(([r, n]) => (
-                <span key={r} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700">
+                <span key={r} className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700">
                   {r}: {n}
                 </span>
               ))}
@@ -223,26 +223,26 @@ export function MapImporter() {
             <button
               disabled={busy || importable.length === 0}
               onClick={() => void runImport()}
-              className="flex-1 px-3 py-2 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer disabled:opacity-50"
+              className="flex-1 inline-flex min-h-12 items-center justify-center rounded-lg bg-navy px-3 py-2 text-sm font-bold text-white cursor-pointer disabled:opacity-50"
             >
               {busy ? `Working… ${progress}` : `Import ${importable.length} as Pending →`}
             </button>
             <button
               disabled={busy || importedIds.length === 0}
               onClick={() => void approveBatch()}
-              className="flex-1 px-3 py-2 rounded-lg bg-amber text-navy text-xs font-bold cursor-pointer disabled:opacity-50"
+              className="flex-1 inline-flex min-h-12 items-center justify-center rounded-lg bg-amber px-3 py-2 text-sm font-bold text-navy cursor-pointer disabled:opacity-50"
             >
               Approve {importedIds.length} Imported →
             </button>
           </div>
-          <p className="text-[10px] text-gray mt-1.5">
+          <p className="text-[11px] text-gray mt-1.5">
             Spot-check a few names against real Klagon before approving — OSM data can be stale.
           </p>
         </>
       )}
 
       {result && (
-        <div className="mt-3 text-[11px] font-semibold text-navy bg-pale rounded-lg px-3 py-2">
+        <div className="mt-3 text-xs font-semibold text-navy bg-pale rounded-lg px-3 py-2">
           {result}
         </div>
       )}
