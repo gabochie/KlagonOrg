@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui";
 import { getBrowserClient, isSupabaseConfigured } from "@/lib/supabase-browser";
 import {
   gateBatch,
@@ -392,15 +393,17 @@ export function OutreachQueue() {
                 Slot #{mySlot + 1}: {doneToday}/{myQueue.length} handled today. Keep to ~20–30 sends/hour,
                 business hours only. One sending number: keep the whole day under ~60 sends.
               </div>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                <button
+              <div className="grid grid-cols-2 gap-2 mb-3 max-sm:grid-cols-1">
+                <Button
+                  size="sm"
+                  variant="dark"
+                  className="w-full"
                   onClick={exportBatch}
                   disabled={pending.length === 0}
-                  className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold cursor-pointer hover:opacity-90 disabled:opacity-50"
                 >
                   Export auto-batch ({pending.length})
-                </button>
-                <label className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale">
+                </Button>
+                <label className="min-h-11 w-full cursor-pointer rounded-lg bg-light px-3 py-1.5 text-center text-xs font-bold text-navy hover:bg-pale">
                   Import sender log
                   <input
                     type="file"
@@ -441,20 +444,49 @@ export function OutreachQueue() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
+<div className="mt-2 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
                         <a
                           href={v.waPhone ? buildWaLink(v.waPhone, text) : undefined}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => void recordOutcome(v, "sent")}
-                          className="px-2.5 py-1.5 rounded-lg bg-[#25D366] text-white text-[11px] font-bold hover:brightness-95"
+                          className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#25D366] px-3 py-1.5 text-xs font-bold text-white hover:brightness-95"
                         >
                           Open in WhatsApp
                         </a>
-                        <button disabled={busy === id} onClick={() => void recordOutcome(v, "skipped")} className="px-2 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale disabled:opacity-50">Skip</button>
-                        <button disabled={busy === id} onClick={() => void recordOutcome(v, "failed")} className="px-2 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold cursor-pointer hover:bg-pale disabled:opacity-50">Bad number</button>
-                        <button disabled={busy === id} onClick={() => void recordOutcome(v, "stopped")} className="px-2 py-1.5 rounded-lg bg-light text-red-700 text-[11px] font-bold cursor-pointer hover:bg-pale disabled:opacity-50">STOP</button>
-                        <button disabled={busy === id} onClick={() => void convertLead(v)} className="px-2 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold cursor-pointer hover:opacity-90 disabled:opacity-50">Convert → CRM</button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy === id}
+                          onClick={() => void recordOutcome(v, "skipped")}
+                        >
+                          Skip
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy === id}
+                          onClick={() => void recordOutcome(v, "failed")}
+                        >
+                          Bad number
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="dangerSoft"
+                          disabled={busy === id}
+                          onClick={() => void recordOutcome(v, "stopped")}
+                        >
+                          STOP
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="dark"
+                          className="col-span-2 max-sm:col-span-1"
+                          disabled={busy === id}
+                          onClick={() => void convertLead(v)}
+                        >
+                          Convert → CRM
+                        </Button>
                       </div>
                     </div>
                   );
