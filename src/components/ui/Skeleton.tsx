@@ -88,3 +88,35 @@ export function LoadingBlock({
     </div>
   );
 }
+
+interface LoadingMessageProps {
+  label: string;
+  className?: string;
+}
+
+/**
+ * A plain centred "Loading X..." status line, for places where the shape of the
+ * arriving content is not knowable well enough to draw a skeleton.
+ *
+ * These replaced `<div className="animate-pulse ...">Loading queue...</div>`,
+ * which was the pattern in eleven places across the admin, posts, events and
+ * jobs surfaces. Pulsing the text itself was the wrong call: a label whose
+ * opacity breathes is both harder to read and a stronger vestibular trigger
+ * than a static block, and it told the visitor nothing about what was coming.
+ * The text is now static and carries `role="status"`, so it is announced once
+ * instead of flickering in and out of existence.
+ */
+export function LoadingMessage({ label, className }: LoadingMessageProps) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn(
+        "flex items-center justify-center py-16 text-center text-sm font-semibold text-gray",
+        className,
+      )}
+    >
+      {label}
+    </div>
+  );
+}
