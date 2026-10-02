@@ -8,6 +8,7 @@ import { fetchPublicEvents, fetchMyRsvpIds, toggleRsvp, isUuid } from "@/lib/que
 import { EventSubmitForm } from "@/components/events/EventSubmitForm";
 import type { Event } from "@/types";
 import { Calendar, Clock, MapPin, Sparkles, ShieldCheck } from "lucide-react";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const typeBadge: Record<string, "workshop" | "hackathon" | "leadership" | "service"> = {
   workshop: "workshop",
@@ -87,9 +88,7 @@ export function EventsSection() {
           )}
 
           {!ready ? (
-            <div className="py-16 text-center">
-              <div className="animate-pulse text-xs text-gray font-semibold">Loading events…</div>
-            </div>
+            <LoadingMessage label="Loading events…" className="text-xs" />
           ) : events.length === 0 ? (
             <div className="bg-white rounded-2xl border border-border p-10 sm:p-14 text-center max-w-xl mx-auto">
               <div className="w-14 h-14 rounded-2xl bg-pale flex items-center justify-center mx-auto mb-5">
