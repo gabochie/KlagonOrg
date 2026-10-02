@@ -70,7 +70,7 @@ alter view public.courses_public
 -- paths (no size suffix); the renderer appends -600.webp / -1200.webp. Courses
 -- without a real cover keep cover_url = null and fall back to the branded
 -- per-school/category template chosen in src/lib/courseCover.ts.
--- Mirrors supabase/migrations/20260929000000_course_cover_seed.sql.
+-- Mirrors supabase/migrations/20260930040000_course_cover_seed.sql.
 update public.courses
    set cover_url = '/brand/learning/SOE-VEN-01'
  where title = 'Launch a Real Side Business in 90 Days'
