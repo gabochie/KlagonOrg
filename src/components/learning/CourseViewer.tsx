@@ -51,7 +51,11 @@ function renderLessonMarkdown(markdown: string): string {
     .replace(/<ol>/g, '<ol class="blog-ol">')
     .replace(/<a /g, '<a class="blog-link" ')
     .replace(/<blockquote>/g, '<blockquote class="blog-quote">')
-    .replace(/<table>/g, '<table class="blog-table">')
+    // CMS-authored tables can be wider than a 320px phone. Wrapping each one
+    // gives it a horizontal scroll container so the page itself does not
+    // scroll sideways and the learner does not lose their place.
+    .replace(/<table>/g, '<div class="blog-table-wrap"><table class="blog-table">')
+    .replace(/<\/table>/g, "</table></div>")
     .replace(/<strong>/g, "<strong class=\"blog-strong\">")
   );
 }
