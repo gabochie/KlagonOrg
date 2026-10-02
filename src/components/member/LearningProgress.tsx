@@ -92,7 +92,7 @@ export function LearningProgress() {
               style={{ background: c.color }}
             >
               <CourseCover
-                coverUrl={c.cover_url}
+                course={c}
                 icon={c.icon}
                 title={c.title}
                 emojiClassName="text-base"

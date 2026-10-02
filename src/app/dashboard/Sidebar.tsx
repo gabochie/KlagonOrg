@@ -41,7 +41,7 @@ const adminMain: NavItem[] = [
   { icon: "📥", label: "Inbox", href: "/dashboard/admin/inbox" },
   { icon: "👥", label: "Members", href: SOON, soon: true },
   { icon: "📅", label: "Events", href: "/dashboard/admin/events" },
-  { icon: "📚", label: "Learning Hub", href: SOON, soon: true },
+  { icon: "📚", label: "Learning Hub", href: "/dashboard/admin/courses" },
   { icon: "🏗️", label: "Projects", href: SOON, soon: true },
   { icon: "🙋", label: "Volunteers", href: "/dashboard/admin/volunteers" },
 ];
