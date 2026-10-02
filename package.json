@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build && node scripts/verify-prerender.mjs",
+    "build:art": "node scripts/build-course-art.mjs",
     "validate:klagon-college": "node scripts/validate-klagon-college.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -42,6 +43,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.5",
     "patch-package": "^8.0.1",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.1.6",
     "typescript": "^5.8.3",
     "vitest": "^5.0.1"
