@@ -126,7 +126,7 @@ export function OwnerDigests() {
                 <button
                   disabled={busy === r.id || !r.ownerPhone}
                   onClick={() => openDigest(r)}
-                  className="mt-2 px-2.5 py-1.5 rounded-lg bg-[#25D366] text-white text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                  className="mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#25D366] px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
                 >
                   {r.ownerPhone ? "Open Digest in WhatsApp" : "No owner phone on file"}
                 </button>
