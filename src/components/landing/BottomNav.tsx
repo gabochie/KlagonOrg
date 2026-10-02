@@ -37,7 +37,7 @@ interface Tab {
 
 const TABS: Tab[] = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Discover", href: "/business", icon: Store },
+  { label: "Businesses", href: "/business", icon: Store },
   { label: "Post", href: "/submit", icon: Plus, primary: true },
   { label: "Learn", href: "/learning", icon: GraduationCap },
   { label: "Me", href: "/dashboard", icon: User },
@@ -83,7 +83,7 @@ export function BottomNav() {
                   href={href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative flex flex-col items-center justify-center gap-1 min-h-14 px-1 pt-1.5 text-[11px] font-semibold transition-colors",
+                    "relative flex flex-col items-center justify-center gap-1 min-h-14 px-1 pt-1.5 text-[10px] leading-tight tracking-tight font-semibold transition-colors",
                     active
                       ? "text-navy dark:text-white"
                       : "text-gray dark:text-white/60 hover:text-navy dark:hover:text-white",
