@@ -18,6 +18,13 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  // themeColor belongs to the viewport export on Next 15.5. Setting it on
+  // `metadata` type-checks but Next ignores it there, so the installed app
+  // silently loses its status bar colour.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -43,10 +50,6 @@ export const metadata: Metadata = {
     title: "KLAGON",
     statusBarStyle: "black-translucent",
   },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
-    { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
-  ],
   openGraph: {
     type: "website",
     url: "https://klagon.org",
