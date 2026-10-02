@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { EVENT_STATUS_LABELS, fetchMyEventSubmissions, withdrawEvent } from "@/lib/events";
 import type { EventSubmission } from "@/lib/events";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const STATUS_COLOR: Record<string, string> = {
   pending: "bg-amber text-navy",
@@ -49,9 +50,7 @@ export function MyEventSubmissions() {
   return (
     <div>
       {busy ? (
-        <div className="py-10 text-center">
-          <div className="animate-pulse text-xs text-gray font-semibold">Loading your submissions…</div>
-        </div>
+        <LoadingMessage label="Loading your submissions…" className="text-xs" />
       ) : items.length === 0 ? (
         <div className="rounded-2xl border border-border bg-white p-6 text-center">
           <p className="text-sm font-bold text-navy mb-1">No event submissions yet</p>
