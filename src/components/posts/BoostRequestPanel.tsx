@@ -44,7 +44,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
   // Already featured: say so before offering to sell the same thing again.
   if (active) {
     return (
-      <div className="mt-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-strong">
+      <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-amber-strong">
         <Zap size={12} /> Featured until {new Date(post.boostUntil!).toLocaleDateString()}
       </div>
     );
@@ -57,7 +57,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
         href={waLink(ORG_WA, `Hello, I would like to feature my KLAGON listing "${post.title}".`)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2.5 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-amber text-amber-strong text-[11px] font-bold hover:bg-amber/10 transition-colors"
+        className="mt-2.5 inline-flex min-h-11 items-center gap-1 px-3 py-1.5 rounded-lg border border-amber text-amber-strong text-xs font-bold hover:bg-amber/10 transition-colors"
       >
         <Zap size={11} /> Feature this listing
       </a>
@@ -116,7 +116,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
 
   if (sent) {
     return (
-      <div className="mt-2 text-[11px] font-bold text-emerald-700">
+      <div className="mt-2 text-xs font-bold text-emerald-700">
         Request received — we&apos;ll confirm and send payment details on WhatsApp.
       </div>
     );
@@ -126,15 +126,15 @@ export function BoostRequestPanel({ post }: { post: Post }) {
     <div className="mt-2.5">
       {open ? (
         <div className="rounded-xl border border-amber bg-amber/5 p-3">
-          <div className="text-[12px] font-extrabold text-navy">
+          <div className="text-sm font-extrabold text-navy">
             Feature this listing for {price.days} days — GH₵ {price.feeGhs}
           </div>
-          <p className="text-[11px] text-gray mt-1">
+          <p className="text-xs text-gray mt-1">
             Featured listings sit above the rest in their section and carry a Featured mark. Send the request
             and we&apos;ll confirm the details and payment on WhatsApp — it goes live once payment clears.
           </p>
           {error && (
-            <p className="text-[11px] text-red-700 mt-1.5">
+            <p className="text-xs text-red-700 mt-1.5">
               {error}{" "}
               <a
                 href={waLink(ORG_WA, `Hello, I would like to feature my KLAGON listing "${post.title}".`)}
@@ -163,7 +163,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="px-2.5 py-1 rounded-lg border border-amber text-amber-strong text-[11px] font-bold hover:bg-amber/10 transition-colors cursor-pointer inline-flex items-center gap-1"
+          className="min-h-11 px-3 py-1.5 rounded-lg border border-amber text-amber-strong text-xs font-bold hover:bg-amber/10 transition-colors cursor-pointer inline-flex items-center gap-1"
         >
           <Zap size={11} /> Feature this listing
         </button>
