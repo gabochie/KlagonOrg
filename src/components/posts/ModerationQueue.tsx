@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AREA_LABELS, POST_TYPE_LABELS, approvePost, fetchModerationQueue, rejectPost } from "@/lib/posts";
 import type { Post, PostStatus, PostType } from "@/types";
 import { PostStatusChip } from "./PostStatusChip";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const STATUS_TABS: PostStatus[] = ["pending", "approved", "rejected", "hidden"];
 const TYPE_FILTERS: (PostType | "all")[] = ["all", "news", "event", "business", "classified", "job", "announcement"];
@@ -105,9 +106,7 @@ export function ModerationQueue() {
       </div>
 
       {busy ? (
-        <div className="py-16 text-center">
-          <div className="animate-pulse text-xs text-gray font-semibold">Loading queue…</div>
-        </div>
+        <LoadingMessage label="Loading queue…" className="text-xs" />
       ) : visible.length === 0 ? (
         <div className="flex items-center justify-center">
           <div className="mx-auto max-w-md">
