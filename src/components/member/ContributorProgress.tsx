@@ -39,16 +39,16 @@ export function ContributorProgress() {
           ? "Your posts carry the verified tick. Keep sharing — the community reads you."
           : "Get 5 posts approved to earn the verified tick on everything you share."}
       </p>
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <Link
           href="/submit"
-          className="px-2.5 py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold"
+          className="inline-flex min-h-11 items-center justify-center rounded-lg bg-navy px-3 py-1.5 text-xs font-bold text-white"
         >
           Post Something →
         </Link>
         <Link
           href="/my/posts"
-          className="px-2.5 py-1.5 rounded-lg bg-light text-navy text-[11px] font-bold hover:bg-pale"
+          className="inline-flex min-h-11 items-center justify-center rounded-lg bg-light px-3 py-1.5 text-xs font-bold text-navy hover:bg-pale"
         >
           My Posts
         </Link>
