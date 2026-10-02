@@ -1,8 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send, Mic, MicOff, ChevronDown } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useOnlineStatus } from "@/components/pwa/useOnlineStatus";
+import { shouldHideBottomNav } from "@/lib/mobileChrome";
+import { cn } from "@/lib/utils";
 import { getInvisibleToken, verifyTurnstile } from "@/lib/turnstile";
 import {
   createRecognition,
@@ -51,6 +55,8 @@ const nid = () => `m${Date.now()}-${idSeq++}`;
 
 export function SalesAgent() {
   const { profile } = useAuth();
+  const pathname = usePathname();
+  const isOnline = useOnlineStatus();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -299,7 +305,21 @@ export function SalesAgent() {
   const quickReplies = isProspect ? PROSPECT_REPLIES : MEMBER_REPLIES;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    <div
+      className={cn(
+        "fixed right-5 z-50 flex flex-col items-end gap-3",
+        // Clear the mobile tab bar — and the offline banner that stacks above
+        // it — so the launcher never lands on the "Me" tab. Desktop has no tab
+        // bar, so `md:` restores the original bottom-5 position.
+        !shouldHideBottomNav(pathname)
+          ? isOnline
+            ? "bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.75rem)] md:bottom-5"
+            : "bottom-[calc(3.5rem+env(safe-area-inset-bottom)+5rem)] md:bottom-[5.75rem]"
+          : isOnline
+            ? "bottom-5"
+            : "bottom-[calc(0.75rem+env(safe-area-inset-bottom)+4.5rem)] md:bottom-[5.25rem]",
+      )}
+    >
       {open && (
         <div className="bg-white rounded-2xl shadow-2xl border border-border w-[380px] max-w-[calc(100vw-24px)] flex flex-col overflow-hidden">
           <div className="bg-navy px-4 py-3 flex items-center justify-between">
