@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -13,6 +13,12 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
   variable: "--font-plus-jakarta",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://klagon.org"),
@@ -37,15 +43,10 @@ export const metadata: Metadata = {
     title: "KLAGON",
     statusBarStyle: "black-translucent",
   },
-  viewport: {
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
-      { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
-    ],
-    width: "device-width",
-    initialScale: 1,
-    viewportFit: "cover",
-  },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F1B5C" },
+  ],
   openGraph: {
     type: "website",
     url: "https://klagon.org",
