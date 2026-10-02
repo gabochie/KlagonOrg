@@ -6,6 +6,7 @@ import { Search, MapPin, Phone, MessageCircle, CalendarClock, ChevronRight } fro
 import { AREA_LABELS, CATEGORY_SEEDS, fetchPortalPosts, isPostExpired } from "@/lib/posts";
 import { isBoostActive } from "@/lib/boosts";
 import type { Post, PostArea } from "@/types";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const JOB_CATEGORIES = CATEGORY_SEEDS["job"];
 
@@ -238,9 +239,7 @@ export function JobsBoard() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="animate-pulse text-sm text-gray font-semibold">Loading openings…</div>
-        </div>
+        <LoadingMessage label="Loading openings…" className="text-sm" />
       ) : visible.length === 0 ? (
         <div className="bg-light rounded-2xl border border-border p-10 text-center">
           <div className="text-3xl mb-3">💼</div>
