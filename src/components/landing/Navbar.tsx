@@ -135,7 +135,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 dark:bg-ink-2">
-      <div className="h-14 safe-nav-top flex items-center px-4 sm:px-6">
+      <div className="min-h-14 pt-[env(safe-area-inset-top)] flex items-center px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <img src="/brand/klagon-logo.png" alt="KLAGON.org" className="h-9 w-auto rounded-lg" />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
@@ -311,7 +311,7 @@ export function Navbar() {
                 );
               })}
             </div>
-            <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 dark:border-white/10 safe-footer">
+            <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 pb-[env(safe-area-inset-bottom)] dark:border-white/10">
               <Link href="/donate" onClick={closeMenu}>
                 <Button size="sm" className="w-full bg-amber text-navy hover:bg-amber/90 border-transparent">
                   ♥ Donate

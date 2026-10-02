@@ -8,6 +8,7 @@ import { HomeLiveStrip } from "@/components/landing/HomeLiveStrip";
 import { HomeJoinBand } from "@/components/landing/HomeJoinBand";
 import { SponsorDonate } from "@/components/landing/SponsorDonate";
 import { Footer } from "@/components/landing/Footer";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
         <SponsorDonate />
       </main>
       <Footer />
+      <InstallPrompt />
     </div>
   );
 }
