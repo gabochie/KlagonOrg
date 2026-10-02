@@ -32,6 +32,7 @@ import {
   type FieldSpec,
 } from "./fields";
 import { ArrowLeft, ArrowRight, UploadCloud } from "lucide-react";
+import { LoadingMessage } from "@/components/ui/Skeleton";
 
 const POST_AREA_KEYS: PostArea[] = ["klagon", "tema_west", "other"];
 
@@ -299,9 +300,7 @@ export function PostForm({ editId }: { editId?: string | null }) {
 
   if (!loaded) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-sm text-gray font-semibold">Loading your post…</div>
-      </div>
+      <LoadingMessage label="Loading your post…" className="text-sm" />
     );
   }
 
