@@ -55,7 +55,7 @@ export function LeadsList() {
       ) : leads.length === 0 ? (
         <div className="py-8 text-center">
           <div className="text-lg mb-2">🕊️</div>
-          <div className="text-xs text-gray">
+          <div className="text-sm text-gray">
             No leads yet. When visitors talk to Ama and save their details, they will appear here.
           </div>
         </div>
@@ -70,31 +70,41 @@ export function LeadsList() {
                 {(l.name ?? (l.email ?? "?")).slice(0, 1).toUpperCase()}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-navy truncate">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="text-sm font-bold text-navy break-words">
                     {l.name ?? "(no name)"}
                   </span>
                   <span
-                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${
                       sourceColor[l.source] ?? "bg-pale text-navy"
                     }`}
                   >
                     {l.source}
                   </span>
+                  {/* At 320px a third column for the date squeezed the contact
+                      details into an unreadable strip, so it moves inline. */}
+                  <span className="text-[11px] text-gray/60 sm:hidden ml-auto">
+                    {new Date(l.created_at).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
                 </div>
-                <div className="text-[11px] text-gray truncate mt-0.5">
+                <div className="text-xs text-gray break-words mt-0.5">
                   {l.email && <span>{l.email}</span>}
                   {l.email && l.phone && <span> · </span>}
                   {l.phone && <span>{l.phone}</span>}
                 </div>
-                {l.intent && <div className="text-[10px] text-gray/70 italic truncate mt-0.5">“{l.intent}”</div>}
+                {l.intent && (
+                  <div className="text-xs text-gray/80 italic mt-0.5">“{l.intent}”</div>
+                )}
                 {l.status && l.status !== "new" && (
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-navy/50 mt-0.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-navy/50 mt-1">
                     {l.status}
                   </div>
                 )}
               </div>
-              <div className="text-[10px] text-gray/60 flex-shrink-0 whitespace-nowrap pt-1">
+              <div className="hidden sm:block text-[11px] text-gray/60 flex-shrink-0 whitespace-nowrap pt-1">
                 {new Date(l.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
               </div>
             </div>

@@ -126,7 +126,7 @@ export function ListingImporter() {
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <div>
           <div className="text-sm font-extrabold text-navy">Listing Importer</div>
-          <div className="text-[11px] text-gray mt-0.5">
+          <div className="text-xs text-gray mt-0.5">
             WhatsApp opt-in listings only — consent gate enforced, duplicates skipped
           </div>
         </div>
@@ -141,7 +141,7 @@ export function ListingImporter() {
       {verdicts.length === 0 ? (
         <label className="block border border-dashed border-border rounded-xl p-6 text-center cursor-pointer hover:bg-light/50">
           <div className="text-xs font-bold text-navy">Upload listings CSV</div>
-          <div className="text-[11px] text-gray mt-1">
+          <div className="text-xs text-gray mt-1">
             Use the template. Only rows with explicit OPTED_IN consent + date + phone import.
             Phone numbers never enter this repo.
           </div>
@@ -154,7 +154,7 @@ export function ListingImporter() {
         </label>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
             <span className="font-bold text-navy">{fileName}</span>
             <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 font-bold">
               {importable.length} importable
@@ -181,8 +181,8 @@ export function ListingImporter() {
                   key={v.rowNumber}
                   className="rounded-lg border border-border px-3 py-2 flex items-center justify-between gap-2"
                 >
-                  <span className="text-[11px] font-bold text-navy">Row {v.rowNumber}</span>
-                  <span className="text-[10px] text-gray">{v.reasons.join(" · ")}</span>
+                  <span className="text-xs font-bold text-navy">Row {v.rowNumber}</span>
+                  <span className="text-[11px] text-gray">{v.reasons.join(" · ")}</span>
                 </div>
               ))}
             </div>
@@ -195,14 +195,14 @@ export function ListingImporter() {
           >
             {busy ? "Importing…" : `Import ${importable.length} as Approved →`}
           </button>
-          <p className="text-[10px] text-gray mt-1.5">
+          <p className="text-[11px] text-gray mt-1.5">
             Imports go live immediately as approved posts with the consent trail attached.
           </p>
         </>
       )}
 
       {result && (
-        <div className="mt-3 text-[11px] font-semibold text-navy bg-pale rounded-lg px-3 py-2">
+        <div className="mt-3 text-xs font-semibold text-navy bg-pale rounded-lg px-3 py-2">
           {result}
         </div>
       )}
