@@ -39,16 +39,30 @@ function normalizeGhPhone(raw) {
   return null;
 }
 
-const failRow = (env, ref) =>
-  fetch(`${env.SUPABASE_URL}/rest/v1/rpc/confirm_donation_by_ref`, {
+function sbHeaders(env) {
+  return {
+    apikey: env.SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+    "Content-Type": "application/json",
+  };
+}
+
+function sbRpc(env, fn, body) {
+  return fetch(`${env.SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",
-    headers: {
-      apikey: env.SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ p_ref: ref, p_status: "failed" }),
-  }).catch(() => null);
+    headers: sbHeaders(env),
+    body: JSON.stringify(body),
+  });
+}
+
+// Ref prefixes route the single Moolre callback to the right order table.
+const BOOST_REF_PREFIX = "KLG-B-";
+
+const failRow = (env, ref) =>
+  sbRpc(env, "confirm_donation_by_ref", { p_ref: ref, p_status: "failed" }).catch(() => null);
+
+const failBoostRow = (env, ref) =>
+  sbRpc(env, "confirm_boost_payment_by_ref", { p_ref: ref, p_status: "failed" }).catch(() => null);
 
 const BREVO_API = "https://api.brevo.com/v3/smtp/email";
 const BREVO_FROM = { name: "KlagonOrg Team", email: "hello@klagon.org" };
@@ -98,6 +112,20 @@ async function sendDonationEmails(env, ref) {
     [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
     `New donation received — GH₵${amount}`,
     `<p>Reference: <code>${ref}</code></p><p>Name: ${rowName || "Anonymous"}</p><p>Amount: GH\u00a5${amount}</p><p>Email: ${row.email || "—"}</p>`
+  ).catch(() => null);
+}
+
+async function sendBoostEmails(env, ref) {
+  const res = await sbRpc(env, "get_boost_sendable", { p_ref: ref });
+  const row = res.ok ? (await res.json())[0] : null;
+  if (!row) return;
+
+  const amount = Number(row.amount_ghs ?? 0).toFixed(2);
+  await brevoSend(
+    env,
+    [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
+    `Boost paid — GH₵${amount}`,
+    `<p>Reference: <code>${ref}</code></p><p>Listing: ${row.post_title ?? "—"}</p><p>Tier: ${row.tier} (${row.days} days)</p><p>Amount: GH\u00a5${amount}</p><p>Phone: ${row.payer_phone ?? "—"}</p>`
   ).catch(() => null);
 }
 
@@ -339,6 +367,171 @@ async function handleConfirm(request, env) {
   );
 }
 
+// ---------- paid boosts ----------
+// Boosts charge a server-derived fee (boost_quote), never a client amount.
+// Orders live in boost_payments; confirm_boost_payment_by_ref flips them and
+// applies the placement, so the browser never touches boost_until.
+async function handleBoostCharge(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send a listing, phone and network." }, 400, origin);
+  }
+
+  const postId = String(input?.post_id ?? "").trim();
+  if (!/^[0-9a-f-]{36}$/i.test(postId)) {
+    return json({ error: "Pick a listing to feature." }, 400, origin);
+  }
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()];
+  if (!channel) {
+    return json({ error: "Choose MTN, Telecel or AT." }, 400, origin);
+  }
+  const payer = normalizeGhPhone(input?.phone);
+  if (!payer) {
+    return json({ error: "Enter a valid 10-digit Ghana phone number." }, 400, origin);
+  }
+
+  if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
+    return json({ error: "Online payments are not switched on yet. Please try again later." }, 503, origin);
+  }
+
+  // The price is whatever the database says; an ineligible listing returns none.
+  let quote = null;
+  try {
+    const res = await sbRpc(env, "boost_quote", { p_post_id: postId });
+    if (res.ok) {
+      const rows = await res.json();
+      quote = Array.isArray(rows) ? rows[0] : null;
+    }
+  } catch {
+    quote = null;
+  }
+  if (!quote) {
+    return json({ error: "This listing can’t be featured right now." }, 409, origin);
+  }
+
+  const amount = Number(quote.fee_ghs);
+  const days = Number(quote.days);
+  const tier = String(quote.tier);
+
+  const ref = `${BOOST_REF_PREFIX}${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`.toUpperCase();
+
+  // 1) Pending order first (anon insert allowed for status='pending' by RLS).
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/boost_payments`, {
+      method: "POST",
+      headers: { ...sbHeaders(env), Prefer: "return=minimal" },
+      body: JSON.stringify({
+        post_id: postId,
+        tier,
+        amount_ghs: amount,
+        days,
+        status: "pending",
+        provider: "moolre",
+        provider_ref: ref,
+        payer_phone: payer,
+        network: String(input.network).toLowerCase(),
+      }),
+    });
+    if (!res.ok) {
+      return json({ error: "Could not start your boost. Please try again." }, 502, origin);
+    }
+  } catch {
+    return json({ error: "Could not start your boost. Please try again." }, 502, origin);
+  }
+
+  // 2) Fire the payment request.
+  let moolre;
+  try {
+    moolre = await moolreCollect(env, { channel, payer, amount, ref, network: input.network });
+  } catch {
+    await failBoostRow(env, ref);
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    if (code === "TP14") {
+      return json({ ok: true, ref, payer, otp_required: true, amount_ghs: amount, days, tier, message: "otp-required" }, 200, origin);
+    }
+    return json(
+      { ok: true, ref, payer, amount_ghs: amount, days, tier, message: code === "TR099" ? "prompt-sent" : "initiated" },
+      200,
+      origin
+    );
+  }
+
+  await failBoostRow(env, ref);
+  return json(
+    {
+      error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again.",
+      code,
+    },
+    502,
+    origin
+  );
+}
+
+async function handleBoostConfirm(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send ref and otp." }, 400, origin);
+  }
+
+  const ref = String(input?.ref ?? "").trim();
+  const otp = String(input?.otp ?? "").replace(/\s/g, "");
+  if (!ref || otp.length < 4) {
+    return json({ error: "Enter the full OTP from the SMS." }, 400, origin);
+  }
+
+  // Re-submit the amount from our own order row, never the client's.
+  let order = null;
+  try {
+    const res = await sbRpc(env, "get_boost_sendable", { p_ref: ref });
+    if (res.ok) {
+      const rows = await res.json();
+      order = Array.isArray(rows) ? rows[0] : null;
+    }
+  } catch {
+    order = null;
+  }
+  if (!order || !Number.isFinite(Number(order.amount_ghs))) {
+    return json({ error: "We could not find that order. Please start again." }, 404, origin);
+  }
+
+  const amount = Number(order.amount_ghs);
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()] ?? "13";
+  const payer = normalizeGhPhone(input?.phone) ?? input?.phone;
+
+  let moolre;
+  try {
+    moolre = await moolreCollect(env, { channel, payer, amount, ref, network: input?.network, otp });
+  } catch {
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    return json({ ok: true, ref, message: code === "TR099" ? "prompt-sent" : "initiated" }, 200, origin);
+  }
+
+  return json(
+    {
+      error: moolre?.message ? String(moolre.message) : "Verification failed. Check the code and try again.",
+      code,
+    },
+    400,
+    origin
+  );
+}
+
 async function handleTurnstileVerify(request, env) {
   const origin = request.headers.get("Origin") ?? "";
 
@@ -438,22 +631,18 @@ async function handleCallback(request, env) {
   }
   const finalStatus = paid ? "paid" : "failed";
 
+  const isBoost = ref.startsWith(BOOST_REF_PREFIX);
+  const confirmFn = isBoost ? "confirm_boost_payment_by_ref" : "confirm_donation_by_ref";
+
   try {
-    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/confirm_donation_by_ref`, {
-      method: "POST",
-      headers: {
-        apikey: env.SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ p_ref: ref, p_status: finalStatus }),
-    });
+    const res = await sbRpc(env, confirmFn, { p_ref: ref, p_status: finalStatus });
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 200);
       return json({ error: "supabase-update-failed", detail }, 502);
     }
     if (finalStatus === "paid") {
-      await sendDonationEmails(env, ref).catch(() => null);
+      if (isBoost) await sendBoostEmails(env, ref).catch(() => null);
+      else await sendDonationEmails(env, ref).catch(() => null);
     }
   } catch {
     return json({ error: "upstream-error" }, 502);
@@ -493,6 +682,24 @@ export default {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
       }
       if (request.method === "POST") return handleConfirm(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/boosts/charge") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleBoostCharge(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/boosts/confirm") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleBoostConfirm(request, env);
       return json({ error: "method-not-allowed" }, 405, origin);
     }
 
