@@ -134,7 +134,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 dark:bg-ink-2">
-      <div className="min-h-14 pt-[env(safe-area-inset-top)] flex items-center justify-between px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto min-h-14 pt-[env(safe-area-inset-top)] flex items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <img src="/brand/klagon-logo.png" alt="KLAGON.org" className="h-9 w-auto rounded-lg" />
           <span className="text-base font-extrabold tracking-tight text-navy dark:text-white">
