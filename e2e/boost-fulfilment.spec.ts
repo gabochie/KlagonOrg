@@ -2,13 +2,15 @@ import { test, expect, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * The manual boost loop, end to end:
- *   seller requests on /my/posts -> staff sees it in /dashboard/admin/boosts
- *   -> staff applies it -> the post comes back actually boosted.
+ * The staff boost grant path, end to end:
+ *   a member cannot self-purchase -> staff apply the boost (admin_apply_boost)
+ *   -> the post comes back actually boosted, at the server price, and cannot
+ *   be stacked.
  *
- * This is the path that was previously impossible: purchase_boost is locked to
- * service_role, so without admin_apply_boost a paid boost could never be
- * applied and the money would be taken with nothing to show for it.
+ * Boosts are sold through paid checkout (see boost-request.spec.ts); paid
+ * boosts are granted by the Moolre callback, not here. This spec covers the
+ * remaining manual/comp grant path and the guard that keeps purchase_boost
+ * locked to service_role.
  *
  * The admin_apply_boost RPC only exists once its migration is applied, so this
  * spec skips (rather than fails) when the function is missing.
@@ -141,26 +143,13 @@ test.describe("boost fulfilment", () => {
     expect(afterSneak.boost_tier, "self-purchase attempt must not boost the post").toBe("none");
     expect(afterSneak.boost_until).toBeNull();
 
-    // 3. Member requests the boost through the UI.
-    await login(page, c.memberEmail, c.memberPassword);
-    await page.goto("/my/posts");
-    const card = page.locator(`[data-post-id="${target}"]`).first();
-    await expect(card, "listing is listed for its owner").toBeVisible({ timeout: 20000 });
-    await card.getByRole("button", { name: /Feature this listing/i }).click();
-    await card.getByRole("button", { name: /Request this boost/i }).click();
-    await expect(card.getByText(/Request received/i)).toBeVisible({ timeout: 20000 });
+    // 3. Staff apply the boost. This is the manual/comp path; paid boosts are
+    //    granted by the Moolre callback (confirm_boost_payment_by_ref).
+    const { data: applied, error: applyErr } = await admin.rpc("admin_apply_boost", { p_post_id: target });
+    if (applyErr) throw new Error(`admin_apply_boost failed: ${applyErr.message}`);
+    expect(applied, "staff can apply a boost").toBe(true);
 
-    // 4. Staff fulfil it from the admin queue.
-    await login(page, c.adminEmail, c.adminPassword);
-    await page.goto("/dashboard/admin/boosts");
-    const queue = page.locator(`[data-post-id="${target}"]`).first();
-    await expect(queue, "boost request reaches the staff queue").toBeVisible({ timeout: 20000 });
-    // A Properties classified is the premium tier: 50 for 7 days.
-    await expect(queue.getByText(/50 \/ 7d/)).toBeVisible();
-    await queue.getByRole("button", { name: /Mark paid & apply boost/i }).click();
-    await expect(queue.getByText(/Boost applied/i)).toBeVisible({ timeout: 20000 });
-
-    // 5. The post is genuinely boosted, at the quoted price and duration.
+    // 4. The post is genuinely boosted, at the quoted price and duration.
     const boosted = await readPost(target);
     expect(boosted.boost_tier).toBe("premium");
     expect(Number(boosted.boost_fee_ghs)).toBe(50);
@@ -168,14 +157,14 @@ test.describe("boost fulfilment", () => {
     expect(daysOut).toBeGreaterThan(6.5);
     expect(daysOut).toBeLessThan(7.1);
 
-    // 6. The owner sees the boosted state, and cannot buy a second one.
+    // 5. The owner sees the boosted state, and cannot buy a second one.
     await login(page, c.memberEmail, c.memberPassword);
     await page.goto("/my/posts");
     const ownCard = page.locator(`[data-post-id="${target}"]`).first();
     await expect(ownCard.getByText(/Featured until/i)).toBeVisible({ timeout: 20000 });
     await expect(ownCard.getByRole("button", { name: /Feature this listing/i })).toHaveCount(0);
 
-    // 7. Re-applying is refused rather than silently extending the boost.
+    // 6. Re-applying is refused rather than silently extending the boost.
     const { data: again } = await admin.rpc("admin_apply_boost", { p_post_id: target });
     expect(again, "a live boost must not be stacked").toBe(false);
   });

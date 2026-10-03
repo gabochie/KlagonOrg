@@ -115,6 +115,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
           </p>
           <div className="mt-2.5">
             <Input
+              id="boost-otp"
               label="OTP code"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -164,6 +165,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2.5">
             <Input
+              id="boost-phone"
               label="MoMo phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
