@@ -36,6 +36,22 @@ begin
 end $$;
 
 -- courses_public gains the price so the public hub can show Free / GH₵.
+--
+-- NOTE: CREATE OR REPLACE VIEW matches columns by position, so the existing
+-- columns keep their exact order (id..created_at, lesson_count, cover_url) and
+-- price_ghs is appended LAST. The view is security_invoker, and lessons are now
+-- RLS-gated for paid courses, so the count comes from a SECURITY DEFINER
+-- aggregate instead of a join (the join would read 0 for non-entitled callers).
+create or replace function public.course_lesson_count(p_course_id uuid)
+returns int
+language sql stable security definer set search_path = public
+as $$
+  select count(*)::int from public.lessons where course_id = p_course_id;
+$$;
+
+revoke all on function public.course_lesson_count(uuid) from public;
+grant execute on function public.course_lesson_count(uuid) to anon, authenticated;
+
 create or replace view public.courses_public as
 select
   c.id,
@@ -43,15 +59,15 @@ select
   c.category,
   c.icon,
   c.description,
-  c.price_ghs,
   c.created_at,
-  count(l.id)::int as lesson_count
+  public.course_lesson_count(c.id) as lesson_count,
+  c.cover_url,
+  c.price_ghs
 from public.courses c
-left join public.lessons l on l.course_id = c.id
 where c.published = true
-group by c.id
 order by c.created_at asc;
 
+alter view public.courses_public set (security_invoker = true);
 grant select on public.courses_public to anon, authenticated;
 
 -- ---------------------------------------------------------------------------

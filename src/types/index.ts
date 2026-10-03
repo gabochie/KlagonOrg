@@ -36,6 +36,7 @@ export interface Course {
   lessonsDone: number;
   color: string;
   cover_url?: string | null;
+  price_ghs?: number | null;
 }
 
 export interface Project {
