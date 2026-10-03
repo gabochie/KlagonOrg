@@ -12,6 +12,7 @@ import { notifyTeam } from "@/lib/notify";
 import { submitSponsorApplication } from "@/lib/forms";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { SponsorCheckout } from "@/components/sponsor/SponsorCheckout";
 
 const STATS = [
   { icon: Building2, label: "Active partner businesses", value: "3+" },
@@ -62,6 +63,8 @@ function SponsorPageContent() {
   });
 
   const plan = SPONSOR_PLANS.find((p) => p.id === selected);
+  // Strategic is a bespoke partnership: it stays a lead form, not a checkout.
+  const selfServe = selected !== "strategic";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,7 +241,9 @@ function SponsorPageContent() {
                   WhatsApp
                 </a>
               </p>
-              {submitted ? (
+              {selfServe && plan ? (
+                <SponsorCheckout plan={plan} />
+              ) : submitted ? (
                 <div className="bg-white rounded-2xl border border-border p-8 text-center">
                   <div className="text-3xl mb-3">🤝</div>
                   <h3 className="text-base font-bold text-navy mb-1">Thank you!</h3>

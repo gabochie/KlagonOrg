@@ -758,6 +758,43 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["sponsor_applications"]["Insert"]>;
         Relationships: [];
       };
+      sponsor_payments: {
+        Row: {
+          id: string;
+          application_id: string | null;
+          tier: SponsorTier;
+          amount_ghs: number;
+          months: number;
+          status: string;
+          provider: string;
+          provider_ref: string;
+          payer_phone: string | null;
+          network: string | null;
+          metadata: Json;
+          promoted: boolean;
+          promoted_at: string | null;
+          created_at: string;
+          paid_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          application_id?: string | null;
+          tier: SponsorTier;
+          amount_ghs: number;
+          months?: number;
+          status?: string;
+          provider?: string;
+          provider_ref: string;
+          payer_phone?: string | null;
+          network?: string | null;
+          metadata?: Json;
+          promoted?: boolean;
+          promoted_at?: string | null;
+          paid_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["sponsor_payments"]["Insert"]>;
+        Relationships: [];
+      };
       business_cards: {
         Row: {
           id: string;
@@ -1662,6 +1699,12 @@ export interface Database {
           p_featured?: boolean;
         };
         Returns: string;
+      };
+      mark_sponsor_payment_promoted: {
+        Args: {
+          p_ref: string;
+        };
+        Returns: boolean;
       };
       log_audit: {
         Args: {
