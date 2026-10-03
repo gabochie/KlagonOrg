@@ -212,6 +212,7 @@ export interface Database {
           icon: string;
           description: string | null;
           cover_url: string | null;
+          price_ghs: number | null;
           published: boolean;
           prerequisite_course_id: string | null;
           created_at: string;
@@ -223,6 +224,7 @@ export interface Database {
           icon?: string;
           description?: string | null;
           cover_url?: string | null;
+          price_ghs?: number | null;
           published?: boolean;
           prerequisite_course_id?: string | null;
         };
@@ -758,6 +760,43 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["sponsor_applications"]["Insert"]>;
         Relationships: [];
       };
+      boost_payments: {
+        Row: {
+          id: string;
+          post_id: string;
+          tier: BoostTier;
+          amount_ghs: number;
+          days: number;
+          status: string;
+          provider: string;
+          provider_ref: string;
+          payer_phone: string | null;
+          network: string | null;
+          metadata: Json;
+          fulfilled: boolean;
+          fulfilled_at: string | null;
+          created_at: string;
+          paid_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          tier: BoostTier;
+          amount_ghs: number;
+          days: number;
+          status?: string;
+          provider?: string;
+          provider_ref: string;
+          payer_phone?: string | null;
+          network?: string | null;
+          metadata?: Json;
+          fulfilled?: boolean;
+          fulfilled_at?: string | null;
+          paid_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["boost_payments"]["Insert"]>;
+        Relationships: [];
+      };
       sponsor_payments: {
         Row: {
           id: string;
@@ -793,6 +832,73 @@ export interface Database {
           paid_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["sponsor_payments"]["Insert"]>;
+        Relationships: [];
+      };
+      course_payments: {
+        Row: {
+          id: string;
+          course_id: string;
+          member_id: string | null;
+          amount_ghs: number;
+          status: string;
+          provider: string;
+          provider_ref: string;
+          payer_phone: string | null;
+          network: string | null;
+          metadata: Json;
+          fulfilled: boolean;
+          fulfilled_at: string | null;
+          created_at: string;
+          paid_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          member_id?: string | null;
+          amount_ghs: number;
+          status?: string;
+          provider?: string;
+          provider_ref: string;
+          payer_phone?: string | null;
+          network?: string | null;
+          metadata?: Json;
+          fulfilled?: boolean;
+          fulfilled_at?: string | null;
+          paid_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["course_payments"]["Insert"]>;
+        Relationships: [];
+      };
+      course_entitlements: {
+        Row: {
+          id: string;
+          member_id: string;
+          course_id: string;
+          payment_id: string | null;
+          granted_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          course_id: string;
+          payment_id?: string | null;
+          granted_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["course_entitlements"]["Insert"]>;
+        Relationships: [];
+      };
+      app_secrets: {
+        Row: {
+          key: string;
+          value: string;
+          created_at: string;
+        };
+        Insert: {
+          key: string;
+          value: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["app_secrets"]["Insert"]>;
         Relationships: [];
       };
       business_cards: {
@@ -1639,6 +1745,7 @@ export interface Database {
           cover_url: string | null;
           created_at: string;
           lesson_count: number;
+          price_ghs: number | null;
         };
         Relationships: [];
       };
@@ -1705,6 +1812,168 @@ export interface Database {
           p_ref: string;
         };
         Returns: boolean;
+      };
+      confirm_donation_by_ref: {
+        Args: {
+          p_ref: string;
+          p_status: string;
+        };
+        Returns: undefined;
+      };
+      get_donation_sendable: {
+        Args: {
+          p_ref: string;
+        };
+        Returns: {
+          email: string | null;
+          full_name: string | null;
+          amount_ghs: number;
+        }[];
+      };
+      boost_quote: {
+        Args: {
+          p_post_id: string;
+        };
+        Returns: {
+          tier: BoostTier;
+          fee_ghs: number;
+          days: number;
+        }[];
+      };
+      confirm_boost_payment_by_ref: {
+        Args: {
+          p_ref: string;
+          p_status: string;
+        };
+        Returns: undefined;
+      };
+      get_boost_sendable: {
+        Args: {
+          p_ref: string;
+        };
+        Returns: {
+          post_title: string | null;
+          amount_ghs: number | null;
+          payer_phone: string | null;
+          tier: string | null;
+          days: number | null;
+        }[];
+      };
+      sponsor_quote: {
+        Args: {
+          p_tier: SponsorTier;
+          p_months?: number;
+        };
+        Returns: {
+          tier: SponsorTier;
+          fee_ghs: number;
+          months: number;
+        }[];
+      };
+      create_sponsor_order: {
+        Args: {
+          p_tier: SponsorTier;
+          p_full_name: string;
+          p_org_name: string;
+          p_email: string;
+          p_phone: string;
+          p_network: string;
+          p_provider_ref: string;
+          p_message?: string;
+        };
+        Returns: {
+          provider_ref: string | null;
+          amount_ghs: number | null;
+          months: number | null;
+          tier: SponsorTier | null;
+        }[];
+      };
+      confirm_sponsor_payment_by_ref: {
+        Args: {
+          p_ref: string;
+          p_status: string;
+        };
+        Returns: undefined;
+      };
+      get_sponsor_sendable: {
+        Args: {
+          p_ref: string;
+        };
+        Returns: {
+          org_name: string | null;
+          full_name: string | null;
+          email: string | null;
+          payer_phone: string | null;
+          amount_ghs: number | null;
+          tier: string | null;
+          months: number | null;
+        }[];
+      };
+      confirm_secret_ok: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      course_lesson_count: {
+        Args: {
+          p_course_id: string;
+        };
+        Returns: number;
+      };
+      course_quote: {
+        Args: {
+          p_course_id: string;
+        };
+        Returns: {
+          course_id: string;
+          fee_ghs: number;
+        }[];
+      };
+      has_course_access: {
+        Args: {
+          p_course_id: string;
+        };
+        Returns: boolean;
+      };
+      grant_course_access: {
+        Args: {
+          p_course_id: string;
+          p_member_id: string;
+          p_payment_id?: string;
+        };
+        Returns: boolean;
+      };
+      create_course_order: {
+        Args: {
+          p_course_id: string;
+          p_member_id: string;
+          p_phone: string;
+          p_network: string;
+          p_provider_ref: string;
+        };
+        Returns: {
+          provider_ref: string | null;
+          amount_ghs: number | null;
+          course_id: string | null;
+        }[];
+      };
+      confirm_course_payment_by_ref: {
+        Args: {
+          p_ref: string;
+          p_status: string;
+        };
+        Returns: undefined;
+      };
+      get_course_sendable: {
+        Args: {
+          p_ref: string;
+        };
+        Returns: {
+          course_title: string | null;
+          amount_ghs: number | null;
+          payer_phone: string | null;
+          member_email: string | null;
+          member_name: string | null;
+        }[];
       };
       log_audit: {
         Args: {

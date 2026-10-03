@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase";
 import { CourseViewer } from "@/components/learning/CourseViewer";
+import { PaidCourseGate } from "@/components/learning/PaidCourseGate";
 
 export interface CourseReaderResult {
   course: {
@@ -11,6 +12,7 @@ export interface CourseReaderResult {
     cover_url: string | null;
     description: string | null;
     published: boolean;
+    price_ghs: number | null;
     prerequisite: { id: string; title: string } | null;
   } | null;
   lessons: {
@@ -41,7 +43,7 @@ async function fetchCourseAndLessons(id: string): Promise<CourseReaderResult> {
   const sb = getSupabase();
   const { data: c, error: courseError } = await sb
     .from("courses")
-    .select("id,title,category,icon,cover_url,description,published,prerequisite_course_id")
+    .select("id,title,category,icon,cover_url,description,published,price_ghs,prerequisite_course_id")
     .eq("id", id)
     .maybeSingle();
   if (courseError) throw courseError;
@@ -55,6 +57,12 @@ async function fetchCourseAndLessons(id: string): Promise<CourseReaderResult> {
       .eq("id", c.prerequisite_course_id)
       .maybeSingle();
     if (p) prerequisite = { id: p.id, title: p.title };
+  }
+
+  // Paid courses are gated client-side; their lessons are never fetched at
+  // build time, so paid material cannot leak into the static HTML.
+  if (typeof c.price_ghs === "number" && c.price_ghs > 0) {
+    return { course: { ...c, prerequisite }, lessons: [] };
   }
 
   const { data: l, error: lessonsError } = await sb
@@ -112,6 +120,26 @@ export async function CourseReaderContent({ id, backHref = "/learning" }: { id: 
           </Link>
         </section>
       </main>
+    );
+  }
+
+  // Paid courses ship no lesson content in the static build; the client gate
+  // fetches lessons only after the database confirms an entitlement.
+  if (typeof course.price_ghs === "number" && course.price_ghs > 0) {
+    return (
+      <PaidCourseGate
+        course={{
+          id: course.id,
+          title: course.title,
+          category: course.category,
+          icon: course.icon,
+          cover_url: course.cover_url,
+          description: course.description,
+          prerequisite: course.prerequisite,
+          price_ghs: course.price_ghs,
+        }}
+        backHref={backHref}
+      />
     );
   }
 

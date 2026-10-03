@@ -18,7 +18,7 @@ async function getCourses(): Promise<Course[]> {
     const sb = getSupabase();
     const { data, error } = await sb
       .from("courses_public")
-      .select("id,title,category,icon,cover_url,lesson_count")
+      .select("id,title,category,icon,cover_url,lesson_count,price_ghs")
       .order("created_at", { ascending: true });
     if (error || !data || data.length === 0) return COURSES;
     return data.map((r) => ({
@@ -30,6 +30,7 @@ async function getCourses(): Promise<Course[]> {
       lessons: r.lesson_count,
       lessonsDone: 0,
       color: "#EEF2FF",
+      price_ghs: r.price_ghs ?? null,
     }));
   } catch {
     return COURSES;
@@ -82,8 +83,13 @@ export async function LearningHubContent() {
                     <h2 className="text-sm font-extrabold text-navy group-hover:text-blue transition-colors leading-snug">
                       {c.title}
                     </h2>
-                    <div className="mt-3 flex items-center gap-3 text-[11px] text-gray">
+                    <div className="mt-3 flex items-center justify-between text-[11px] text-gray">
                       <span>{c.lessons} lessons</span>
+                      {typeof c.price_ghs === "number" && c.price_ghs > 0 ? (
+                        <span className="font-extrabold text-amber-strong">GH₵ {c.price_ghs}</span>
+                      ) : (
+                        <span className="font-bold text-green-700">Free</span>
+                      )}
                     </div>
                   </div>
                 </Link>
