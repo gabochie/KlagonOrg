@@ -2,17 +2,18 @@ import { test, expect, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Manual boost-request flow on /my/posts.
+ * Paid boost checkout on /my/posts.
  *
- * KLAGON sells boosts by hand until a payment rail exists, so this flow is
- * "ask us", not "buy now". The risk it guards against is a false promise: the
- * panel must never say "we'll be in touch" unless the request genuinely
- * reached lead_events. So the test asserts the row landed rather than
- * trusting the on-screen confirmation.
+ * Boosts are charged through the klagon-payments Worker and confirmed by the
+ * Moolre callback, so the browser only ever names the listing. The risk this
+ * guards against is a client-granted placement: the panel must quote the
+ * server-derived price and must not apply a boost unless a real payment
+ * cleared.
  *
  * The spec creates and approves its own throwaway post (the submit form is
  * Turnstile-walled) and deletes it afterwards, so it can never quietly skip
- * for lack of data.
+ * for lack of data. It stops short of a live charge — Turnstile stays unsolved
+ * — so it never spends money or writes a payment row.
  */
 
 function env(name: string): string | undefined {
@@ -139,27 +140,22 @@ test.describe("boost request", () => {
       // Assert the two numbers rather than one literal sentence, so copy
       // tweaks do not break the price contract that actually matters.
       await expect(card.getByText(new RegExp(`for ${want.days} days`))).toBeVisible({ timeout: 20000 });
-      await expect(card.getByText(new RegExp(`GH.\\s*${want.fee}\\b`))).toBeVisible({ timeout: 20000 });
-      // The copy must not imply money changed hands.
+      await expect(
+        card.getByRole("button", { name: new RegExp(`Pay GH.\\s*${want.fee}\\b`) }),
+      ).toBeVisible({ timeout: 20000 });
+      // Checkout copy must make clear the feature only lands after payment.
       await expect(card.getByText(/goes live once payment clears/i)).toBeVisible();
       await card.getByRole("button", { name: /Not now/i }).click();
       await expect(card.getByRole("button", { name: /Feature this listing/i })).toBeVisible();
     }
   });
 
-  test("a shown confirmation means the request really landed in lead_events", async ({ page }) => {
+  test("a placement can never be granted from the browser", async ({ page }) => {
     const c = requireCreds();
     const targetId = await seed("confirm", { type: "classified", category: "Properties" }, "approved");
 
     const member = createClient(c.url, c.anonKey);
     await member.auth.signInWithPassword({ email: c.memberEmail, password: c.memberPassword });
-    const { data: before, error: bErr } = await member
-      .from("lead_events")
-      .select("id")
-      .eq("source", "boost-request")
-      .eq("action", "submit");
-    if (bErr) throw new Error(`lead_events read failed: ${bErr.message}`);
-    const priorCount = before?.length ?? 0;
 
     await login(page, c.memberEmail, c.memberPassword);
     await page.goto("/my/posts");
@@ -168,25 +164,40 @@ test.describe("boost request", () => {
     const card = page.locator(`[data-post-id="${targetId}"]`).first();
     await expect(card).toBeVisible({ timeout: 20000 });
     await card.getByRole("button", { name: /Feature this listing/i }).click();
-    await card.getByRole("button", { name: /Request this boost/i }).click();
+    // The quoted fee is the server tier (premium GH₵50), not client-supplied.
+    await expect(card.getByText(/Feature this listing for 7 days/i)).toBeVisible({ timeout: 20000 });
 
-    // The confirmation promises a human will call back, so it must correspond
-    // to a stored row carrying the right post and the right real price.
-    await expect(card.getByText(/Request received/i)).toBeVisible({ timeout: 20000 });
+    // Without the human check the charge must not start: no payment row, no
+    // boost. This is the client-grant path we care about.
+    await card.getByRole("button", { name: /Pay GH/i }).click();
+    await expect(card.getByText(/human check/i)).toBeVisible({ timeout: 20000 });
+
+    const { count: payCount, error: payErr } = await member
+      .from("boost_payments")
+      .select("id", { count: "exact", head: true })
+      .eq("post_id", targetId);
+    if (payErr) throw new Error(`boost_payments read failed: ${payErr.message}`);
+    expect(payCount ?? 0, "no payment row was written").toBe(0);
 
     const { data: after, error: aErr } = await member
-      .from("lead_events")
-      .select("id, metadata")
-      .eq("source", "boost-request")
-      .eq("action", "submit");
-    if (aErr) throw new Error(`lead_events read failed: ${aErr.message}`);
+      .from("posts")
+      .select("boost_until, boost_tier")
+      .eq("id", targetId)
+      .single();
+    if (aErr) throw new Error(`posts read failed: ${aErr.message}`);
+    expect(after.boost_until, "the listing was not featured").toBeNull();
+    expect(after.boost_tier).toBe("none");
+  });
 
-    expect((after?.length ?? 0) - priorCount, "a new boost-request row was written").toBeGreaterThanOrEqual(1);
-    const stored = (after ?? []).map((r) => r.metadata as Record<string, unknown> | null);
-    const match = stored.find((m) => m?.post_id === targetId);
-    expect(match, "stored request references the post that was boosted").toBeTruthy();
-    expect(match?.fee_ghs, "stored price matches the server tier").toBe(50);
-    expect(match?.days, "stored duration matches the server tier").toBe(7);
-    expect(match?.tier).toBe("premium");
+  test("a boost_quote for an ineligible listing returns no price", async () => {
+    const c = requireCreds();
+    // A pending listing is not live, so it cannot be sold a placement.
+    const pendingId = await seed("noquote", { type: "news", category: "General" }, "pending");
+
+    const member = createClient(c.url, c.anonKey);
+    await member.auth.signInWithPassword({ email: c.memberEmail, password: c.memberPassword });
+    const { data, error } = await member.rpc("boost_quote", { p_post_id: pendingId });
+    if (error) throw new Error(`boost_quote failed: ${error.message}`);
+    expect((data ?? []).length, "an unpublishable listing has no quote").toBe(0);
   });
 });
