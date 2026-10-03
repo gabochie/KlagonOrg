@@ -6,6 +6,7 @@
 
 const MOOLRE_WALLET_CALLBACK_IP = "192.241.135.134";
 const MOOLRE_API = "https://api.moolre.com/open/transact/payment";
+const MOOLRE_STATUS_API = "https://api.moolre.com/open/transact/status";
 const TURNSTILE_VERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 const PAID_SIGNALS = new Set(["success", "successful", "completed", "paid", "1"]);
@@ -259,6 +260,116 @@ async function moolreCollect(env, { channel, payer, amount, ref, network, otp })
     }),
   });
   return res.json();
+}
+
+function orderKind(ref) {
+  if (ref.startsWith(BOOST_REF_PREFIX)) return "boost";
+  if (ref.startsWith(SPONSOR_REF_PREFIX)) return "sponsor";
+  return "donation";
+}
+
+function confirmFnFor(kind) {
+  return kind === "boost"
+    ? "confirm_boost_payment_by_ref"
+    : kind === "sponsor"
+    ? "confirm_sponsor_payment_by_ref"
+    : "confirm_donation_by_ref";
+}
+
+// Ask Moolre for the final status of a reference. The callback is the primary
+// settlement path, but webhooks get dropped; this is the reconciliation path so
+// a missed callback can never strand an order as pending forever.
+async function moolreStatus(env, ref) {
+  const res = await fetch(MOOLRE_STATUS_API, {
+    method: "POST",
+    headers: {
+      "X-API-USER": env.MOOLRE_USER,
+      "X-API-PUBKEY": env.MOOLRE_PUBKEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ type: 1, idtype: 1, id: ref, accountnumber: env.MOOLRE_WALLET }),
+  });
+  return res.json();
+}
+
+function moolreOutcome(payload) {
+  const code = String(payload?.code ?? "");
+  const message = String(payload?.message ?? "");
+  const tx = payload?.data?.txstatus;
+  const txStr = String(tx ?? "").toLowerCase();
+  if (code === "SS01" || tx === 1 || PAID_SIGNALS.has(txStr) || /success/i.test(message)) {
+    return "paid";
+  }
+  if (FAILED_SIGNALS.has(txStr) || tx === -1 || /fail|cancel|reject|declin/i.test(message)) {
+    return "failed";
+  }
+  return "pending";
+}
+
+async function settleOrder(env, ref, status) {
+  const kind = orderKind(ref);
+  const res = await sbRpc(env, confirmFnFor(kind), { p_ref: ref, p_status: status });
+  if (!res.ok) throw new Error((await res.text()).slice(0, 200));
+  return kind;
+}
+
+async function handlePaymentStatus(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let ref = "";
+  if (request.method === "GET") {
+    ref = String(new URL(request.url).searchParams.get("ref") ?? "").trim();
+  } else {
+    let input;
+    try {
+      input = await request.json();
+    } catch {
+      return json({ error: "Send a ref." }, 400, origin);
+    }
+    ref = String(input?.ref ?? "").trim();
+  }
+  if (!ref) return json({ error: "Send a ref." }, 400, origin);
+
+  if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
+    return json({ error: "Online payments are not switched on yet." }, 503, origin);
+  }
+
+  let payload;
+  try {
+    payload = await moolreStatus(env, ref);
+  } catch {
+    return json({ error: "Payment service unreachable." }, 502, origin);
+  }
+
+  const outcome = moolreOutcome(payload);
+  let settled = false;
+  if (outcome !== "pending") {
+    try {
+      const kind = await settleOrder(env, ref, outcome);
+      settled = true;
+      if (outcome === "paid") {
+        if (kind === "boost") await sendBoostEmails(env, ref).catch(() => null);
+        else if (kind === "sponsor") await sendSponsorEmails(env, ref).catch(() => null);
+        else await sendDonationEmails(env, ref).catch(() => null);
+      }
+    } catch {
+      return json({ error: "supabase-update-failed", provider: outcome }, 502, origin);
+    }
+  }
+
+  return json(
+    {
+      ok: true,
+      ref,
+      kind: orderKind(ref),
+      provider: outcome,
+      settled,
+      code: payload?.code ?? null,
+      message: payload?.message ?? null,
+    },
+    200,
+    origin
+  );
 }
 
 async function handleCharge(request, env) {
@@ -941,6 +1052,17 @@ export default {
         "<p>If you see this, the Cloudflare Worker can send via Brevo.</p>"
       ).catch(() => null);
       return json({ ok: true, result });
+    }
+
+    if (url.pathname === "/api/payments/status") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "GET" || request.method === "POST") {
+        return handlePaymentStatus(request, env);
+      }
+      return json({ error: "method-not-allowed" }, 405, origin);
     }
 
     if (url.pathname === "/health") return json({ ok: true });
