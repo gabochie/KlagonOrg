@@ -14,11 +14,11 @@ const NAV_LINKS = [
   { label: "Learn", href: "/learning" },
   { label: "Businesses", href: "/business" },
   { label: "Jobs", href: "/jobs" },
-  { label: "Classifieds", href: "/classifieds" },
-  { label: "Visit", href: "/visit" },
 ];
 
 const MORE_LINKS = [
+  { label: "Classifieds", href: "/classifieds" },
+  { label: "Visit", href: "/visit" },
   { label: "Events", href: "/events" },
   { label: "The Culture Hub", href: "/culture" },
   { label: "Blog", href: "/blog" },
@@ -26,7 +26,6 @@ const MORE_LINKS = [
   { label: "Community", href: "/news" },
   { label: "Forum", href: "/forum" },
   { label: "📻 Radio", href: "/radio" },
-  { label: "Sponsor", href: "/sponsor" },
   { label: "Donate", href: "/donate" },
 ];
 
@@ -216,12 +215,12 @@ export function Navbar() {
             className="hidden md:flex items-center gap-2 w-auto justify-end"
             aria-live="polite"
           >
-            <Link href="/donate">
+            <Link href="/sponsor">
               <Button
                 size="sm"
                 className="whitespace-nowrap bg-amber text-navy hover:bg-amber/90 border-transparent"
               >
-                ♥ Donate
+                Become a Sponsor
               </Button>
             </Link>
             {signedIn ? (
@@ -312,9 +311,9 @@ export function Navbar() {
               })}
             </div>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 pb-[env(safe-area-inset-bottom)] dark:border-white/10">
-              <Link href="/donate" onClick={closeMenu}>
+              <Link href="/sponsor" onClick={closeMenu}>
                 <Button size="sm" className="w-full bg-amber text-navy hover:bg-amber/90 border-transparent">
-                  ♥ Donate
+                  Become a Sponsor
                 </Button>
               </Link>
               {signedIn ? (

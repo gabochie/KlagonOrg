@@ -37,12 +37,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const b = bySlug.get(slug);
-  if (!b) return { title: "Business — KLAGON.org" };
+  if (!b) return { title: "Business — KLAGON.org", robots: { index: false } };
   const description = `${b.name} — ${b.title || b.category} in ${b.area}. Find contact details and directions on the KLAGON business directory.`;
   return {
     title: `${b.name} — ${b.category} in Klagon | KLAGON.org`,
     description,
     alternates: { canonical: `/directory/${slug}` },
+    robots: { index: false },
   };
 }
 
