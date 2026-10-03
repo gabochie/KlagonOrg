@@ -169,6 +169,7 @@ test.describe("boost request", () => {
 
     // Without the human check the charge must not start: no payment row, no
     // boost. This is the client-grant path we care about.
+    await card.getByLabel(/MoMo phone/i).fill("0244000000");
     await card.getByRole("button", { name: /Pay GH/i }).click();
     await expect(card.getByText(/human check/i)).toBeVisible({ timeout: 20000 });
 
