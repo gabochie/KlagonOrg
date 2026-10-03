@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "A Klagon community member's public profile — their learn, build and volunteer credits with the community.",
   alternates: { canonical: "/people/[id]" },
+  robots: { index: false },
 };
 
 /**

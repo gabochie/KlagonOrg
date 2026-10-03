@@ -21,8 +21,8 @@ export default function Home() {
         <BusinessHighlights />
         <LearningHub />
         <HomeLiveStrip />
-        <HomeJoinBand />
         <SponsorDonate />
+        <HomeJoinBand />
       </main>
       <Footer />
       <InstallPrompt />
