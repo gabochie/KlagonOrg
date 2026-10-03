@@ -7,6 +7,7 @@ import { SPONSOR_TIERS } from "@/lib/constants";
 
 type Application = Database["public"]["Tables"]["sponsor_applications"]["Row"];
 type Sponsor = Database["public"]["Tables"]["sponsors"]["Row"];
+type Payment = Database["public"]["Tables"]["sponsor_payments"]["Row"];
 type SponsorTier = Database["public"]["Enums"]["sponsor_tier"];
 
 function slugify(v: string): string {
@@ -21,6 +22,7 @@ export function SponsorAdminContent() {
   const [tab, setTab] = useState<"applications" | "sponsors">("applications");
   const [apps, setApps] = useState<Application[]>([]);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [promoting, setPromoting] = useState<Application | null>(null);
   const [name, setName] = useState("");
@@ -31,20 +33,41 @@ export function SponsorAdminContent() {
 
   const fetchData = async () => {
     const c = getBrowserClient();
-    if (!c) return { apps: [], sponsors: [] };
-    const [{ data: a }, { data: s }] = await Promise.all([
+    if (!c) return { apps: [], sponsors: [], payments: [] };
+    const [{ data: a }, { data: s }, { data: p }] = await Promise.all([
       c.from("sponsor_applications").select("*").order("created_at", { ascending: false }),
       c.from("sponsors").select("*").order("created_at", { ascending: false }),
+      c.from("sponsor_payments").select("*").order("created_at", { ascending: false }),
     ]);
-    return { apps: a ?? [], sponsors: s ?? [] };
+    return { apps: a ?? [], sponsors: s ?? [], payments: p ?? [] };
   };
 
-  const applyData = (r: { apps: Application[]; sponsors: Sponsor[] }) => {
+  const applyData = (r: { apps: Application[]; sponsors: Sponsor[]; payments: Payment[] }) => {
     setApps(r.apps);
     setSponsors(r.sponsors);
+    setPayments(r.payments);
   };
 
   const load = async () => applyData(await fetchData());
+
+  // Applications with a cleared payment float to the top of the queue.
+  const paidByApp = useMemo(() => {
+    const m = new Map<string, Payment>();
+    for (const p of payments) {
+      if (p.status === "paid" && p.application_id) m.set(p.application_id, p);
+    }
+    return m;
+  }, [payments]);
+
+  const orderedApps = useMemo(
+    () =>
+      [...apps].sort((a, b) => {
+        const ap = paidByApp.has(a.id) ? 0 : 1;
+        const bp = paidByApp.has(b.id) ? 0 : 1;
+        return ap - bp;
+      }),
+    [apps, paidByApp],
+  );
 
   useEffect(() => {
     void (async () => {
@@ -80,6 +103,10 @@ export function SponsorAdminContent() {
       return;
     }
     setMsg(`Sponsor created (id ${data}). Page will refresh.`);
+    const paid = paidByApp.get(promoting.id);
+    if (paid) {
+      await c.rpc("mark_sponsor_payment_promoted", { p_ref: paid.provider_ref });
+    }
     setPromoting(null);
     await load();
   };
@@ -135,44 +162,52 @@ export function SponsorAdminContent() {
               No applications yet.
             </div>
           )}
-          {apps.map((app) => (
-            <div
-              key={app.id}
-              className="bg-white rounded-xl border border-border p-4 flex flex-col sm:flex-row sm:items-center gap-3"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-navy">{app.full_name}</div>
-                {app.org_name && <div className="text-xs text-gray">{app.org_name}</div>}
-                <div className="text-[11px] text-gray mt-0.5">
-                  {app.email} · {app.phone} · plan: {app.plan_id ?? "—"}
+          {orderedApps.map((app) => {
+            const paid = paidByApp.get(app.id);
+            return (
+              <div
+                key={app.id}
+                className="bg-white rounded-xl border border-border p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold text-navy">{app.full_name}</div>
+                  {app.org_name && <div className="text-xs text-gray">{app.org_name}</div>}
+                  <div className="text-[11px] text-gray mt-0.5">
+                    {app.email} · {app.phone} · plan: {app.plan_id ?? "—"}
+                  </div>
+                  <div className="text-[10px] text-gray mt-0.5">
+                    {new Date(app.created_at).toLocaleString()}
+                  </div>
                 </div>
-                <div className="text-[10px] text-gray mt-0.5">
-                  {new Date(app.created_at).toLocaleString()}
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    app.status === "pending"
-                      ? "bg-amber/10 text-amber border border-amber/30"
-                      : app.status === "approved"
-                      ? "bg-emerald/10 text-emerald border border-emerald/30"
-                      : "bg-red/10 text-red border border-red/30"
-                  }`}
-                >
-                  {app.status}
-                </span>
-                {app.status === "pending" && (
-                  <button
-                    onClick={() => startPromote(app)}
-                    className="px-3 py-1.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors"
+                <div className="flex items-center gap-2">
+                  {paid && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald text-white">
+                      Paid · GH₵ {Number(paid.amount_ghs).toLocaleString("en-GH")}
+                    </span>
+                  )}
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      app.status === "pending"
+                        ? "bg-amber/10 text-amber border border-amber/30"
+                        : app.status === "approved"
+                        ? "bg-emerald/10 text-emerald border border-emerald/30"
+                        : "bg-red/10 text-red border border-red/30"
+                    }`}
                   >
-                    Approve
-                  </button>
-                )}
+                    {app.status}
+                  </span>
+                  {app.status === "pending" && (
+                    <button
+                      onClick={() => startPromote(app)}
+                      className="px-3 py-1.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue transition-colors"
+                    >
+                      Approve
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

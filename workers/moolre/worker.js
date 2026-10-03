@@ -57,12 +57,19 @@ function sbRpc(env, fn, body) {
 
 // Ref prefixes route the single Moolre callback to the right order table.
 const BOOST_REF_PREFIX = "KLG-B-";
+const SPONSOR_REF_PREFIX = "KLG-S-";
+
+// Self-serve sponsorship tiers. 'strategic' is bespoke (enquire off-platform).
+const SELF_SERVE_SPONSOR_TIERS = new Set(["community", "growth", "talent", "digital"]);
 
 const failRow = (env, ref) =>
   sbRpc(env, "confirm_donation_by_ref", { p_ref: ref, p_status: "failed" }).catch(() => null);
 
 const failBoostRow = (env, ref) =>
   sbRpc(env, "confirm_boost_payment_by_ref", { p_ref: ref, p_status: "failed" }).catch(() => null);
+
+const failSponsorRow = (env, ref) =>
+  sbRpc(env, "confirm_sponsor_payment_by_ref", { p_ref: ref, p_status: "failed" }).catch(() => null);
 
 const BREVO_API = "https://api.brevo.com/v3/smtp/email";
 const BREVO_FROM = { name: "KlagonOrg Team", email: "hello@klagon.org" };
@@ -126,6 +133,32 @@ async function sendBoostEmails(env, ref) {
     [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
     `Boost paid — GH₵${amount}`,
     `<p>Reference: <code>${ref}</code></p><p>Listing: ${row.post_title ?? "—"}</p><p>Tier: ${row.tier} (${row.days} days)</p><p>Amount: GH\u00a5${amount}</p><p>Phone: ${row.payer_phone ?? "—"}</p>`
+  ).catch(() => null);
+}
+
+async function sendSponsorEmails(env, ref) {
+  const res = await sbRpc(env, "get_sponsor_sendable", { p_ref: ref });
+  const row = res.ok ? (await res.json())[0] : null;
+  if (!row) return;
+
+  const amount = Number(row.amount_ghs ?? 0).toFixed(2);
+  const org = String(row.org_name || row.full_name || "").trim() || "your business";
+  const name = firstTokenName(row.full_name);
+
+  if (row.email) {
+    await brevoSend(
+      env,
+      [{ email: String(row.email).trim(), name }],
+      `Sponsorship received — GH₵${amount}`,
+      `<p>Hi ${name},</p><p>Thank you for partnering with KlagonOrg. We received <strong>GH\u00a5${amount}</strong> for the <strong>${row.tier}</strong> tier (${row.months} month${row.months > 1 ? "s" : ""}, ref <code>${ref}</code>).</p><p>Our partnerships team will set up ${org}'s sponsor profile and activate your benefits shortly.</p>`
+    ).catch(() => null);
+  }
+
+  await brevoSend(
+    env,
+    [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
+    `New sponsorship paid — GH₵${amount}`,
+    `<p>Reference: <code>${ref}</code></p><p>Business: ${org}</p><p>Contact: ${row.full_name ?? "—"}</p><p>Email: ${row.email || "—"}</p><p>Phone: ${row.payer_phone ?? "—"}</p><p>Tier: ${row.tier} (${row.months} month${row.months > 1 ? "s" : ""})</p><p>Amount: GH\u00a5${amount}</p><p>Promote from the admin sponsors queue.</p>`
   ).catch(() => null);
 }
 
@@ -532,6 +565,161 @@ async function handleBoostConfirm(request, env) {
   );
 }
 
+// ---------- paid sponsorships ----------
+// Sponsorships charge a server-derived fee (sponsor_quote), never a client
+// amount, and record an application + order. On payment the order is marked
+// paid; an admin promotes the partner from the paid queue (no auto-promote).
+async function handleSponsorCharge(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send a tier, phone and network." }, 400, origin);
+  }
+
+  const tier = String(input?.tier ?? "").trim().toLowerCase();
+  if (!SELF_SERVE_SPONSOR_TIERS.has(tier)) {
+    return json({ error: "Choose a partnership tier." }, 400, origin);
+  }
+  const fullName = String(input?.full_name ?? "").trim();
+  if (!fullName) {
+    return json({ error: "Enter your name or organisation." }, 400, origin);
+  }
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()];
+  if (!channel) {
+    return json({ error: "Choose MTN, Telecel or AT." }, 400, origin);
+  }
+  const payer = normalizeGhPhone(input?.phone);
+  if (!payer) {
+    return json({ error: "Enter a valid 10-digit Ghana phone number." }, 400, origin);
+  }
+
+  if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
+    return json({ error: "Online payments are not switched on yet. Please try again later." }, 503, origin);
+  }
+
+  const ref = `${SPONSOR_REF_PREFIX}${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`.toUpperCase();
+
+  // Quote + record the application and the pending order atomically. The RPC
+  // derives the price itself and returns the authoritative amount; a bespoke or
+  // unknown tier raises, so the browser can never name its own fee.
+  let order = null;
+  try {
+    const res = await sbRpc(env, "create_sponsor_order", {
+      p_tier: tier,
+      p_full_name: fullName,
+      p_org_name: String(input?.org_name ?? "").trim() || null,
+      p_email: String(input?.email ?? "").trim() || null,
+      p_phone: payer,
+      p_network: String(input.network).toLowerCase(),
+      p_provider_ref: ref,
+      p_message: input?.message || null,
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      order = Array.isArray(rows) ? rows[0] : null;
+    }
+  } catch {
+    order = null;
+  }
+  if (!order) {
+    return json({ error: "That partnership tier is not available online." }, 409, origin);
+  }
+
+  const amount = Number(order.amount_ghs);
+  const months = Number(order.months);
+
+  // Fire the payment request.
+  let moolre;
+  try {
+    moolre = await moolreCollect(env, { channel, payer, amount, ref, network: input.network });
+  } catch {
+    await failSponsorRow(env, ref);
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    if (code === "TP14") {
+      return json({ ok: true, ref, payer, otp_required: true, amount_ghs: amount, months, tier, message: "otp-required" }, 200, origin);
+    }
+    return json(
+      { ok: true, ref, payer, amount_ghs: amount, months, tier, message: code === "TR099" ? "prompt-sent" : "initiated" },
+      200,
+      origin
+    );
+  }
+
+  await failSponsorRow(env, ref);
+  return json(
+    {
+      error: moolre?.message ? String(moolre.message) : "Payment request failed. Please try again.",
+      code,
+    },
+    502,
+    origin
+  );
+}
+
+async function handleSponsorConfirm(request, env) {
+  const origin = request.headers.get("Origin") ?? "";
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send ref and otp." }, 400, origin);
+  }
+
+  const ref = String(input?.ref ?? "").trim();
+  const otp = String(input?.otp ?? "").replace(/\s/g, "");
+  if (!ref || otp.length < 4) {
+    return json({ error: "Enter the full OTP from the SMS." }, 400, origin);
+  }
+
+  // Re-submit the amount from our own order row, never the client's.
+  let order = null;
+  try {
+    const res = await sbRpc(env, "get_sponsor_sendable", { p_ref: ref });
+    if (res.ok) {
+      const rows = await res.json();
+      order = Array.isArray(rows) ? rows[0] : null;
+    }
+  } catch {
+    order = null;
+  }
+  if (!order || !Number.isFinite(Number(order.amount_ghs))) {
+    return json({ error: "We could not find that order. Please start again." }, 404, origin);
+  }
+
+  const amount = Number(order.amount_ghs);
+  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()] ?? "13";
+  const payer = normalizeGhPhone(input?.phone) ?? input?.phone;
+
+  let moolre;
+  try {
+    moolre = await moolreCollect(env, { channel, payer, amount, ref, network: input?.network, otp });
+  } catch {
+    return json({ error: "Payment service unreachable. Please try again." }, 502, origin);
+  }
+
+  const code = moolre?.code ? String(moolre.code) : "";
+  if (moolre?.status == 1) {
+    return json({ ok: true, ref, message: code === "TR099" ? "prompt-sent" : "initiated" }, 200, origin);
+  }
+
+  return json(
+    {
+      error: moolre?.message ? String(moolre.message) : "Verification failed. Check the code and try again.",
+      code,
+    },
+    400,
+    origin
+  );
+}
+
 async function handleTurnstileVerify(request, env) {
   const origin = request.headers.get("Origin") ?? "";
 
@@ -632,7 +820,12 @@ async function handleCallback(request, env) {
   const finalStatus = paid ? "paid" : "failed";
 
   const isBoost = ref.startsWith(BOOST_REF_PREFIX);
-  const confirmFn = isBoost ? "confirm_boost_payment_by_ref" : "confirm_donation_by_ref";
+  const isSponsor = ref.startsWith(SPONSOR_REF_PREFIX);
+  const confirmFn = isBoost
+    ? "confirm_boost_payment_by_ref"
+    : isSponsor
+    ? "confirm_sponsor_payment_by_ref"
+    : "confirm_donation_by_ref";
 
   try {
     const res = await sbRpc(env, confirmFn, { p_ref: ref, p_status: finalStatus });
@@ -642,6 +835,7 @@ async function handleCallback(request, env) {
     }
     if (finalStatus === "paid") {
       if (isBoost) await sendBoostEmails(env, ref).catch(() => null);
+      else if (isSponsor) await sendSponsorEmails(env, ref).catch(() => null);
       else await sendDonationEmails(env, ref).catch(() => null);
     }
   } catch {
@@ -700,6 +894,24 @@ export default {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
       }
       if (request.method === "POST") return handleBoostConfirm(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/sponsors/charge") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleSponsorCharge(request, env);
+      return json({ error: "method-not-allowed" }, 405, origin);
+    }
+
+    if (url.pathname === "/api/sponsors/confirm") {
+      const origin = request.headers.get("Origin") ?? "";
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (request.method === "POST") return handleSponsorConfirm(request, env);
       return json({ error: "method-not-allowed" }, 405, origin);
     }
 
