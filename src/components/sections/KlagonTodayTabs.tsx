@@ -24,7 +24,7 @@ function demoJobs(): FeedItem[] {
       key: "opportunity-ai-course",
       kind: "Opportunities",
       title: "Free AI Skills for Klagon Youth",
-      excerpt: "Structured course → project → portfolio path. First 5 lessons live now in the Learning Hub.",
+      excerpt: "Structured course → project → portfolio path. First 5 lessons live now in the Digital Academy.",
       tag: "OPPORTUNITY",
     },
     {

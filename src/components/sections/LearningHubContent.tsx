@@ -72,7 +72,7 @@ export async function LearningHubContent() {
             <div className="text-center md:text-left">
               <div className="inline-flex items-center gap-2 bg-amber/15 border border-amber/30 text-amber px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase mb-5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber" />
-                Learning Hub
+                Free short courses
               </div>
               <h1 className="text-[clamp(2rem,5vw,3.2rem)] font-extrabold text-white leading-[1.15] tracking-tight mb-3">
                 Klagon Digital Academy

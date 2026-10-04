@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui";
 import { Download, X } from "lucide-react";
 
@@ -71,11 +70,15 @@ export function InstallPrompt() {
       className="fixed inset-x-3 z-40 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-5 sm:max-w-sm sm:bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
     >
       <div className="rounded-2xl border border-border bg-white shadow-xl p-4 flex items-start gap-3 dark:bg-ink-2 dark:border-white/10">
-        <Image
+        {/* Plain <img>, not next/image: `output: "export"` ships no
+            /_next/image optimizer, so next/image emits a URL that 404s and the
+            icon never decodes. See SponsorStrip.tsx for the same constraint. */}
+        <img
           src="/icon-192.png"
           alt=""
           width={44}
           height={44}
+          decoding="async"
           className="h-11 w-11 shrink-0 rounded-xl"
         />
         <div className="min-w-0 flex-1">

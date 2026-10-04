@@ -143,7 +143,7 @@ export const QUALITY_AREAS: QualityArea[] = [
   },
   {
     id: "learning",
-    name: "Learning Hub",
+    name: "Klagon Digital Academy",
     scope: "Courses, lessons, XP, lesson markdown sanitize",
     unit: [],
     e2e: [],

@@ -19,7 +19,7 @@ interface NavItem {
 
 const memberMenu: NavItem[] = [
   { icon: "🏠", label: "Dashboard", href: "/dashboard/member" },
-  { icon: "📚", label: "Learning Hub", href: "/dashboard/learning" },
+  { icon: "📚", label: "Digital Academy", href: "/dashboard/learning" },
   { icon: "📅", label: "Events", href: "/dashboard/events" },
   { icon: "🏗️", label: "Projects", href: "/dashboard/projects" },
   { icon: "🙋", label: "Volunteer", href: "/dashboard/volunteer" },
@@ -41,7 +41,7 @@ const adminMain: NavItem[] = [
   { icon: "📥", label: "Inbox", href: "/dashboard/admin/inbox" },
   { icon: "👥", label: "Members", href: SOON, soon: true },
   { icon: "📅", label: "Events", href: "/dashboard/admin/events" },
-  { icon: "📚", label: "Learning Hub", href: "/dashboard/admin/courses" },
+  { icon: "📚", label: "Digital Academy", href: "/dashboard/admin/courses" },
   { icon: "🏗️", label: "Projects", href: SOON, soon: true },
   { icon: "🙋", label: "Volunteers", href: "/dashboard/admin/volunteers" },
 ];
