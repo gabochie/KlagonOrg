@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, Phone, MessageCircle, Globe, Star, BadgeCheck, ShieldCheck, X, ChevronRight, Send } from "lucide-react";
 import type { DirectoryBusiness, DirectorySnapshot } from "@/lib/directory";
@@ -29,6 +29,9 @@ const btnAmber = "bg-amber text-navy hover:bg-amber-strong hover:text-white";
 const btnGhost = "bg-white text-navy border border-border hover:border-navy";
 const chip = "shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white border border-border text-gray hover:border-navy hover:text-navy cursor-pointer transition-colors font-sans whitespace-nowrap";
 const chipOn = "bg-navy text-white border-navy hover:text-white";
+
+/** Cards rendered per batch. 24 is two screenfuls on mobile before the sentinel. */
+const CARDS_PER_PAGE = 24;
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -180,6 +183,17 @@ export function BusinessDirectoryContent({
   const [claimPhone, setClaimPhone] = useState("");
   const [claimOk, setClaimOk] = useState(false);
 
+  // How many cards exist in the DOM. The snapshot is already shipped to the
+  // browser in full as a serialized prop, so the whole 740-strong dataset is
+  // present client-side no matter what we render — the filter, search and sort
+  // below all run over it and stay instant. Rendering every card as well was
+  // pure duplication: 743 <article> elements added ~3.1 MB of markup to
+  // /business/, which transferred 3.4 MB and took 6.6s. Windowing keeps the
+  // behaviour and removes the duplication. `gen` is the filter generation this
+  // window belongs to; see where `limit` is derived below.
+  const [windowed, setWindowed] = useState({ gen: 0, limit: CARDS_PER_PAGE });
+  const sentinel = useRef<HTMLDivElement | null>(null);
+
   const stats = snapshot.stats;
 
   const visible = useMemo(() => {
@@ -219,16 +233,77 @@ export function BusinessDirectoryContent({
     return matchSponsors(sponsored, { term: query, category: activeCategory });
   }, [sponsored, query, activeCategory, visible.length]);
 
-  // Pull the live claim state for whatever businesses are currently shown.
+// A new search, category or sort is a new result set, so the window resets
+  // to its first page rather than leaving the reader 200 cards deep into the
+  // previous ordering.
+  //
+  // Keying the window on the filter *value* is not enough: searching and then
+  // clearing the box restores the previous value, which would hand the reader
+  // back the deep window they had before searching. So every distinct filter
+  // transition bumps a generation counter, and the window records which
+  // generation it belongs to. Adjusting during render is the pattern React
+  // documents for reacting to changed inputs; a setState inside an effect is the
+  // cascading-render anti-pattern and this repo's lint rejects it.
+  const filterKey = `${query} ${activeCategory} ${sort}`;
+  const [filters, setFilters] = useState({ key: filterKey, gen: 0 });
+  if (filters.key !== filterKey) setFilters({ key: filterKey, gen: filters.gen + 1 });
+
+  const limit = windowed.gen === filters.gen ? windowed.limit : CARDS_PER_PAGE;
+
+  // Only the cards actually on the page are rendered. `visible` is still the
+  // full match set, so the counter and the empty state below are unchanged.
+  const shown = useMemo(() => visible.slice(0, limit), [visible, limit]);
+  const hasMore = shown.length < visible.length;
+
+  const loadMore = useCallback(() => {
+    setWindowed((w) => {
+      const base = w.gen === filters.gen ? w.limit : CARDS_PER_PAGE;
+      return { gen: filters.gen, limit: base + CARDS_PER_PAGE };
+    });
+  }, [filters.gen]);
+
+  // Auto-load the next batch when the reader scrolls down to it.
+  // `armed` starts false and only becomes true once the sentinel has been seen
+  // *outside* the preload margin. That single rule removes both failure modes a
+  // plain observer had: it cannot preload during the initial paint (the sentinel
+  // is below the fold, so the first callback only arms it), and it cannot chain
+  // after a "Load more" click, because loading pushes the sentinel out of the
+  // margin and disarms until the reader scrolls back to it.
   useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !hasMore) return;
+    let armed = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (!entry) return;
+        if (!entry.isIntersecting) {
+          armed = true;
+          return;
+        }
+        if (!armed) return;
+        armed = false;
+        loadMore();
+      },
+      { rootMargin: "400px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMore, loadMore]);
+
+  // Pull the live claim state for whatever businesses are currently rendered.
+  // Scoped to `shown`, not `visible`: the old version asked for all 740 ids on
+  // every keystroke, which was a pointless request storm as well as slow.
+  useEffect(() => {
+    if (shown.length === 0) return;
     let cancelled = false;
-    fetchDirectoryClaimMap(visible.map((b) => b.id)).then((map) => {
+    fetchDirectoryClaimMap(shown.map((b) => b.id)).then((map) => {
       if (!cancelled) setClaims((prev) => ({ ...prev, ...map }));
     });
     return () => {
       cancelled = true;
     };
-  }, [visible]);
+  }, [shown]);
 
   function sendClaim() {
     if (!claim) return;
@@ -352,9 +427,22 @@ export function BusinessDirectoryContent({
           </div>
         ) : (
           <div data-testid="directory-results" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {visible.map((b) => (
+            {shown.map((b) => (
               <BusinessCard key={b.id} b={b} claimState={claims[b.id] ?? "unclaimed"} onClaim={setClaim} />
             ))}
+          </div>
+        )}
+
+        {hasMore && (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <div ref={sentinel} aria-hidden="true" className="h-px w-full" />
+            <button
+              type="button"
+              onClick={loadMore}
+              className="px-5 py-2.5 rounded-lg bg-navy text-white text-xs font-bold cursor-pointer font-sans hover:bg-blue"
+            >
+              Load more businesses ({shown.length} of {visible.length} shown)
+            </button>
           </div>
         )}
 
