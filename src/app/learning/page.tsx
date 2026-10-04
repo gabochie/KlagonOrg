@@ -4,9 +4,11 @@ import { Footer } from "@/components/landing/Footer";
 import { LearningHubContent } from "@/components/sections/LearningHubContent";
 
 export const metadata: Metadata = {
-  title: "Learning Hub — KLAGON.org",
+  // No "| KLAGON.org" suffix here: the root layout applies the "%s | KLAGON.org"
+  // title template, so spelling it out here rendered the brand twice.
+  title: "Klagon Digital Academy — Learning Hub",
   description:
-    "Free learning tracks in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning.",
+    "Free short courses from the Klagon Digital Academy in AI & Tech, Financial Literacy, Leadership, Entrepreneurship, Communication and Career Planning. Built for Klagon youth — no laptop required to start.",
   alternates: { canonical: "/learning" },
 };
 
