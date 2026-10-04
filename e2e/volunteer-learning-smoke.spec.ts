@@ -9,7 +9,7 @@ import { test, expect } from "@playwright/test";
  * notifications that cannot be cleaned up.
  */
 
-test("learning hub lists the IT track courses", async ({ page }) => {
+test("digital academy lists the IT track courses", async ({ page }) => {
   await page.goto("/learning");
   for (const title of [
     "Phone Ready - Start IT with Phone",

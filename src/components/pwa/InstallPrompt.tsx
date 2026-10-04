@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui";
 import { Download, X } from "lucide-react";
 
@@ -68,14 +67,28 @@ export function InstallPrompt() {
     <div
       role="dialog"
       aria-label="Install KLAGON.org"
-      className="fixed inset-x-3 z-40 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-5 sm:max-w-sm sm:bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
+      // Must clear BottomNav. That bar is `md:hidden fixed bottom-0 z-40` and
+      // its reserved height is `3.5rem + env(safe-area-inset-bottom)` (see the
+      // spacer div in BottomNav.tsx), so this sits one `0.75rem` gap above it
+      // using the identical expression. Do not "simplify" by dropping the 3.5rem:
+      // both this offset and the bar's height grow by the same safe-area inset,
+      // so the inset cancels and the overlap is a constant 45px on every device.
+      // At 3.5rem/1.25rem the prompt's buttons sat under the bar, and tapping
+      // "Install" actually hit the Businesses tab (both were z-40, and the bar
+      // wins the tie by DOM order). Breakpoints are `md:`, not `sm:`, because
+      // the bar disappears at `md` — at `sm` the 640-767px window overlapped.
+      className="fixed inset-x-3 z-50 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] md:inset-x-auto md:right-5 md:max-w-sm md:bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
     >
       <div className="rounded-2xl border border-border bg-white shadow-xl p-4 flex items-start gap-3 dark:bg-ink-2 dark:border-white/10">
-        <Image
+        {/* Plain <img>, not next/image: `output: "export"` ships no
+            /_next/image optimizer, so next/image emits a URL that 404s and the
+            icon never decodes. See SponsorStrip.tsx for the same constraint. */}
+        <img
           src="/icon-192.png"
           alt=""
           width={44}
           height={44}
+          decoding="async"
           className="h-11 w-11 shrink-0 rounded-xl"
         />
         <div className="min-w-0 flex-1">

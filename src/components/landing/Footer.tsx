@@ -14,7 +14,7 @@ const exploreLinks = [
 ];
 
 const learnLinks = [
-  { label: "Learning Hub", href: "/learning" },
+  { label: "Digital Academy", href: "/learning" },
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
   { label: "Volunteer", href: "/volunteer" },

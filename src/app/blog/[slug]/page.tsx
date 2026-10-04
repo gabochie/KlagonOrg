@@ -257,7 +257,7 @@ export default async function BlogPostPage({ params }: Props) {
                   Put this into practice 🎓
                 </div>
                 <p className="text-xs text-white/60">
-                  Continue with the free {post.course} course on the Learning Hub — short lessons,
+                  Continue with the free {post.course} course in the Digital Academy — short lessons,
                   progress tracking, XP and rewards.
                 </p>
               </div>

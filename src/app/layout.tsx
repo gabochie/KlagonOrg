@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SalesAgent } from "@/components/chat/SalesAgent";
 import { Observability } from "@/components/observability/Observability";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { BottomNav } from "@/components/landing/BottomNav";
 import "./globals.css";
 
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <SalesAgent />
             <Observability />
             <OfflineBanner />
+            <InstallPrompt />
             <BottomNav />
           </AuthProvider>
         </ThemeProvider>

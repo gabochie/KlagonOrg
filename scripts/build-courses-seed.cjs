@@ -71,7 +71,7 @@ for (const course of manifest.courses) {
   blocks.push(...stmts);
 }
 
-const header = `-- 6-course text curriculum for the Learning Hub.
+const header = `-- 6-course text curriculum for the Digital Academy.
 -- Sort orders 0..N create the course structure; conflict upserts make it re-runnable.
 `;
 fs.writeFileSync(OUT_FILE, header + "\n" + blocks.join("\n"), "utf8");

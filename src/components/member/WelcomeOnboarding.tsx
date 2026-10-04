@@ -9,7 +9,7 @@ const STEPS = [
   {
     icon: "📚",
     title: "Start a course",
-    desc: "Build job-ready skills in the Learning Hub.",
+    desc: "Build job-ready skills in the Digital Academy.",
     href: "/learning",
   },
   {

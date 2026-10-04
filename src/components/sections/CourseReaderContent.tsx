@@ -116,7 +116,7 @@ export async function CourseReaderContent({ id, backHref = "/learning" }: { id: 
             href={backHref}
             className="inline-block px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-blue transition-colors"
           >
-            Back to Learning Hub
+            Back to the Academy
           </Link>
         </section>
       </main>
