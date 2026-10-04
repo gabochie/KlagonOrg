@@ -42,21 +42,60 @@ export async function LearningHubContent() {
 
   return (
     <main className="w-full">
-      <section className="bg-navy py-16 sm:py-20 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="text-xs font-bold tracking-widest uppercase text-amber mb-3">
-            Learning Hub
+      {/* Crest sits on a white plaque on purpose: the artwork is predominantly deep
+          navy (median rgb 0,30,68) and vanishes against the navy hero. The plaque
+          also restores the white ground the crest was drawn on without shipping the
+          source's soft grey shadow ring (see public/brand/learning). */}
+      <section className="bg-navy relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-amber/8 pointer-events-none" />
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-14 sm:py-20">
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(260px,340px)_1fr] gap-10 md:gap-12 items-center">
+            <div className="w-full max-w-[280px] sm:max-w-[320px] mx-auto md:mx-0">
+              <div className="rounded-2xl bg-white p-5 ring-1 ring-black/5 shadow-xl">
+                <img
+                  src="/brand/learning/klagon-digital-academy-crest-512.webp"
+                  alt="Klagon Digital Academy crest"
+                  width={464}
+                  height={512}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+            <div className="text-center md:text-left">
+              <div className="inline-flex items-center gap-2 bg-amber/15 border border-amber/30 text-amber px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber" />
+                Learning Hub
+              </div>
+              <h1 className="text-[clamp(2rem,5vw,3.2rem)] font-extrabold text-white leading-[1.15] tracking-tight mb-3">
+                Klagon Digital Academy
+              </h1>
+              <p className="text-lg font-bold text-amber mb-3">Skills that open doors.</p>
+              <p className="text-base text-white/65 leading-relaxed max-w-[520px] mx-auto md:mx-0 mb-8">
+                Structured short courses built for Klagon youth — no laptop required to start. Each
+                module takes you from zero to confident.
+              </p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <a
+                  href="#courses"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg px-6 py-3 text-sm max-sm:min-h-13 bg-amber text-navy font-bold hover:shadow-lg hover:shadow-amber/35 hover:-translate-y-0.5 transition-all duration-150"
+                >
+                  Browse the courses →
+                </a>
+                <Link
+                  href="/auth/register"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg px-6 py-3 text-sm max-sm:min-h-13 bg-white/8 text-white/85 border border-white/15 hover:bg-white/12 transition-all duration-150"
+                >
+                  Create a free account →
+                </Link>
+              </div>
+            </div>
           </div>
-          <h1 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-white tracking-tight leading-tight mb-3">
-            Skills that open doors.
-          </h1>
-          <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Structured short courses built for Klagon youth — no laptop required to start. Each
-            module takes you from zero to confident.
-          </p>
         </div>
       </section>
-      <section className="bg-light py-14 sm:py-16 px-4 sm:px-6">
+      <section id="courses" className="bg-light py-14 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((c) => {
