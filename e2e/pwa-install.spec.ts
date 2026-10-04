@@ -101,6 +101,46 @@ test("dismissing the prompt keeps it hidden for that visitor", async ({ page }) 
   await expect(page.locator(PROMPT)).toHaveCount(0);
 });
 
+test("the prompt's buttons are reachable above the mobile bottom nav", async ({ page }) => {
+  const prompt = await openPrompt(page, "/");
+  const install = prompt.getByRole("button", { name: "Install", exact: true });
+  await expect(install).toBeVisible();
+
+  // The bottom nav is md:hidden, so on the desktop project it is not rendered
+  // and there is nothing to clear. Only assert the relationship where it exists.
+  const nav = page.locator('nav[aria-label="Primary"]');
+  if (!(await nav.isVisible())) {
+    test.info().annotations.push({ type: "note", description: "no bottom nav at this viewport" });
+    return;
+  }
+
+  // 28px of measured clearance at 393x727 before this was fixed to 0: the nav
+  // and the prompt were both z-40, the nav won the DOM tie, and the bottom 45px
+  // of both buttons was unreachable. Tapping "Install" opened Businesses.
+  const { buttonBottom, navTop } = await page.evaluate(() => {
+    const dlg = document.querySelector('[role="dialog"][aria-label="Install KLAGON.org"]');
+    const btn = [...(dlg?.querySelectorAll("button") ?? [])].find(
+      (b) => b.textContent?.trim() === "Install",
+    );
+    const navEl = document.querySelector('nav[aria-label="Primary"]');
+    if (!btn || !navEl) throw new Error("prompt or bottom nav missing from the DOM");
+    return {
+      buttonBottom: btn.getBoundingClientRect().bottom,
+      navTop: navEl.getBoundingClientRect().top,
+    };
+  });
+
+  expect(
+    buttonBottom,
+    "install prompt must sit above the bottom nav, not under it",
+  ).toBeLessThanOrEqual(navTop);
+
+  // Belt and braces: the nav is z-40, so if these ever overlap again the prompt
+  // must still win the hit test. Clicks auto-retry, so a real interception
+  // shows up as a 90s timeout rather than a clean assertion failure.
+  await install.click({ timeout: 5000 });
+});
+
 test("the installed app is configured to launch standalone", async ({ page, request }) => {
   const manifest = await request.get("/manifest.json");
   expect(manifest.ok()).toBeTruthy();

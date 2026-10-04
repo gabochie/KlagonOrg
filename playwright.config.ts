@@ -69,7 +69,36 @@ export default defineConfig({
     baseURL: "http://localhost:3210",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      // Mobile viewport coverage, which is the only project that renders the
+      // `md:hidden` bottom nav. It found a real bug the desktop project
+      // structurally cannot: at 393x727 the install prompt's buttons sat under
+      // that bar, and tapping "Install" hit the Businesses tab.
+      //
+      // Scoped to guest specs on purpose. Every project re-runs every test, and
+      // these specs sign in against two shared throwaway accounts via
+      // signInWithPassword. Tripling the projects tripled the auth calls and
+      // hit Supabase's rate limit: 14 of 15 failures were
+      // "member sign-in failed: Request rate limit reached", which then
+      // surfaced as bogus toHaveURL / waitForURL product-looking failures.
+      // With CI's `retries: 2` that gets worse, not better.
+      //
+      // Guests are also the right audience here — the nav and install prompt
+      // are exactly what a signed-out phone visitor sees.
+      name: "mobile",
+      testIgnore: [
+        "auth-flows.spec.ts",
+        "boost-fulfilment.spec.ts",
+        "boost-request.spec.ts",
+        "directory-claim-admin.spec.ts",
+        "directory-claim.spec.ts",
+        "sponsor-checkout.spec.ts",
+      ],
+      use: { ...devices["Pixel 5"] },
+    },
+  ],
   // Serve the real static export instead of `next dev`. Dev cold-compiles every
   // route on first hit, and that compile — not app or database latency — is what
   // pushed the multi-step auth flow past its budget. `out/` is the artifact that
