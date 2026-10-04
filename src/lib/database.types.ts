@@ -1818,7 +1818,7 @@ export interface Database {
           p_ref: string;
           p_status: string;
         };
-        Returns: undefined;
+        Returns: boolean;
       };
       get_donation_sendable: {
         Args: {
@@ -1845,7 +1845,7 @@ export interface Database {
           p_ref: string;
           p_status: string;
         };
-        Returns: undefined;
+        Returns: boolean;
       };
       get_boost_sendable: {
         Args: {
@@ -1893,7 +1893,7 @@ export interface Database {
           p_ref: string;
           p_status: string;
         };
-        Returns: undefined;
+        Returns: boolean;
       };
       get_sponsor_sendable: {
         Args: {
@@ -1961,7 +1961,7 @@ export interface Database {
           p_ref: string;
           p_status: string;
         };
-        Returns: undefined;
+        Returns: boolean;
       };
       get_course_sendable: {
         Args: {
