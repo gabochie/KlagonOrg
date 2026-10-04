@@ -81,3 +81,46 @@ test("directory search and sort still control the organic results", async ({ pag
   const sorted = [...names].sort((a, b) => a.localeCompare(b));
   expect(names).toEqual(sorted);
 });
+
+test("directory renders a window of cards and loads the rest on demand", async ({ page }) => {
+  await page.goto("/business");
+  await expect(page.getByTestId("directory-sponsored")).toBeVisible({ timeout: 15000 });
+
+  const results = page.getByTestId("directory-results").locator("article");
+
+  // The full 740-business snapshot ships to the browser as a serialized prop and
+  // every search/filter/sort runs over all of it, but it must not all be
+  // rendered. This page once emitted 743 <article> elements and 3.5 MB of HTML.
+  await expect(results).toHaveCount(24);
+
+  // The counter reports how many businesses match, not how many are on screen,
+  // so the reader is never told a truncated list is the whole directory.
+  await expect(page.getByText(/Showing/)).toContainText("of");
+
+  const loadMore = page.getByRole("button", { name: /Load more businesses/i });
+  await expect(loadMore).toBeVisible();
+  await expect(loadMore).toContainText("24 of");
+
+  // Asking for more grows the list. The exact count afterwards depends on where
+  // the reader ended up: reaching the end of the list also arms the sentinel,
+  // so more can stream in behind the click. Assert growth, and assert the list
+  // is still windowed rather than expanding to all 740 businesses.
+  await loadMore.click();
+  await expect.poll(() => results.count(), { timeout: 15000 }).toBeGreaterThan(24);
+  expect(await results.count()).toBeLessThan(200);
+
+  // A fresh search is a fresh result set: the window must reset rather than
+  // leaving the reader deep into the previous ordering.
+  await page.getByPlaceholder(/search/i).first().fill("zzzz-no-such-business");
+  await expect(page.getByText(/No match for/)).toBeVisible();
+  await page.getByPlaceholder(/search/i).first().fill("");
+  await expect(results).toHaveCount(24);
+
+  // The regression that matters most: windowing must not quietly turn search
+  // into a search over the 24 rendered cards. This business is last by name and
+  // has never been rendered, so it can only be found if the full 740-strong
+  // snapshot really is on the client.
+  await page.getByPlaceholder(/search/i).first().fill("Zion Grace");
+  await expect(results).toHaveCount(1);
+  await expect(results.locator("h3")).toContainText("Zion Grace Preparatory School");
+});
