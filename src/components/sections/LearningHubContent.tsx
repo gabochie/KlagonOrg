@@ -45,13 +45,18 @@ export async function LearningHubContent() {
       {/* Crest sits on a white plaque on purpose: the artwork is predominantly deep
           navy (median rgb 0,30,68) and vanishes against the navy hero. The plaque
           also restores the white ground the crest was drawn on without shipping the
-          source's soft grey shadow ring (see public/brand/learning). */}
+          source's soft grey shadow ring (see public/brand/learning).
+
+          The plaque is an explicit hex, not `bg-white`: globals.css flips
+          `.dark .bg-white` to --color-ink-2 (#0E1732) site-wide, which put a
+          near-black ground behind a navy crest in dark mode and lost it again.
+          Same reason the WhatsApp buttons use bg-[#25D366]. */}
       <section className="bg-navy relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-amber/8 pointer-events-none" />
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-14 sm:py-20">
           <div className="grid grid-cols-1 md:grid-cols-[minmax(260px,340px)_1fr] gap-10 md:gap-12 items-center">
             <div className="w-full max-w-[280px] sm:max-w-[320px] mx-auto md:mx-0">
-              <div className="rounded-2xl bg-white p-5 ring-1 ring-black/5 shadow-xl">
+              <div className="rounded-2xl bg-[#FFFFFF] p-5 ring-1 ring-black/5 shadow-xl">
                 <img
                   src="/brand/learning/klagon-digital-academy-crest-512.webp"
                   alt="Klagon Digital Academy crest"
