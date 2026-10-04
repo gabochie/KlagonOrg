@@ -22,3 +22,19 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), geolocation=(), microphone=(self)
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://tiles.openfreemap.org https://images.pexels.com; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://klagon-sales-agent.gideonabochie.workers.dev https://klagon-payments.gideonabochie.workers.dev https://tiles.openfreemap.org https://static.cloudflareinsights.com; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+
+# RSC flight payloads. `output: "export"` makes Next.js write one
+# <route>/index.txt beside every index.html (987 of them). They are the React
+# Server Components wire format, served as text/plain, and exist only so
+# client-side <Link> prefetching works. A human landing on one sees gibberish,
+# so they must never be indexed.
+#
+# X-Robots-Tag rather than a robots.txt Disallow, deliberately: Disallow only
+# prevents crawling, it does not remove a URL that is already indexed or that
+# arrives via an external link. noindex is what de-indexes. This has no effect
+# on the browser fetch() that prefetching depends on.
+#
+# Do not delete or block these files. They are not optional cache warming --
+# removing them turns every <Link> into a full page load.
+/*.txt
+  X-Robots-Tag: noindex, nofollow
