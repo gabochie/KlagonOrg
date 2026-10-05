@@ -1,0 +1,20 @@
+{
+  "readOnly": [
+    "business-directory.spec.ts",
+    "cache-headers.spec.ts",
+    "course-checkout.spec.ts",
+    "culture-hub.spec.ts",
+    "dashboard-mobile.spec.ts",
+    "guard-redirects.spec.ts",
+    "pwa-install.spec.ts",
+    "volunteer-learning-smoke.spec.ts"
+  ],
+  "mutating": [
+    "auth-flows.spec.ts",
+    "boost-fulfilment.spec.ts",
+    "boost-request.spec.ts",
+    "directory-claim-admin.spec.ts",
+    "directory-claim.spec.ts",
+    "sponsor-checkout.spec.ts"
+  ]
+}

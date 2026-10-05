@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build && node scripts/verify-prerender.mjs && node scripts/verify-static-images.mjs && node scripts/verify-flight-payloads.mjs && node scripts/verify-page-weight.mjs && node scripts/verify-course-covers.mjs && node scripts/verify-cache-headers.mjs",
+    "build": "node scripts/prebuild-clean.cjs && node scripts/generate-rss.cjs && next build && node scripts/verify-prerender.mjs && node scripts/verify-static-images.mjs && node scripts/verify-flight-payloads.mjs && node scripts/verify-page-weight.mjs && node scripts/verify-course-covers.mjs && node scripts/verify-cache-headers.mjs && node scripts/verify-e2e-lanes.mjs",
     "build:art": "node scripts/build-course-art.mjs",
     "validate:klagon-college": "node scripts/validate-klagon-college.mjs",
     "verify:static-images": "node scripts/verify-static-images.mjs",
     "verify:flight-payloads": "node scripts/verify-flight-payloads.mjs",
     "verify:page-weight": "node scripts/verify-page-weight.mjs",
-"verify:course-covers": "node scripts/verify-course-covers.mjs",
+    "verify:course-covers": "node scripts/verify-course-covers.mjs",
     "test": "vitest run",
     "test:components": "vitest run --config vitest.components.config.ts",
     "test:e2e": "playwright test",
@@ -18,7 +18,10 @@
     "lint": "eslint src",
     "postinstall": "patch-package",
     "typecheck": "tsc --noEmit",
-    "commit:msg": "node scripts/suggest-commit-message.mjs"
+    "commit:msg": "node scripts/suggest-commit-message.mjs",
+    "test:e2e:readonly": "playwright test --project=chromium --project=mobile",
+    "test:e2e:mutating": "playwright test --project=mutating",
+    "test:e2e:all": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

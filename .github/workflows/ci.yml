@@ -11,14 +11,24 @@
 #   NEXT_PUBLIC_SUPABASE_URL      (e.g. https://xyz.supabase.co)
 #   NEXT_PUBLIC_SUPABASE_ANON_KEY (the anon key from .env.local)
 #
-# The e2e job additionally needs four throwaway-account *Secrets* (same tab,
-# Secrets section) — real Supabase Auth users hit by the Playwright suite:
+# The e2e suite is split in two. `e2e-readonly` runs on every push and every pull
+# request and needs nothing secret; the specs it runs never write. `e2e-mutating`
+# runs on main and manual dispatch only, and needs four throwaway-account
+# *Secrets* (same tab, Secrets section) — real Supabase Auth users it writes
+# through:
 #
 #   E2E_MEMBER_EMAIL / E2E_MEMBER_PASSWORD (role: member, status: approved)
 #   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD   (role: admin,  status: approved)
 # Without them the authenticated specs skip and the job still passes.
+#
+# Which spec belongs to which lane is e2e/lanes.json, checked by
+# scripts/verify-e2e-lanes.mjs on every build.
 
 name: ci
+
+# `gates` and `e2e-readonly` are the required checks on main. `e2e-readonly`
+# exists because e2e previously never ran on a pull request, so a merge could
+# break the browser suite with a green check.
 
 on:
   push:
@@ -82,20 +92,48 @@ jobs:
           retention-days: 1
           compression-level: 0
 
-  # Full end-to-end suite. Runs on pushes to main and on manual dispatch, but
-  # NOT on pull requests.
+  # End-to-end, split by what a spec is allowed to do to the database.
   #
-  # Reason: these specs are not read-only. They create posts, boost requests
-  # and directory claims against the real Supabase project, and rely on
-  # global-teardown.ts sweeping the rows afterwards. That teardown is the right
-  # safety net for a scheduled main-branch run, but making every pull request --
+  # e2e-readonly runs on every push and every pull request, including forks.
+  # It carries no write path and needs no credentials, so it is safe anywhere.
+  # This is the job that closes the hole where e2e never validated a PR.
+  #
+  # e2e-mutating stays on main and manual dispatch only. These specs create posts,
+  # boost requests and directory claims against the real Supabase project and rely
+  # on global-teardown.ts sweeping the rows afterwards. That teardown is the right
+  # safety net for a scheduled main-branch run; making every pull request --
   # including ones from forks -- a production write is a materially different
-  # risk, and it buys little: the cheap checks that actually catch most mistakes
-  # (typecheck, lint, unit tests, production build) all still run on PRs.
+  # risk. If a staging Supabase project is ever added, move this one to
+  # `pull_request` too and point it there.
   #
-  # If a staging Supabase project is ever added, move this back to `pull_request`
-  # and point it there. That is the real fix; this is the safe interim.
-  e2e:
+  # Which spec is in which lane lives in e2e/lanes.json and is enforced by
+  # scripts/verify-e2e-lanes.mjs on every build, so this split cannot silently rot.
+  e2e-readonly:
+    needs: [gates]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Download static export
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export
+          path: out/
+
+      - name: End-to-end tests (read-only)
+        run: npx playwright test --project=chromium --project=mobile
+
+  e2e-mutating:
     needs: [gates]
     if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -127,5 +165,5 @@ jobs:
       # re-verifies that the served site is actually KLAGON before the suite
       # runs -- so the artifact has to be in place before Playwright starts its
       # webServer, which is why this download precedes the test step.
-      - name: End-to-end tests
-        run: npx playwright test --reporter=list
+      - name: End-to-end tests (mutating)
+        run: npx playwright test --project=mutating --reporter=list

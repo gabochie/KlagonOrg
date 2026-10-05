@@ -2,6 +2,26 @@ import { defineConfig, devices } from "@playwright/test";
 import fs from "node:fs";
 
 /**
+ * The two E2E lanes, from one place.
+ *
+ *   read-only  no writes, safe on every pull request -> required gate
+ *   mutating   real writes to production -> main and manual dispatch only
+ *
+ * `scripts/verify-e2e-lanes.mjs` reads this same file in `npm run build` and
+ * fails if the lanes are incomplete, overlapping, or if a read-only spec has
+ * grown a write. Keeping the list here alone is what makes that check
+ * meaningful — a second hardcoded copy would drift.
+ */
+// Playwright transpiles this config to CommonJS, so `import.meta` is not
+// available here. Resolving from cwd is safe because Playwright always runs
+// from the config's own directory.
+const LANES = JSON.parse(fs.readFileSync("e2e/lanes.json", "utf8")) as {
+  readOnly: string[];
+  mutating: string[];
+};
+const MUTATING_E2E_SPECS = LANES.mutating;
+
+/**
  * Load throwaway-account creds for local runs from .env.e2e.local
  * (gitignored). No dotenv dependency — trivial KEY=value parsing.
  * CI injects the same names as job env vars instead.
@@ -69,6 +89,16 @@ export default defineConfig({
     baseURL: "http://localhost:3210",
     trace: "on-first-retry",
   },
+  // `chromium` and `mobile` together are exactly the read-only lane, because both
+  // ignore every mutating spec by name. `mutating` is the other lane. So a
+  // pull request runs `--project=chromium --project=mobile` and never reaches
+  // production data, while a bare `npx playwright test` on main still runs
+  // everything.
+  //
+  // The names come from e2e/lanes.json rather than being written out here,
+  // because `scripts/verify-e2e-lanes.mjs` reads the same file on every build and
+  // fails if a read-only spec has gained a write. Two hardcoded copies would
+  // drift, and this particular one is a safety property.
   projects: [
     {
       name: "chromium",
@@ -77,7 +107,7 @@ export default defineConfig({
       // exist, so the spec times out waiting for it rather than testing
       // anything. The reverse is already handled: the mobile project's
       // `testIgnore` keeps auth-heavy specs off the phone projects.
-      testIgnore: ["dashboard-mobile.spec.ts"],
+      testIgnore: ["dashboard-mobile.spec.ts", ...MUTATING_E2E_SPECS],
       use: { ...devices["Desktop Chrome"] },
     },
     {
@@ -103,15 +133,17 @@ export default defineConfig({
       // rather than running in both, which would double its sign-ins for no
       // extra coverage.
       name: "mobile",
-      testIgnore: [
-        "auth-flows.spec.ts",
-        "boost-fulfilment.spec.ts",
-        "boost-request.spec.ts",
-        "directory-claim-admin.spec.ts",
-        "directory-claim.spec.ts",
-        "sponsor-checkout.spec.ts",
-      ],
+      testIgnore: MUTATING_E2E_SPECS,
       use: { ...devices["Pixel 5"] },
+    },
+    {
+      // The write lane, and the only project that touches production data. Kept
+      // as its own project so `--project=chromium --project=mobile` is a
+      // complete read-only run: there is no combination of the other two that
+      // can pick a spec from this lane up.
+      name: "mutating",
+      testMatch: MUTATING_E2E_SPECS,
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
   // Serve the real static export instead of `next dev`. Dev cold-compiles every
