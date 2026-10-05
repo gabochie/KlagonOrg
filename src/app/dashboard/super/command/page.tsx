@@ -101,9 +101,17 @@ export default function SuperCommandPage() {
         </div>
       </div>
 
+      {/*
+        `md:h-[calc(100dvh-11rem)] md:min-h-[520px]` — the height clamp moves
+        behind `md` deliberately. On a 390x844 phone, `100dvh-11rem` is ~668px
+        which is fine, but the old unconditional `min-h-[520px]` forced the
+        panel taller than a short landscape viewport, and combined with the
+        220px sidebar it produced the 138x556 map. On mobile the height is left
+        to flow, so the stacked content is reachable and the page scrolls.
+      */}
       <div
         ref={wrapRef}
-        className="relative h-[calc(100dvh-11rem)] min-h-[520px] overflow-hidden rounded-xl border border-border bg-white shadow-sm"
+        className="relative md:h-[calc(100dvh-11rem)] md:min-h-[520px] overflow-hidden rounded-xl border border-border bg-white shadow-sm"
       >
         {failed ? (
           <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -123,12 +131,20 @@ export default function SuperCommandPage() {
           </div>
         ) : (
           <>
+            {/*
+              Skeleton. `grid-cols-1 sm:grid-cols-3` rather than a fixed 3:
+              inside a 390px viewport the container is ~138px wide (the old
+              permanent 220px sidebar is gone now, so it is wider than that,
+              but still narrow), and three columns left ~30px per cell, which
+              does not read as three panels. One column below `sm` stacks them
+              legibly and still conveys the same shape.
+            */}
             {pill.tone === "idle" && (
-              <div className="absolute inset-0 bg-white z-10 p-4" aria-hidden="true">
-                <div className="h-10 w-2/3 rounded-lg bg-light animate-pulse mb-3" />
-                <div className="grid grid-cols-3 gap-3">
+              <div className="absolute inset-0 bg-white z-10 p-4 overflow-hidden" aria-hidden="true">
+                <div className="h-10 w-2/3 max-w-full rounded-lg bg-light animate-pulse mb-3" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[0, 1, 2].map((i) => (
-                    <div key={i} className="h-28 rounded-xl bg-light animate-pulse" />
+                    <div key={i} className="h-20 sm:h-28 rounded-xl bg-light animate-pulse" />
                   ))}
                 </div>
                 <div className="mt-3 h-40 rounded-xl bg-light animate-pulse" />
