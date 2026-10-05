@@ -210,6 +210,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      // A retry re-enters this function, so retire the previous attempt's
+      // listener before taking out a new one. Otherwise the assignment at the
+      // bottom of this block just overwrites it, and every failed attempt
+      // leaves a Supabase auth listener subscribed for the life of the page.
+      unsubscribe?.();
+
       // Subscribe before the first await. Registering it afterwards meant any
       // throw below skipped it entirely, leaving the app with no auth listener
       // and no chance of picking up a later sign-in.

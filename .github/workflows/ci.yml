@@ -1,4 +1,4 @@
-# KLAGON quality gates — typecheck, lint, unit tests, production build, E2E.
+# KLAGON quality gates — typecheck, lint, unit + component tests, build, E2E.
 # Runs on every push to main and every pull request. Fails fast in order:
 # nothing lints, tests, or ships if the types don't even check.
 #
@@ -54,6 +54,12 @@ jobs:
 
       - name: Unit tests
         run: npm run test
+
+      # Component tests live in their own vitest config (jsdom + testing-library)
+      # so `npm test` stays the fast pure-kernel lane and nothing browser-shaped
+      # reaches the static export. Cheap enough to run inline before the build.
+      - name: Component tests
+        run: npm run test:components
 
       - name: Production build
         run: npm run build
