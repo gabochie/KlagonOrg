@@ -30,6 +30,12 @@ async function login(page: Page, email: string, password: string) {
   await page.locator('input[type="password"]').first().fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
   await expect(page).toHaveURL(/\/dashboard\//, { timeout: 30_000 });
+  // `toHaveURL` can settle while the dashboard is still rendering
+  // `SessionPending`, so the chrome is not mounted yet. Wait for it explicitly
+  // rather than letting the first assertion after login race the redirect.
+  await expect(
+    page.getByRole("button", { name: /navigation/i }),
+  ).toBeAttached({ timeout: 30_000 });
 }
 
 test.describe("mobile dashboard drawer", () => {
@@ -106,8 +112,13 @@ test.describe("mobile dashboard drawer", () => {
       .toBe(0);
 
     await page.keyboard.press("Escape");
-    const closedBox = await drawer.boundingBox();
-    expect(closedBox?.x ?? 0).toBeLessThan(0);
+    // Polled for the same reason as the open assertion: the drawer slides out
+    // over 200ms, so an immediate read catches it mid-transition while it is
+    // still near x=0. Reading `aria-expanded` alone would pass while the panel
+    // is visibly still on screen.
+    await expect
+      .poll(async () => Math.round((await drawer.boundingBox())?.x ?? 0))
+      .toBeLessThan(0);
   });
 
   // The narrowest phone still in real use. A drawer sized in `vw` or a

@@ -70,7 +70,16 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "chromium",
+      // `dashboard-mobile.spec.ts` asserts on the phone-width drawer, whose
+      // toggle is `md:hidden`. At Desktop Chrome width the button does not
+      // exist, so the spec times out waiting for it rather than testing
+      // anything. The reverse is already handled: the mobile project's
+      // `testIgnore` keeps auth-heavy specs off the phone projects.
+      testIgnore: ["dashboard-mobile.spec.ts"],
+      use: { ...devices["Desktop Chrome"] },
+    },
     {
       // Mobile viewport coverage, which is the only project that renders the
       // `md:hidden` bottom nav. It found a real bug the desktop project

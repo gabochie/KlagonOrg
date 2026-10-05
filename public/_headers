@@ -38,3 +38,46 @@
 # removing them turns every <Link> into a full page load.
 /*.txt
   X-Robots-Tag: noindex, nofollow
+
+# Fingerprinted build assets.
+#
+# Measured against production before this rule existed: every asset under
+# /_next/static was served `public, max-age=14400, must-revalidate` with
+# `cf-cache-status: REVALIDATED`. Every file in these three directories carries
+# a content hash in its filename, so a changed file is a changed URL. Caching
+# them immutably is the standard treatment and costs nothing in correctness:
+#
+#   - The homepage alone pulls 18 assets totalling ~914 KB. At max-age=14400
+#     every returning visitor revalidated all of it against the edge every four
+#     hours, which turns a cached page into a round trip per asset.
+#   - The hash is what makes it safe. Deploying a change produces a new
+#     filename, so a long-lived cache entry is never stale.
+#
+# `immutable` is doing real work beyond max-age: it stops the browser from
+# revalidating on reload even when the entry is still fresh.
+#
+# Scoped to the three directories that are 100% content-hashed, and asserted to
+# stay that way at build time by scripts/verify-cache-headers.mjs. Deliberately
+# NOT `/_next/static/*`, which would also cover the build-id directory holding
+# `_buildManifest.js` and `_ssgManifest.js`. Those two are NOT hashed, so
+# `immutable` on them could pin a visitor to a stale build.
+#
+# One year, matching Cloudflare's documented example for fingerprinted assets.
+/_next/static/chunks/*
+  Cache-Control: public, max-age=31536000, immutable
+/_next/static/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/_next/static/media/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The two unhashed build files need no rule. They live under the build-id
+# directory, which none of the rules above match, so they keep Cloudflare's
+# default. That default is correct for them: they are rewritten whenever a route
+# is added or removed, and a stale manifest can strand a visitor on a build that
+# no longer exists. Verified unnecessary to override by tracing a cold homepage
+# load: 34 requests to /_next/static, every one content-hashed, neither manifest
+# among them.
+#
+# HTML is likewise left alone. It is prerendered at build time, so a long-lived
+# HTML cache would pin visitors to whatever content existed at deploy, and
+# Cloudflare's default (max-age=0, must-revalidate) is already right.
