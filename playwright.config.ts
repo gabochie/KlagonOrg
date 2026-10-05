@@ -87,6 +87,12 @@ export default defineConfig({
       //
       // Guests are also the right audience here — the nav and install prompt
       // are exactly what a signed-out phone visitor sees.
+      //
+      // `dashboard-mobile.spec.ts` is the one deliberate exception: it needs a
+      // real layout engine and a real focus model, which jsdom does not have, so
+      // it cannot be verified anywhere else. It stays in the mobile project
+      // rather than running in both, which would double its sign-ins for no
+      // extra coverage.
       name: "mobile",
       testIgnore: [
         "auth-flows.spec.ts",
