@@ -13,7 +13,18 @@
 //                fonts, and the course title is rendered in HTML over the image,
 //                so nothing here depends on a font being installed.
 //
-// Usage: node scripts/build-course-art.mjs
+// Usage: node scripts/build-course-art.mjs [--force]
+//
+//   --force  Re-encode cover derivatives even when they already exist.
+//
+// By default an existing cover derivative is LEFT ALONE. The committed
+// derivatives are the reviewed, brand-graded output of the Klagon Design
+// Authority and are not necessarily reproducible here: its SOE-VEN-01
+// derivatives were not produced from the SOE-VEN-01-1920.jpg master in this
+// folder (different source image), and re-encoding the others changes bytes
+// without changing pixels. Silently overwriting them on an unrelated run is a
+// footgun, so regeneration must be explicit. Templates are always rebuilt —
+// they are generated here, not imported.
 import { mkdirSync, readdirSync, statSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, basename, extname } from "node:path";
@@ -30,12 +41,22 @@ const CARD = { w: 600, h: 338 }; // 16:9 card
 const OG = { w: 1200, h: 630 }; // social
 
 const MASTER_EXT = new Set([".png", ".jpg", ".jpeg", ".webp"]);
+const FORCE = process.argv.includes("--force");
 
 function kb(bytes) {
   return (bytes / 1024).toFixed(1) + " KB";
 }
 
 async function buildCover(token, masterPath) {
+  const outputs = [
+    join(OUT_DIR, `${token}-1200.webp`),
+    join(OUT_DIR, `${token}-600.webp`),
+    join(OUT_DIR, `${token}-og.jpg`),
+  ];
+  if (!FORCE && outputs.every((p) => existsSync(p))) {
+    console.log(`  cover ${token}: kept (committed derivatives — pass --force to re-encode)`);
+    return;
+  }
   const base = sharp(masterPath, { failOn: "none" }).rotate(); // honour EXIF orientation
   const hero = await base
     .clone()

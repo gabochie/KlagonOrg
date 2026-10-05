@@ -17,6 +17,11 @@
 
 export type CoverSize = 600 | 1200;
 
+/** Site-wide social fallback, mirroring src/app/layout.tsx. */
+const OG_FALLBACK = "/brand/og-banner.png";
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+
 export interface CoverableCourse {
   /** camelCase component field. Authored covers are base paths; uploads are full URLs. */
   coverUrl?: string | null;
@@ -67,3 +72,26 @@ export function resolveCourseCover(course: CoverableCourse, size: CoverSize = 60
   }
   return `/brand/learning/templates/${templateKey(course)}-${size}.webp`;
 }
+
+/**
+ * The social image for a course, or null when the course has no authored cover.
+ *
+ * Deliberately does NOT fall back to a template: the templates are text-free
+ * backgrounds, so a templated social card would be an unlabelled gradient next
+ * to a link. Callers should fall back to the site OG banner instead.
+ *
+ * Returns a site-root-relative path. scripts/verify-course-covers.mjs asserts
+ * the returned file actually exists under public/.
+ */
+export function resolveCourseOg(course: CoverableCourse): string | null {
+  const cover = (course.coverUrl ?? course.cover_url ?? course.cover)?.trim();
+  if (!cover) return null;
+  if (FILE_EXT.test(cover)) return cover;
+  return `${cover.replace(/\/$/, "")}-og.jpg`;
+}
+
+export const courseOgMeta = {
+  fallback: OG_FALLBACK,
+  width: OG_WIDTH,
+  height: OG_HEIGHT,
+} as const;

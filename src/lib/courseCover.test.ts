@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveCourseCover, templateKey } from "./courseCover";
+import { resolveCourseCover, resolveCourseOg, templateKey } from "./courseCover";
 
 describe("resolveCourseCover", () => {
   it("appends the size suffix to an authored base path", () => {
@@ -73,5 +73,56 @@ describe("templateKey", () => {
     expect(templateKey({ school: "SOE" })).toBe("soe");
     expect(templateKey({ school: "SOD" })).toBe("sod");
     expect(templateKey({ school: "SOA" })).toBe("soa");
+  });
+});
+
+describe("resolveCourseOg", () => {
+  it("appends -og.jpg to an authored base path", () => {
+    expect(resolveCourseOg({ cover_url: "/brand/learning/SOE-VEN-01" })).toBe(
+      "/brand/learning/SOE-VEN-01-og.jpg",
+    );
+  });
+
+  it("tolerates a trailing slash", () => {
+    expect(resolveCourseOg({ coverUrl: "/brand/learning/SOT-IT-04/" })).toBe(
+      "/brand/learning/SOT-IT-04-og.jpg",
+    );
+  });
+
+  it("uses an already-sized upload verbatim", () => {
+    const url = "https://x.supabase.co/storage/v1/object/public/course-media/c/cover.jpg";
+    expect(resolveCourseOg({ cover_url: url })).toBe(url);
+  });
+
+  it("returns null when there is no authored cover, so callers can use the site banner", () => {
+    expect(resolveCourseOg({})).toBeNull();
+    expect(resolveCourseOg({ cover_url: null })).toBeNull();
+    expect(resolveCourseOg({ cover_url: "  " })).toBeNull();
+  });
+
+  it("never returns a template path (templates are unlabelled gradients)", () => {
+    expect(resolveCourseOg({ school: "CCC" })).toBeNull();
+    expect(resolveCourseOg({ category: "Career" })).toBeNull();
+  });
+
+  it("resolves an OG image for every committed authored cover", () => {
+    const TOKENS = [
+      "SOT-AI-01",
+      "CCC-FIN-01",
+      "CCC-LEA-01",
+      "SOE-VEN-01",
+      "CCC-COM-01",
+      "CCC-CAR-01",
+      "SOT-IT-01",
+      "SOT-IT-02",
+      "SOT-IT-03",
+      "SOT-IT-04",
+    ];
+    for (const token of TOKENS) {
+      const base = `/brand/learning/${token}`;
+      expect(resolveCourseOg({ cover_url: base })).toBe(`${base}-og.jpg`);
+      expect(resolveCourseCover({ cover_url: base }, 600)).toBe(`${base}-600.webp`);
+      expect(resolveCourseCover({ cover_url: base }, 1200)).toBe(`${base}-1200.webp`);
+    }
   });
 });
