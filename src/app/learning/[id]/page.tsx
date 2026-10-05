@@ -6,6 +6,7 @@ import { COURSES } from "@/lib/constants";
 import courseIds from "@/data/course-ids.json";
 import { getSupabase } from "@/lib/supabase";
 import { resolveStaticKeys } from "@/lib/staticParams";
+import { resolveCourseOg, courseOgMeta } from "@/lib/courseCover";
 
 export async function generateStaticParams(): Promise<{ id: string }[]> {
   const ids = await resolveStaticKeys(
@@ -33,12 +34,39 @@ export async function generateMetadata({
   try {
     const { id } = await params;
     const sb = getSupabase();
-    const { data } = await sb.from("courses").select("title").eq("id", id).maybeSingle();
+    const { data } = await sb
+      .from("courses")
+      .select("title,cover_url")
+      .eq("id", id)
+      .maybeSingle();
     if (!data) return { title: "Course" };
+    const description = `Take the ${data.title} course free with KLAGON.org.`;
+    const ogImage = resolveCourseOg({ cover_url: data.cover_url }) ?? courseOgMeta.fallback;
     return {
       title: data.title,
-      description: `Take the ${data.title} course free with KLAGON.org.`,
+      description,
       alternates: { canonical: `/learning/${id}` },
+      openGraph: {
+        type: "website",
+        url: `/learning/${id}`,
+        siteName: "KLAGON.org",
+        title: data.title,
+        description,
+        images: [
+          {
+            url: ogImage,
+            width: courseOgMeta.width,
+            height: courseOgMeta.height,
+            alt: data.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: data.title,
+        description,
+        images: [ogImage],
+      },
     };
   } catch {
     return { title: "Course" };
