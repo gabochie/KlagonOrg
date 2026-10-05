@@ -163,6 +163,30 @@
 }
 .dark .blog-content code { background: #111B3D; }
 
+/* Lesson material renders through renderLessonMarkdown, which can emit fenced
+   code blocks. The `code` rule above styles inline code only: applied to a
+   block-level <pre><code>, it left the block with inline padding, no surface of
+   its own, and no overflow handling — so a long line ran straight off the side
+   of the phone. Give the block its own treatment and scroll inside it instead
+   of letting it stretch the page. Scoped to .lesson-content so blog posts keep
+   the look they already have. */
+.lesson-content pre {
+  margin: 0 0 1.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+}
+.lesson-content pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: #e2e8f0;
+  font-size: 0.85em;
+  white-space: pre;
+}
+
 @keyframes typingDot {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-4px); opacity: 1; }
