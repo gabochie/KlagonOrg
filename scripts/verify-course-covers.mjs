@@ -91,18 +91,61 @@ if (!fs.existsSync(outDir)) {
 const ids = JSON.parse(fs.readFileSync(path.join(root, "src", "data", "course-ids.json"), "utf8"));
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/**
+ * The cover actually rendered as an <img>, or null.
+ *
+ * Matching anywhere in /brand/learning/ is not enough: the raw cover_url is
+ * also serialised into the RSC payload, so a page can mention a cover without
+ * rendering one. Only the img tag counts.
+ */
+function renderedCover(html) {
+  const m = html.match(/<img[^>]+src="(\/brand\/learning\/[^"]+)"/i);
+  return m ? m[1] : null;
+}
+
 let checkedPages = 0;
+let assertedCovers = 0;
 const readIfPresent = (p) => (fs.existsSync(p) ? fs.readFileSync(p, "utf8") : null);
 
-// Published course pages exist twice: /learning/<id> and /dashboard/learning/<id>.
+const assertRealCover = (html, label) => {
+  const src = renderedCover(html);
+  if (src === null) {
+    failures.push(`${label} renders no course cover <img> at all`);
+    return;
+  }
+  if (src.includes("/templates/")) {
+    failures.push(`${label} renders template cover ${src}`);
+    return;
+  }
+  if (!AUTHORED.some((t) => src.includes(`/${t}-`))) {
+    failures.push(`${label} renders ${src}, which is not an authored cover`);
+    return;
+  }
+  if (!fs.existsSync(path.join(root, "public", src))) {
+    failures.push(`${label} renders ${src}, but that file is not committed`);
+    return;
+  }
+  assertedCovers++;
+};
+
+// /learning/<id> renders the hero server-side, so its cover must be there.
+// /dashboard/learning/<id> is a client-side auth gate and ships no <img> at
+// all, so it is only held to "must not fall back to a template" — asserting a
+// rendered cover there would be vacuously true and prove nothing.
 for (const id of ids) {
   if (!UUID_RE.test(id)) continue;
-  for (const rel of [path.join("learning", id), path.join("dashboard", "learning", id)]) {
-    const html = readIfPresent(path.join(outDir, rel, "index.html"));
-    if (html === null) continue;
+  const publicPage = path.join("learning", id);
+  const html = readIfPresent(path.join(outDir, publicPage, "index.html"));
+  if (html !== null) {
     checkedPages++;
-    if (html.includes("/brand/learning/templates/")) {
-      failures.push(`exported ${rel.replace(/\\/g, "/")} still renders a template cover`);
+    assertRealCover(html, `exported ${publicPage.replace(/\\/g, "/")}`);
+  }
+  const dashPage = path.join("dashboard", "learning", id);
+  const dashHtml = readIfPresent(path.join(outDir, dashPage, "index.html"));
+  if (dashHtml !== null) {
+    checkedPages++;
+    if (dashHtml.includes("/brand/learning/templates/")) {
+      failures.push(`exported ${dashPage.replace(/\\/g, "/")} still renders a template cover`);
     }
   }
 }
@@ -110,12 +153,11 @@ for (const id of ids) {
 // Live college pages have authored art; pilot pages legitimately keep templates.
 for (const course of catalogue.courses ?? []) {
   if (course.status !== "live") continue;
-  const html = readIfPresent(path.join(outDir, "learning", "klagon-college", course.id, "index.html"));
+  const rel = path.join("learning", "klagon-college", course.id);
+  const html = readIfPresent(path.join(outDir, rel, "index.html"));
   if (html === null) continue;
   checkedPages++;
-  if (html.includes("/brand/learning/templates/")) {
-    failures.push(`exported live college page ${course.id} still renders a template cover`);
-  }
+  assertRealCover(html, `exported live college page ${course.id}`);
 }
 
 if (failures.length) {
@@ -128,5 +170,5 @@ if (failures.length) {
 }
 
 console.log(
-  `[verify-course-covers] OK — ${AUTHORED.length} authored covers, ${AUTHORED.length * DERIVATIVES.length} derivatives, ${checkedPages} exported course pages on real covers`,
+  `[verify-course-covers] OK — ${AUTHORED.length} authored covers, ${AUTHORED.length * DERIVATIVES.length} derivatives, ${assertedCovers} rendered covers asserted across ${checkedPages} exported course pages`,
 );
