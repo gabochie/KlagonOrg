@@ -6,6 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { fetchAdminEvents, fetchPublicEvents } from "@/lib/queries";
+import { useIsDesktop } from "@/lib/useMediaQuery";
 
 const SOON = "/dashboard/coming-soon";
 
@@ -68,7 +69,10 @@ function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
   return (
     <>
       {title && (
-        <div className="px-3 pt-4 pb-1 text-[10px] font-bold tracking-widest uppercase text-gray/60">
+        // `text-[11px]` rather than `text-[10px]`: below `md` these are the only
+        // headings in the drawer, and 10px is below the legibility floor for a
+        // touch UI. Desktop gains a hair of size here, which is fine.
+        <div className="px-3 pt-4 pb-1 text-[11px] font-bold tracking-widest uppercase text-gray/60">
           {title}
         </div>
       )}
@@ -79,7 +83,10 @@ function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
             key={item.label}
             href={item.href}
             className={cn(
-              "flex items-center gap-2.5 mx-1 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-colors relative",
+              // `min-h-11` (44px) on every row. `py-2` alone gives ~32px, which
+              // is under the touch-target floor the rest of the app keeps. The
+              // rows are the primary nav on a phone once this is a drawer.
+              "flex items-center gap-2.5 mx-1 px-3 min-h-11 rounded-lg text-sm font-medium cursor-pointer transition-colors relative",
               active
                 ? "bg-pale text-navy font-bold"
                 : "text-gray hover:bg-light hover:text-navy",
@@ -88,8 +95,17 @@ function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
             {active && (
               <div className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-amber" />
             )}
-            <span className="text-sm w-[18px] text-center">{item.icon}</span>
-            <span>{item.label}</span>
+            {/*
+              Emoji rather than an icon font. That was a deliberate choice for a
+              desktop sidebar and it is not being changed here, but it does mean
+              these glyphs render at wildly different visual weights across
+              platforms. Worth a follow-up with real icons; out of scope for a
+              layout fix.
+            */}
+            <span className="text-base w-[18px] text-center shrink-0" aria-hidden="true">
+              {item.icon}
+            </span>
+            <span className="truncate">{item.label}</span>
             {item.badge && (
               <span
                 className={cn(
@@ -103,7 +119,9 @@ function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
               </span>
             )}
             {item.soon && (
-              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-light text-gray border border-border">
+              // `text-[11px]`: 9px is unreadable on a phone, and this badge is
+              // the only signal that an item is not yet available.
+              <span className="ml-auto text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-light text-gray border border-border shrink-0">
                 Soon
               </span>
             )}
@@ -126,9 +144,10 @@ function initialsOf(name: string): string {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ open = false }: { open?: boolean }) {
   const pathname = usePathname();
   const { profile, isAdmin, isSuperAdmin } = useAuth();
+  const isDesktop = useIsDesktop();
   const [upcomingCount, setUpcomingCount] = useState(0);
 
   useEffect(() => {
@@ -189,7 +208,35 @@ export function Sidebar() {
   const roleLabel = profile?.role === "super_admin" ? "Super Admin" : "Admin";
 
   return (
-    <aside className="bg-white border-r border-border overflow-y-auto flex flex-col">
+    // The single most important line in this component.
+    //
+    // Below `md` this is `fixed` and translated off-canvas, so it no longer
+    // consumes a grid column and the content area gets the full viewport width.
+    // Above `md` the `md:` utilities restore it to a permanent 220px column in
+    // normal flow, so desktop is byte-for-byte the layout it was.
+    //
+    // `inert` while closed below `md` removes the off-screen links from the tab
+    // order and from the accessibility tree. Without it a keyboard user tabs
+    // through an invisible menu, which is worse than the original bug.
+    // `overscroll-contain` stops a flick inside the drawer from chaining to the
+    // page behind it.
+    <aside
+      id="dashboard-sidebar"
+      aria-label="Dashboard navigation"
+      // Resolved in JS rather than CSS, because `inert` is a DOM attribute and
+      // cannot be scoped to a breakpoint. On desktop this is a permanent column
+      // and must stay interactive even while `open` is false, because the
+      // drawer state is meaningless there.
+      inert={!isDesktop && !open ? true : undefined}
+      className={cn(
+        "bg-white border-border flex flex-col overflow-y-auto overscroll-contain",
+        // Drawer: fixed, full height, slid off-canvas when closed.
+        "fixed inset-y-0 left-0 z-50 w-[min(17rem,85vw)] border-r shadow-2xl transition-transform duration-200 ease-out",
+        open ? "translate-x-0" : "-translate-x-full",
+        // Desktop: back to being a column, never translated.
+        "md:static md:z-auto md:w-auto md:shadow-none md:translate-x-0 md:border-r",
+      )}
+    >
       {!showAdminMenu && (
         <div className="px-3 py-4 border-b border-border">
           <div className="flex items-center gap-2.5 mb-3">

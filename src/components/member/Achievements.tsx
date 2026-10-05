@@ -43,7 +43,9 @@ export function Achievements() {
             }`}
           >
             <span className="text-xl">{b.icon}</span>
-            <span className="text-[9px] font-bold text-navy text-center">{b.name}</span>
+            {/* `text-[11px]`: 9px was below the legibility floor and these are the badge
+              names, the only thing identifying each badge. */}
+            <span className="text-[11px] font-bold text-navy text-center">{b.name}</span>
           </div>
         ))}
       </div>
