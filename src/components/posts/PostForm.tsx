@@ -77,28 +77,39 @@ export function PostForm({ editId }: { editId?: string | null }) {
     if (!editId) return;
     let active = true;
     void (async () => {
-      const p = await fetchPostById(editId);
-      if (!active || !p) return;
-      setType(p.type);
-      if (p.type === "classified") setVertical((p.category as Vertical) || "Properties");
-      setTitle(p.title);
-      setExcerpt(p.excerpt ?? "");
-      setBody(p.body ?? "");
-      setArea(p.area);
-      setCategory(p.category);
-      setSubcategory(p.subcategory ?? "");
-      setDetails((p.details as Record<string, string>) ?? {});
-      setPrice(p.priceGhs != null ? String(p.priceGhs) : "");
-      setPhone(p.contactPhone ?? profile?.phone ?? "");
-      setEmail(p.contactEmail ?? user?.email ?? "");
-      setEventDate(p.eventDate ?? "");
-      setEventTime(p.eventTime ?? "");
-      setEventLocation(p.eventLocation ?? "");
-      setExistingCover(p.coverUrl);
-      setExistingGallery((p.gallery ?? []).slice(0, 2));
-      setLoadedStatus(p.status);
-      setStep("edit");
-      setLoaded(true);
+      try {
+        const p = await fetchPostById(editId);
+        if (!active) return;
+        if (!p) {
+          setError("We couldn't load that post. It may have been removed.");
+          return;
+        }
+        setType(p.type);
+        if (p.type === "classified") setVertical((p.category as Vertical) || "Properties");
+        setTitle(p.title);
+        setExcerpt(p.excerpt ?? "");
+        setBody(p.body ?? "");
+        setArea(p.area);
+        setCategory(p.category);
+        setSubcategory(p.subcategory ?? "");
+        setDetails((p.details as Record<string, string>) ?? {});
+        setPrice(p.priceGhs != null ? String(p.priceGhs) : "");
+        setPhone(p.contactPhone ?? profile?.phone ?? "");
+        setEmail(p.contactEmail ?? user?.email ?? "");
+        setEventDate(p.eventDate ?? "");
+        setEventTime(p.eventTime ?? "");
+        setEventLocation(p.eventLocation ?? "");
+        setExistingCover(p.coverUrl);
+        setExistingGallery((p.gallery ?? []).slice(0, 2));
+        setLoadedStatus(p.status);
+        setStep("edit");
+      } catch {
+        if (active) setError("We couldn't load that post. Check your connection and try again.");
+      } finally {
+        // Release the gate unconditionally. Bailing out early used to leave
+        // `loaded` false, so the skeleton spun forever with no way out.
+        if (active) setLoaded(true);
+      }
     })();
     return () => {
       active = false;

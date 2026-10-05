@@ -53,6 +53,14 @@ interface AuthContextValue {
    * guards bounce the user out of admin pages mid-load.
    */
   profileLoaded: boolean;
+  /**
+   * Set when every attempt to read the session failed. Distinguishes "we could
+   * not reach sign-in" from "this visitor is signed out", so a network blip
+   * stops looking like a logout.
+   */
+  initError: string | null;
+  /** Re-runs the session handshake after a failure. */
+  retryAuth: () => void;
   configured: boolean;
   role: UserRole | "anonymous";
   status: MemberStatus | "none";
@@ -73,23 +81,80 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/**
+ * `getSession()` waits on a storage lock and can stall indefinitely on a slow,
+ * throttled or blocked connection — and a hung request never rejects. So each
+ * attempt is raced against its own deadline, and a miss is retried rather than
+ * quietly treated as "signed out", which would bounce a signed-in member to the
+ * login page over one dropped packet.
+ */
+const AUTH_ATTEMPT_TIMEOUT_MS = 6000;
+
+/** Wait before each retry after the first. Three attempts total, then we surface an error. */
+const AUTH_RETRY_DELAYS_MS = [900, 2600];
+
+/**
+ * Races `promise` against `ms`. Rejects with `label` if the promise has not
+ * settled in time, which is the only way to bound a request that hangs instead
+ * of failing.
+ */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`${label} timed out after ${ms}ms`)),
+      ms
+    );
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const configured = Boolean(getBrowserClient());
+
+  /**
+   * Re-runs the handshake after a failure. Bumping `attempt` re-keys the init
+   * effect; clearing the error stops the guards from rendering a stale failure
+   * next to freshly loaded state.
+   */
+  const retryAuth = useCallback(() => {
+    setInitError(null);
+    setLoading(true);
+    setProfileLoaded(false);
+    setAttempt((n) => n + 1);
+  }, []);
 
   const loadProfile = useCallback(async (userId: string) => {
     const client = getBrowserClient();
     if (!client) return;
-    const { data } = await client
-      .from("profiles")
-      .select("*, badges:member_badges(*)")
-      .eq("id", userId)
-      .single();
-    setProfile((data as ProfileRow | null) ?? null);
+    try {
+      const { data } = await client
+        .from("profiles")
+        .select("*, badges:member_badges(*)")
+        .eq("id", userId)
+        .single();
+      setProfile((data as ProfileRow | null) ?? null);
+    } catch {
+      // A profile read that rejects must not abort the handshake. Letting it
+      // throw skipped every `setLoading(false)` below, which stranded the whole
+      // app on the session spinner — no retry, no error, no way forward.
+      setProfile(null);
+    }
   }, []);
 
   const refreshProfile = useCallback(async () => {
@@ -103,50 +168,114 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
     let unsubscribe: (() => void) | null = null;
+    const retries: ReturnType<typeof setTimeout>[] = [];
 
-    const init = async () => {
+    const scheduleRetry = (fn: () => void, ms: number) => {
+      retries.push(setTimeout(fn, ms));
+    };
+    const clearRetries = () => {
+      retries.splice(0).forEach(clearTimeout);
+    };
+
+    /** The handshake finished — with a session, or with a genuine "no session". */
+    const settle = () => {
+      if (!active) return;
+      clearRetries();
+      setInitError(null);
+      setLoading(false);
+      setProfileLoaded(true);
+    };
+
+    /**
+     * Every attempt failed. Say so instead of leaving `user` null, which the
+     * guards would read as a signed-out visitor and answer with a redirect to
+     * login — blaming the member for a connection that dropped.
+     */
+    const fail = (reason: string) => {
+      if (!active) return;
+      clearRetries();
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      setLoading(false);
+      setProfileLoaded(true);
+      setInitError(reason);
+    };
+
+    const runAttempt = async (index: number) => {
       const client = getBrowserClient();
       if (!active) return;
       if (!client) {
-        setLoading(false);
-        setProfileLoaded(true);
+        settle();
         return;
       }
 
-      const { data } = await client.auth.getSession();
-      if (!active) return;
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      // Await the profile before declaring the session settled: role checks
-      // (isAdmin/isSuperAdmin) are meaningless until it lands.
-      if (data.session?.user.id) {
-        await loadProfile(data.session.user.id);
-      }
-      setLoading(false);
-      if (!active) return;
-      setProfileLoaded(true);
-
-      const { data: sub } = client.auth.onAuthStateChange(async (_event, currentSession) => {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        if (currentSession?.user.id) {
-          await loadProfile(currentSession.user.id);
-          setProfileLoaded(true);
-        } else {
-          setProfile(null);
-          setProfileLoaded(true);
-        }
+      // Subscribe before the first await. Registering it afterwards meant any
+      // throw below skipped it entirely, leaving the app with no auth listener
+      // and no chance of picking up a later sign-in.
+      const { data: sub } = client.auth.onAuthStateChange((_event, currentSession) => {
+        // Hop out of the callback before awaiting anything: this handler runs
+        // while the auth client holds its internal lock, and awaiting another
+        // Supabase call inside it deadlocks that lock. Deliberately not tracked
+        // in `retries`, since clearing those would cancel real state updates.
+        setTimeout(() => {
+          void (async () => {
+            if (!active) return;
+            setSession(currentSession);
+            setUser(currentSession?.user ?? null);
+            if (currentSession?.user.id) {
+              await loadProfile(currentSession.user.id);
+              if (!active) return;
+              setProfileLoaded(true);
+            } else {
+              setProfile(null);
+              setProfileLoaded(true);
+            }
+          })();
+        }, 0);
       });
       unsubscribe = sub.subscription.unsubscribe;
+
+      try {
+        const { data } = await withTimeout(
+          client.auth.getSession(),
+          AUTH_ATTEMPT_TIMEOUT_MS,
+          "Session lookup"
+        );
+        if (!active) return;
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        // Await the profile before declaring the session settled: role checks
+        // (isAdmin/isSuperAdmin) are meaningless until it lands. loadProfile
+        // swallows its own failures, so a missing row degrades to a null
+        // profile instead of sinking the whole handshake.
+        if (data.session?.user.id) {
+          await loadProfile(data.session.user.id);
+        }
+        settle();
+      } catch (err) {
+        if (!active) return;
+        const delay = AUTH_RETRY_DELAYS_MS[index];
+        if (delay === undefined) {
+          fail(
+            err instanceof Error && err.message.includes("timed out")
+              ? "We couldn't reach the sign-in service. Check your connection and try again."
+              : "We couldn't check your sign-in status. Check your connection and try again."
+          );
+          return;
+        }
+        scheduleRetry(() => void runAttempt(index + 1), delay);
+      }
     };
 
-    void init();
+    void runAttempt(0);
 
     return () => {
       active = false;
+      clearRetries();
       unsubscribe?.();
     };
-  }, [loadProfile]);
+  }, [loadProfile, attempt]);
 
   const signIn = useCallback(
     async (email: string, password: string) => {
@@ -259,6 +388,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       profileLoaded,
+      initError,
+      retryAuth,
       configured,
       role,
       status,
@@ -273,7 +404,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       changePassword,
       sendPasswordReset,
     };
-  }, [user, session, profile, loading, profileLoaded, configured, signIn, signUp, signOut, refreshProfile, updateProfile, changePassword, sendPasswordReset]);
+  }, [user, session, profile, loading, profileLoaded, initError, retryAuth, configured, signIn, signUp, signOut, refreshProfile, updateProfile, changePassword, sendPasswordReset]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -3,9 +3,10 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { SessionError, SessionPending } from "@/components/auth/SessionGate";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { user, loading, profile } = useAuth();
+  const { user, loading, initError } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -19,24 +20,26 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (loading) return;
+    // A failed handshake is not a signed-out session. Redirecting here would
+    // send a signed-in member to the login page because their connection
+    // dropped, so hold on the error and let them retry instead.
+    if (initError) return;
     if (!user) {
       router.replace(loginHref);
-      return;
     }
-  }, [loading, user, router, loginHref]);
+  }, [loading, user, router, loginHref, initError]);
 
-  if (loading || !user) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <span className="relative flex h-5 w-5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-navy opacity-30" />
-            <span className="relative inline-flex rounded-full h-5 w-5 bg-navy" />
-          </span>
-          <div className="text-xs text-gray font-semibold">Checking your session…</div>
-        </div>
-      </div>
-    );
+  if (loading) {
+    return <SessionPending />;
+  }
+
+  if (initError) {
+    return <SessionError />;
+  }
+
+  // No session and no error: the redirect above is in flight.
+  if (!user) {
+    return <SessionPending />;
   }
 
   return <>{children}</>;
