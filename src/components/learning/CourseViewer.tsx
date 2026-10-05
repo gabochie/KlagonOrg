@@ -328,17 +328,24 @@ export function CourseViewer({
               <ReadAloud targetId="course-desc" />
             </div>
           )}
-          <div className="mt-4 flex items-center gap-3">
-            <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full bg-amber transition-all"
-                style={{ width: `${pct}%` }}
-              />
+          {/* Progress belongs to a member. A signed-out visitor has no progress
+              to show, so "0/5 · 0%" reads as a failure state rather than an
+              empty one — worse, it implies the course is unfinished when nothing
+              has even been attempted. The sign-up nudge below already explains
+              what tracking requires. */}
+          {profile && lessons.length > 0 && (
+            <div className="mt-4 flex items-center gap-3">
+              <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-amber transition-all"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <div className="text-xs font-bold text-white whitespace-nowrap">
+                {done.size}/{lessons.length} · {pct}%
+              </div>
             </div>
-            <div className="text-xs font-bold text-white whitespace-nowrap">
-              {done.size}/{lessons.length} · {pct}%
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
