@@ -175,6 +175,89 @@ describe("DashboardShell mobile chrome", () => {
     expect(hasInert(sidebar())).toBe(false);
   });
 
+  // Measured on a Pixel 5 with the drawer open: Tab walked 28 focus stops into
+  // `main` and `window.scrollBy` moved the page under the scrim. A drawer that
+  // looks modal has to be modally inert, not just visually modal.
+  it("takes the background out of the tab order while the drawer is open", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+
+    const main = screen.getByTestId("content").parentElement as HTMLElement;
+    expect(hasInert(main)).toBe(true);
+    // The drawer itself must stay reachable.
+    expect(hasInert(sidebar())).toBe(false);
+  });
+
+  it("restores the background when the drawer closes", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+    const main = screen.getByTestId("content").parentElement as HTMLElement;
+    expect(hasInert(main)).toBe(true);
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(hasInert(main)).toBe(false);
+  });
+
+  // iOS Safari ignores `overflow: hidden` on body, which is why the lock uses
+  // fixed positioning rather than the obvious approach.
+  it("locks the page behind the open drawer", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+    expect(document.body.style.position).toBe("fixed");
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(document.body.style.position).toBe("");
+  });
+
+  it("moves focus into the drawer on open", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+
+    const firstLink = sidebar().querySelector("a[href]") as HTMLElement;
+    expect(document.activeElement).toBe(firstLink);
+  });
+
+  // Otherwise the next Tab lands on a header control the user cannot see,
+  // because the whole page behind the scrim is inert.
+  it("cycles focus within the drawer instead of escaping to the page", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+
+    const focusables = Array.from(
+      sidebar().querySelectorAll<HTMLElement>("a[href]"),
+    );
+    const last = focusables[focusables.length - 1];
+    last.focus();
+
+    fireEvent.keyDown(window, { key: "Tab" });
+
+    expect(document.activeElement).toBe(focusables[0]);
+    expect(sidebar().contains(document.activeElement)).toBe(true);
+  });
+
+  // Route-derived closing cannot catch this case: tapping the link for the page
+  // you are already on changes no route, so `pathname` is unchanged and the
+  // drawer would latch open over the content you just asked to see.
+  it("closes when a nav link for the current route is tapped", () => {
+    renderShell();
+
+    fireEvent.click(toggle());
+    expect(sidebar().className).toContain("translate-x-0");
+
+    const currentLink = sidebar().querySelector(
+      `a[href="${pathState.pathname}"]`,
+    ) as HTMLElement;
+    expect(currentLink).toBeTruthy();
+    fireEvent.click(currentLink);
+
+    expect(sidebar().className).toContain("-translate-x-full");
+  });
+
   it("closes on Escape and on a scrim tap", () => {
     renderShell();
 

@@ -6,14 +6,22 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { Menu, X } from "lucide-react";
+import type { Ref } from "react";
 
 export function Topbar({
   drawerOpen,
   onToggleDrawer,
+  toggleRef,
 }: {
   /** Only meaningful below `md`; the desktop layout has no drawer. */
   drawerOpen: boolean;
   onToggleDrawer: () => void;
+  /**
+   * Lets `DashboardShell` return focus here when the drawer dismisses. Needed
+   * because the shell marks the rest of the page `inert` while the drawer is
+   * open, so it cannot reach this button on its own once it is inert.
+   */
+  toggleRef?: Ref<HTMLButtonElement>;
 }) {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
@@ -52,6 +60,7 @@ export function Topbar({
         */}
         <button
           type="button"
+          ref={toggleRef}
           onClick={onToggleDrawer}
           aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={drawerOpen}

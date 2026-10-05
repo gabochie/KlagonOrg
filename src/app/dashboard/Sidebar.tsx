@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Ref } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -63,7 +63,15 @@ const adminOps: NavItem[] = [
   { icon: "⚙️", label: "Settings", href: "/dashboard/settings" },
 ];
 
-function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
+function NavSection({
+  title,
+  items,
+  onNavigate,
+}: {
+  title?: string;
+  items: NavItem[];
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -79,10 +87,11 @@ function NavSection({ title, items }: { title?: string; items: NavItem[] }) {
       {items.map((item) => {
         const active = pathname === item.href && !item.soon;
         return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={cn(
+<Link
+              key={item.label}
+              href={item.href}
+              onClick={onNavigate}
+              className={cn(
               // `min-h-11` (44px) on every row. `py-2` alone gives ~32px, which
               // is under the touch-target floor the rest of the app keeps. The
               // rows are the primary nav on a phone once this is a drawer.
@@ -144,7 +153,21 @@ function initialsOf(name: string): string {
   );
 }
 
-export function Sidebar({ open = false }: { open?: boolean }) {
+export function Sidebar({
+  open = false,
+  ref,
+  onNavigate,
+}: {
+  open?: boolean;
+  ref?: Ref<HTMLElement>;
+  /**
+   * Closes the drawer on tap. Needed in addition to the shell's route-derived
+   * close, because tapping the nav link for the page you are already on changes
+   * no route, so `pathname` never changes and the drawer would latch open.
+   * Matches how the public Navbar's mobile menu closes on every link tap.
+   */
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
   const { profile, isAdmin, isSuperAdmin } = useAuth();
   const isDesktop = useIsDesktop();
@@ -222,6 +245,7 @@ export function Sidebar({ open = false }: { open?: boolean }) {
     // page behind it.
     <aside
       id="dashboard-sidebar"
+      ref={ref}
       aria-label="Dashboard navigation"
       // Resolved in JS rather than CSS, because `inert` is a DOM attribute and
       // cannot be scoped to a breakpoint. On desktop this is a permanent column
@@ -266,7 +290,12 @@ export function Sidebar({ open = false }: { open?: boolean }) {
 
       <nav className="flex-1 pb-4">
         {navItems.map((section) => (
-          <NavSection key={section.title} title={section.title} items={section.items} />
+          <NavSection
+            key={section.title}
+            title={section.title}
+            items={section.items}
+            onNavigate={onNavigate}
+          />
         ))}
       </nav>
 
@@ -276,7 +305,11 @@ export function Sidebar({ open = false }: { open?: boolean }) {
             <div className="text-lg mb-1">🧑‍🏫</div>
             <div className="text-xs font-bold text-navy mb-0.5">Need a mentor?</div>
             <div className="text-[10px] text-gray">Connect with someone who&apos;s walked this path</div>
-            <Link href="/mentor" className="mt-2 w-full block py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold text-center font-sans hover:bg-blue transition-colors">
+            <Link
+          href="/mentor"
+          onClick={onNavigate}
+          className="mt-2 w-full block py-1.5 rounded-lg bg-navy text-white text-[11px] font-bold text-center font-sans hover:bg-blue transition-colors"
+        >
               Find a Mentor
             </Link>
           </div>
