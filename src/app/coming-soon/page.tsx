@@ -3,6 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, Send, CheckCircle, Youtube, Music2, Instagram, Facebook, MessageCircle, Star, ArrowRight } from "lucide-react";
+import { ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
+import { subscribeToNewsletter } from "@/lib/posts";
+
+/** An email address is the only contact field on this page. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email"];
 
 const SOCIALS = [
   { icon: Youtube, href: "https://www.youtube.com/@KlagonOrg", label: "YouTube" },
@@ -16,14 +22,36 @@ export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [consent, setConsent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const value = email.trim();
+    if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       setError("Please enter a valid email address");
       return;
     }
+    // Joining the list is the primary action; the launch notice is a service
+    // message sent either way, so marketing permission is never a condition of
+    // it. Subscribe first: this page used to write a consent row for an
+    // address it never stored anywhere, so permission existed for a person we
+    // could never contact. If consent then fails to record, the address stays
+    // off the send list, which is the default anyway.
+    const res = await subscribeToNewsletter(value, undefined, "coming-soon-waitlist");
+    if (!res.ok) {
+      setError(res.error ?? "Something went wrong. Please try again.");
+      return;
+    }
+    if (consent) {
+      await recordContactConsent({
+        email: value,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "coming-soon-waitlist",
+      });
+    }
+    setEmail(value);
     setSubmitted(true);
   };
 
@@ -113,6 +141,15 @@ export default function ComingSoonPage() {
                   <Send size="14" />
                 </button>
               </form>
+              <ConsentBox
+                checked={consent}
+                onChange={setConsent}
+                channels={CONSENT_CHANNELS}
+                purpose="news, program updates and invitations"
+                formSource="coming-soon-waitlist"
+                variant="dark"
+                className="max-w-md mx-auto mb-4 text-left"
+              />
               {error && <p className="text-red text-xs mb-4">{error}</p>}
               <p className="text-xs text-white/25">No spam. Unsubscribe anytime.</p>
             </>

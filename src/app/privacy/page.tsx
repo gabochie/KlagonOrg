@@ -20,7 +20,7 @@ export default function PrivacyPage() {
             Your data, respected.
           </h1>
           <p className="text-white/60 text-sm max-w-lg mx-auto">
-            Last updated: September 2026. Here is what we collect and why.
+            Last updated: October 2026. Here is what we collect and why.
           </p>
         </div>
       </section>
@@ -38,8 +38,33 @@ export default function PrivacyPage() {
             <h2 className="text-base font-bold text-navy mb-1.5">How we use it</h2>
             <p>
               We use your information to run membership (event RSVPs, learning
-              progress, volunteer roles), communicate about programs, and report impact to
-              sponsors. We never sell your personal data.
+              progress, volunteer roles), reply to messages you send us, and report impact to
+              sponsors. Anything promotional only reaches you where you have ticked the
+              marketing box described below. We never sell your personal data.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-navy mb-1.5">Marketing messages</h2>
+            <p className="mb-2.5">
+              Anything promotional — newsletter, program updates, event invitations — is opt-in.
+              Wherever a form takes your contact details you will find a separate, unticked box
+              naming the channels involved: email, SMS, or WhatsApp. You choose by ticking it.
+            </p>
+            <p className="mb-2.5">
+              Leaving it blank changes nothing else. Donations, applications, bookings, claims,
+              and support messages are never refused or slowed down because you declined
+              marketing, and we never bundle the request with our Terms so that agreeing to one
+              silently agrees to the other.
+            </p>
+            <p className="mb-2.5">
+              We store your decision with the wording version you were shown and the form you
+              used it on, so we can prove what you agreed to. If no record exists, we treat that
+              as permission not given and send nothing.
+            </p>
+            <p>
+              Messages about something you asked for — a payment confirmation, a booking reply, a
+              claim under review, a launch notice you signed up for — are service messages, not
+              marketing, and are sent regardless of the box above.
             </p>
           </div>
           <div>
@@ -52,10 +77,17 @@ export default function PrivacyPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-navy mb-1.5">Your rights</h2>
-            <p>
+            <p className="mb-2.5">
               Under Ghana&apos;s Data Protection Act, 2012 (Act 843), you may request access,
               correction, or deletion of your data at any time by emailing{" "}
               <span suppressHydrationWarning className="font-semibold text-navy">hello@klagon.org</span>.
+            </p>
+            <p>
+              You can change your marketing permission at any time from{" "}
+              <span className="font-semibold text-navy">Settings → Marketing</span>, or by
+              replying STOP to a message, or by writing to the address above. Withdrawing takes
+              effect for every channel you withdraw, and it never affects messages about
+              something you have already requested.
             </p>
           </div>
           <div>

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { MENTOR_TOPICS } from "@/lib/constants";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { submitMentorApplication } from "@/lib/forms";
 import { notifyTeam } from "@/lib/notify";
 import { Turnstile } from "@/components/Turnstile";
@@ -31,12 +32,16 @@ const PROFESSIONS = [
   "Self-employed",
 ];
 
+/** The mentor form collects an email and a phone, so all three channels can be offered. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
+
 export default function MentorPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -54,6 +59,18 @@ export default function MentorPage() {
     if (!check.success) {
       setSending(false);
       return setError(check.error ?? "Human check failed. Please try again.");
+    }
+    // Optional by design: applying to mentor must not be conditional on
+    // accepting marketing, so an unticked box records nothing and the send
+    // paths deny anyone without a row.
+    if (consent) {
+      await recordContactConsent({
+        email: form.email,
+        phone: form.phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "mentor-form",
+      });
     }
     const { error: err } = await submitMentorApplication({
       ...form,
@@ -155,6 +172,13 @@ export default function MentorPage() {
                   />
                 </div>
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <ConsentBox
+                  checked={consent}
+                  onChange={setConsent}
+                  channels={CONSENT_CHANNELS}
+                  purpose="news, program updates and invitations"
+                  formSource="mentor-form"
+                />
                 <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Submitting…" : "Submit Application"}

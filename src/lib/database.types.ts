@@ -1204,6 +1204,30 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["outreach_sends"]["Insert"]>;
         Relationships: [];
       };
+      marketing_consents: {
+        Row: {
+          id: number;
+          subject_type: string;
+          subject_value: string;
+          channel: string;
+          granted: boolean;
+          form_source: string;
+          consent_text_version: string;
+          context: string | null;
+          created_at: string;
+        };
+        Insert: {
+          subject_type: string;
+          subject_value: string;
+          channel: string;
+          granted: boolean;
+          form_source?: string;
+          consent_text_version?: string;
+          context?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["marketing_consents"]["Insert"]>;
+        Relationships: [];
+      };
       outreach_suppressions: {
         Row: { wa_phone: string; reason: string; created_at: string };
         Insert: { wa_phone: string; reason?: string };
@@ -2021,6 +2045,10 @@ export interface Database {
       admin_delete_directory_claim: {
         Args: { p_id: string };
         Returns: boolean;
+      };
+      marketing_consent: {
+        Args: { p_subject_type: string; p_subject_value: string; p_channel: string };
+        Returns: boolean | null;
       };
       moderate_map_point: {
         Args: {

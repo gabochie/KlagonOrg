@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Zap } from "lucide-react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeBoost, confirmBoost } from "@/lib/boostPayments";
@@ -14,6 +15,9 @@ import type { Post } from "@/types";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
 
+/** A MoMo number is the only contact field on this payment form. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["sms", "whatsapp"];
+
 /**
  * Lets a listing owner feature their post with a real Mobile Money charge.
  *
@@ -22,12 +26,14 @@ const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
  * placement is never granted by anything the client says — a blocked or tampered
  * page can request a charge but cannot grant itself a feature.
  */
+
 export function BoostRequestPanel({ post }: { post: Post }) {
   const [open, setOpen] = useState(false);
   const [phone, setPhone] = useState("");
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [token, setToken] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chargeRef, setChargeRef] = useState<string | null>(null);
   const [promptPhone, setPromptPhone] = useState("");
@@ -62,6 +68,16 @@ export function BoostRequestPanel({ post }: { post: Post }) {
     if (!human.success) {
       setSending(false);
       return setError(human.error ?? "Human check failed.");
+    }
+        // Optional: paying must not depend on accepting marketing, and the payment
+    // prompts that follow are transactional messages, not marketing.
+    if (consent) {
+      await recordContactConsent({
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "boost-checkout",
+      });
     }
     const result = await chargeBoost({ post_id: post.id, phone: phone.trim(), network });
     setSending(false);
@@ -193,7 +209,14 @@ export function BoostRequestPanel({ post }: { post: Post }) {
             </div>
           </div>
           <div className="mt-2.5">
-            <Turnstile onToken={setToken} />
+            <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="boost-checkout"
+          />
+          <Turnstile onToken={setToken} />
           </div>
           {error && (
             <p className="text-xs text-red-700 mt-1.5">

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
 import { Mail, MapPin, Phone, MessageCircle, ExternalLink } from "lucide-react";
 import { submitContact } from "@/lib/forms";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { notifyTeam } from "@/lib/notify";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -19,11 +20,15 @@ const SUBJECTS = [
   "Other",
 ];
 
+/** Contact captures both an address and a number, so all three can be offered. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -42,6 +47,22 @@ export default function ContactPage() {
       setSending(false);
       return setError(check.error ?? "Human check failed. Please try again.");
     }
+
+    // Marketing permission is recorded first and kept out of the message
+    // itself: someone asking a question is not asking to be marketed to, so
+    // declining this box must never block them. If the ledger write fails the
+    // message still goes — there is simply no permission on file, and every
+    // send path denies by default.
+    if (consent) {
+      await recordContactConsent({
+        email: form.email,
+        phone: form.phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "contact-form",
+      });
+    }
+
     const { error: err } = await submitContact({
       ...form,
       full_name: form.full_name || null,
@@ -199,6 +220,13 @@ export default function ContactPage() {
                       />
                     </div>
                     {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                    <ConsentBox
+                      checked={consent}
+                      onChange={setConsent}
+                      channels={CONSENT_CHANNELS}
+                      purpose="news, program updates and invitations"
+                      formSource="contact-form"
+                    />
                     <Turnstile onToken={setToken} />
                     <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                       {sending ? "Sending…" : "Send Message"}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeSponsor, confirmSponsor } from "@/lib/sponsorPayments";
@@ -11,6 +12,8 @@ import { SPONSOR_TIERS } from "@/lib/constants";
 import type { SponsorPlan } from "@/types";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
+/** This checkout takes a MoMo number and, optionally, an email address. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
 
 /**
  * Self-serve sponsorship checkout for the priced tiers (Community → Digital).
@@ -35,6 +38,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
   const [verifying, setVerifying] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [paidAmount, setPaidAmount] = useState<number | null>(null);
+  const [consent, setConsent] = useState(false);
 
   const tierInfo = SPONSOR_TIERS.find((t) => t.id === plan.tier);
   const monthly = tierInfo?.priceMonthly ?? null;
@@ -51,6 +55,17 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
     if (!human.success) {
       setSending(false);
       return setError(human.error ?? "Human check failed.");
+    }
+    // Optional: paying for a sponsorship must not depend on accepting
+    // marketing, and the payment prompts that follow are transactional.
+    if (consent) {
+      await recordContactConsent({
+        email: email.trim() || null,
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "sponsor-checkout",
+      });
     }
     const result = await chargeSponsor({
       tier: plan.tier,
@@ -231,6 +246,13 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
               </a>
             </p>
           )}
+          <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="sponsor-checkout"
+          />
           <Turnstile onToken={setToken} />
           <Button variant="dark" size="lg" className="w-full" type="submit" disabled={sending}>
             {sending ? "Starting…" : `Pay ${priceLabel}/mo`}
