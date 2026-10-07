@@ -6,6 +6,7 @@ import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeSponsor, confirmSponsor } from "@/lib/sponsorPayments";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { MoMoNetwork } from "@/lib/payments";
 import { ORG_WA, waLink } from "@/lib/wa";
 import { SPONSOR_TIERS } from "@/lib/constants";
@@ -77,18 +78,32 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
     });
     setSending(false);
     if (!result.ok) {
+      recordLeadEvent({
+        source: "sponsor-checkout",
+        action: "charge-failed",
+        metadata: { tier: plan.tier, code: result.code ?? null },
+      });
       const detail = result.code
         ? `${result.error ?? "Payment request failed."} (${result.code})`
         : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
+    recordLeadEvent({
+      source: "sponsor-checkout",
+      action: "charge-start",
+      metadata: { tier: plan.tier, amount_ghs: result.amount_ghs ?? monthly },
+    });
     setPromptPhone(result.payer ?? phone.trim());
     setPaidAmount(result.amount_ghs ?? monthly);
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({ source: "sponsor-checkout", action: "otp-shown", metadata: { tier: plan.tier } });
       return;
     }
+    // Not settled yet: MoMo still has to confirm, so this is an accepted
+    // charge, not a payment. The "paid" event fires once the code is verified.
+    recordLeadEvent({ source: "sponsor-checkout", action: "charge-accepted", metadata: { tier: plan.tier } });
     setSubmitted(true);
   }
 
@@ -105,6 +120,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
         : (result.error ?? "Verification failed. Check the code and try again.");
       return setError(detail);
     }
+    recordLeadEvent({ source: "sponsor-checkout", action: "paid", metadata: { tier: plan.tier } });
     setSubmitted(true);
   }
 

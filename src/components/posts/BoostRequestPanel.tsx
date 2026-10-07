@@ -7,6 +7,7 @@ import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeBoost, confirmBoost } from "@/lib/boostPayments";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { MoMoNetwork } from "@/lib/payments";
 import { boostPriceFor } from "@/lib/posts";
 import { isBoostActive } from "@/lib/boosts";
@@ -82,17 +83,31 @@ export function BoostRequestPanel({ post }: { post: Post }) {
     const result = await chargeBoost({ post_id: post.id, phone: phone.trim(), network });
     setSending(false);
     if (!result.ok) {
+      recordLeadEvent({
+        source: "boost-checkout",
+        action: "charge-failed",
+        metadata: { post_id: post.id, code: result.code ?? null },
+      });
       const detail = result.code
         ? `${result.error ?? "Payment request failed."} (${result.code})`
         : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
+    recordLeadEvent({
+      source: "boost-checkout",
+      action: "charge-start",
+      metadata: { post_id: post.id, amount_ghs: price.feeGhs },
+    });
     setPromptPhone(result.payer ?? phone.trim());
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({ source: "boost-checkout", action: "otp-shown", metadata: { post_id: post.id } });
       return;
     }
+    // Not settled yet: MoMo still has to confirm, so this is an accepted
+    // charge, not a payment. The "paid" event fires once the code is verified.
+    recordLeadEvent({ source: "boost-checkout", action: "charge-accepted", metadata: { post_id: post.id } });
     setSubmitted(true);
   }
 
@@ -109,6 +124,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
         : (result.error ?? "Verification failed. Check the code and try again.");
       return setError(detail);
     }
+    recordLeadEvent({ source: "boost-checkout", action: "paid", metadata: { post_id: post.id } });
     setSubmitted(true);
   }
 

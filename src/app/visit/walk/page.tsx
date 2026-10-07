@@ -14,6 +14,7 @@ import {
   type MoMoNetwork,
 } from "@/lib/payments";
 import { IMPACT_BILL, TOUR_WALKS, clampGuests, tourTierId, tourTotal } from "@/lib/tours";
+import { recordLeadEvent } from "@/lib/analytics";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
 
@@ -260,9 +261,10 @@ export default function WalkPage() {
                   {sending ? "Processing…" : walk.whatsappOnly ? "WhatsApp Only — See Below" : `Pay GH₵${(total ?? 0).toLocaleString()} →`}
                 </Button>
                 <a
-                  href={`https://wa.me/233268708895?text=${encodeURIComponent(`Hello KLAGON, I want to book: ${walk.name}`)}`}
+                  href={`https://wa.me/233268708895?text=${encodeURIComponent(`Hello KLAGON, I want to book: ${walk.name} [walk-whatsapp]`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => recordLeadEvent({ source: "walk", action: "whatsapp-click", metadata: { walk: walkId } })}
                   className="text-center text-xs font-bold text-navy underline"
                 >
                   Or book over WhatsApp →

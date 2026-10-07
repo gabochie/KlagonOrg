@@ -7,6 +7,7 @@ import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeCourse, confirmCourse, fetchCourseStatus } from "@/lib/coursePayments";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { MoMoNetwork } from "@/lib/payments";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Lock, ShieldCheck } from "lucide-react";
@@ -67,6 +68,11 @@ export function CourseCheckout({
         pollRef.current = null;
         setAwaiting(false);
         setDone(true);
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "paid",
+          metadata: { course_id: course.id, amount_ghs: course.price_ghs },
+        });
         onUnlocked?.();
         return;
       }
@@ -75,6 +81,11 @@ export function CourseCheckout({
         pollRef.current = null;
         setAwaiting(false);
         setError("That payment did not go through. Please try again.");
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "failed",
+          metadata: { course_id: course.id },
+        });
         return;
       }
       if (tries >= 20) {
@@ -114,15 +125,30 @@ export function CourseCheckout({
     });
     setSending(false);
     if (!result.ok) {
+      recordLeadEvent({
+        source: "course-checkout",
+        action: "charge-failed",
+        metadata: { course_id: course.id, code: result.code ?? null },
+      });
       const detail = result.code
         ? `${result.error ?? "Payment request failed."} (${result.code})`
         : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
+    recordLeadEvent({
+      source: "course-checkout",
+      action: "charge-start",
+      metadata: { course_id: course.id, amount_ghs: course.price_ghs },
+    });
     setPromptPhone(result.payer ?? phone.trim());
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({
+        source: "course-checkout",
+        action: "otp-shown",
+        metadata: { course_id: course.id },
+      });
       return;
     }
     if (result.ref) pollUntilSettled(result.ref);
