@@ -72,6 +72,60 @@ function sbRpcSigned(env, fn, body) {
   });
 }
 
+// Human check, enforced server-side (H2): every money-moving charge requires
+// a Turnstile token the browser obtained from the widget. Client-only checks
+// stop honest users; this stops bots calling the worker directly.
+async function verifyTurnstileToken(env, token) {
+  if (!env.TURNSTILE_SECRET || !token) return false;
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: String(token) }),
+    });
+    const body = await res.json();
+    return body?.success === true;
+  } catch {
+    return false;
+  }
+}
+
+// Best-effort per-IP fixed-window limiter (H3). Isolates reset it, so this
+// blunts bursts rather than guaranteeing caps; Cloudflare dashboard rate
+// rules remain the hard boundary.
+const RATE_BUCKETS = new Map();
+function rateLimited(ip, route, limit, windowMs) {
+  const now = Date.now();
+  const key = `${ip}|${route}`;
+  let bucket = RATE_BUCKETS.get(key);
+  if (!bucket || now - bucket.start > windowMs) {
+    bucket = { start: now, count: 0 };
+    RATE_BUCKETS.set(key, bucket);
+  }
+  bucket.count += 1;
+  if (RATE_BUCKETS.size > 5000) RATE_BUCKETS.clear();
+  return bucket.count > limit;
+}
+
+function clientIp(request) {
+  return request.headers.get("CF-Connecting-IP") ?? "unknown";
+}
+
+async function requireHuman(request, env, origin, input) {
+  const token = input?.turnstile_token;
+  if (!token || !(await verifyTurnstileToken(env, token))) {
+    return json({ error: "Please complete the human check and try again." }, 403, origin);
+  }
+  return null;
+}
+
+function requireRate(request, route, limit, windowMs) {
+  if (rateLimited(clientIp(request), route, limit, windowMs)) {
+    return json({ error: "Too many requests. Please wait a minute and try again." }, 429);
+  }
+  return null;
+}
+
 // Resolve a signed-in member from the browser's Supabase access token. Used so
 // a course purchase always attaches to a real auth.uid() the caller cannot
 // spoof by naming someone else.
@@ -131,15 +185,9 @@ async function brevoSend(env, to, subject, html) {
 }
 
 async function sendDonationEmails(env, ref) {
-  const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/get_donation_sendable`, {
-    method: "POST",
-    headers: {
-      apikey: env.SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ p_ref: ref }),
-  });
+  // Signed: get_donation_sendable carries payer PII and requires the
+  // worker-only confirm secret (C1: anon callers get 'forbidden').
+  const res = await sbRpcSigned(env, "get_donation_sendable", { p_ref: ref });
   const row = res.ok ? (await res.json())[0] : null;
   if (!row) return;
 
@@ -165,11 +213,20 @@ async function sendDonationEmails(env, ref) {
 }
 
 async function sendBoostEmails(env, ref) {
-  const res = await sbRpc(env, "get_boost_sendable", { p_ref: ref });
+  const res = await sbRpcSigned(env, "get_boost_sendable", { p_ref: ref });
   const row = res.ok ? (await res.json())[0] : null;
   if (!row) return;
 
   const amount = Number(row.amount_ghs ?? 0).toFixed(2);
+  const payerEmail = row.payer_email ? String(row.payer_email).trim() : "";
+  if (payerEmail && payerEmail.includes("@")) {
+    await brevoSend(
+      env,
+      [{ email: payerEmail, name: "KLAGON seller" }],
+      `Boost confirmed — featured for ${row.days} days`,
+      `<p>Hi,</p><p>Payment of <strong>GH₵${amount}</strong> confirmed (ref <code>${ref}</code>). Your listing <strong>${row.post_title ?? "—"}</strong> is featured as <strong>${row.tier}</strong> for ${row.days} days.</p>`
+    ).catch(() => null);
+  }
   await brevoSend(
     env,
     [{ email: "klagonorg@gmail.com", name: "KlagonOrg Admin" }],
@@ -179,7 +236,7 @@ async function sendBoostEmails(env, ref) {
 }
 
 async function sendSponsorEmails(env, ref) {
-  const res = await sbRpc(env, "get_sponsor_sendable", { p_ref: ref });
+  const res = await sbRpcSigned(env, "get_sponsor_sendable", { p_ref: ref });
   const row = res.ok ? (await res.json())[0] : null;
   if (!row) return;
 
@@ -205,7 +262,7 @@ async function sendSponsorEmails(env, ref) {
 }
 
 async function sendCourseEmails(env, ref) {
-  const res = await sbRpc(env, "get_course_sendable", { p_ref: ref });
+  const res = await sbRpcSigned(env, "get_course_sendable", { p_ref: ref });
   const row = res.ok ? (await res.json())[0] : null;
   if (!row) return;
 
@@ -398,16 +455,19 @@ async function settleOrder(env, ref, status) {
 async function handlePaymentStatus(request, env) {
   const origin = request.headers.get("Origin") ?? "";
 
+  const statusLimited = requireRate(request, "payments-status", 30, 60_000);
+  if (statusLimited) return statusLimited;
+
   let ref = "";
   if (request.method === "GET") {
     ref = String(new URL(request.url).searchParams.get("ref") ?? "").trim();
   } else {
-    let input;
-    try {
-      input = await request.json();
-    } catch {
-      return json({ error: "Send a ref." }, 400, origin);
-    }
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return json({ error: "Send ref and otp." }, 400, origin);
+  }
     ref = String(input?.ref ?? "").trim();
   }
   if (!ref) return json({ error: "Send a ref." }, 400, origin);
@@ -465,6 +525,11 @@ async function handleCharge(request, env) {
     return json({ error: "Send amount, phone and network." }, 400, origin);
   }
 
+  const limited = requireRate(request, "donations-charge", 10, 60_000);
+  if (limited) return limited;
+  const human = await requireHuman(request, env, origin, input);
+  if (human) return human;
+
   const amount = Number(input?.amount_ghs);
   if (!Number.isFinite(amount) || amount <= 0) {
     return json({ error: "Enter a valid amount." }, 400, origin);
@@ -476,6 +541,33 @@ async function handleCharge(request, env) {
   const payer = normalizeGhPhone(input?.phone);
   if (!payer) {
     return json({ error: "Enter a valid 10-digit Ghana phone number." }, 400, origin);
+  }
+
+  // Walk bookings (tier_id "tour:<walk-id>") re-derive the total server-side
+  // from the mirrored price table, so a tampered client amount can never buy
+  // a GH₵3,000 walk for GH₵1. Pure donations keep the donor-chosen amount.
+  // Mirror of src/lib/tours.ts TOUR_WALKS — update both together.
+  const TOUR_PRICES = {
+    "wetland-market-walk": 750,
+    "dawn-birding": 350,
+    "klagon-by-night": 450,
+  };
+  let walkMeta = null;
+  const tierId = String(input?.tier_id ?? "");
+  if (tierId.startsWith("tour:")) {
+    const walkId = tierId.slice("tour:".length);
+    const perPerson = TOUR_PRICES[walkId];
+    const w = input?.walk && typeof input.walk === "object" ? input.walk : null;
+    const guests = Math.min(10, Math.max(4, Number(w?.guests) || 0));
+    const date = typeof w?.date === "string" ? w.date.slice(0, 10) : "";
+    if (perPerson == null || !guests || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return json({ error: "That walk, party size or date is not bookable here. Please start again." }, 409, origin);
+    }
+    const expected = perPerson * guests;
+    if (amount !== expected) {
+      return json({ error: `That walk costs GH₵${expected.toLocaleString()} for ${guests} guests. Please start again.` }, 409, origin);
+    }
+    walkMeta = { walk_id: walkId, guests, date };
   }
 
   if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
@@ -503,7 +595,7 @@ async function handleCharge(request, env) {
         status: "pending",
         provider: "moolre",
         provider_ref: ref,
-        metadata: { network: String(input.network).toLowerCase() },
+        metadata: { network: String(input.network).toLowerCase(), ...(walkMeta ? { walk: walkMeta } : {}) },
       }),
     });
     if (!res.ok) {
@@ -561,18 +653,30 @@ async function handleConfirm(request, env) {
   if (!ref || otp.length < 4) {
     return json({ error: "Enter the full OTP from the SMS." }, 400, origin);
   }
-  const amount = Number(input?.amount_ghs);
-  const channel = CHANNELS[String(input?.network ?? "").toLowerCase()];
-  const payer = normalizeGhPhone(input?.phone);
+  const donationConfirmLimited = requireRate(request, "donations-confirm", 20, 60_000);
+  if (donationConfirmLimited) return donationConfirmLimited;
+  // M2: re-submit the amount/phone/network from our own order row, never the
+  // client's — same pattern as the boost/sponsor/course confirms.
+  const orderRes = await sbRpcSigned(env, "get_donation_sendable", { p_ref: ref });
+  const order = orderRes.ok ? (await orderRes.json())[0] : null;
+  if (!order) {
+    return json({ error: "We can't find that payment request. Please start again." }, 404, origin);
+  }
+  const amount = Number(order.amount_ghs);
+  const channel = CHANNELS[String(order.network ?? "").toLowerCase()] ?? "13";
+  const payer = normalizeGhPhone(order.phone) ?? order.phone;
+  if (!Number.isFinite(amount) || amount <= 0 || !payer) {
+    return json({ error: "That payment request is incomplete. Please start again." }, 409, origin);
+  }
 
   let moolre;
   try {
     moolre = await moolreCollect(env, {
-      channel: channel ?? "13",
-      payer: payer ?? input?.phone,
-      amount: Number.isFinite(amount) && amount > 0 ? amount : input?.amount_ghs,
+      channel,
+      payer,
+      amount,
       ref,
-      network: input?.network,
+      network: order.network,
       otp,
     });
   } catch {
@@ -608,6 +712,11 @@ async function handleBoostCharge(request, env) {
     return json({ error: "Send a listing, phone and network." }, 400, origin);
   }
 
+  const boostLimited = requireRate(request, "boosts-charge", 10, 60_000);
+  if (boostLimited) return boostLimited;
+  const boostHuman = await requireHuman(request, env, origin, input);
+  if (boostHuman) return boostHuman;
+
   const postId = String(input?.post_id ?? "").trim();
   if (!/^[0-9a-f-]{36}$/i.test(postId)) {
     return json({ error: "Pick a listing to feature." }, 400, origin);
@@ -620,6 +729,10 @@ async function handleBoostCharge(request, env) {
   if (!payer) {
     return json({ error: "Enter a valid 10-digit Ghana phone number." }, 400, origin);
   }
+  const receiptEmail =
+    typeof input?.email === "string" && input.email.includes("@")
+      ? input.email.trim().slice(0, 160)
+      : null;
 
   if (!env.MOOLRE_USER || !env.MOOLRE_PUBKEY || !env.MOOLRE_WALLET) {
     return json({ error: "Online payments are not switched on yet. Please try again later." }, 503, origin);
@@ -661,6 +774,7 @@ async function handleBoostCharge(request, env) {
         provider_ref: ref,
         payer_phone: payer,
         network: String(input.network).toLowerCase(),
+        metadata: receiptEmail ? { email: receiptEmail } : {},
       }),
     });
     if (!res.ok) {
@@ -721,7 +835,7 @@ async function handleBoostConfirm(request, env) {
   // Re-submit the amount from our own order row, never the client's.
   let order = null;
   try {
-    const res = await sbRpc(env, "get_boost_sendable", { p_ref: ref });
+    const res = await sbRpcSigned(env, "get_boost_sendable", { p_ref: ref });
     if (res.ok) {
       const rows = await res.json();
       order = Array.isArray(rows) ? rows[0] : null;
@@ -729,6 +843,8 @@ async function handleBoostConfirm(request, env) {
   } catch {
     order = null;
   }
+  const boostConfirmLimited = requireRate(request, "boosts-confirm", 20, 60_000);
+  if (boostConfirmLimited) return boostConfirmLimited;
   if (!order || !Number.isFinite(Number(order.amount_ghs))) {
     return json({ error: "We could not find that order. Please start again." }, 404, origin);
   }
@@ -772,6 +888,11 @@ async function handleSponsorCharge(request, env) {
   } catch {
     return json({ error: "Send a tier, phone and network." }, 400, origin);
   }
+
+  const sponsorLimited = requireRate(request, "sponsors-charge", 10, 60_000);
+  if (sponsorLimited) return sponsorLimited;
+  const sponsorHuman = await requireHuman(request, env, origin, input);
+  if (sponsorHuman) return sponsorHuman;
 
   const tier = String(input?.tier ?? "").trim().toLowerCase();
   if (!SELF_SERVE_SPONSOR_TIERS.has(tier)) {
@@ -882,7 +1003,7 @@ async function handleSponsorConfirm(request, env) {
   // Re-submit the amount from our own order row, never the client's.
   let order = null;
   try {
-    const res = await sbRpc(env, "get_sponsor_sendable", { p_ref: ref });
+    const res = await sbRpcSigned(env, "get_sponsor_sendable", { p_ref: ref });
     if (res.ok) {
       const rows = await res.json();
       order = Array.isArray(rows) ? rows[0] : null;
@@ -890,6 +1011,8 @@ async function handleSponsorConfirm(request, env) {
   } catch {
     order = null;
   }
+  const sponsorConfirmLimited = requireRate(request, "sponsors-confirm", 20, 60_000);
+  if (sponsorConfirmLimited) return sponsorConfirmLimited;
   if (!order || !Number.isFinite(Number(order.amount_ghs))) {
     return json({ error: "We could not find that order. Please start again." }, 404, origin);
   }
@@ -933,6 +1056,11 @@ async function handleCourseCharge(request, env) {
   } catch {
     return json({ error: "Send a course, phone and network." }, 400, origin);
   }
+
+  const courseLimited = requireRate(request, "courses-charge", 10, 60_000);
+  if (courseLimited) return courseLimited;
+  const courseHuman = await requireHuman(request, env, origin, input);
+  if (courseHuman) return courseHuman;
 
   const courseId = String(input?.course_id ?? "").trim();
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(courseId)) {
@@ -1035,7 +1163,7 @@ async function handleCourseConfirm(request, env) {
   // Re-submit the amount from our own order row, never the client's.
   let order = null;
   try {
-    const res = await sbRpc(env, "get_course_sendable", { p_ref: ref });
+    const res = await sbRpcSigned(env, "get_course_sendable", { p_ref: ref });
     if (res.ok) {
       const rows = await res.json();
       order = Array.isArray(rows) ? rows[0] : null;
@@ -1114,9 +1242,16 @@ async function handleTurnstileVerify(request, env) {
 async function handleCallback(request, env) {
   const url = new URL(request.url);
 
-  // Shared-secret gate: the secret is embedded in the callback URL query
-  // (?key=...) stored in Moolre, so random POSTs can't flip donations.
-  if (!env.CALLBACK_KEY || url.searchParams.get("key") !== env.CALLBACK_KEY) {
+  // Shared-secret gate: accepted via header (preferred) or the legacy
+  // ?key= query stored in Moolre — random callers can't flip orders either way.
+  const key = request.headers.get("x-callback-key") ?? url.searchParams.get("key");
+  if (!env.CALLBACK_KEY || key !== env.CALLBACK_KEY) {
+    return json({ error: "forbidden" }, 403);
+  }
+  // M1: Moolre posts from a fixed IP. Enforce it — the key alone in a URL
+  // leaks to logs/proxies. GET query callbacks stay accepted (Moolre's own
+  // format) but now sit behind the same key + IP gates as POST.
+  if (request.headers.get("CF-Connecting-IP") !== MOOLRE_WALLET_CALLBACK_IP) {
     return json({ error: "forbidden" }, 403);
   }
 
