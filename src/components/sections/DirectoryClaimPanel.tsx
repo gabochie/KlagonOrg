@@ -229,6 +229,7 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
         href={inviteHref}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => recordLeadEvent({ source: "directory-claim", action: "invite-click", metadata: { business_id: b.id } })}
         className={`${btn} w-full bg-white/10 text-white border border-white/20 hover:bg-white/20 mt-2.5`}
       >
         <Send size={16} /> Invite the owner to claim
