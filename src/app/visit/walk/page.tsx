@@ -15,6 +15,7 @@ import {
 } from "@/lib/payments";
 import { IMPACT_BILL, TOUR_WALKS, clampGuests, tourTierId, tourTotal } from "@/lib/tours";
 import { recordLeadEvent } from "@/lib/analytics";
+import { usePaymentStatus } from "@/components/payments/usePaymentStatus";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
 
@@ -27,16 +28,36 @@ export default function WalkPage() {
   const [date, setDate] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [token, setToken] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chargeRef, setChargeRef] = useState<string | null>(null);
+  const [bookedRef, setBookedRef] = useState<string | null>(null);
   const [promptPhone, setPromptPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [settleRef, setSettleRef] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
+
+  const settle = usePaymentStatus(settleRef, {
+    onPaid: () => {
+      recordLeadEvent({ source: "walk", action: "paid", metadata: { walk: walkId } });
+      setSubmitted(true);
+    },
+    onFailed: () => {
+      recordLeadEvent({ source: "walk", action: "failed", metadata: { walk: walkId } });
+      setSettleRef(null);
+      setError("That payment did not go through. Please try again.");
+    },
+    onTimeout: () => {
+      recordLeadEvent({ source: "walk", action: "timeout", metadata: { walk: walkId } });
+      setSettleRef(null);
+      setError("We have not seen your MoMo approval yet. If you approved it, the concierge will still confirm your booking once it clears — or try again.");
+    },
+  });
 
   const walk = TOUR_WALKS.find((w) => w.id === walkId) ?? TOUR_WALKS[0];
   const total = tourTotal(walk.id, Number(guests));
@@ -73,8 +94,9 @@ export default function WalkPage() {
       tier_id: tourTierId(walk.id),
       full_name: name.trim(),
       phone: phone.trim(),
-      email: null,
+      email: email.trim() || null,
       network,
+      walk: { id: walk.id, guests: clampGuests(Number(guests)), date },
     });
     setSending(false);
     if (!result.ok) {
@@ -84,12 +106,24 @@ export default function WalkPage() {
       return setError(detail);
     }
     setPromptPhone(result.payer ?? phone.trim());
+    recordLeadEvent({
+      source: "walk",
+      action: "charge-start",
+      metadata: { walk: walkId, amount_ghs: total ?? 0 },
+    });
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({ source: "walk", action: "otp-shown", metadata: { walk: walkId } });
       return;
     }
-    setSubmitted(true);
+    if (result.ref) {
+      if (result.ref) setBookedRef(result.ref);
+      setSettleRef(result.ref);
+    } else {
+      setSubmitted(true);
+    }
+    recordLeadEvent({ source: "walk", action: "charge-accepted", metadata: { walk: walkId } });
   }
 
   async function handleVerify(e: React.FormEvent) {
@@ -111,7 +145,10 @@ export default function WalkPage() {
         : (result.error ?? "Verification failed. Check the code and try again.");
       return setError(detail);
     }
-    setSubmitted(true);
+    if (result.ref) setBookedRef(result.ref);
+    else if (chargeRef) setBookedRef(chargeRef);
+    setChargeRef(null);
+    setSettleRef(result.ref ?? chargeRef);
   }
 
   return (
@@ -161,16 +198,43 @@ export default function WalkPage() {
             {submitted ? (
               <div className="bg-white border border-border rounded-2xl p-8 text-center">
                 <div className="text-3xl mb-3">🎉</div>
-                <div className="text-sm font-extrabold text-navy mb-1">Booking received!</div>
+                <div className="text-sm font-extrabold text-navy mb-1">Payment confirmed — medase!</div>
                 <p className="text-sm text-gray">
-                  Our concierge will confirm {walk.name} for {clampGuests(Number(guests))}{" "}
-                  guest(s) over WhatsApp shortly.
+                  Our concierge will confirm {walk.name} for {clampGuests(Number(guests))} guest(s) on{" "}
+                  <span className="font-bold text-navy">{date || "your date"}</span> over
+                  WhatsApp shortly.
                 </p>
+                <p className="text-xs text-gray mt-3">
+                  Total GH₵{(total ?? 0).toLocaleString()}
+                  {bookedRef ? ` · Ref ${bookedRef} — quote it if you message us.` : ""}
+                </p>
+              </div>
+            ) : settle === "awaiting" ? (
+              <div className="bg-white border border-border rounded-2xl p-8 text-center">
+                <div className="text-sm font-extrabold text-navy mb-1">Waiting for MoMo approval…</div>
+                <p className="text-sm text-gray">
+                  Approve GH₵{(total ?? 0).toLocaleString()} on your phone{phone ? ` (${phone})` : ""}.
+                  This page updates automatically once payment clears.
+                </p>
+                {settleRef && (
+                  <p className="text-xs text-gray mt-3">
+                    Ref {settleRef} ·{" "}
+                    <a
+                      href={`https://wa.me/233268708895?text=${encodeURIComponent(`Hello KLAGON, I just paid for ${walk.name} (ref ${settleRef}).`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline font-bold"
+                    >
+                      Message us on WhatsApp
+                    </a>
+                  </p>
+                )}
               </div>
             ) : chargeRef ? (
               <form onSubmit={handleVerify} className="bg-white border border-border rounded-2xl p-6 flex flex-col gap-3">
                 <p className="text-sm text-gray">
-                  Enter the code sent to <span className="font-bold text-navy">{promptPhone}</span>.
+                  Enter the code sent to <span className="font-bold text-navy">{promptPhone}</span>{" "}
+                  to approve <span className="font-bold text-navy">GH₵{(total ?? 0).toLocaleString()}</span>.
                 </p>
                 <Input
                   label="OTP code"
@@ -224,6 +288,13 @@ export default function WalkPage() {
                     placeholder="0244 000 000"
                   />
                 </div>
+                <Input
+                  label="Email (for your booking receipt)"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@email.com"
+                />
                 <div>
                   <div className="text-xs font-bold text-navy mb-2">Network</div>
                   <div className="flex gap-2">
