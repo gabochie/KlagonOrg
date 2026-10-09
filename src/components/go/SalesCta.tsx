@@ -26,10 +26,19 @@ export function SalesCta({
   label?: string;
   secondaryHref?: string;
 }) {
+  const WA_MESSAGES: Record<string, string> = {
+    "ai-sprint-team":
+      "Hello KLAGON.org, I run a business and I want the AI Team Sprint for my staff (5 seats). My business name is: ___",
+    "side-business-b2c":
+      "Hello KLAGON.org, I want to join the Side-Business Sprint (GH₵150). My name is: ___",
+    "freelance-b2c":
+      "Hello KLAGON.org, I want to join the Freelance Sprint (GH₵100). My name is: ___",
+    "go-hire":
+      "Hello KLAGON.org, I want to hire KLAGON-trained youth. My business name is: ___",
+  };
   const waMsg =
-    source === "ai-sprint-team"
-      ? "Hello KLAGON.org, I run a business and I want the AI Team Sprint for my staff (5 seats). My business name is: ___"
-      : "Hello KLAGON.org, I want to join the AI Productivity Sprint (GH₵150). My name is: ___";
+    WA_MESSAGES[source] ??
+    "Hello KLAGON.org, I want to join the AI Productivity Sprint (GH₵150). My name is: ___";
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
       {courseId ? (
