@@ -41,37 +41,55 @@ export function MyPayments() {
       const out: Row[] = [];
       const { data: ents } = await c
         .from("course_entitlements")
-        .select("granted_at, course_id, courses(title, price_ghs)")
+        .select("granted_at, course_id")
         .eq("member_id", profile.id)
         .order("granted_at", { ascending: false });
-      for (const e of (ents ?? []) as {
-        granted_at: string;
-        course_id: string;
-        courses: { title: string; price_ghs: number | null } | null;
-      }[]) {
+      const courseIds = [...new Set(((ents ?? []) as { course_id: string }[]).map((e) => e.course_id))];
+      let titles = new Map<string, { title: string; price_ghs: number | null }>();
+      if (courseIds.length > 0) {
+        const { data: courses } = await c
+          .from("courses")
+          .select("id, title, price_ghs")
+          .in("id", courseIds);
+        titles = new Map(
+          ((courses ?? []) as { id: string; title: string; price_ghs: number | null }[]).map((t) => [
+            t.id,
+            { title: t.title, price_ghs: t.price_ghs },
+          ])
+        );
+      }
+      for (const e of (ents ?? []) as { granted_at: string; course_id: string }[]) {
+        const t = titles.get(e.course_id);
         out.push({
           kind: "Course",
-          title: e.courses?.title ?? "Course",
-          amount: e.courses?.price_ghs ?? null,
+          title: t?.title ?? "Course",
+          amount: t?.price_ghs ?? null,
           date: e.granted_at,
           href: `/learning/${e.course_id}`,
         });
       }
       const { data: boosts } = await c
         .from("boost_payments")
-        .select("paid_at, amount_ghs, post_id, posts(title)")
+        .select("paid_at, amount_ghs, post_id")
         .eq("status", "paid")
         .order("paid_at", { ascending: false })
         .limit(20);
+      const postIds = [...new Set(((boosts ?? []) as { post_id: string }[]).map((b) => b.post_id))];
+      let postTitles = new Map<string, string>();
+      if (postIds.length > 0) {
+        const { data: posts } = await c.from("posts").select("id, title").in("id", postIds);
+        postTitles = new Map(
+          ((posts ?? []) as { id: string; title: string }[]).map((p) => [p.id, p.title])
+        );
+      }
       for (const b of (boosts ?? []) as {
         paid_at: string;
         amount_ghs: number | null;
         post_id: string;
-        posts: { title: string } | null;
       }[]) {
         out.push({
           kind: "Boost",
-          title: b.posts?.title ?? "Listing boost",
+          title: postTitles.get(b.post_id) ?? "Listing boost",
           amount: b.amount_ghs,
           date: b.paid_at,
           href: "/my/posts",

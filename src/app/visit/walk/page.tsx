@@ -97,6 +97,7 @@ export default function WalkPage() {
       email: email.trim() || null,
       network,
       walk: { id: walk.id, guests: clampGuests(Number(guests)), date },
+      turnstile_token: token,
     });
     setSending(false);
     if (!result.ok) {

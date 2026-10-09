@@ -14,6 +14,7 @@ export interface CourseChargeInput {
   phone: string;
   network: MoMoNetwork;
   accessToken: string;
+  turnstile_token: string | null;
 }
 
 export interface CourseChargeResult {
@@ -62,6 +63,7 @@ export async function chargeCourse(input: CourseChargeInput): Promise<CourseChar
         course_id: input.course_id,
         phone: input.phone,
         network: input.network,
+        turnstile_token: input.turnstile_token,
       }),
     });
   } catch {

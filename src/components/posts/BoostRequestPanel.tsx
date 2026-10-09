@@ -105,6 +105,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
       phone: phone.trim(),
       network,
       email: email.trim() || null,
+      turnstile_token: token,
     });
     setSending(false);
     if (!result.ok) {

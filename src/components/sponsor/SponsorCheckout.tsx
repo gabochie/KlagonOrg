@@ -95,6 +95,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
       email: email.trim() || undefined,
       phone: phone.trim(),
       network,
+      turnstile_token: token,
     });
     setSending(false);
     if (!result.ok) {

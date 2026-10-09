@@ -14,6 +14,7 @@ export interface ChargeInput {
   network: MoMoNetwork;
   /** Walk bookings carry fulfilment detail the concierge needs from the DB. */
   walk?: { id: string; guests: number; date: string } | null;
+  turnstile_token: string | null;
 }
 
 export interface ChargeResult {

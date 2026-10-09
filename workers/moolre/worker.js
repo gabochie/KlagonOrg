@@ -26,7 +26,7 @@ function corsHeaders(origin) {
     (typeof origin === "string" && origin.endsWith(".klagon-org.pages.dev"));
   return {
     "Content-Type": "application/json",
-    ...(allowed ? { "Access-Control-Allow-Origin": origin } : {}),
+    ...(allowed ? { "Access-Control-Allow-Origin": origin, Vary: "Origin" } : {}),
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
     "Access-Control-Allow-Headers": "Authorization, Content-Type",
   };
@@ -1171,6 +1171,8 @@ async function handleCourseConfirm(request, env) {
   } catch {
     order = null;
   }
+  const courseConfirmLimited = requireRate(request, "courses-confirm", 20, 60_000);
+  if (courseConfirmLimited) return courseConfirmLimited;
   if (!order || !Number.isFinite(Number(order.amount_ghs))) {
     return json({ error: "We could not find that order. Please start again." }, 404, origin);
   }

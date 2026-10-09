@@ -25,14 +25,10 @@ export function usePaymentStatus(
   const [state, setState] = useState<PaymentSettleState>(ref ? "awaiting" : "idle");
   const timer = useRef<number | null>(null);
   const optsRef = useRef(opts);
-  optsRef.current = opts;
 
   useEffect(() => {
-    if (!ref) {
-      setState("idle");
-      return;
-    }
-    setState("awaiting");
+    optsRef.current = opts; // latest callbacks without re-subscribing the poll
+    if (!ref) return;
     let tries = 0;
     const interval = optsRef.current?.intervalMs ?? 3000;
     const max = optsRef.current?.maxTries ?? 20;
@@ -64,7 +60,10 @@ export function usePaymentStatus(
       if (timer.current) window.clearInterval(timer.current);
       timer.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref]);
 
-  return state;
+  // Derived, not stored: a fresh ref means we are awaiting even before the
+  // first poll tick resolves. No setState/ref-write during render.
+  return state === "idle" && ref ? "awaiting" : state;
 }

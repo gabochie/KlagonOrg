@@ -128,6 +128,7 @@ export function CourseCheckout({
       phone: phone.trim(),
       network,
       accessToken: session?.access_token ?? "",
+      turnstile_token: token,
     });
     setSending(false);
     if (!result.ok) {
