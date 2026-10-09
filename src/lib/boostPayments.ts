@@ -11,6 +11,9 @@ export interface BoostChargeInput {
   post_id: string;
   phone: string;
   network: MoMoNetwork;
+  /** Optional: payer receipt goes here; otherwise only the MoMo prompt confirms. */
+  email?: string | null;
+  turnstile_token: string | null;
 }
 
 export interface BoostChargeResult {

@@ -68,6 +68,9 @@ function toRequest(row: LeadRow): Request | null {
 
 export function BoostRequestsQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
+  const [paid, setPaid] = useState<
+    { id: string; postId: string; ref: string; amount: number | null; phone: string | null; paidAt: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -122,6 +125,33 @@ export function BoostRequestsQueue() {
       }
     }
 
+    // Paid online but never placed: money arrived, grant did not. These are
+    // the highest-priority rows in this queue — a payer is waiting.
+    const { data: paidRows } = await c
+      .from("boost_payments")
+      .select("id,post_id,provider_ref,amount_ghs,payer_phone,paid_at")
+      .eq("status", "paid")
+      .eq("fulfilled", false)
+      .order("paid_at", { ascending: true })
+      .limit(50);
+    setPaid(
+      ((paidRows ?? []) as {
+        id: string;
+        post_id: string;
+        provider_ref: string;
+        amount_ghs: number | null;
+        payer_phone: string | null;
+        paid_at: string;
+      }[]).map((r) => ({
+        id: r.id,
+        postId: r.post_id,
+        ref: r.provider_ref,
+        amount: r.amount_ghs,
+        phone: r.payer_phone,
+        paidAt: r.paid_at,
+      }))
+    );
+
     setRequests([...byPost.values()]);
     setLoading(false);
   }, []);
@@ -138,34 +168,65 @@ export function BoostRequestsQueue() {
     setBusy(postId);
     setRequests((rs) => rs.map((r) => (r.postId === postId ? { ...r, error: null } : r)));
     const res = await adminApplyBoost(postId);
-    setRequests((rs) =>
-      rs.map((r) =>
-        r.postId === postId
-          ? res.ok
-            ? { ...r, applied: true, error: null }
-            : { ...r, error: res.error ?? "Could not apply the boost." }
-          : r,
-      ),
-    );
+    if (res.ok) {
+      // Placement is live; drop the paid row optimistically (it stays
+      // fulfilled=false in the DB until the grant path marks it — the next
+      // load re-checks). Simplest honest state: reload the queue.
+      await load();
+    } else {
+      setRequests((rs) =>
+        rs.map((r) =>
+          r.postId === postId ? { ...r, error: res.error ?? "Could not apply the boost." } : r
+        )
+      );
+    }
     setBusy(null);
   }
 
   if (loading) return <div className="text-xs text-gray">Loading boost requests…</div>;
 
-  if (requests.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
-        <div className="text-2xl mb-2">💡</div>
-        <div className="text-sm font-bold text-navy">No boost requests yet</div>
-        <div className="text-xs text-gray mt-1">
-          Requests from listing owners on /my/posts land here.
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-2.5" data-testid="boost-requests">
+      {paid.map((p) => (
+        <div
+          key={p.id}
+          data-testid="boost-paid-unfulfilled"
+          className="bg-amber/10 rounded-2xl border border-amber p-4 shadow-sm"
+        >
+          <div className="text-xs font-extrabold uppercase tracking-widest text-amber-strong mb-1">
+            Paid online — needs placement
+          </div>
+          <div className="text-sm font-extrabold text-navy break-words">
+            GH₵ {p.amount ?? "?"} · {p.phone ?? "no phone"} · ref {p.ref}
+          </div>
+          <div className="text-xs text-gray mt-0.5">
+            Paid {new Date(p.paidAt).toLocaleString()} — grant did not apply. Apply it or refund.
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-3">
+            <Button
+              onClick={() => void apply(p.postId)}
+              disabled={busy === p.postId}
+              variant="dark"
+              size="sm"
+              className="max-sm:min-h-12"
+            >
+              {busy === p.postId ? "Applying…" : "Apply boost now"}
+            </Button>
+          </div>
+          {requests.find((r) => r.postId === p.postId)?.error && (
+            <div className="text-xs text-red-700 mt-2">Could not apply — check the listing status.</div>
+          )}
+        </div>
+      ))}
+      {requests.length === 0 && paid.length === 0 && (
+        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
+          <div className="text-2xl mb-2">💡</div>
+          <div className="text-sm font-bold text-navy">No boost requests yet</div>
+          <div className="text-xs text-gray mt-1">
+            Requests from listing owners on /my/posts land here.
+          </div>
+        </div>
+      )}
       {requests.map((r) => (
         <div
           key={r.postId}
