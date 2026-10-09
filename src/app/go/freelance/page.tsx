@@ -55,7 +55,7 @@ export default function FreelanceSalesPage() {
               <span className="text-white font-bold">a priced offer, proof kit, and paid job one</span>,
               plus a verifiable certificate employers and clients can check.
             </p>
-            <SalesCta source="freelance-b2c" secondaryHref="#curriculum" label="Enrol in the sprint" price={100} />
+            <SalesCta source="freelance-b2c" secondaryHref="#curriculum" label="Enrol in the sprint" price={100} courseId="8623a6c6-f0bb-4fe3-a3aa-f1ff130f7cdb" />
             <p className="text-white/50 text-xs mt-4">
               GH₵100 one-time · MoMo (MTN / Telecel / AT) · Lifetime access · Verifiable certificate within 48h of passing review
             </p>
