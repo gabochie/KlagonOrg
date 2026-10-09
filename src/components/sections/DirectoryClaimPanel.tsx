@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Send, BadgeCheck, ShieldCheck, Users } from "lucide-react";
+import { MessageCircle, Send, BadgeCheck, ShieldCheck, Users, Zap } from "lucide-react";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { DirectoryBusiness } from "@/lib/directory";
 import {
   ORG_WA,
@@ -69,6 +70,7 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
     });
     // Opened from the click handler so popup blockers allow it, as on /business.
     window.open(waLink(ORG_WA, text), "_blank");
+    recordLeadEvent({ source: "directory-claim", action: "claim-submit", metadata: { business_id: b.id } });
     void fileDirectoryClaim({
       businessId: b.id,
       businessName: b.name,
@@ -110,10 +112,26 @@ export function DirectoryClaimPanel({ business: b }: { business: DirectoryBusine
           href={waLink(ORG_WA, buildGroupJoinMessage())}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => recordLeadEvent({ source: "directory-claim", action: "group-join-click", metadata: { business_id: b.id } })}
           className={`${btn} w-full bg-white/10 text-white border border-white/20 hover:bg-white/20`}
         >
           <Users size="16" /> Join the business owners group
         </a>
+        <a
+          href={waLink(
+            ORG_WA,
+            `Hello KLAGON, I own "${b.name}" and I want to feature my listing (Featured GH₵30 / 3 days). [directory-boost]`
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => recordLeadEvent({ source: "directory-claim", action: "boost-click", metadata: { business_id: b.id } })}
+          className={`${btn} w-full bg-amber text-navy hover:bg-amber-strong hover:text-white mt-2.5`}
+        >
+          <Zap size="16" /> Feature this listing — GH₵30
+        </a>
+        <p className="mt-2.5 text-[11px] text-white/50">
+          Featured listings sit above the rest for 3 days. Pay by MoMo over WhatsApp.
+        </p>
       </div>
     );
   }
