@@ -11,6 +11,7 @@ import {
   type HealthAreaId,
   type HealthInputs,
 } from "@/lib/healthScore";
+import { recordLeadEvent } from "@/lib/analytics";
 
 const QUESTIONS: { id: HealthAreaId; question: string }[] = [
   { id: "google_visibility", question: "Do customers find you on Google when they search for what you sell near you?" },
@@ -174,9 +175,10 @@ export default function HealthScorePage() {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <a
-                      href={waLink("Hello KLAGON, I just scored my shop. I want the guided Digital Health Check (Klagon GH₵150 / Tema GH₵250).")}
+                      href={waLink("Hello KLAGON, I just scored my shop. I want the guided Digital Health Check (Klagon GH₵150 / Tema GH₵250). [health-score-check]")}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => recordLeadEvent({ source: "health-score", action: "whatsapp-click", metadata: { offer: "guided-check" } })}
                       className="flex-1"
                     >
                       <Button variant="primary" className="w-full">
@@ -184,9 +186,10 @@ export default function HealthScorePage() {
                       </Button>
                     </a>
                     <a
-                      href={waLink("Hello KLAGON, I want the Google + WhatsApp Setup Sprint (Klagon GH₵300 / Tema GH₵450).")}
+                      href={waLink("Hello KLAGON, I want the Google + WhatsApp Setup Sprint (Klagon GH₵300 / Tema GH₵450). [health-score-sprint]")}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => recordLeadEvent({ source: "health-score", action: "whatsapp-click", metadata: { offer: "setup-sprint" } })}
                       className="flex-1"
                     >
                       <Button variant="dark" className="w-full">

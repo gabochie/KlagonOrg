@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { DONATION_TIERS, TESTIMONIALS } from "@/lib/constants";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Heart, Phone, MessageCircle, CheckCircle } from "lucide-react";
 import { recordDonationIntent, recordInKindOffer } from "@/lib/forms";
 import { notifyTeam } from "@/lib/notify";
@@ -35,6 +36,9 @@ const CONTACT_DISPLAY = "0268 708 895";
 const CONTACT_TEL = "tel:+233268708895";
 const CONTACT_WA = "https://wa.me/233268708895?text=Hello%20KLAGON.org%2C%20I%20would%20like%20to%20donate.";
 
+/** Both giving forms collect an email and a phone, so all three channels can be offered. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
+
 export default function DonatePage() {
   const [selected, setSelected] = useState("3");
   const [customAmount, setCustomAmount] = useState("");
@@ -45,6 +49,7 @@ export default function DonatePage() {
   const [error, setError] = useState<string | null>(null);
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [token, setToken] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
   const [pledged, setPledged] = useState({ amount: "", phone: "", monthly: false, name: "", card: false });
 
@@ -68,6 +73,16 @@ export default function DonatePage() {
     if (!check.success) {
       setSending(false);
       return setError(check.error ?? "Human check failed. Please try again.");
+    }
+    // Optional: giving must never depend on accepting marketing.
+    if (consent) {
+      await recordContactConsent({
+        email: form.email,
+        phone: form.phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "donate-form",
+      });
     }
     const result = await recordDonationIntent({
       amount_ghs: amount,
@@ -386,6 +401,13 @@ export default function DonatePage() {
                 </div>
                 <Input label={channel === "card" ? "Email (required for your payment link)" : "Email (optional)"} type="email" placeholder="you@email.com" required={channel === "card"} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <ConsentBox
+                  checked={consent}
+                  onChange={setConsent}
+                  channels={CONSENT_CHANNELS}
+                  purpose="news, program updates and invitations"
+                  formSource="donate-form"
+                />
                 <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Recording pledge…" : `Pledge ${displayAmount}`}
@@ -420,6 +442,7 @@ function InKindSection() {
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -434,6 +457,16 @@ function InKindSection() {
     if (!check.success) {
       setSending(false);
       return setError(check.error ?? "Human check failed. Please try again.");
+    }
+    // Optional, same as the cash form: declining must not block the offer.
+    if (consent) {
+      await recordContactConsent({
+        email,
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "inkind-form",
+      });
     }
     const result = await recordInKindOffer({
       member_id: profile?.id ?? null,
@@ -520,6 +553,13 @@ function InKindSection() {
               </div>
               <Input label="Email (optional)" type="email" placeholder="you@email.com" required={false} value={email} onChange={(e) => setEmail(e.target.value)} />
                 {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                <ConsentBox
+                  checked={consent}
+                  onChange={setConsent}
+                  channels={CONSENT_CHANNELS}
+                  purpose="news, program updates and invitations"
+                  formSource="inkind-form"
+                />
                 <Turnstile onToken={setToken} />
                 <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                   {sending ? "Sending offer…" : "Offer this gift"}

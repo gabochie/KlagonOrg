@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/posts";
+import { recordConsent, type MarketingChannel } from "@/lib/consent";
 import { getInvisibleToken, verifyTurnstile } from "@/lib/turnstile";
+import { ConsentBox } from "@/components/ui";
+
+/** The footer sends the monthly digest by email only — claim nothing else. */
+const CHANNELS: readonly MarketingChannel[] = ["email"];
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [state, setState] = useState<"idle" | "sending" | "done" | string>("idle");
 
   async function submit(e: React.FormEvent) {
@@ -13,6 +19,10 @@ export function NewsletterSignup() {
     const value = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       setState("Enter a valid email address.");
+      return;
+    }
+    if (!consent) {
+      setState("Please tick the box so we know we may email you.");
       return;
     }
     setState("sending");
@@ -28,6 +38,22 @@ export function NewsletterSignup() {
     } catch {
       // Fall through and subscribe anyway (see above).
     }
+
+    // Consent first, subscription second, and never the other way round.
+    // If this fails we stop: a subscriber row with no permission on file is
+    // precisely the state this whole mechanism exists to prevent.
+    const consentRes = await recordConsent({
+      subject_type: "email",
+      subject_value: value,
+      channel: "email",
+      granted: true,
+      form_source: "footer",
+    });
+    if (consentRes.error) {
+      setState("Could not save your consent. Please try again.");
+      return;
+    }
+
     const res = await subscribeToNewsletter(value, undefined, "footer");
     setState(res.ok ? "done" : (res.error ?? "Something went wrong."));
   }
@@ -59,6 +85,15 @@ export function NewsletterSignup() {
           {state === "sending" ? "…" : "Join"}
         </button>
       </div>
+      <ConsentBox
+        checked={consent}
+        onChange={setConsent}
+        channels={CHANNELS}
+        purpose="a monthly news roundup"
+        required
+        variant="dark"
+        formSource="footer"
+      />
       {state !== "idle" && state !== "sending" && (
         <p className="text-[11px] text-white/60">{state}</p>
       )}

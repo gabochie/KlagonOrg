@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import {
@@ -13,8 +14,12 @@ import {
   type MoMoNetwork,
 } from "@/lib/payments";
 import { IMPACT_BILL, TOUR_WALKS, clampGuests, tourTierId, tourTotal } from "@/lib/tours";
+import { recordLeadEvent } from "@/lib/analytics";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
+
+/** This form takes a phone number only, so there is no email subject to claim. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["sms", "whatsapp"];
 
 export default function WalkPage() {
   const [walkId, setWalkId] = useState("wetland-market-walk");
@@ -31,6 +36,7 @@ export default function WalkPage() {
   const [promptPhone, setPromptPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const walk = TOUR_WALKS.find((w) => w.id === walkId) ?? TOUR_WALKS[0];
   const total = tourTotal(walk.id, Number(guests));
@@ -51,6 +57,16 @@ export default function WalkPage() {
     if (!human.success) {
       setSending(false);
       return setError(human.error ?? "Human check failed.");
+    }
+    // Optional: booking a walk must not be conditional on marketing, and the
+    // WhatsApp confirmation that follows is a transactional message, not this.
+    if (consent) {
+      await recordContactConsent({
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "walk-booking",
+      });
     }
     const result = await chargeDonation({
       amount_ghs: total,
@@ -232,15 +248,23 @@ export default function WalkPage() {
                     Total: GH₵{total.toLocaleString()} ({clampGuests(Number(guests))} guests)
                   </div>
                 )}
-                <Turnstile onToken={setToken} />
+                <ConsentBox
+          checked={consent}
+          onChange={setConsent}
+          channels={CONSENT_CHANNELS}
+          purpose="news, program updates and invitations"
+          formSource="walk-booking"
+        />
+        <Turnstile onToken={setToken} />
                 {error && <div className="text-xs font-semibold text-red-700">{error}</div>}
                 <Button variant="primary" size="lg" disabled={sending || walk.whatsappOnly}>
                   {sending ? "Processing…" : walk.whatsappOnly ? "WhatsApp Only — See Below" : `Pay GH₵${(total ?? 0).toLocaleString()} →`}
                 </Button>
                 <a
-                  href={`https://wa.me/233268708895?text=${encodeURIComponent(`Hello KLAGON, I want to book: ${walk.name}`)}`}
+                  href={`https://wa.me/233268708895?text=${encodeURIComponent(`Hello KLAGON, I want to book: ${walk.name} [walk-whatsapp]`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => recordLeadEvent({ source: "walk", action: "whatsapp-click", metadata: { walk: walkId } })}
                   className="text-center text-xs font-bold text-navy underline"
                 >
                   Or book over WhatsApp →

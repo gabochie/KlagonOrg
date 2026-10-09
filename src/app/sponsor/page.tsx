@@ -6,7 +6,8 @@ import { recordLeadEvent } from "@/lib/analytics";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { SPONSOR_PLANS } from "@/lib/constants";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { CheckCircle, ArrowRight, Building2, TrendingUp, Users, Globe } from "lucide-react";
 import { notifyTeam } from "@/lib/notify";
 import { submitSponsorApplication } from "@/lib/forms";
@@ -20,6 +21,9 @@ const STATS = [
   { icon: TrendingUp, label: "Profile views per partner", value: "4,000+" },
   { icon: Globe, label: "Klagon area reach", value: "5+" },
 ];
+
+/** The sponsor form collects an email and a phone, so all three channels can be offered. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
 
 export default function SponsorPage() {
   return (
@@ -55,6 +59,7 @@ function SponsorPageContent() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -75,6 +80,16 @@ function SponsorPageContent() {
     if (!check.success) {
       setSending(false);
       return setError(check.error ?? "Human check failed. Please try again.");
+    }
+    // Optional: applying to sponsor must not depend on accepting marketing.
+    if (consent) {
+      await recordContactConsent({
+        email: form.email,
+        phone: form.phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "sponsor-form",
+      });
     }
     const { error: err } = await submitSponsorApplication({
       ...form,
@@ -269,6 +284,13 @@ function SponsorPageContent() {
                   <Input label="Email" type="email" placeholder="you@email.com" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                   <Input label="Company / Organization" placeholder="Optional" value={form.org_name} onChange={(e) => setForm((f) => ({ ...f, org_name: e.target.value }))} />
                   {error && <p className="text-xs text-red font-semibold bg-red/5 rounded-lg px-3 py-2">{error}</p>}
+                  <ConsentBox
+                    checked={consent}
+                    onChange={setConsent}
+                    channels={CONSENT_CHANNELS}
+                    purpose="news, program updates and invitations"
+                    formSource="sponsor-form"
+                  />
                   <Turnstile onToken={setToken} />
                   <Button variant="dark" size="lg" className="w-full" disabled={sending}>
                     {sending ? "Submitting…" : "Submit Interest"}

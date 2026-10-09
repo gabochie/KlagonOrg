@@ -82,10 +82,43 @@ export function PaidCourseGate({
     })();
   }, [loading, profileLoaded, checkAccess]);
 
+  // The hero is public marketing (cover + title + price), identical for the
+  // checking shell and the paywall: static export bakes this branch, so paid
+  // course pages keep their authored cover in HTML for SEO/social and the
+  // course-covers build gate. No lesson content ever renders here.
+  const hero = (
+    <section className="bg-navy py-10 sm:py-12 px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto">
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/60 hover:text-amber mb-4"
+        >
+          <ArrowLeft size={14} /> All courses
+        </Link>
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <CourseCover course={course} icon={course.icon ?? "📚"} title={course.title} size={1200} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+            {course.category && (
+              <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1">
+                {course.category}
+              </div>
+            )}
+            <h1 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              {course.title}
+            </h1>
+          </div>
+        </div>
+        {course.description && <p className="text-white/60 text-sm mt-3">{course.description}</p>}
+      </div>
+    </section>
+  );
+
   if (checking) {
     return (
       <main className="w-full">
-        <section className="bg-light py-20 px-4 text-center">
+        {hero}
+        <section className="bg-light py-10 px-4 text-center">
           <div className="text-sm text-gray">Checking your access…</div>
         </section>
       </main>
@@ -107,31 +140,7 @@ export function PaidCourseGate({
 
   return (
     <main className="w-full">
-      <section className="bg-navy py-10 sm:py-12 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto">
-          <Link
-            href={backHref}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/60 hover:text-amber mb-4"
-          >
-            <ArrowLeft size={14} /> All courses
-          </Link>
-          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <CourseCover course={course} icon={course.icon ?? "📚"} title={course.title} size={1200} />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
-              {course.category && (
-                <div className="text-[10px] font-bold tracking-widest uppercase text-amber mb-1">
-                  {course.category}
-                </div>
-              )}
-              <h1 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                {course.title}
-              </h1>
-            </div>
-          </div>
-          {course.description && <p className="text-white/60 text-sm mt-3">{course.description}</p>}
-        </div>
-      </section>
+      {hero}
 
       <section className="bg-light py-10 sm:py-12 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">

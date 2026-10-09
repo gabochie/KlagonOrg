@@ -1204,6 +1204,30 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["outreach_sends"]["Insert"]>;
         Relationships: [];
       };
+      marketing_consents: {
+        Row: {
+          id: number;
+          subject_type: string;
+          subject_value: string;
+          channel: string;
+          granted: boolean;
+          form_source: string;
+          consent_text_version: string;
+          context: string | null;
+          created_at: string;
+        };
+        Insert: {
+          subject_type: string;
+          subject_value: string;
+          channel: string;
+          granted: boolean;
+          form_source?: string;
+          consent_text_version?: string;
+          context?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["marketing_consents"]["Insert"]>;
+        Relationships: [];
+      };
       outreach_suppressions: {
         Row: { wa_phone: string; reason: string; created_at: string };
         Insert: { wa_phone: string; reason?: string };
@@ -2022,6 +2046,10 @@ export interface Database {
         Args: { p_id: string };
         Returns: boolean;
       };
+      marketing_consent: {
+        Args: { p_subject_type: string; p_subject_value: string; p_channel: string };
+        Returns: boolean | null;
+      };
       moderate_map_point: {
         Args: {
           p_map_id: string;
@@ -2039,12 +2067,34 @@ export interface Database {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
       };
+      log_agent_lead: {
+        Args: {
+          p_name: string | null;
+          p_phone: string | null;
+          p_email: string;
+          p_source: string;
+          p_intent: string | null;
+          p_profile_id: string | null;
+        };
+        Returns: number | null;
+      };
       set_member_role: {
         Args: {
           p_user_id: string;
           p_role: UserRole;
         };
         Returns: undefined;
+      };
+      verify_certificate: {
+        Args: { p_code: string };
+        Returns: {
+          code: string;
+          recipient_name: string;
+          course_title: string;
+          issued_at: string;
+          revoked: boolean;
+          member_id: string;
+        }[];
       };
     };
     Enums: {

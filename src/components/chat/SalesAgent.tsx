@@ -8,6 +8,8 @@ import { useOnlineStatus } from "@/components/pwa/useOnlineStatus";
 import { shouldHideBottomNav } from "@/lib/mobileChrome";
 import { cn } from "@/lib/utils";
 import { getInvisibleToken, verifyTurnstile } from "@/lib/turnstile";
+import { ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import {
   createRecognition,
   recognitionSupported,
@@ -73,6 +75,7 @@ export function SalesAgent() {
   const [pendingLead, setPendingLead] = useState<LeadIntent | null>(null);
   const [savedNote, setSavedNote] = useState<string | null>(null);
   const [leadError, setLeadError] = useState<string | null>(null);
+  const [leadConsent, setLeadConsent] = useState(false);
 
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -155,6 +158,9 @@ export function SalesAgent() {
     if (intent && (intent.email || intent.phone)) {
       setPendingLead(intent);
       setSavedNote(null);
+      // A fresh lead starts with permission withdrawn — never carry a tick
+      // across from a previous offer the visitor never answered.
+      setLeadConsent(false);
     }
     speakReply(reply);
   };
@@ -282,6 +288,13 @@ export function SalesAgent() {
     startListening();
   };
 
+  // Only offer channels the visitor actually handed over. Offering a number
+  // we never collected would record permission we cannot act on.
+  const leadChannels: MarketingChannel[] = [
+    ...(pendingLead?.email ? (["email"] as const) : []),
+    ...(pendingLead?.phone ? (["sms", "whatsapp"] as const) : []),
+  ];
+
   const saveLead = async () => {
     if (!pendingLead) return;
     setLeadError(null);
@@ -292,10 +305,22 @@ export function SalesAgent() {
         profile_id: profile?.id ?? null,
       },
     }).catch(() => ({ reply: undefined, error: "Could not save your details. Please try again." }) as TurnResult);
-    if (res?.saved) {
+      if (res?.saved) {
       const who = pendingLead.name ?? "your";
       setSavedNote(`Saved — ${who} details are with the KLAGON.org team.`);
+      // Optional and separate from the save itself: being followed up on is a
+      // transactional reply, marketing is not. Skipped entirely if unticked.
+      if (leadConsent) {
+        await recordContactConsent({
+          email: pendingLead.email,
+          phone: pendingLead.phone,
+          channels: leadChannels,
+          granted: true,
+          form_source: "chat-agent-lead",
+        });
+      }
       setPendingLead(null);
+      setLeadConsent(false);
     } else {
       setLeadError(res?.error ?? "Could not save your details.");
     }
@@ -303,6 +328,7 @@ export function SalesAgent() {
 
   const isProspect = !profile || !isApproved;
   const quickReplies = isProspect ? PROSPECT_REPLIES : MEMBER_REPLIES;
+
 
   return (
     <div
@@ -394,6 +420,16 @@ export function SalesAgent() {
                   {pendingLead.email ? ` · ${pendingLead.email}` : ""}
                   {pendingLead.phone ? ` · ${pendingLead.phone}` : ""} to the team so they can follow up.
                 </div>
+                {leadChannels.length > 0 && (
+                  <ConsentBox
+                    checked={leadConsent}
+                    onChange={setLeadConsent}
+                    channels={leadChannels}
+                    purpose="news, program updates and invitations"
+                    formSource="chat-agent-lead"
+                    className="mb-2.5"
+                  />
+                )}
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => void saveLead()}

@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { CheckCircle2, KeyRound, Save, UserRound } from "lucide-react";
+import { CheckCircle2, KeyRound, Save, Send, UserRound } from "lucide-react";
+import { ConsentBox } from "@/components/ui";
+import {
+  CONSENT_CHANNELS,
+  hasMarketingConsent,
+  recordContactConsent,
+  recordProfileConsent,
+  subjectForChannel,
+} from "@/lib/consent";
 
 const inputCls =
   "w-full px-3.5 py-2.5 rounded-xl border border-border text-sm font-sans focus:outline-2 focus:outline-amber focus:border-transparent bg-white";
@@ -29,6 +37,40 @@ export function SettingsPanel() {
   const [pwBusy, setPwBusy] = useState(false);
 
   const [prevProfileId, setPrevProfileId] = useState<string | null>(null);
+
+  const [marketing, setMarketing] = useState(false);
+  const [marketingAtLoad, setMarketingAtLoad] = useState(false);
+  const [marketingLoaded, setMarketingLoaded] = useState(false);
+
+  // Read the ledger before rendering the box, so it opens showing what is
+  // actually on file rather than a default that contradicts it.
+  useEffect(() => {
+    if (!profile?.id) return;
+    let active = true;
+    void (async () => {
+      let granted = false;
+      for (const channel of CONSENT_CHANNELS) {
+        const subjectType = subjectForChannel(channel);
+        const contactValue = subjectType === "email" ? (user?.email ?? "") : (profile.phone ?? "");
+        if (contactValue && (await hasMarketingConsent(subjectType, contactValue, channel)) === true) {
+          granted = true;
+          break;
+        }
+        if ((await hasMarketingConsent("profile", profile.id, channel)) === true) {
+          granted = true;
+          break;
+        }
+      }
+      if (!active) return;
+      setMarketing(granted);
+      setMarketingAtLoad(granted);
+      setMarketingLoaded(true);
+    })();
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id]);
 
   if (profile && profile.id !== prevProfileId) {
     setPrevProfileId(profile.id);
@@ -59,8 +101,34 @@ export function SettingsPanel() {
       career_goal: careerGoal.trim() || null,
     });
     setProfileBusy(false);
-    if (result.error) setProfileMsg({ ok: false, text: result.error });
-    else setProfileMsg({ ok: true, text: "Profile updated 🎉" });
+    if (result.error) {
+      setProfileMsg({ ok: false, text: result.error });
+      return;
+    }
+
+    // Only write when the tick actually moved. Recording an untouched box as
+    // a refusal would log "they said no" for someone who never answered, and
+    // recording it as granted would invent permission they never gave.
+    if (marketingLoaded && marketing !== marketingAtLoad) {
+      await recordContactConsent({
+        email: user?.email ?? null,
+        phone: phone.trim(),
+        channels: CONSENT_CHANNELS,
+        granted: marketing,
+        form_source: "settings-profile",
+      });
+      if (profile?.id) {
+        await recordProfileConsent({
+          profile_id: profile.id,
+          channels: CONSENT_CHANNELS,
+          granted: marketing,
+          form_source: "settings-profile",
+        });
+      }
+      setMarketingAtLoad(marketing);
+    }
+
+    setProfileMsg({ ok: true, text: "Profile updated 🎉" });
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
@@ -148,6 +216,27 @@ export function SettingsPanel() {
             <input className={inputCls} value={careerGoal} onChange={(e) => setCareerGoal(e.target.value)} placeholder="What are you working toward?" />
           </div>
         </div>
+
+        {/* Marketing permission sits inside the profile form because that is
+            where the contact details live, but it is recorded separately from
+            the profile save so it can never be swept along unnoticed. */}
+        <div className="mt-4 rounded-xl bg-pale border border-border px-3.5 py-3">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Send size="13" className="text-amber-strong" />
+            <span className="text-xs font-extrabold text-navy">Marketing</span>
+          </div>
+          <ConsentBox
+            checked={marketing}
+            onChange={setMarketing}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="settings-profile"
+          />
+          {!marketingLoaded && (
+            <p className="text-[11px] text-gray mt-1">Checking what is on file…</p>
+          )}
+        </div>
+
         {profileMsg && (
           <p className={`mt-3 text-xs font-bold ${profileMsg.ok ? "text-green-600" : "text-red"}`}>
             {profileMsg.text}

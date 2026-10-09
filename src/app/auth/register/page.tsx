@@ -6,8 +6,13 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { INTERESTS } from "@/lib/constants";
 import { Turnstile } from "@/components/Turnstile";
+import { ConsentBox } from "@/components/ui";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
+
+/** Registration captures both an email and a phone, so all three are offered. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
 
 const OCCUPATIONS = [
   "Student",
@@ -53,6 +58,7 @@ export default function RegisterPage() {
     career_goal: "",
   });
   const [interests, setInterests] = useState<string[]>([]);
+  const [consent, setConsent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
@@ -85,6 +91,22 @@ export default function RegisterPage() {
     });
     setBusy(false);
     if (err) return setError(err);
+
+    // Recorded only once the account actually exists, so a failed signup does
+    // not leave a consent row for a person who never joined. Nothing here is
+    // required: marketing permission is deliberately not a condition of
+    // creating an account, and an unticked box records nothing at all — the
+    // send paths already deny anyone with no row on file.
+    if (consent) {
+      await recordContactConsent({
+        email,
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "register",
+      });
+    }
+
     router.push("/dashboard/member");
   };
 
@@ -239,6 +261,13 @@ export default function RegisterPage() {
             />
           </div>
           {error && <p className="text-xs text-red font-semibold">{error}</p>}
+          <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="register"
+          />
           {!configured && (
             <p className="text-xs text-amber font-semibold">
               Account creation will activate once the database is connected.

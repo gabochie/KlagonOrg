@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { fetchMyClaim, fileClaim } from "@/lib/claims";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
+
+/** A phone number is the only contact field on this form. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["sms", "whatsapp"];
 
 export function ClaimBusiness({
   sponsorId,
@@ -22,6 +26,7 @@ export function ClaimBusiness({
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -54,6 +59,16 @@ export function ClaimBusiness({
     }
     setSending(true);
     setError(null);
+    // Optional: a claim must never depend on accepting marketing, and the
+    // WhatsApp verification that follows is a transactional message.
+    if (consent) {
+      await recordContactConsent({
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "business-claim",
+      });
+    }
     const res = await fileClaim({
       sponsorId,
       claimantId: user.id,
@@ -120,6 +135,13 @@ export function ClaimBusiness({
             placeholder="Shop location, landmark…"
           />
           {error && <div className="text-xs font-semibold text-red-700">{error}</div>}
+          <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="business-claim"
+          />
           <Button variant="primary" disabled={sending}>
             {sending ? "Submitting…" : "Claim This Business →"}
           </Button>

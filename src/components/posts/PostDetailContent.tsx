@@ -18,11 +18,16 @@ import type { Post } from "@/types";
 import { isBoostActive } from "@/lib/boosts";
 import { ORG_WA } from "@/lib/wa";
 import { LoadingMessage } from "@/components/ui/Skeleton";
+import { ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import {
   filePostClaim,
   fetchMyPostClaim,
   type PostClaim,
 } from "@/lib/postClaims";
+
+/** The message form collects a phone number only, so there is no email subject. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["sms", "whatsapp"];
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "";
@@ -55,6 +60,7 @@ export function PostDetailContent({ id }: { id: string }) {
   const [msgBody, setMsgBody] = useState("");
   const [msgState, setMsgState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msgError, setMsgError] = useState("");
+  const [msgConsent, setMsgConsent] = useState(false);
 
   const [claimPhone, setClaimPhone] = useState("");
   const [claimNote, setClaimNote] = useState("");
@@ -149,6 +155,17 @@ export function PostDetailContent({ id }: { id: string }) {
     if (!msgBody.trim()) return;
     setMsgState("sending");
     setMsgError("");
+    // Optional: reaching the poster must not depend on accepting marketing.
+    // recordContactConsent skips any channel whose number is blank, so a
+    // message sent without a phone simply leaves no permission behind.
+    if (msgConsent) {
+      await recordContactConsent({
+        phone: msgPhone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "post-contact-message",
+      });
+    }
     const res = await sendContactMessage({
       post_id: post.id,
       sender_name: msgName.trim() || null,
@@ -170,6 +187,11 @@ export function PostDetailContent({ id }: { id: string }) {
     if (!user || !post || !claimPhone.trim()) return;
     setClaimState("sending");
     setClaimMsg("");
+    // No consent is written here, deliberately. This number is the one
+    // published on a public advert: until we verify the claim over WhatsApp we
+    // cannot tell it is the claimer's own line, and a tick on an unverified
+    // number is permission nobody actually gave. Marketing permission for the
+    // owner is collected after verification, from the verified owner.
     const res = await filePostClaim({
       postId: post.id,
       claimantId: user.id,
@@ -400,6 +422,13 @@ export function PostDetailContent({ id }: { id: string }) {
                   {msgState === "error" && (
                     <div className="text-[11px] font-bold text-red-700">{msgError}</div>
                   )}
+                  <ConsentBox
+                    checked={msgConsent}
+                    onChange={setMsgConsent}
+                    channels={CONSENT_CHANNELS}
+                    purpose="news, program updates and invitations"
+                    formSource="post-contact-message"
+                  />
                   <button
                     type="submit"
                     disabled={msgState === "sending" || !msgBody.trim()}

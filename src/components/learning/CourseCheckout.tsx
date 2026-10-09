@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeCourse, confirmCourse, fetchCourseStatus } from "@/lib/coursePayments";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { MoMoNetwork } from "@/lib/payments";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Lock, ShieldCheck } from "lucide-react";
@@ -16,6 +18,9 @@ function networkLabel(n: MoMoNetwork) {
   return n === "at" ? "AT" : n.charAt(0).toUpperCase() + n.slice(1);
 }
 
+/** A MoMo number is the only contact field on this payment form. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["sms", "whatsapp"];
+
 /**
  * Buys lifetime access to a single course with a real Mobile Money charge.
  *
@@ -23,6 +28,7 @@ function networkLabel(n: MoMoNetwork) {
  * database (course_quote) and the entitlement is granted from the Moolre
  * callback. Sign-in is required so access is always attached to a real account.
  */
+
 export function CourseCheckout({
   course,
   onUnlocked,
@@ -35,6 +41,7 @@ export function CourseCheckout({
   const [network, setNetwork] = useState<MoMoNetwork>("mtn");
   const [token, setToken] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chargeRef, setChargeRef] = useState<string | null>(null);
   const [promptPhone, setPromptPhone] = useState("");
@@ -61,6 +68,11 @@ export function CourseCheckout({
         pollRef.current = null;
         setAwaiting(false);
         setDone(true);
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "paid",
+          metadata: { course_id: course.id, amount_ghs: course.price_ghs },
+        });
         onUnlocked?.();
         return;
       }
@@ -69,12 +81,23 @@ export function CourseCheckout({
         pollRef.current = null;
         setAwaiting(false);
         setError("That payment did not go through. Please try again.");
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "failed",
+          metadata: { course_id: course.id },
+        });
         return;
       }
       if (tries >= 20) {
         if (pollRef.current) window.clearInterval(pollRef.current);
         pollRef.current = null;
         setAwaiting(false);
+        setError("We have not seen your MoMo approval yet. If you approved it, wait a minute and check your access — or try again.");
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "timeout",
+          metadata: { course_id: course.id },
+        });
       }
     }, 3000);
   }
@@ -90,6 +113,16 @@ export function CourseCheckout({
       setSending(false);
       return setError(human.error ?? "Human check failed.");
     }
+        // Optional: paying must not depend on accepting marketing, and the payment
+    // prompts that follow are transactional messages, not marketing.
+    if (consent) {
+      await recordContactConsent({
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "course-checkout",
+      });
+    }
     const result = await chargeCourse({
       course_id: course.id,
       phone: phone.trim(),
@@ -98,15 +131,30 @@ export function CourseCheckout({
     });
     setSending(false);
     if (!result.ok) {
+      recordLeadEvent({
+        source: "course-checkout",
+        action: "charge-failed",
+        metadata: { course_id: course.id, code: result.code ?? null },
+      });
       const detail = result.code
         ? `${result.error ?? "Payment request failed."} (${result.code})`
         : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
+    recordLeadEvent({
+      source: "course-checkout",
+      action: "charge-start",
+      metadata: { course_id: course.id, amount_ghs: course.price_ghs },
+    });
     setPromptPhone(result.payer ?? phone.trim());
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({
+        source: "course-checkout",
+        action: "otp-shown",
+        metadata: { course_id: course.id },
+      });
       return;
     }
     if (result.ref) pollUntilSettled(result.ref);
@@ -256,7 +304,14 @@ export function CourseCheckout({
             </div>
           </div>
           <div className="mt-2.5">
-            <Turnstile onToken={setToken} />
+            <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="course-checkout"
+          />
+          <Turnstile onToken={setToken} />
           </div>
           {error && <p className="text-xs text-red-700 mt-1.5">{error}</p>}
           <div className="grid grid-cols-2 gap-2 mt-2.5">

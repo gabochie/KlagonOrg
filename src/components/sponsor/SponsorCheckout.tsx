@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, ConsentBox } from "@/components/ui";
+import { recordContactConsent, type MarketingChannel } from "@/lib/consent";
 import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeSponsor, confirmSponsor } from "@/lib/sponsorPayments";
+import { recordLeadEvent } from "@/lib/analytics";
 import type { MoMoNetwork } from "@/lib/payments";
 import { ORG_WA, waLink } from "@/lib/wa";
 import { SPONSOR_TIERS } from "@/lib/constants";
 import type { SponsorPlan } from "@/types";
 
 const NETWORKS: MoMoNetwork[] = ["mtn", "telecel", "at"];
+/** This checkout takes a MoMo number and, optionally, an email address. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
 
 /**
  * Self-serve sponsorship checkout for the priced tiers (Community → Digital).
@@ -35,6 +39,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
   const [verifying, setVerifying] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [paidAmount, setPaidAmount] = useState<number | null>(null);
+  const [consent, setConsent] = useState(false);
 
   const tierInfo = SPONSOR_TIERS.find((t) => t.id === plan.tier);
   const monthly = tierInfo?.priceMonthly ?? null;
@@ -52,6 +57,17 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
       setSending(false);
       return setError(human.error ?? "Human check failed.");
     }
+    // Optional: paying for a sponsorship must not depend on accepting
+    // marketing, and the payment prompts that follow are transactional.
+    if (consent) {
+      await recordContactConsent({
+        email: email.trim() || null,
+        phone,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "sponsor-checkout",
+      });
+    }
     const result = await chargeSponsor({
       tier: plan.tier,
       full_name: fullName.trim(),
@@ -62,18 +78,32 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
     });
     setSending(false);
     if (!result.ok) {
+      recordLeadEvent({
+        source: "sponsor-checkout",
+        action: "charge-failed",
+        metadata: { tier: plan.tier, code: result.code ?? null },
+      });
       const detail = result.code
         ? `${result.error ?? "Payment request failed."} (${result.code})`
         : (result.error ?? "Payment request failed. Please try again.");
       return setError(detail);
     }
+    recordLeadEvent({
+      source: "sponsor-checkout",
+      action: "charge-start",
+      metadata: { tier: plan.tier, amount_ghs: result.amount_ghs ?? monthly },
+    });
     setPromptPhone(result.payer ?? phone.trim());
     setPaidAmount(result.amount_ghs ?? monthly);
     if (result.otp_required && result.ref) {
       setChargeRef(result.ref);
       setOtp("");
+      recordLeadEvent({ source: "sponsor-checkout", action: "otp-shown", metadata: { tier: plan.tier } });
       return;
     }
+    // Not settled yet: MoMo still has to confirm, so this is an accepted
+    // charge, not a payment. The "paid" event fires once the code is verified.
+    recordLeadEvent({ source: "sponsor-checkout", action: "charge-accepted", metadata: { tier: plan.tier } });
     setSubmitted(true);
   }
 
@@ -90,6 +120,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
         : (result.error ?? "Verification failed. Check the code and try again.");
       return setError(detail);
     }
+    recordLeadEvent({ source: "sponsor-checkout", action: "paid", metadata: { tier: plan.tier } });
     setSubmitted(true);
   }
 
@@ -97,10 +128,10 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
     return (
       <div className="bg-white rounded-2xl border border-border p-8 text-center">
         <div className="text-3xl mb-3">🤝</div>
-        <h3 className="text-base font-bold text-navy mb-1">Thank you!</h3>
+        <h3 className="text-base font-bold text-navy mb-1">Charge accepted — finishing up…</h3>
         <p className="text-sm text-gray">
-          We received your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""}.
-          Your benefits activate once payment clears — our partnerships team will reach out to set up your profile.
+          We sent the MoMo request for your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""}.
+          Approve it on your phone — your benefits activate once payment clears, and our partnerships team will reach out to set up your profile.
         </p>
       </div>
     );
@@ -231,6 +262,13 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
               </a>
             </p>
           )}
+          <ConsentBox
+            checked={consent}
+            onChange={setConsent}
+            channels={CONSENT_CHANNELS}
+            purpose="news, program updates and invitations"
+            formSource="sponsor-checkout"
+          />
           <Turnstile onToken={setToken} />
           <Button variant="dark" size="lg" className="w-full" type="submit" disabled={sending}>
             {sending ? "Starting…" : `Pay ${priceLabel}/mo`}

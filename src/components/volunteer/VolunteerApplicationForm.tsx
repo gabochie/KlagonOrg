@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { uploadMemberMedia } from "@/lib/storage";
+import { ConsentBox } from "@/components/ui";
+import { recordProfileConsent, type MarketingChannel } from "@/lib/consent";
 import {
   VOLUNTEER_ID_TYPES,
   VOLUNTEER_TERMS_VERSION,
@@ -11,6 +13,9 @@ import {
   fileVolunteerApplication,
   type VolunteerApplication,
 } from "@/lib/volunteers";
+
+/** This form collects no contact fields itself, so consent follows the profile. */
+const CONSENT_CHANNELS: readonly MarketingChannel[] = ["email", "sms", "whatsapp"];
 
 const inputCls =
   "w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-navy placeholder:text-gray/50 focus:outline-none focus:border-navy";
@@ -29,6 +34,7 @@ export function VolunteerApplicationForm({
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [accepted, setAccepted] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [existing, setExisting] = useState<VolunteerApplication | null>(null);
@@ -139,6 +145,20 @@ export function VolunteerApplicationForm({
       setNotice(res.error);
       return;
     }
+
+    // Deliberately separate from `accepted` above. Ticking the volunteer terms
+    // is a condition of applying; this box is not, and folding them together
+    // would make the marketing consent neither free nor specific. Recorded
+    // against the profile id so it survives an email or phone change.
+    if (consent) {
+      await recordProfileConsent({
+        profile_id: profile.id,
+        channels: CONSENT_CHANNELS,
+        granted: true,
+        form_source: "volunteer-form",
+      });
+    }
+
     setDone(true);
   };
 
@@ -232,6 +252,15 @@ export function VolunteerApplicationForm({
           — including unpaid service, the 30-day probation, and performance-based continuation.
         </span>
       </label>
+      <div className="mt-4 border-t border-border pt-4">
+        <ConsentBox
+          checked={consent}
+          onChange={setConsent}
+          channels={CONSENT_CHANNELS}
+          purpose="news, program updates and invitations"
+          formSource="volunteer-form"
+        />
+      </div>
       <button
         type="button"
         onClick={() => void submit()}
