@@ -47,6 +47,7 @@ Write one sentence: "I will automate ___, ___, and ___ and save ___ hours per we
 $lesson$, 0
 from public.courses c
 where c.title ilike 'Automate 3 Tasks at Work with AI%PRO Sprint'
+  and c.price_ghs = 150
 on conflict (course_id, sort_order) do update
 set title = excluded.title, duration_min = excluded.duration_min, content = excluded.content;
 
@@ -85,6 +86,7 @@ Ask your tool for a Tema regulation you suspect does not exist. Watch it invent 
 $lesson$, 1
 from public.courses c
 where c.title ilike 'Automate 3 Tasks at Work with AI%PRO Sprint'
+  and c.price_ghs = 150
 on conflict (course_id, sort_order) do update
 set title = excluded.title, duration_min = excluded.duration_min, content = excluded.content;
 
@@ -117,6 +119,7 @@ For each of your 3 tasks write: Trigger, AI step, Human check, Send or file. Scr
 $lesson$, 2
 from public.courses c
 where c.title ilike 'Automate 3 Tasks at Work with AI%PRO Sprint'
+  and c.price_ghs = 150
 on conflict (course_id, sort_order) do update
 set title = excluded.title, duration_min = excluded.duration_min, content = excluded.content;
 
@@ -145,6 +148,7 @@ Day 7: compare against your Lesson 0 baseline. Hours saved per week is your head
 $lesson$, 3
 from public.courses c
 where c.title ilike 'Automate 3 Tasks at Work with AI%PRO Sprint'
+  and c.price_ghs = 150
 on conflict (course_id, sort_order) do update
 set title = excluded.title, duration_min = excluded.duration_min, content = excluded.content;
 
@@ -169,6 +173,7 @@ Review within 48 hours. Pass earns a verifiable certificate (check it at klagon.
 $lesson$, 4
 from public.courses c
 where c.title ilike 'Automate 3 Tasks at Work with AI%PRO Sprint'
+  and c.price_ghs = 150
 on conflict (course_id, sort_order) do update
 set title = excluded.title, duration_min = excluded.duration_min, content = excluded.content;
 

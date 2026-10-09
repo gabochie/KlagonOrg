@@ -77,6 +77,7 @@ export function VerifyContent() {
             className="bg-white rounded-2xl border border-border p-6 flex flex-col gap-4"
           >
             <Input
+              id="verify-code"
               label="Certificate code"
               placeholder="KLG-AU-9F3C2B"
               value={code}

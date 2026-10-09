@@ -131,7 +131,7 @@ export function BoostRequestPanel({ post }: { post: Post }) {
   if (submitted) {
     return (
       <div className="mt-2 text-xs font-bold text-emerald-700">
-        Payment received — we&apos;ll feature this listing for {price.days} days as soon as MoMo confirms.
+        Charge accepted — approve it on your phone. We&apos;ll feature this listing for {price.days} days as soon as MoMo confirms.
       </div>
     );
   }

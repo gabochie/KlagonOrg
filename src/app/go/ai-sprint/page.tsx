@@ -139,7 +139,7 @@ export default function AiSprintSalesPage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <SalesCta source="ai-sprint-b2c" secondaryHref="/learning" label="Enrol — GH₵150" price={150} />
+              <SalesCta source="ai-sprint-b2c" secondaryHref="/learning" label="Enrol — GH₵150" price={150} courseId="d65e71c1-d194-4352-a183-7f8133b9967a" />
               <p className="text-[11px] text-gray mt-3">
                 Hiring for a team? <a href="/go/ai-sprint-team" className="font-bold text-blue hover:underline">Get the 5-seat Team Sprint →</a>
               </p>

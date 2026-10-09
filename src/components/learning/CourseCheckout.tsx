@@ -92,6 +92,12 @@ export function CourseCheckout({
         if (pollRef.current) window.clearInterval(pollRef.current);
         pollRef.current = null;
         setAwaiting(false);
+        setError("We have not seen your MoMo approval yet. If you approved it, wait a minute and check your access — or try again.");
+        recordLeadEvent({
+          source: "course-checkout",
+          action: "timeout",
+          metadata: { course_id: course.id },
+        });
       }
     }, 3000);
   }

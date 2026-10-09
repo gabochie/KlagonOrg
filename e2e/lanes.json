@@ -5,6 +5,7 @@
     "course-checkout.spec.ts",
     "culture-hub.spec.ts",
     "dashboard-mobile.spec.ts",
+    "demand-gen-sales.spec.ts",
     "guard-redirects.spec.ts",
     "pwa-install.spec.ts",
     "volunteer-learning-smoke.spec.ts"

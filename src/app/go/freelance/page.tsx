@@ -98,7 +98,7 @@ export default function FreelanceSalesPage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <SalesCta source="freelance-b2c" secondaryHref="/learning" label="Enrol — GH₵100" price={100} />
+              <SalesCta source="freelance-b2c" secondaryHref="/learning" label="Enrol — GH₵100" price={100} courseId="8623a6c6-f0bb-4fe3-a3aa-f1ff130f7cdb" />
               <p className="text-[11px] text-gray mt-3">
                 Thinking bigger? <a href="/go/side-business" className="font-bold text-blue hover:underline">Build a side-business in 90 days →</a>
               </p>

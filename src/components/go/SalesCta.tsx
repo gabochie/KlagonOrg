@@ -27,6 +27,8 @@ export function SalesCta({
   secondaryHref?: string;
 }) {
   const WA_MESSAGES: Record<string, string> = {
+    "ai-sprint-b2c":
+      "Hello KLAGON.org, I want to join the AI Productivity Sprint (GH₵150). My name is: ___",
     "ai-sprint-team":
       "Hello KLAGON.org, I run a business and I want the AI Team Sprint for my staff (5 seats). My business name is: ___",
     "side-business-b2c":
@@ -36,9 +38,7 @@ export function SalesCta({
     "go-hire":
       "Hello KLAGON.org, I want to hire KLAGON-trained youth. My business name is: ___",
   };
-  const waMsg =
-    WA_MESSAGES[source] ??
-    "Hello KLAGON.org, I want to join the AI Productivity Sprint (GH₵150). My name is: ___";
+  const waMsg = WA_MESSAGES[source] ?? WA_MESSAGES["ai-sprint-b2c"];
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
       {courseId ? (

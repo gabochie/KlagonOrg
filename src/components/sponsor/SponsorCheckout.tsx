@@ -128,10 +128,10 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
     return (
       <div className="bg-white rounded-2xl border border-border p-8 text-center">
         <div className="text-3xl mb-3">🤝</div>
-        <h3 className="text-base font-bold text-navy mb-1">Thank you!</h3>
+        <h3 className="text-base font-bold text-navy mb-1">Charge accepted — finishing up…</h3>
         <p className="text-sm text-gray">
-          We received your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""}.
-          Your benefits activate once payment clears — our partnerships team will reach out to set up your profile.
+          We sent the MoMo request for your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""}.
+          Approve it on your phone — your benefits activate once payment clears, and our partnerships team will reach out to set up your profile.
         </p>
       </div>
     );

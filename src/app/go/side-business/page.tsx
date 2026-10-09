@@ -96,7 +96,7 @@ export default function SideBusinessSalesPage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <SalesCta source="side-business-b2c" secondaryHref="/learning" label="Enrol — GH₵150" price={150} />
+              <SalesCta source="side-business-b2c" secondaryHref="/learning" label="Enrol — GH₵150" price={150} courseId="cb06ca78-add0-421c-8a8d-b7e4daa8a51c" />
               <p className="text-[11px] text-gray mt-3">
                 Need cash faster? <a href="/go/freelance" className="font-bold text-blue hover:underline">Get your first client in 2 weeks →</a>
               </p>
