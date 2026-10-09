@@ -2093,6 +2093,7 @@ export interface Database {
           course_title: string;
           issued_at: string;
           revoked: boolean;
+          member_id: string;
         }[];
       };
     };

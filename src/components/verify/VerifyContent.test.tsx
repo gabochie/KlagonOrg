@@ -14,10 +14,15 @@ const h = vi.hoisted(() => ({
   codeParam: "",
   rpcData: null as unknown,
   rpcError: null as { message: string } | null,
+  profileId: null as string | null,
 }));
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => ({ get: (k: string) => (k === "code" ? h.codeParam : null) }),
+}));
+
+vi.mock("@/components/auth/AuthProvider", () => ({
+  useAuth: () => ({ profile: h.profileId ? { id: h.profileId } : null }),
 }));
 
 vi.mock("@/lib/supabase-browser", () => ({
@@ -53,6 +58,7 @@ describe("VerifyContent", () => {
   });
 
   it("renders a valid certificate with holder and course", async () => {
+    h.profileId = null;
     h.rpcData = [
       {
         code: "KLG-AU-9F3K2Q",
@@ -60,12 +66,39 @@ describe("VerifyContent", () => {
         course_title: "Automate 3 Tasks at Work with AI — PRO Sprint",
         issued_at: "2026-10-01T00:00:00Z",
         revoked: false,
+        member_id: "member-1",
       },
     ];
     h.rpcError = null;
     await submit("KLG-AU-9F3K2Q");
     await waitFor(() => expect(screen.getByText("Ama Boateng")).toBeTruthy());
     expect(screen.getByText(/Valid certificate/)).toBeTruthy();
+  });
+
+  it("shows the print certificate only to the signed-in holder", async () => {
+    h.rpcData = [
+      {
+        code: "KLG-AU-9F3K2Q",
+        recipient_name: "Ama Boateng",
+        course_title: "Some Course",
+        issued_at: "2026-10-01T00:00:00Z",
+        revoked: false,
+        member_id: "member-1",
+      },
+    ];
+    h.rpcError = null;
+    // Stranger (or signed out): verification visible, no print.
+    h.profileId = null;
+    await submit("KLG-AU-9F3K2Q");
+    await waitFor(() => expect(screen.getByText("Ama Boateng")).toBeTruthy());
+    expect(screen.queryByText(/Print \/ Save certificate PDF/)).toBeNull();
+    cleanup();
+    // Holder: print button + certificate with verification URL.
+    h.profileId = "member-1";
+    await submit("KLG-AU-9F3K2Q");
+    await waitFor(() => expect(screen.getAllByText("Ama Boateng").length).toBeGreaterThan(0));
+    expect(screen.getByText(/Print \/ Save certificate PDF/)).toBeTruthy();
+    expect(screen.getByText(/klagon.org\/verify\?code=KLG-AU-9F3K2Q/)).toBeTruthy();
   });
 
   it("renders the revoked card when revoked is true", async () => {

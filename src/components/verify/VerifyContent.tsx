@@ -3,9 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { recordLeadEvent } from "@/lib/analytics";
 import { Button, Input } from "@/components/ui";
-import { ShieldCheck, XCircle } from "lucide-react";
+import { ShieldCheck, XCircle, Printer } from "lucide-react";
+import { CertificatePrint } from "@/components/verify/CertificatePrint";
 
 interface CertResult {
   code: string;
@@ -13,10 +15,12 @@ interface CertResult {
   course_title: string;
   issued_at: string;
   revoked: boolean;
+  member_id: string;
 }
 
 export function VerifyContent() {
   const params = useSearchParams();
+  const { profile } = useAuth();
   const [code, setCode] = useState((params.get("code") ?? "").toUpperCase());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,6 +121,29 @@ export function VerifyContent() {
                   </div>
                 </>
               )}
+            </div>
+          )}
+          {result && !result.revoked && profile?.id === result.member_id && (
+            <div className="mt-4 no-print">
+              <CertificatePrint
+                recipient={result.recipient_name}
+                course={result.course_title}
+                issuedAt={result.issued_at}
+                code={result.code}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  recordLeadEvent({ source: "verify", action: "print" });
+                  window.print();
+                }}
+                className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-navy px-4 py-2.5 text-xs font-bold text-white hover:bg-blue transition-colors"
+              >
+                <Printer size={14} /> Print / Save certificate PDF
+              </button>
+              <p className="text-[11px] text-gray text-center mt-2">
+                Only you see this — employers checking your code see the verification above.
+              </p>
             </div>
           )}
           {missed && (

@@ -108,6 +108,19 @@ if (verify.includes("verify_certificate") && !/p_code/.test(allSql)) {
 if (!/trg_auto_certificate[\s\S]*lesson_progress/i.test(allSql)) {
   fail("migrations: missing trg_auto_certificate on lesson_progress (manual issue only)");
 }
+// Holder-only printing: verify_certificate must expose member_id, the print
+// button must gate on it, and print CSS must isolate .cert-print.
+if (!/member_id/.test(allSql.split("verify_certificate")[1]?.slice(0, 2000) ?? "")) {
+  fail("migrations: verify_certificate must return member_id for holder gating");
+}
+const certPrint = read("src/components/verify/CertificatePrint.tsx");
+if (!certPrint.includes("klagon.org/verify?code=")) {
+  fail("CertificatePrint.tsx: certificate must carry its verification URL");
+}
+const css = read("src/app/globals.css");
+if (!css.includes(".cert-print") || !css.includes("@media print")) {
+  fail("globals.css: missing @media print isolation for .cert-print");
+}
 
 if (failures.length > 0) {
   console.error(`verify-demand-gen: ${failures.length} failure(s):`);
