@@ -35,14 +35,9 @@ export function VerifyContent() {
     try {
       const client = getBrowserClient();
       if (!client) return setError("Verification service unavailable. Try again later.");
-      // database.types.ts is generated and lags new RPCs; call untyped.
-      const rpc = client.rpc as unknown as (
-        fn: string,
-        args: Record<string, unknown>,
-      ) => Promise<{ data: unknown; error: { message: string } | null }>;
-      const { data, error: rpcError } = await rpc("verify_certificate", { p_code: clean });
+      const { data, error: rpcError } = await client.rpc("verify_certificate", { p_code: clean });
       if (rpcError) return setError(rpcError.message);
-      const row = Array.isArray(data) ? (data[0] as CertResult | undefined) : (data as CertResult | null);
+      const row = Array.isArray(data) ? data[0] : null;
       if (!row) {
         setMissed(true);
         recordLeadEvent({ source: "verify", action: "miss", metadata: { code: clean.slice(0, 20) } });
@@ -56,12 +51,16 @@ export function VerifyContent() {
   }
 
   // Deep links (?code=KLG-XX-XXXXXX) from notifications and employer
-  // shares verify immediately — no extra click.
+  // shares verify immediately — no extra click. Deferred to a timeout so no
+  // state updates run synchronously inside the effect body.
   useEffect(() => {
     if (autoRan.current) return;
     autoRan.current = true;
     const preset = params.get("code");
-    if (preset && preset.trim()) void lookup(undefined, preset);
+    if (preset && preset.trim()) {
+      const t = window.setTimeout(() => void lookup(undefined, preset), 0);
+      return () => window.clearTimeout(t);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

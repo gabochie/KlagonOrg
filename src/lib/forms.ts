@@ -102,12 +102,7 @@ export async function logLeadCapture(input: {
 }): Promise<{ id: number | null; error: string | null }> {
   const client = getBrowserClient();
   if (!client) return { id: null, error: "Lead capture not wired yet." };
-  // database.types.ts is generated and lags new RPCs; call untyped.
-  const rpc = client.rpc as unknown as (
-    fn: string,
-    args: Record<string, unknown>,
-  ) => Promise<{ data: unknown; error: { message: string } | null }>;
-  const { data, error } = await rpc("log_agent_lead", {
+  const { data, error } = await client.rpc("log_agent_lead", {
     p_name: input.name ?? null,
     p_phone: input.phone ?? null,
     p_email: input.email,
@@ -116,7 +111,7 @@ export async function logLeadCapture(input: {
     p_profile_id: null,
   });
   if (!error) recordLeadEvent({ source: input.source, action: "lead-capture" });
-  return { id: (data as number | null) ?? null, error: error?.message ?? null };
+  return { id: data ?? null, error: error?.message ?? null };
 }
 
 export async function recordDonationIntent(data: DonationIntent): Promise<{

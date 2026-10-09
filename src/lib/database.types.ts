@@ -2067,12 +2067,33 @@ export interface Database {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
       };
+      log_agent_lead: {
+        Args: {
+          p_name: string | null;
+          p_phone: string | null;
+          p_email: string;
+          p_source: string;
+          p_intent: string | null;
+          p_profile_id: string | null;
+        };
+        Returns: number | null;
+      };
       set_member_role: {
         Args: {
           p_user_id: string;
           p_role: UserRole;
         };
         Returns: undefined;
+      };
+      verify_certificate: {
+        Args: { p_code: string };
+        Returns: {
+          code: string;
+          recipient_name: string;
+          course_title: string;
+          issued_at: string;
+          revoked: boolean;
+        }[];
       };
     };
     Enums: {
