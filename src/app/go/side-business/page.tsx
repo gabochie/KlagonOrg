@@ -54,7 +54,7 @@ export default function SideBusinessSalesPage() {
               repeat. You leave with <span className="text-white font-bold">a tested offer and a payment</span>,
               plus a dossier and verifiable certificate to prove it.
             </p>
-            <SalesCta source="side-business-b2c" secondaryHref="#phases" label="Start the sprint" price={150} />
+            <SalesCta source="side-business-b2c" secondaryHref="#phases" label="Start the sprint" price={150} courseId="cb06ca78-add0-421c-8a8d-b7e4daa8a51c" />
             <p className="text-white/50 text-xs mt-4">
               GH₵150 one-time · MoMo (MTN / Telecel / AT) · Lifetime access · Verifiable certificate within 48h of passing review
             </p>

@@ -55,7 +55,7 @@ export default function AiSprintSalesPage() {
               jargon. You leave with <span className="text-white font-bold">3 live automations</span>,
               a portfolio blueprint and a certificate employers can verify.
             </p>
-            <SalesCta source="ai-sprint-b2c" secondaryHref="#curriculum" label="Enrol in the sprint" price={150} />
+            <SalesCta source="ai-sprint-b2c" secondaryHref="#curriculum" label="Enrol in the sprint" price={150} courseId="d65e71c1-d194-4352-a183-7f8133b9967a" />
             <p className="text-white/50 text-xs mt-4">
               GH₵150 one-time · MoMo (MTN / Telecel / AT) · Lifetime access · 14-day work-or-refund promise
             </p>
