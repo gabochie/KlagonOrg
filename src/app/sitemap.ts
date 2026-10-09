@@ -61,6 +61,8 @@ const ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["ch
   { path: "/go/ai-sprint", changeFrequency: "weekly", priority: 0.9 },
   { path: "/go/ai-sprint-team", changeFrequency: "weekly", priority: 0.9 },
   { path: "/go/hire", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/go/side-business", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/go/freelance", changeFrequency: "weekly", priority: 0.9 },
   { path: "/verify", changeFrequency: "monthly", priority: 0.6 },
   { path: "/auth/register", changeFrequency: "monthly", priority: 0.8 },
   { path: "/auth/login", changeFrequency: "monthly", priority: 0.5 },
