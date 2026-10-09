@@ -104,6 +104,10 @@ const verify = read("src/components/verify/VerifyContent.tsx");
 if (verify.includes("verify_certificate") && !/p_code/.test(allSql)) {
   fail("migrations: verify_certificate signature must accept p_code");
 }
+// Auto-issue trigger: paid-course completion must mint certificates without staff.
+if (!/trg_auto_certificate[\s\S]*lesson_progress/i.test(allSql)) {
+  fail("migrations: missing trg_auto_certificate on lesson_progress (manual issue only)");
+}
 
 if (failures.length > 0) {
   console.error(`verify-demand-gen: ${failures.length} failure(s):`);

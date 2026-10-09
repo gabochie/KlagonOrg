@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { recordLeadEvent } from "@/lib/analytics";
@@ -22,13 +22,14 @@ export function VerifyContent() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CertResult | null>(null);
   const [missed, setMissed] = useState(false);
+  const autoRan = useRef(false);
 
-  async function lookup(e?: React.FormEvent) {
+  async function lookup(e?: React.FormEvent, override?: string) {
     e?.preventDefault();
     setError(null);
     setResult(null);
     setMissed(false);
-    const clean = code.trim().toUpperCase();
+    const clean = (override ?? code).trim().toUpperCase();
     if (!clean) return setError("Enter the certificate code, e.g. KLG-AU-9F3C2B.");
     setBusy(true);
     try {
@@ -53,6 +54,16 @@ export function VerifyContent() {
       setBusy(false);
     }
   }
+
+  // Deep links (?code=KLG-XX-XXXXXX) from notifications and employer
+  // shares verify immediately — no extra click.
+  useEffect(() => {
+    if (autoRan.current) return;
+    autoRan.current = true;
+    const preset = params.get("code");
+    if (preset && preset.trim()) void lookup(undefined, preset);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="w-full">
