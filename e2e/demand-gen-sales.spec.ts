@@ -46,7 +46,7 @@ test("sales pages cross-link funnels instead of dead-ending", async ({ page }) =
     timeout: 20000,
   });
   await page.goto("/go/side-business");
-  await expect(page.getByRole("link", { name: /freelance/i }).first()).toBeVisible({
+  await expect(page.getByRole("link", { name: /first client/i }).first()).toBeVisible({
     timeout: 20000,
   });
   await page.goto("/go/hire");
