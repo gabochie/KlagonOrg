@@ -15,3 +15,6 @@ workers/**/.wrangler/
 # meant each build rewrote <lastBuildDate> and left a modified file behind,
 # which is how "chore: update rss" commits kept appearing on their own.
 /public/rss.xml
+
+# local logs (were tracked by accident)
+*.log
