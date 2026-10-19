@@ -7,6 +7,7 @@ import { Turnstile } from "@/components/Turnstile";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { chargeSponsor, confirmSponsor } from "@/lib/sponsorPayments";
 import { recordLeadEvent } from "@/lib/analytics";
+import { usePaymentStatus } from "@/components/payments/usePaymentStatus";
 import type { MoMoNetwork } from "@/lib/payments";
 import { ORG_WA, waLink } from "@/lib/wa";
 import { SPONSOR_TIERS } from "@/lib/constants";
@@ -38,8 +39,27 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
   const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [settleRef, setSettleRef] = useState<string | null>(null);
   const [paidAmount, setPaidAmount] = useState<number | null>(null);
   const [consent, setConsent] = useState(false);
+
+  // Settlement truth: only show success once MoMo actually confirms.
+  const settle = usePaymentStatus(settleRef, {
+    onPaid: () => {
+      recordLeadEvent({ source: "sponsor-checkout", action: "paid", metadata: { tier: plan.tier } });
+      setSubmitted(true);
+    },
+    onFailed: () => {
+      recordLeadEvent({ source: "sponsor-checkout", action: "failed", metadata: { tier: plan.tier } });
+      setSettleRef(null);
+      setError("That payment did not go through. Please try again.");
+    },
+    onTimeout: () => {
+      recordLeadEvent({ source: "sponsor-checkout", action: "timeout", metadata: { tier: plan.tier } });
+      setSettleRef(null);
+      setError("We have not seen your MoMo approval yet. If you approved it, our team will still activate your benefits once it clears — or try again.");
+    },
+  });
 
   const tierInfo = SPONSOR_TIERS.find((t) => t.id === plan.tier);
   const monthly = tierInfo?.priceMonthly ?? null;
@@ -75,6 +95,7 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
       email: email.trim() || undefined,
       phone: phone.trim(),
       network,
+      turnstile_token: token,
     });
     setSending(false);
     if (!result.ok) {
@@ -101,10 +122,11 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
       recordLeadEvent({ source: "sponsor-checkout", action: "otp-shown", metadata: { tier: plan.tier } });
       return;
     }
-    // Not settled yet: MoMo still has to confirm, so this is an accepted
-    // charge, not a payment. The "paid" event fires once the code is verified.
+    // Not settled yet: MoMo still has to confirm. Poll the status endpoint
+    // and show success only on paid — never on charge-accepted.
     recordLeadEvent({ source: "sponsor-checkout", action: "charge-accepted", metadata: { tier: plan.tier } });
-    setSubmitted(true);
+    if (result.ref) setSettleRef(result.ref);
+    else setSubmitted(true);
   }
 
   async function verify(e: React.FormEvent) {
@@ -120,19 +142,49 @@ export function SponsorCheckout({ plan }: { plan: SponsorPlan }) {
         : (result.error ?? "Verification failed. Check the code and try again.");
       return setError(detail);
     }
-    recordLeadEvent({ source: "sponsor-checkout", action: "paid", metadata: { tier: plan.tier } });
-    setSubmitted(true);
+    setChargeRef(null);
+    setSettleRef(result.ref ?? chargeRef);
   }
 
   if (submitted) {
     return (
       <div className="bg-white rounded-2xl border border-border p-8 text-center">
         <div className="text-3xl mb-3">🤝</div>
-        <h3 className="text-base font-bold text-navy mb-1">Charge accepted — finishing up…</h3>
+        <h3 className="text-base font-bold text-navy mb-1">Payment confirmed — medase!</h3>
         <p className="text-sm text-gray">
-          We sent the MoMo request for your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""}.
-          Approve it on your phone — your benefits activate once payment clears, and our partnerships team will reach out to set up your profile.
+          Your {plan.name} sponsorship{paidAmount ? ` of GH₵ ${paidAmount.toLocaleString("en-GH")}` : ""} is
+          paid. Our partnerships team will reach out within 2 business days to set up your profile and benefits.
         </p>
+        {settleRef && (
+          <p className="text-[11px] text-gray mt-3">
+            Ref {settleRef} — quote it if you message us.
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (settle === "awaiting") {
+    return (
+      <div className="bg-white rounded-2xl border border-border p-8 text-center">
+        <h3 className="text-base font-bold text-navy mb-1">Waiting for MoMo approval…</h3>
+        <p className="text-sm text-gray">
+          Approve the prompt on your phone{phone ? ` (${phone})` : ""}. This page updates
+          automatically once payment clears — no need to refresh.
+        </p>
+        {settleRef && (
+          <p className="text-[11px] text-gray mt-3">
+            Ref {settleRef} ·{" "}
+            <a
+              href={waLink(ORG_WA, `Hello, I just paid for the ${plan.name} sponsorship (ref ${settleRef}).`)}
+              target="_blank"
+              rel="noreferrer"
+              className="underline font-bold"
+            >
+              Message us on WhatsApp
+            </a>
+          </p>
+        )}
       </div>
     );
   }

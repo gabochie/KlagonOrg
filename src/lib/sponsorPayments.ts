@@ -15,6 +15,7 @@ export interface SponsorChargeInput {
   phone: string;
   network: MoMoNetwork;
   message?: string | null;
+  turnstile_token: string | null;
 }
 
 export interface SponsorChargeResult {

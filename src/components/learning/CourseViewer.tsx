@@ -245,11 +245,18 @@ export function CourseViewer({
       (prereqLessonIds.length === 0 || prereqLessonIds.every((id) => allDone.has(id))));
   const quizGateMet = !selectedQuiz || selectedQuizPassed;
   const yt = selected?.content_url ? youtubeId(selected.content_url) : null;
+  // L2: lesson URLs come from the database (admin-authored today, but a sink
+  // for stored XSS if that trust ever breaks). Only https: renders as an
+  // iframe/link — javascript:/data: fall through to "publishing soon".
+  const safeContentUrl =
+    selected?.content_url && /^https:\/\//i.test(selected.content_url.trim())
+      ? selected.content_url
+      : null;
   const isPdf =
-    !!selected?.content_url && !yt && /\.pdf($|[?#])/i.test(selected.content_url);
+    !!safeContentUrl && !yt && /\.pdf($|[?#])/i.test(safeContentUrl);
   const hasMaterial = !!selected?.content_url || !!selected?.content;
   let lessonMarkdownHtml = "";
-  if (selected?.content && !selected.content_url) {
+  if (selected?.content && !safeContentUrl) {
     lessonMarkdownHtml = renderLessonMarkdown(selected.content);
   }
 
@@ -501,17 +508,17 @@ export function CourseViewer({
                         allowFullScreen
                       />
                     </div>
-                  ) : isPdf && selected.content_url ? (
+                  ) : isPdf && safeContentUrl ? (
                     <div className="mb-4">
                       <div className="rounded-xl overflow-hidden border border-border h-[420px] mb-3">
                         <iframe
-                          src={selected.content_url}
+                          src={safeContentUrl ?? undefined}
                           title={selected.title}
                           className="w-full h-full"
                         />
                       </div>
                       <a
-                        href={selected.content_url}
+                        href={safeContentUrl ?? undefined}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-blue hover:underline"
@@ -532,9 +539,9 @@ export function CourseViewer({
                         }}
                       />
                     </div>
-                  ) : selected.content_url ? (
+                  ) : safeContentUrl ? (
                     <a
-                      href={selected.content_url}
+                      href={safeContentUrl ?? undefined}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-pale text-navy text-sm font-bold hover:bg-amber/20 transition-colors mb-4"

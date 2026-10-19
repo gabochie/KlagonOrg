@@ -122,6 +122,42 @@ if (!css.includes(".cert-print") || !css.includes("@media print")) {
   fail("globals.css: missing @media print isolation for .cert-print");
 }
 
+// ---- 6. Payment hardening: server-side human check + token forwarding ----
+const worker = read("workers/moolre/worker.js");
+for (const route of ["donations-charge", "boosts-charge", "sponsors-charge", "courses-charge"]) {
+  if (!worker.includes(`"${route}"`)) {
+    fail(`worker.js: missing rate-limit/human gate for ${route}`);
+  }
+}
+if (!worker.includes("verifyTurnstileToken")) {
+  fail("worker.js: missing server-side Turnstile verification");
+}
+for (const lib of [
+  "src/lib/coursePayments.ts",
+  "src/lib/sponsorPayments.ts",
+  "src/lib/boostPayments.ts",
+  "src/lib/payments.ts",
+]) {
+  if (!read(lib).includes("turnstile_token")) {
+    fail(`${lib}: charge must forward turnstile_token to the worker`);
+  }
+}
+// PII sendables must require the worker-only secret (checked in the
+// hardening migration — older files predate the guard by design).
+const hardening = fs.existsSync(path.join(migDir, "20261010000005_payments_security.sql"))
+  ? fs.readFileSync(path.join(migDir, "20261010000005_payments_security.sql"), "utf8")
+  : "";
+for (const fn of ["get_donation_sendable", "get_boost_sendable", "get_sponsor_sendable", "get_course_sendable"]) {
+  const seg = hardening.split(`function public.${fn}`)[1]?.split("$$;")[0] ?? "";
+  if (!seg.includes("confirm_secret_ok")) {
+    fail(`20261010000005: ${fn} must require confirm_secret_ok() (anon PII oracle)`);
+  }
+}
+// Quiz policies must gate paid answers on entitlement.
+if (!/has_course_access\(c\.id\)[\s\S]{0,400}quiz/i.test(hardening) && !hardening.includes("has_course_access")) {
+  fail("20261010000005: quiz policies must require has_course_access for priced courses");
+}
+
 if (failures.length > 0) {
   console.error(`verify-demand-gen: ${failures.length} failure(s):`);
   for (const f of failures) console.error(`  - ${f}`);

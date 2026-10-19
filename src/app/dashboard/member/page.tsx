@@ -10,6 +10,7 @@ import { UpcomingEvents } from "@/components/member/UpcomingEvents";
 import { CommunityProjects } from "@/components/member/CommunityProjects";
 import { Announcements } from "@/components/member/Announcements";
 import { PublicProfileLink } from "@/components/member/PublicProfileLink";
+import { MyPayments } from "@/components/member/MyPayments";
 
 export default function MemberDashboard() {
   return (
@@ -67,6 +68,9 @@ export default function MemberDashboard() {
           </div>
           <div className="bg-white rounded-xl border border-border p-4">
             <Announcements />
+          </div>
+          <div className="bg-white rounded-xl border border-border p-4">
+            <MyPayments />
           </div>
         </div>
       </div>

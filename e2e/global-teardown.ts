@@ -78,6 +78,13 @@ export default async function globalTeardown(_config: FullConfig): Promise<void>
     if (postErr) throw new Error(`post sweep: ${postErr.message}`);
     removed += posts ?? 0;
 
+    // Payment rows have no delete policies by design (only confirm RPCs
+    // mutate), so interrupted payment specs sweep through the marker-scoped
+    // admin RPC: E2E marker identities and E2E posts only, never real payers.
+    const { data: swept, error: sweepErr } = await sb.rpc("admin_sweep_test_payments");
+    if (sweepErr) throw new Error(`payment sweep: ${sweepErr.message}`);
+    removed += (swept as number | null) ?? 0;
+
     if (removed > 0) {
       console.log(`[e2e] teardown: removed ${removed} leftover test row(s) — a previous run was interrupted.`);
     } else {
