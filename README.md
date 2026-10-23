@@ -19,6 +19,22 @@
 - **Payments:** [Moolre](https://moolre.com/) (Ghana Mobile Money) via payments Worker
 - **Testing:** Vitest (46 unit/component tests) + Playwright (18 E2E specs)
 
+## Screenshots
+
+| Home | Learning | Dashboard |
+| --- | --- | --- |
+| ![Home](docs/screenshots/home.jpg) | ![Learning](docs/screenshots/learning.jpg) | ![Dashboard](docs/screenshots/dashboard.jpg) |
+
+| Blog | Culture | Map |
+| --- | --- | --- |
+| ![Blog](docs/screenshots/blog.jpg) | ![Culture](docs/screenshots/culture.jpg) | ![Map](docs/screenshots/map.jpg) |
+
+| Events | Donate | About |
+| --- | --- | --- |
+| ![Events](docs/screenshots/events.jpg) | ![Donate](docs/screenshots/donate.jpg) | ![About](docs/screenshots/about.jpg) |
+
+_Live captures from https://klagon.org (see `scripts/capture-screenshots.mjs`)._
+
 ## Quick Start
 
 ```bash
